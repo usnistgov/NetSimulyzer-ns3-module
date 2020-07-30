@@ -1,3 +1,15 @@
+# Table of Contents
+
+* [About](#about)
+* [Installation](#installation)
+    * [Clone (Recommended)](#clone-recommended)
+    * [Download ZIP](#download-zip)
+* [Usage](#usage)
+    * [Connecting the Module Quickly](#connecting-the-module-quickly)
+    * [Connecting the Module Safely](#connecting-the-module-safely)
+        * [Waf (Linking)](#waf-linking)
+        * [Code](#code)
+
 # About
 This is the [ns-3](https://www.nsnam.org/) companion module the
 Visualizer
