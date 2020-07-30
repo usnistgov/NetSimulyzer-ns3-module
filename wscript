@@ -6,6 +6,7 @@
 
 def configure(conf):
     conf.define("HAS_VISUALIZER3D", 1, True, 'Has visualizer3d module')
+    conf.env['HAS_VISUALIZER3D'] = True
 
 
 def build(bld):
