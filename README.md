@@ -4,7 +4,6 @@
 * [Installation](#installation)
     * [Clone (Recommended)](#clone-recommended)
     * [Download ZIP](#download-zip)
-* [Usage](#usage)
     * [Connecting the Module Quickly](#connecting-the-module-quickly)
     * [Connecting the Module Safely](#connecting-the-module-safely)
         * [Waf (Linking)](#waf-linking)
@@ -19,8 +18,8 @@ Link this module & run your scenario to see it in 3D.
 
 # Installation
 ## Clone (Recommended)
-Clone the project directly into the `src` folder of a supported
-version of ns-3
+Clone the project into a directory called `visualizer3d` in
+the `src` folder of a supported version of ns-3
 
 1) `cd` into the `src` folder of `ns-3`
 
@@ -67,10 +66,10 @@ Note that updates will have to be performed manually using this method
 1) Download the ZIP of the project from one of the below URLs
 
 ### GitHub (Public)
-`https://github.com/usnistgov/ns3-visualizer3d-module/archive/master.zip`
+https://github.com/usnistgov/ns3-visualizer3d-module/archive/master.zip
 
 ### GitLab (Internal)
-`https://gitlab.nist.gov/gitlab/wnd-publicsafety/visualizer/visualizer3d/-/archive/master/visualizer3d-master.zip`
+https://gitlab.nist.gov/gitlab/wnd-publicsafety/visualizer/visualizer3d/-/archive/master/visualizer3d-master.zip
 
 2) Unzip the file into the `ns-3` `src/` directory
 ### GitHub
@@ -94,7 +93,6 @@ mv ns3-visualizer3d-module-master visualizer3d
 mv visualizer3d-master visualizer3d
 ```
 
-# Usage
 ## Connecting the Module Quickly
 If you are linking your module/program to the `visualizer3d` module add the following to your `wscript`
 
