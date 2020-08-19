@@ -60,6 +60,7 @@ def build(bld):
         'model/value-axis.h',
         'model/xy-series.h',
         'model/throughput-sink.h',
+        'model/visualizer3d-variables.h'
         ]
 
     if bld.env.ENABLE_EXAMPLES:

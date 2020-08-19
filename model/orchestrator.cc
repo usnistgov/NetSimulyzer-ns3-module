@@ -35,6 +35,7 @@
 #include "orchestrator.h"
 #include "node-configuration.h"
 #include "building-configuration.h"
+#include "visualizer3d-variables.h"
 #include <string>
 #include <vector>
 #include <ns3/node.h>
@@ -228,6 +229,7 @@ Orchestrator::SetupSimulation (void)
 {
   // Header
   m_document["configuration"]["ms-per-frame"] = m_millisecondsPerFrame;
+  m_document["configuration"]["module-version"] = VISUALIZER3D_VERSION;
 
   // Nodes
   auto nodes = nlohmann::json::array ();
