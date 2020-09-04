@@ -229,7 +229,11 @@ void
 Orchestrator::SetupSimulation (void)
 {
   // Header
-  m_document["configuration"]["module-version"] = versionString();
+  auto version = nlohmann::json{};
+  version["major"] = VERSION_MAJOR;
+  version["minor"] = VERSION_MINOR;
+  version["patch"] = VERSION_PATCH;
+  m_document["configuration"]["module-version"] = version;
 
   // Nodes
   auto nodes = nlohmann::json::array ();
