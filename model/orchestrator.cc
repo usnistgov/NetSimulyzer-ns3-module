@@ -205,9 +205,10 @@ Orchestrator::GetTypeId (void)
           .SetGroupName ("visualizer3d")
           .AddAttribute ("MillisecondsPerFrame",
                          "Number of milliseconds a single frame in the visualizer will represent",
-                         DoubleValue (10.0),
+                         DoubleValue (),
                          MakeDoubleAccessor (&Orchestrator::m_millisecondsPerFrame),
-                         MakeDoubleChecker<double> (0.0))
+                         MakeDoubleChecker<double> (0.0), TypeId::DEPRECATED,
+                         "Set playback speed in the application 'Settings' dialog")
           .AddAttribute ("MobilityPollInterval", "How often to poll Nodes for their position",
                          TimeValue (MilliSeconds (100)),
                          MakeTimeAccessor (&Orchestrator::m_mobilityPollInterval),
@@ -228,7 +229,6 @@ void
 Orchestrator::SetupSimulation (void)
 {
   // Header
-  m_document["configuration"]["ms-per-frame"] = m_millisecondsPerFrame;
   m_document["configuration"]["module-version"] = VISUALIZER3D_VERSION;
 
   // Nodes
