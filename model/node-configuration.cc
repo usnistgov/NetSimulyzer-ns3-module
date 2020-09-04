@@ -233,7 +233,7 @@ void
 NodeConfiguration::SetOrchestrator (Ptr<Orchestrator> orchestrator)
 {
   m_orchestrator = orchestrator;
-  m_orchestrator->Register ({this, false});
+  m_orchestrator->Register ({this, true});
 }
 
 Ptr<Orchestrator>
