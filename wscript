@@ -31,6 +31,7 @@ def build(bld):
         'model/value-axis.cc',
         'model/xy-series.cc',
         'model/throughput-sink.cc',
+        'model/visualizer3d-version.cc'
         ]
 
     module_test = bld.create_ns3_module_test_library('visualizer3d')
@@ -60,7 +61,7 @@ def build(bld):
         'model/value-axis.h',
         'model/xy-series.h',
         'model/throughput-sink.h',
-        'model/visualizer3d-variables.h'
+        'model/visualizer3d-version.h'
         ]
 
     if bld.env.ENABLE_EXAMPLES:

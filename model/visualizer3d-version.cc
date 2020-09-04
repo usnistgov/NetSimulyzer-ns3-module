@@ -32,21 +32,18 @@
  * Author: Evan Black <evan.black@nist.gov>
  */
 
-#ifndef VISUALIZER3D_VARIABLES_H
-#define VISUALIZER3D_VARIABLES_H
+#include "visualizer3d-version.h"
+#include <string>
 
-// Obnoxious steps necessary to convert macros to strings
-#define VISUALIZER3D_STRINGIFY(x) #x
-#define VISUALIZER3D_TOSTRING(x) VISUALIZER3D_STRINGIFY (x)
+namespace ns3 {
+namespace visualizer3d {
 
-#define VISUALIZER3D_VERSION_MAJOR 0
-#define VISUALIZER3D_VERSION_MINOR 1
-#define VISUALIZER3D_VERSION_PATCH 0
+std::string
+versionString ()
+{
+  return std::to_string (VERSION_MAJOR) + '.' + std::to_string (VERSION_MINOR) + '.' +
+         std::to_string (VERSION_PATCH);
+}
 
-// Convenience macro containing the version as a string
-#define VISUALIZER3D_VERSION \
-  VISUALIZER3D_TOSTRING (VISUALIZER3D_VERSION_MAJOR) "." \
-      VISUALIZER3D_TOSTRING (VISUALIZER3D_VERSION_MINOR) "." \
-      VISUALIZER3D_TOSTRING (VISUALIZER3D_VERSION_PATCH)
-
-#endif
+} // namespace visualizer3d
+} // namespace ns3
