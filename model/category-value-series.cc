@@ -44,7 +44,8 @@ CategoryValueSeries::GetTypeId (void)
                          EnumValue (ConnectionMode::ConnectInCategory),
                          MakeEnumAccessor (&CategoryValueSeries::m_connectionMode),
                          MakeEnumChecker (ConnectionMode::ConnectInCategory, "ConnectInCategory",
-                                          ConnectionMode::ConnectAll, "ConnectAll"))
+                                          ConnectionMode::ConnectAll, "ConnectAll"),
+                         TypeId::DEPRECATED)
           .AddAttribute ("Color", "Color to use for the points and connections", Color4Value (),
                          MakeColor4Accessor (&CategoryValueSeries::m_color), MakeColor4Checker ())
           .AddAttribute ("Red", "The red component of the drawn elements", UintegerValue (0u),
