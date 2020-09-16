@@ -111,6 +111,8 @@ LogStream::SetColor (Color3 value)
   // Cheap hack to prevent the initial value from setting the flag
   if (value.red != 0u || value.green != 0u || value.blue != 0u)
     m_colorSet = true;
+
+  m_color = value;
 }
 
 Color3
