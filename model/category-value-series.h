@@ -50,8 +50,6 @@ namespace visualizer3d {
 class CategoryValueSeries : public ns3::Object
 {
 public:
-  enum ConnectionMode : int { ConnectInCategory, ConnectAll, ConnectNone };
-
   /**
    * Get the class TypeId
    *
@@ -138,7 +136,6 @@ public:
    */
   void Commit (void);
 
-
   // Stopgap functions that redirect color writes
   // from the component to m_color
   // TODO: Remove
@@ -199,11 +196,6 @@ private:
    * The color of the points & connections
    */
   Color4 m_color;
-
-  /**
-   * Strategy for connecting points on the graph
-   */
-  ConnectionMode m_connectionMode;
 
   /**
    * Flag indicating the configuration of this model was finalized and written,

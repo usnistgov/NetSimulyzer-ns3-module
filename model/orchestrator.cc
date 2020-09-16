@@ -860,22 +860,6 @@ Orchestrator::Commit (CategoryValueSeries &series)
   series.GetAttribute ("Visible", visible);
   element["visible"] = visible.Get ();
 
-  EnumValue connectionMode;
-  series.GetAttribute ("ConnectionMode", connectionMode);
-  switch (connectionMode.Get ())
-    {
-    case visualizer3d::CategoryValueSeries::ConnectionMode::ConnectAll:
-      element["connection-mode"] = "all";
-      break;
-    case visualizer3d::CategoryValueSeries::ConnectionMode::ConnectInCategory:
-      element["connection-mode"] = "in category";
-      break;
-    default:
-      // Just in case
-      NS_ABORT_MSG ("Unhandled CategoryValueSeries::ConnectionMode: " << connectionMode.Get ());
-      break;
-    }
-
   Color4Value color;
   series.GetAttribute ("Color", color);
   element["color"] = colorToObject (color.Get ());
