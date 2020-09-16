@@ -77,18 +77,6 @@ LogStream::GetTypeId (void)
     .AddAttribute("Visible", "Flag indicating this item should appear in Visualizer elements",
                   BooleanValue(true), MakeBooleanAccessor(&LogStream::m_visible),
                   MakeBooleanChecker())
-    .AddAttribute ("Red", "The red component of the drawn elements", UintegerValue (0u),
-      MakeUintegerAccessor (&LogStream::GetRed, &LogStream::SetRed),
-      MakeUintegerChecker<uint8_t> (0u, 255u), TypeId::DEPRECATED,
-      "Use 'Color' instead of the individual components")
-    .AddAttribute ("Green", "The red component of the drawn elements", UintegerValue (0u),
-      MakeUintegerAccessor (&LogStream::GetGreen, &LogStream::SetGreen),
-      MakeUintegerChecker<uint8_t> (0u, 255u), TypeId::DEPRECATED,
-      "Use 'Color' instead of the individual components")
-    .AddAttribute ("Blue", "The red component of the drawn elements", UintegerValue (0u),
-      MakeUintegerAccessor (&LogStream::GetBlue, &LogStream::SetBlue),
-      MakeUintegerChecker<uint8_t> (0u, 255u), TypeId::DEPRECATED,
-      "Use 'Color' instead of the individual components")
     ;
   // clang-format on
   return tid;
@@ -115,51 +103,6 @@ void
 LogStream::DoDispose ()
 {
   m_orchestrator = nullptr;
-}
-
-uint8_t
-LogStream::GetRed (void) const
-{
-  return m_color.red;
-}
-
-void
-LogStream::SetRed (uint8_t value)
-{
-  // Cheap hack to prevent the initial value from setting the flag
-  if (value != 0u)
-    m_colorSet = true;
-  m_color.red = value;
-}
-
-uint8_t
-LogStream::GetGreen (void) const
-{
-  return m_color.green;
-}
-
-void
-LogStream::SetGreen (uint8_t value)
-{
-  // Cheap hack to prevent the initial value from setting the flag
-  if (value != 0u)
-    m_colorSet = true;
-  m_color.green = value;
-}
-
-uint8_t
-LogStream::GetBlue (void) const
-{
-  return m_color.blue;
-}
-
-void
-LogStream::SetBlue (uint8_t value)
-{
-  // Cheap hack to prevent the initial value from setting the flag
-  if (value != 0u)
-    m_colorSet = true;
-  m_color.blue = value;
 }
 
 void

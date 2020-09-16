@@ -41,23 +41,7 @@ CategoryValueSeries::GetTypeId (void)
                          MakePointerAccessor (&CategoryValueSeries::m_yAxis),
                          MakePointerChecker<CategoryAxis> ())
           .AddAttribute ("Color", "Color to use for the points and connections", Color4Value (),
-                         MakeColor4Accessor (&CategoryValueSeries::m_color), MakeColor4Checker ())
-          .AddAttribute ("Red", "The red component of the drawn elements", UintegerValue (0u),
-                         MakeUintegerAccessor (&CategoryValueSeries::GetRed, &CategoryValueSeries::SetRed),
-                         MakeUintegerChecker<uint8_t> (0u, 255u), TypeId::DEPRECATED,
-                         "Use 'Color' instead of the individual components")
-          .AddAttribute ("Green", "The green component of the drawn elements", UintegerValue (0u),
-                         MakeUintegerAccessor (&CategoryValueSeries::GetGreen, &CategoryValueSeries::SetGreen),
-                         MakeUintegerChecker<uint8_t> (0u, 255u), TypeId::DEPRECATED,
-                         "Use 'Color' instead of the individual components")
-          .AddAttribute ("Blue", "The blue component of the drawn elements", UintegerValue (0u),
-                         MakeUintegerAccessor (&CategoryValueSeries::GetBlue, &CategoryValueSeries::SetBlue),
-                         MakeUintegerChecker<uint8_t> (0u, 255u), TypeId::DEPRECATED,
-                         "Use 'Color' instead of the individual components")
-          .AddAttribute ("Opacity", "The red component of the drawn elements", UintegerValue (255u),
-                         MakeUintegerAccessor (&CategoryValueSeries::GetOpacity, &CategoryValueSeries::SetOpacity),
-                         MakeUintegerChecker<uint8_t> (0u, 255u), TypeId::DEPRECATED,
-                         "Use 'Color' instead of the individual components");
+                         MakeColor4Accessor (&CategoryValueSeries::m_color), MakeColor4Checker ());
 
   return tid;
 }
@@ -108,53 +92,6 @@ CategoryValueSeries::Commit (void)
 
   m_orchestrator->Commit (*this);
   m_committed = true;
-}
-
-void
-CategoryValueSeries::SetRed (uint8_t red)
-{
-  m_color.red = red;
-}
-
-uint8_t
-CategoryValueSeries::GetRed (void) const
-{
-  return m_color.red;
-}
-
-void
-CategoryValueSeries::SetGreen (uint8_t green)
-{
-  m_color.green = green;
-}
-
-uint8_t
-CategoryValueSeries::GetGreen (void) const
-{
-  return m_color.green;
-}
-
-void
-CategoryValueSeries::SetBlue (uint8_t blue)
-{
-  m_color.blue = blue;
-}
-uint8_t
-CategoryValueSeries::GetBlue (void) const
-{
-  return m_color.blue;
-}
-
-void
-CategoryValueSeries::SetOpacity (uint8_t opacity)
-{
-  m_color.alpha = opacity;
-}
-
-uint8_t
-CategoryValueSeries::GetOpacity (void) const
-{
-  return m_color.alpha;
 }
 
 void

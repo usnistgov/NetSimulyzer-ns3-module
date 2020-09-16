@@ -89,61 +89,6 @@ public:
   bool IsColorSet (void) const;
 
   /**
-   * Gets the red component of the font color.
-   *
-   * \return
-   * The amount of red to use in the font
-   * in the range [0, 255]
-   *
-   * \see IsColorSet
-   */
-  uint8_t GetRed (void) const;
-
-  /**
-   * Sets the amount of red to use in the log
-   *
-   * \param value
-   * The amount of red to use for all messages for this log
-   * should be [0, 255]
-   *
-   * \see IsColorSet
-   */
-  void SetRed (uint8_t value);
-
-  /**
-   * Gets the green component of the font color.
-   *
-   * \return
-   * The amount of green to use in the font
-   * in the range [0, 255]
-   *
-   * \see IsColorSet
-   */
-  uint8_t GetGreen (void) const;
-
-  /**
-   * Sets the amount of green to use in the log
-   *
-   * \param value
-   * The amount of green to use for all messages for this log
-   * should be [0, 255]
-   *
-   * \see IsColorSet
-   */
-  void SetGreen (uint8_t value);
-
-  /**
-   * Gets the blue component of the font color.
-   *
-   * \return
-   * The amount of blue to use in the font
-   * in the range [0, 255]
-   *
-   * \see IsColorSet
-   */
-  uint8_t GetBlue (void) const;
-
-  /**
    * Sets the font color to use in the log
    *
    * \param value
@@ -163,17 +108,6 @@ public:
    * \see IsColorSet
    */
   Color3 GetColor (void) const;
-
-  /**
-   * Sets the amount of blue to use in the log
-   *
-   * \param value
-   * The amount of blue to use for all messages for this log
-   * should be [0, 255]
-   *
-   * \see IsColorSet
-   */
-  void SetBlue (uint8_t value);
 
 protected:
   void DoDispose (void) override;

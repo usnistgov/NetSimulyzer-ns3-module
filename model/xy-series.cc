@@ -93,24 +93,7 @@ XYSeries::GetTypeId (void)
                          BooleanValue (true), MakeBooleanAccessor (&XYSeries::m_visible),
                          MakeBooleanChecker ())
           .AddAttribute ("Color", "Color to use for the points and connections", Color4Value (),
-                         MakeColor4Accessor (&XYSeries::m_color), MakeColor4Checker ())
-          .AddAttribute ("Red", "The red component of the drawn elements", UintegerValue (0u),
-                         MakeUintegerAccessor (&XYSeries::GetRed, &XYSeries::SetRed),
-                         MakeUintegerChecker<uint8_t> (0u, 255u), TypeId::DEPRECATED,
-                         "Use 'Color' instead of the individual components")
-          .AddAttribute ("Green", "The red component of the drawn elements", UintegerValue (0u),
-                         MakeUintegerAccessor (&XYSeries::GetGreen, &XYSeries::SetGreen),
-                         MakeUintegerChecker<uint8_t> (0u, 255u), TypeId::DEPRECATED,
-                         "Use 'Color' instead of the individual components")
-          .AddAttribute ("Blue", "The red component of the drawn elements", UintegerValue (0u),
-                         MakeUintegerAccessor (&XYSeries::GetBlue, &XYSeries::SetBlue),
-                         MakeUintegerChecker<uint8_t> (0u, 255u), TypeId::DEPRECATED,
-                         "Use 'Color' instead of the individual components")
-          .AddAttribute ("Opacity", "The red component of the drawn elements", UintegerValue (255u),
-                         MakeUintegerAccessor (&XYSeries::GetOpacity, &XYSeries::SetOpacity),
-                         MakeUintegerChecker<uint8_t> (0u, 255u), TypeId::DEPRECATED,
-                         "Use 'Color' instead of the individual components");
-
+                         MakeColor4Accessor (&XYSeries::m_color), MakeColor4Checker ());
   return tid;
 }
 
@@ -131,53 +114,6 @@ XYSeries::Commit (void)
 
   m_orchestrator->Commit (*this);
   m_committed = true;
-}
-
-void
-XYSeries::SetRed (uint8_t red)
-{
-  m_color.red = red;
-}
-
-uint8_t
-XYSeries::GetRed (void) const
-{
-  return m_color.red;
-}
-
-void
-XYSeries::SetGreen (uint8_t green)
-{
-  m_color.green = green;
-}
-
-uint8_t
-XYSeries::GetGreen (void) const
-{
-  return m_color.green;
-}
-
-void
-XYSeries::SetBlue (uint8_t blue)
-{
-  m_color.blue = blue;
-}
-uint8_t
-XYSeries::GetBlue (void) const
-{
-  return m_color.blue;
-}
-
-void
-XYSeries::SetOpacity (uint8_t opacity)
-{
-  m_color.alpha = opacity;
-}
-
-uint8_t
-XYSeries::GetOpacity (void) const
-{
-  return m_color.alpha;
 }
 
 void

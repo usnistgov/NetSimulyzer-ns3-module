@@ -96,23 +96,6 @@ public:
    */
   void Commit (void);
 
-  // Stopgap functions that redirect color writes
-  // from the component to m_color
-  // TODO: Remove
-
-  void SetRed (uint8_t red);
-  uint8_t GetRed (void) const;
-
-  void SetGreen (uint8_t green);
-  uint8_t GetGreen (void) const;
-
-  void SetBlue (uint8_t blue);
-  uint8_t GetBlue (void) const;
-
-  void SetOpacity (uint8_t opacity);
-  uint8_t GetOpacity (void) const;
-
-
 protected:
   void DoDispose (void) override;
 
