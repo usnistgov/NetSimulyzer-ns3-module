@@ -48,7 +48,7 @@ const long VERSION_MAJOR = 0L;
 /**
  * The Minor version number for the module
  */
-const long VERSION_MINOR = 1L;
+const long VERSION_MINOR = 2L;
 
 /**
  * The Patch version number for the module
@@ -62,8 +62,7 @@ const long VERSION_PATCH = 0L;
  * @return
  * A string in the form M_MAJOR.M_MINOR.M_PATCH
  */
-std::string versionString(void);
-
+std::string versionString (void);
 
 } // namespace visualizer3d
 } // namespace ns3
