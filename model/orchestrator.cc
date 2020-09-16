@@ -199,16 +199,17 @@ Orchestrator::Orchestrator (const std::string &output_path) : m_outputPath (outp
 ns3::TypeId
 Orchestrator::GetTypeId (void)
 {
+  // clang-format off
   static TypeId tid =
       TypeId ("ns3::visualizer3d::Orchestrator")
           .SetParent<ns3::Object> ()
           .SetGroupName ("visualizer3d")
           .AddAttribute ("MillisecondsPerFrame",
                          "Number of milliseconds a single frame in the visualizer will represent",
-                         DoubleValue (),
-                         MakeDoubleAccessor (&Orchestrator::m_millisecondsPerFrame),
-                         MakeDoubleChecker<double> (0.0), TypeId::DEPRECATED,
-                         "Set playback speed in the application 'Settings' dialog")
+                         DoubleValue (-1), // Beneath the minimum, so SetMsPerFrame is not called
+                         MakeDoubleAccessor (&Orchestrator::GetMsPerFrame,
+                                             &Orchestrator::SetMsPerFrame),
+                         MakeDoubleChecker<double> (0.0))
           .AddAttribute ("MobilityPollInterval", "How often to poll Nodes for their position",
                          TimeValue (MilliSeconds (100)),
                          MakeTimeAccessor (&Orchestrator::m_mobilityPollInterval),
@@ -223,6 +224,7 @@ Orchestrator::GetTypeId (void)
                          MakeTimeAccessor (&Orchestrator::m_stopTime), MakeTimeChecker ());
 
   return tid;
+  // clang-format on
 }
 
 void
@@ -234,6 +236,8 @@ Orchestrator::SetupSimulation (void)
   version["minor"] = VERSION_MINOR;
   version["patch"] = VERSION_PATCH;
   m_document["configuration"]["module-version"] = version;
+  if (m_msPerFrameSet)
+    m_document["configuration"]["ms-per-frame"] = m_millisecondsPerFrame;
 
   // Nodes
   auto nodes = nlohmann::json::array ();
@@ -969,6 +973,19 @@ Orchestrator::Flush (void)
 
   m_file << m_document;
   m_file.close ();
+}
+
+double
+Orchestrator::GetMsPerFrame (void) const
+{
+  return m_millisecondsPerFrame;
+}
+
+void
+Orchestrator::SetMsPerFrame (double ms)
+{
+  m_msPerFrameSet = true;
+  m_millisecondsPerFrame = ms;
 }
 
 void
