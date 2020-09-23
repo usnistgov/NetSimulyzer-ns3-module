@@ -176,12 +176,6 @@ private:
   std::string m_model;
 
   /**
-   * The alpha color component for the model representing this node.
-   * Accepts a value between 0.0 and 1.0 inclusive
-   */
-  double m_opacity;
-
-  /**
    * Orientation of the Node on each axis in degrees
    */
   Vector3D m_orientation;

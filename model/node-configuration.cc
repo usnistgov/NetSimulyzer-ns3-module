@@ -93,9 +93,6 @@ NodeConfiguration::GetTypeId (void)
                          MakeStringAccessor (&NodeConfiguration::m_name), MakeStringChecker ())
           .AddAttribute ("Model", "Filename of the model to represent this Node", StringValue (),
                          MakeStringAccessor (&NodeConfiguration::m_model), MakeStringChecker ())
-          .AddAttribute ("Opacity", "Sets how transparent the model appears", DoubleValue (1.0),
-                         MakeDoubleAccessor (&NodeConfiguration::m_opacity),
-                         MakeDoubleChecker<double> (0, 1))
           .AddAttribute ("Orientation", "Orientation of the Node on each axis in degrees",
                          Vector3DValue (),
                          MakeVector3DAccessor (&NodeConfiguration::GetOrientation,

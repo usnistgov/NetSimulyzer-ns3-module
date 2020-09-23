@@ -268,10 +268,6 @@ Orchestrator::SetupSimulation (void)
           element["height"] = height.Get ();
         }
 
-      DoubleValue opacity;
-      config->GetAttribute ("Opacity", opacity);
-      element["opacity"] = opacity.Get ();
-
       Vector3DValue orientation;
       config->GetAttribute ("Orientation", orientation);
       element["orientation"]["x"] = orientation.Get ().x;
