@@ -36,7 +36,7 @@ RectangularArea::GetTypeId (void)
           .AddAttribute ("FillColor", "Color of the area within the borders",
                          Color3Value (Color3{204u}) /* light gray */,
                          MakeColor3Accessor (&RectangularArea::m_fillColor), MakeColor3Checker ())
-          .AddAttribute ("BorderColor", "Color of the area within the borders",
+          .AddAttribute ("BorderColor", "Color of the border surrounding the fill",
                          Color3Value (Color3{0u}) /* black */,
                          MakeColor3Accessor (&RectangularArea::m_borderColor), MakeColor3Checker ())
 
