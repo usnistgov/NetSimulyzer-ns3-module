@@ -47,7 +47,7 @@ namespace visualizer3d {
 class Orchestrator;
 
 /**
- * Defines an axis with a linear scale
+ * Defines an axis with a linear or logarithmic scale
  */
 class ValueAxis : public ns3::Object
 {
