@@ -355,10 +355,6 @@ Orchestrator::SetupSimulation (void)
       decoration->GetAttribute ("Model", model);
       element["model"] = model.Get ();
 
-      DoubleValue opacity;
-      decoration->GetAttribute ("Opacity", opacity);
-      element["opacity"] = opacity.Get ();
-
       Vector3DValue orientation;
       decoration->GetAttribute ("Orientation", orientation);
       element["orientation"]["x"] = orientation.Get ().x;

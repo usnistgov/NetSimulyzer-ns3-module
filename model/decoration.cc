@@ -59,9 +59,6 @@ Decoration::GetTypeId (void)
           .AddAttribute ("Model", "Filename of the model to represent this Decoration",
                          StringValue (), MakeStringAccessor (&Decoration::m_model),
                          MakeStringChecker ())
-          .AddAttribute ("Opacity", "Sets how transparent the model appears", DoubleValue (1.0),
-                         MakeDoubleAccessor (&Decoration::m_opacity),
-                         MakeDoubleChecker<double> (0, 1))
           .AddAttribute (
               "Orientation", "Orientation of the Decoration on each axis in degrees",
               Vector3DValue (),
