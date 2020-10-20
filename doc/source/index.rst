@@ -25,3 +25,4 @@ Link this module to your scenario to see it in 3D.
   categorical-axis
   series-collections
   areas
+  sinks
