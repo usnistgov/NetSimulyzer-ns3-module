@@ -36,8 +36,8 @@ point connected with a straight line.
 
 .. image:: _static/xy-line.png
   :alt: Line Plot in the Application
-  :width: 447px
-  :height: 547px
+  :width: 223px
+  :height: 273px
 
 Spline
 ++++++
@@ -46,8 +46,8 @@ Like the ``Line`` mode, but connections curve between points
 
 .. image:: _static/xy-spline.png
   :alt: Spline Plot in the Application
-  :width: 435px
-  :height: 549px
+  :width: 217px
+  :height: 274px
 
 None
 ++++
@@ -57,8 +57,8 @@ between them,
 
 .. image:: _static/xy-scatter.png
   :alt: Scatter Plot in the Application
-  :width: 452px
-  :height: 555px
+  :width: 226px
+  :height: 277px
 
 Attributes
 ----------
