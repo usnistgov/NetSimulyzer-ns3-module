@@ -33,25 +33,25 @@ scaling may be disabled (See: ``BoundMode`` attribute).
 
 Attributes
 ^^^^^^^^^^
-+----------------------+--------------------------+--------------------+---------------------------------------------------------------------------------------------------+
-| Name                 | Type                     | Default Value      | Description                                                                                       |
-+======================+==========================+====================+===================================================================================================+
-| Name                 | string                   | Empty String       | Label to apply to this axis in the application                                                    |
-+----------------------+--------------------------+--------------------+---------------------------------------------------------------------------------------------------+
-| Minimum              | double                   | 0.0                | Smallest value shown on the axis by default                                                       |
-+----------------------+--------------------------+--------------------+---------------------------------------------------------------------------------------------------+
-| Maximum              | double                   | 0.0                | Largest value shown on the axis by default                                                        |
-+----------------------+--------------------------+--------------------+---------------------------------------------------------------------------------------------------+
-| BoundMode            | ``ValueAxis::BoundMode`` | ``HighestValue``   | Method of scaling the ends of the axis                                                            |
-|                      |                          |                    |                                                                                                   |
-|                      |                          |                    | * ``Fixed`` The endpoints of the axis do not move regardless of appended values                   |
-|                      |                          |                    | * ``HighestValue`` (Default) Each endpoint is moved to slightly beyond the min/max appended value |
-+----------------------+--------------------------+--------------------+---------------------------------------------------------------------------------------------------+
-| Scale                | ``ValueAxis::Scale``     | ``Linear``         | Method scale between tick marks on the axis                                                       |
-|                      |                          |                    |                                                                                                   |
-|                      |                          |                    | * ``Linear`` (Default) Scale the same amount between ticks                                        |
-|                      |                          |                    | * ``Logarithmic`` Scale the tick marks using a logarithmic scale                                  |
-+----------------------+--------------------------+--------------------+---------------------------------------------------------------------------------------------------+
++----------------------+-----------+--------------------+---------------------------------------------------------------------------------------------------+
+| Name                 | Type      | Default Value      | Description                                                                                       |
++======================+===========+====================+===================================================================================================+
+| Name                 | string    | Empty String       | Label to apply to this axis in the application                                                    |
++----------------------+-----------+--------------------+---------------------------------------------------------------------------------------------------+
+| Minimum              | double    | 0.0                | Smallest value shown on the axis by default                                                       |
++----------------------+-----------+--------------------+---------------------------------------------------------------------------------------------------+
+| Maximum              | double    | 0.0                | Largest value shown on the axis by default                                                        |
++----------------------+-----------+--------------------+---------------------------------------------------------------------------------------------------+
+| BoundMode            | BoundMode | HighestValue       | Method of scaling the ends of the axis                                                            |
+|                      |           |                    |                                                                                                   |
+|                      |           |                    | * ``Fixed`` The endpoints of the axis do not move regardless of appended values                   |
+|                      |           |                    | * ``HighestValue`` (Default) Each endpoint is moved to slightly beyond the min/max appended value |
++----------------------+-----------+--------------------+---------------------------------------------------------------------------------------------------+
+| Scale                | Scale     | Linear             | Method scale between tick marks on the axis                                                       |
+|                      |           |                    |                                                                                                   |
+|                      |           |                    | * ``Linear`` (Default) Scale the same amount between ticks                                        |
+|                      |           |                    | * ``Logarithmic`` Scale the tick marks using a logarithmic scale                                  |
++----------------------+-----------+--------------------+---------------------------------------------------------------------------------------------------+
 
 
 

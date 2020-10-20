@@ -39,7 +39,7 @@ Attributes
 | Model                | string            | n/a           | Relative path from the application's ``Resource``            |
 |                      |                   |               | directory to the model to show for this ``Decoration``       |
 +----------------------+-------------------+---------------+--------------------------------------------------------------+
-| Orientation          | ``ns3::Vector3D`` | (0, 0, 0)     | Orientation of this ``Decoration`` on each axis, in degrees. |
+| Orientation          | Vector3D          | (0, 0, 0)     | Orientation of this ``Decoration`` on each axis, in degrees. |
 +----------------------+-------------------+---------------+--------------------------------------------------------------+
 | Scale                | double            | 1.00          | A multiplicative scale to apply to the model.                |
 |                      |                   |               | Applied after ``Height``                                     |
@@ -47,6 +47,6 @@ Attributes
 | Height               | double            | n/a           | Desired height of the model in ns-3 units.                   |
 |                      |                   |               | Applied before ``Scale``                                     |
 +----------------------+-------------------+---------------+--------------------------------------------------------------+
-| Position             | ``ns3::Vector3D`` | (0, 0, 0)     | Position to show this ``Decoration`` in the scenario.        |
+| Position             | Vector3D          | (0, 0, 0)     | Position to show this ``Decoration`` in the scenario.        |
 +----------------------+-------------------+---------------+--------------------------------------------------------------+
 

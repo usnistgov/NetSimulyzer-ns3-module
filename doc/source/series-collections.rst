@@ -69,7 +69,7 @@ Attributes
 +----------------------+-------------------+---------------------------+-------------------------------------------------------------+
 | Name                 | string            | "Series Collection: {ID}" | Name to use for this Series in application elements         |
 +----------------------+-------------------+---------------------------+-------------------------------------------------------------+
-| HideAddedSeries      | bool              | ``true``                  | Hides series added to this collection.See the ``Visible``   |
+| HideAddedSeries      | bool              | true                      | Hides series added to this collection.See the ``Visible``   |
 |                      |                   |                           | attribute for :ref:`xy-series` for more info                |
 +----------------------+-------------------+---------------------------+-------------------------------------------------------------+
 

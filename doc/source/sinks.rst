@@ -39,12 +39,12 @@ Attributes
 +==========+==========================+================================+=====================================================+
 | XYSeries | :ref:`xy-series`         | n/a                            | The underling series to which data is written.      |
 +----------+--------------------------+--------------------------------+-----------------------------------------------------+
-| Interval | ``Time``                 | ``Seconds(1.0)``               | How often to cut off and write collected throughput |
+| Interval | Time                     | Seconds(1.0)                   | How often to cut off and write collected throughput |
 +----------+--------------------------+--------------------------------+-----------------------------------------------------+
-| Unit     | ``ThroughputSink::Unit`` | ``ThroughputSink::Unit::KBit`` | Unit to display throughput values in.               |
+| Unit     | ThroughputSink::Unit     | ThroughputSink::Unit::KBit     | Unit to display throughput values in.               |
 |          |                          |                                | Does not affect values passed to ``AddPacketSize``  |
 +----------+--------------------------+--------------------------------+-----------------------------------------------------+
-| TimeUnit | ``Time::Unit``           | ``Time::S``                    | Unit to display time values in.                     |
+| TimeUnit | Time::Unit               | Time::S                        | Unit to display time values in.                     |
 +----------+--------------------------+--------------------------------+-----------------------------------------------------+
 
 
@@ -133,20 +133,20 @@ Connect the model's state changed trace to ``StateTransitionSink::StateChangedId
 Attributes
 ^^^^^^^^^^
 
-+-------------+--------------------------------------+-------------------------------+---------------------------------------------------------+
-| Name        | Type                                 | Default Value                 | Description                                             |
-+==========+=========================================+===============================+=========================================================+
-| Name        | string                               | n/a                           | Name to use for the ``Series`` and ``Log``              |
-+-------------+--------------------------------------+-------------------------------+---------------------------------------------------------+
-| Series      | :ref:`category-value-series`         | n/a                           | The underling series to which data is written.          |
-+-------------+--------------------------------------+-------------------------------+---------------------------------------------------------+
-| Log         | :ref:`log-stream`                    | n/a                           | The stream messages are written to                      |
-+-------------+--------------------------------------+-------------------------------+---------------------------------------------------------+
-| LoggingMode | ``StateTransitionSink::LoggingMode`` | ``LoggingMode::StateChanges`` | Logging behavior of the sink                            |
-|             |                                      |                               |                                                         |
-|             |                                      |                               | * ``All``: Log all possible messages                    |
-|             |                                      |                               | * ``StateChanges``: Only log when a state change occurs |
-|             |                                      |                               | * ``None``: Disable logging and hide the stream         |
-+-------------+--------------------------------------+-------------------------------+---------------------------------------------------------+
-| TimeUnit    | ``Time::Unit``                       | ``Time::S``                   | Unit to display time values in.                         |
-+-------------+--------------------------------------+-------------------------------+---------------------------------------------------------+
++-------------+------------------------------+-------------------------------+---------------------------------------------------------+
+| Name        | Type                         | Default Value                 | Description                                             |
++==========+=================================+===============================+=========================================================+
+| Name        | string                       | n/a                           | Name to use for the ``Series`` and ``Log``              |
++-------------+------------------------------+-------------------------------+---------------------------------------------------------+
+| Series      | :ref:`category-value-series` | n/a                           | The underling series to which data is written.          |
++-------------+------------------------------+-------------------------------+---------------------------------------------------------+
+| Log         | :ref:`log-stream`            | n/a                           | The stream messages are written to                      |
++-------------+------------------------------+-------------------------------+---------------------------------------------------------+
+| LoggingMode | LoggingMode                  | LoggingMode::StateChanges     | Logging behavior of the sink                            |
+|             |                              |                               |                                                         |
+|             |                              |                               | * ``All``: Log all possible messages                    |
+|             |                              |                               | * ``StateChanges``: Only log when a state change occurs |
+|             |                              |                               | * ``None``: Disable logging and hide the stream         |
++-------------+------------------------------+-------------------------------+---------------------------------------------------------+
+| TimeUnit    | Time::Unit                   | Time::S                       | Unit to display time values in.                         |
++-------------+------------------------------+-------------------------------+---------------------------------------------------------+

@@ -62,35 +62,35 @@ between them,
 
 Attributes
 ----------
-+----------------------+--------------------------------+--------------------+---------------------------------------------------------------+
-| Name                 | Type                           | Default Value      | Description                                                   |
-+======================+================================+====================+===============================================================+
-| XAxis                | :ref:`value-axis`              | Default configured | The X Axis shown on the graph                                 |
-|                      |                                | :ref:`value-axis`  |                                                               |
-+----------------------+--------------------------------+--------------------+---------------------------------------------------------------+
-| YAxis                | :ref:`value-axis`              | Default configured | The Y Axis shown on the graph                                 |
-|                      |                                | :ref:`value-axis`  |                                                               |
-+----------------------+--------------------------------+--------------------+---------------------------------------------------------------+
-| Connection           | ``XYSeries::ConnectionType``   | ``Line``           | Method of connecting points in the                            |
-|                      |                                |                    | application. See :ref:`xy-connection-types`                   |
-|                      |                                |                    |                                                               |
-|                      |                                |                    | * ``None`` creates a scatter plot                             |
-|                      |                                |                    | * ``Line`` connects each point with a straight line           |
-|                      |                                |                    | * ``Spline`` connects each point with a curved line           |
-+----------------------+--------------------------------+--------------------+---------------------------------------------------------------+
-| LabelMode            | ``XYSeries::LabelMode``        | ``Shown``          | Method to display point labels                                |
-|                      |                                |                    |                                                               |
-|                      |                                |                    | * ``Shown`` Show labels on each point showing its coordinates |
-|                      |                                |                    | * ``Hidden`` Do not show labels on points                     |
-|                      |                                |                    |                                                               |
-+----------------------+--------------------------------+--------------------+---------------------------------------------------------------+
-| Name                 | string                         | "XY Series: {ID}"  | Name to use for this Series in application elements           |
-+----------------------+--------------------------------+--------------------+---------------------------------------------------------------+
-| Legend               | string                         | Value of ``Name``  | Name for the series that appears in the chart legend.         |
-+----------------------+--------------------------------+--------------------+---------------------------------------------------------------+
-| Visible              | bool                           | ``true``           | Defines if Series appears in application elements             |
-+----------------------+--------------------------------+--------------------+---------------------------------------------------------------+
-| Color                | :ref:`color4`                  | n/a                | The color to use for point connections                        |
-|                      |                                |                    | (``Line`` & ``Spline``) or the points (``None``)              |
-+----------------------+--------------------------------+--------------------+---------------------------------------------------------------+
++----------------------+--------------------+--------------------+---------------------------------------------------------------+
+| Name                 | Type               | Default Value      | Description                                                   |
++======================+====================+====================+===============================================================+
+| XAxis                | :ref:`value-axis`  | Default configured | The X Axis shown on the graph                                 |
+|                      |                    | :ref:`value-axis`  |                                                               |
++----------------------+--------------------+--------------------+---------------------------------------------------------------+
+| YAxis                | :ref:`value-axis`  | Default configured | The Y Axis shown on the graph                                 |
+|                      |                    | :ref:`value-axis`  |                                                               |
++----------------------+--------------------+--------------------+---------------------------------------------------------------+
+| Connection           | ConnectionType     | Line               | Method of connecting points in the                            |
+|                      |                    |                    | application. See :ref:`xy-connection-types`                   |
+|                      |                    |                    |                                                               |
+|                      |                    |                    | * ``None`` creates a scatter plot                             |
+|                      |                    |                    | * ``Line`` connects each point with a straight line           |
+|                      |                    |                    | * ``Spline`` connects each point with a curved line           |
++----------------------+--------------------+--------------------+---------------------------------------------------------------+
+| LabelMode            | LabelMode          | Shown              | Method to display point labels                                |
+|                      |                    |                    |                                                               |
+|                      |                    |                    | * ``Shown`` Show labels on each point showing its coordinates |
+|                      |                    |                    | * ``Hidden`` Do not show labels on points                     |
+|                      |                    |                    |                                                               |
++----------------------+--------------------+--------------------+---------------------------------------------------------------+
+| Name                 | string             | "XY Series: {ID}"  | Name to use for this Series in application elements           |
++----------------------+--------------------+--------------------+---------------------------------------------------------------+
+| Legend               | string             | Value of ``Name``  | Name for the series that appears in the chart legend.         |
++----------------------+--------------------+--------------------+---------------------------------------------------------------+
+| Visible              | bool               | ``true``           | Defines if Series appears in application elements             |
++----------------------+--------------------+--------------------+---------------------------------------------------------------+
+| Color                | :ref:`color4`      | n/a                | The color to use for point connections                        |
+|                      |                    |                    | (``Line`` & ``Spline``) or the points (``None``)              |
++----------------------+--------------------+--------------------+---------------------------------------------------------------+
 

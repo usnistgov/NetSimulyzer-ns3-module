@@ -68,7 +68,7 @@ Properties
 |                      |               |                    | the number of milliseconds to advance    |
 |                      |               |                    | the simulation by for one frame          |
 +----------------------+---------------+--------------------+------------------------------------------+
-| MobilityPollInterval | ``ns3::Time`` | MilliSeconds (100) | How often to poll each child`            |
+| MobilityPollInterval | Time          | MilliSeconds (100) | How often to poll each child`            |
 |                      |               |                    | ``NodeConfiguration`` for their          |
 |                      |               |                    | current position. Only enabled if        |
 |                      |               |                    | ``PollMobility`` is true                 |
@@ -76,12 +76,12 @@ Properties
 | PollMobility         | bool          |               true | Flag to toggle polling                   |
 |                      |               |                    | for Node positions                       |
 +----------------------+---------------+--------------------+------------------------------------------+
-| StartTime            | ``ns3::Time`` |               n/a  | Optional start of the time window to     |
+| StartTime            | Time          |               n/a  | Optional start of the time window to     |
 |                      |               |                    | capture events in.                       |
 |                      |               |                    | Events outside the window will           |
 |                      |               |                    | be ignored                               |
 +----------------------+---------------+--------------------+------------------------------------------+
-| EndTime              | ``ns3::Time`` |               n/a  | Optional end of the time window to       |
+| EndTime              | Time          |               n/a  | Optional end of the time window to       |
 |                      |               |                    | capture events in.                       |
 |                      |               |                    | Events outside the window will           |
 |                      |               |                    | be ignored                               |
