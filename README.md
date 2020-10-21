@@ -135,7 +135,7 @@ def build(bld):
 
     # Check if 'HAS_VISUALIZER3D' was defined during configuration
     if 'HAS_VISUALIZER3D' in bld.env:
-        # If it was defined, then the 'visualizer3d' is presant and we may link it
+        # If it was defined, then the 'visualizer3d' is present and we may link it
         linked_modules.append('visualizer3d')
 
     # Be sure to pass your list of `linked_modules` to `create_ns3_program`
