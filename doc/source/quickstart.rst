@@ -34,6 +34,9 @@ Include the module in your scenario. And optionally use the namespace.
   // Optional, not assumed in future examples
   using namespace ns3::visualizer3d;
 
+For more complex linking, see: :doc:`linking-module`
+
+
 Create an :doc:`orchestrator`, and pass it a path to an output file to create.
 The :doc:`orchestrator` is the base for all visualizer3d elements.
 
