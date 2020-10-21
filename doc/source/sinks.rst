@@ -34,18 +34,18 @@ to ``AddPacketSize``,and the model will collect the amounts over the defined per
 Attributes
 ^^^^^^^^^^
 
-+----------+--------------------------+--------------------------------+-----------------------------------------------------+
-| Name     | Type                     | Default Value                  | Description                                         |
-+==========+==========================+================================+=====================================================+
-| XYSeries | :ref:`xy-series`         | n/a                            | The underling series to which data is written.      |
-+----------+--------------------------+--------------------------------+-----------------------------------------------------+
-| Interval | Time                     | Seconds(1.0)                   | How often to cut off and write collected throughput |
-+----------+--------------------------+--------------------------------+-----------------------------------------------------+
-| Unit     | ThroughputSink::Unit     | ThroughputSink::Unit::KBit     | Unit to display throughput values in.               |
-|          |                          |                                | Does not affect values passed to ``AddPacketSize``  |
-+----------+--------------------------+--------------------------------+-----------------------------------------------------+
-| TimeUnit | Time::Unit               | Time::S                        | Unit to display time values in.                     |
-+----------+--------------------------+--------------------------------+-----------------------------------------------------+
++----------+-------------------+----------------+-----------------------------------------------------+
+| Name     | Type              | Default Value  | Description                                         |
++==========+===================+================+=====================================================+
+| XYSeries | :ref:`xy-series`  | n/a            | The underling series to which data is written.      |
++----------+-------------------+----------------+-----------------------------------------------------+
+| Interval | Time              | Seconds(1.0)   | How often to cut off and write collected throughput |
++----------+-------------------+----------------+-----------------------------------------------------+
+| Unit     | Unit              | KBit           | Unit to display throughput values in.               |
+|          |                   |                | Does not affect values passed to ``AddPacketSize``  |
++----------+-------------------+----------------+-----------------------------------------------------+
+| TimeUnit | Time::Unit        | Time::S        | Unit to display time values in.                     |
++----------+-------------------+----------------+-----------------------------------------------------+
 
 
 
