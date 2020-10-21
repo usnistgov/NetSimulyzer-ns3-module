@@ -34,19 +34,21 @@ Include the module in your scenario. And optionally use the namespace.
   // Optional, not assumed in future examples
   using namespace ns3::visualizer3d;
 
-Create an :doc:`orchestrator`, and pass it a name for the output file.
+Create an :doc:`orchestrator`, and pass it a path to an output file to create.
 The :doc:`orchestrator` is the base for all visualizer3d elements.
 
 .. code-block:: C++
 
   auto orchestrator = CreateObject<visualizer3d::Orchestrator> ("example.json");
 
+For more configuration options, see: doc:`orchestrator`
+
 
 Showing Nodes
 +++++++++++++
 
 Create a ``NodeConfigurationHelper``, set a model for the Nodes and ``Install()``
-on the Nodes you wish to show.
+on the Nodes you wish to be displayed in the application.
 
 For additional configuration options see :doc:`nodes`.
 
