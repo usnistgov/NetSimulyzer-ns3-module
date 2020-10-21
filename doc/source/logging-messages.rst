@@ -20,7 +20,7 @@ clearly identify it in the application.
 Messages
 --------
 
-A ``LogStream`` message **must** end in a newline character '\n',
+A ``LogStream`` message **must** end in a newline character '\\n',
 and may contain single characters (e.g. 'c'), other strings
 (e.g. "Hello world!"), and anything which may be passed to
 `std::to_string <https://en.cppreference.com/w/cpp/string/basic_string/to_string>`_.
