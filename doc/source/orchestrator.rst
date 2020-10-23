@@ -52,7 +52,7 @@ by ``MobilityPollInterval``.
 If the child ``NodeConfiguration`` has ``UsePositionTolerance`` set to true, then,
 the aggregated ``Node`` will be checked if its position is within its ``PositionTolerance``,
 and if so the ``Orchestrator`` will not write the position change until
-it is beyond the ``PositionTolerance` in the `NodeConfiguration``.
+it is beyond the ``PositionTolerance`` in the ``NodeConfiguration``.
 
 If ``NodeConfiguration::UsePositionTolerance`` is false, then the ``Orchestrator``
 will always write the position when a ``NodeConfiguration`` is polled.

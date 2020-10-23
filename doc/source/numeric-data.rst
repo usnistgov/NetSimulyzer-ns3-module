@@ -1,7 +1,7 @@
 Numeric Data
 ============
 
-A significant portion of information with may be drawn from *ns-3*
+A significant portion of information which may be drawn from *ns-3*
 is purely numeric (e.g. throughput over time, signal to noise ratio,
 packet loss, etc.). To plot such data use a ``XYSeries``.
 
@@ -13,7 +13,7 @@ XYSeries
 
 XYSeries track data points with two numeric coordinates.
 
-The Series by default connects points with a straight line,
+The series by default connects points with a straight line,
 but it may be configured to not connect points and use larger
 dots like a scatter plot or using a curved line (spline).
 See: the ``Connection`` attribute and
@@ -42,7 +42,7 @@ point connected with a straight line.
 Spline
 ++++++
 
-Like the ``Line`` mode, but connections curve between points
+Like the ``Line`` mode, but connections curve between points.
 
 .. image:: _static/xy-spline.png
   :alt: Spline Plot in the Application
@@ -53,7 +53,7 @@ None
 ++++
 
 Makes the points slightly larger and draws no connections
-between them,
+between them.
 
 .. image:: _static/xy-scatter.png
   :alt: Scatter Plot in the Application

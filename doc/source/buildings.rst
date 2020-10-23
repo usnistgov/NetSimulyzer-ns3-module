@@ -30,7 +30,7 @@ The basic setup for showing a single ``ns3::Building`` is as follows:
 
 .. code-block:: C++
 
-  visualizer3d::BuildingConfigurationHelper buildingHelper{/* orchestrator */}
+  visualizer3d::BuildingConfigurationHelper buildingHelper{/* orchestrator */};
   buildingHelper.Install (/* Ptr or Collection */);
 
 

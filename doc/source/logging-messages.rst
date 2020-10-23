@@ -6,10 +6,10 @@ Logging Messages
 LogStream
 ---------
 
-Log Streams allow for messages to be printed directly
+``LogStream`` objects allow for messages to be printed directly
 to the application. Messages printed to a ``LogStream``
 are output during playback at the time they were emitted.
-``LogStreams`` may be useful for printing scenario information
+``LogStream`` objects may be useful for printing scenario information
 such as marking the beginning of important events.
 
 

@@ -2,7 +2,7 @@ Numeric Axis
 ============
 
 Most models output some form of numeric information. To display this
-data use a series with a ``ValueAxis``
+data use a series with a ``ValueAxis``.
 
 
 .. _value-axis:

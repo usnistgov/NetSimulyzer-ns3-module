@@ -23,7 +23,7 @@ Providing IDs
 ^^^^^^^^^^^^^
 
 In order to provide an ID for a value on a ``CategoryAxis``
-both values must be packaged in a ``ValuePair``
+both values must be packaged in a ``ValuePair``.
 
 .. _category-axis-value-pair:
 
@@ -50,7 +50,7 @@ The definition of ``ValuePair`` follows:
     };
 
    // ...
-  }
+  };
 
 
 Adding Values

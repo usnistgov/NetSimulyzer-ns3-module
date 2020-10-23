@@ -2,7 +2,7 @@ Series Collections
 ==================
 
 To view and potentially compare several :ref:`xy-series` in one chart,
-they may be grouped under a ``SeriesCollection``
+they may be grouped under a ``SeriesCollection``.
 
 .. _series-collection:
 
@@ -13,7 +13,7 @@ A collection of :ref:`xy-series` which are displayed as a single
 graph in the application with its own axes.
 
 A ``SeriesCollection`` cannot have values appended to it like other
-Series, but rather it shows the values of its child Series.
+series, but rather it shows the values of its child series.
 
 
 Example

@@ -9,7 +9,7 @@ Many of the visualizer3d models have configurable colors which are set using the
 Color3
 ------
 
-Representation of three component color (Red, Green, & Blue).
+Representation of three component color (Red, Green, and Blue).
 Each component may be set by the public member or by the constructor.
 
 
@@ -40,6 +40,12 @@ It's used when setting or retrieving an attribute from a model.
   Color3 color{/* ... */};
 
   building->SetAttribute("Color", Color3Value{color});
+
+
+.. Some code samples were divided by pages, so split up these two on to separate pages
+.. raw:: latex
+
+    \clearpage
 
 .. _color4:
 

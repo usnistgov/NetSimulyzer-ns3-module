@@ -2,7 +2,7 @@ Showing Nodes
 =============
 
 To show a ``ns3::Node`` in the application aggregate a ``NodeConfiguration`` onto
-it, and define a ``Model`` to use to represent the ``ns3::Node``
+it, and define a ``Model`` to use to represent the ``ns3::Node``.
 
 .. _node-configuration:
 

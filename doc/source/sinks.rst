@@ -11,7 +11,7 @@ The ``ThroughputSink`` tracks data written over a configurable period (defined b
 and plots the data on an :ref:`xy-series`.
 
 Connect a generic ``TX`` trace which emit the size of transmitted packets (in bytes)
-to ``AddPacketSize``,and the model will collect the amounts over the defined period, then write to the series.
+to ``AddPacketSize``, and the model will collect the amounts over the defined period, then write to the series.
 
 .. code-block:: C++
 
@@ -60,7 +60,7 @@ with optional integer IDs (enum values), as well as the initial state.
 
 The sink may also emit log messages when the state has changed, see the ``LoggingMode`` attribute.
 
-The model expects a State Changed trace in one of the following forms:
+The model expects a trace for state changes in one of the following forms:
 
 .. code-block:: C++
 
@@ -133,20 +133,20 @@ Connect the model's state changed trace to ``StateTransitionSink::StateChangedId
 Attributes
 ^^^^^^^^^^
 
-+-------------+------------------------------+-------------------------------+---------------------------------------------------------+
-| Name        | Type                         | Default Value                 | Description                                             |
-+==========+=================================+===============================+=========================================================+
-| Name        | string                       | n/a                           | Name to use for the ``Series`` and ``Log``              |
-+-------------+------------------------------+-------------------------------+---------------------------------------------------------+
-| Series      | :ref:`category-value-series` | n/a                           | The underling series to which data is written.          |
-+-------------+------------------------------+-------------------------------+---------------------------------------------------------+
-| Log         | :ref:`log-stream`            | n/a                           | The stream messages are written to                      |
-+-------------+------------------------------+-------------------------------+---------------------------------------------------------+
-| LoggingMode | LoggingMode                  | LoggingMode::StateChanges     | Logging behavior of the sink                            |
-|             |                              |                               |                                                         |
-|             |                              |                               | * ``All``: Log all possible messages                    |
-|             |                              |                               | * ``StateChanges``: Only log when a state change occurs |
-|             |                              |                               | * ``None``: Disable logging and hide the stream         |
-+-------------+------------------------------+-------------------------------+---------------------------------------------------------+
-| TimeUnit    | Time::Unit                   | Time::S                       | Unit to display time values in.                         |
-+-------------+------------------------------+-------------------------------+---------------------------------------------------------+
++-------------+------------------------------+----------------+---------------------------------------------------------+
+| Name        | Type                         | Default Value  | Description                                             |
++==========+=================================+================+=========================================================+
+| Name        | string                       | n/a            | Name to use for the ``Series`` and ``Log``              |
++-------------+------------------------------+----------------+---------------------------------------------------------+
+| Series      | :ref:`category-value-series` | n/a            | The underling series to which data is written.          |
++-------------+------------------------------+----------------+---------------------------------------------------------+
+| Log         | :ref:`log-stream`            | n/a            | The stream messages are written to                      |
++-------------+------------------------------+----------------+---------------------------------------------------------+
+| LoggingMode | LoggingMode                  | StateChanges   | Logging behavior of the sink                            |
+|             |                              |                |                                                         |
+|             |                              |                | * ``All``: Log all possible messages                    |
+|             |                              |                | * ``StateChanges``: Only log when a state change occurs |
+|             |                              |                | * ``None``: Disable logging and hide the stream         |
++-------------+------------------------------+----------------+---------------------------------------------------------+
+| TimeUnit    | Time::Unit                   | Time::S        | Unit to display time values in.                         |
++-------------+------------------------------+----------------+---------------------------------------------------------+

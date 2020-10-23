@@ -13,7 +13,7 @@ CategoryValueSeries
 
 The ``CategoryValueSeries`` plots a numeric value (x-axis) to a
 String value (y-axis). It is useful for tracking the state of
-an Application or some other model.
+an application or some other model.
 
 A list of Strings to populate the y-axis may be provided
 at creation time, or provided later to ``YAxis``.
@@ -31,7 +31,7 @@ The basic setup for a ``CategoryValueSeries`` is as follows:
 
 .. code-block:: C++
 
-  const std::vector<std::string> categories{"First", "Second", "Third", "Last"}
+  const std::vector<std::string> categories{"First", "Second", "Third", "Last"};
   auto cvSeries = CreateObject<visualizer3d::CategoryValueSeries>(/* orchestrator */, categories);
 
   cvSeries->Append("First", 1.0);

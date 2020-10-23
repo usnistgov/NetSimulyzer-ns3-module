@@ -113,7 +113,7 @@ For additional configuration, see :doc:`areas`
 
   // ns-3 Rectangle from the Mobility Model
   // 5x5 area around the origin
-  Rectangle start{-5.0, 5.0, -5.0, 5.0}
+  Rectangle start{-5.0, 5.0, -5.0, 5.0};
   auto startingArea = CreateObject<visualizer3d::RectangularArea>(orchestrator, start);
 
   // The Rectangle may be constructed in place as well

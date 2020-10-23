@@ -36,7 +36,7 @@ Types of Axes
 :ref:`value-axis`
 
   A numeric axis which may scale linearly or logarithmically,
-  and may expand to fit the data or be fixed to a set range
+  and may expand to fit the data or be fixed to a set range.
 
 :ref:`category-axis`
 
