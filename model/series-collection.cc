@@ -47,8 +47,7 @@ NS_OBJECT_ENSURE_REGISTERED (SeriesCollection);
 
 SeriesCollection::SeriesCollection (Ptr<Orchestrator> orchestrator) : m_orchestrator (orchestrator)
 {
-  m_id = m_orchestrator->NextSeriesId ();
-  m_orchestrator->RegisterSeries ({this, true});
+  m_id = m_orchestrator->Register ({this, true});
 }
 
 TypeId

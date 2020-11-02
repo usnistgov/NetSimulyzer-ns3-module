@@ -53,9 +53,7 @@ NS_OBJECT_ENSURE_REGISTERED (LogStream);
 
 LogStream::LogStream (Ptr<Orchestrator> orchestrator) : m_orchestrator (orchestrator)
 {
-  m_id = orchestrator->NextLogId ();
-
-  orchestrator->Register ({this, true});
+  m_id = orchestrator->Register ({this, true});
 }
 
 TypeId

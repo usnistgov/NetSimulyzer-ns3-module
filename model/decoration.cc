@@ -40,9 +40,8 @@
 namespace ns3 {
 namespace visualizer3d {
 
-Decoration::Decoration (Ptr<Orchestrator> orchestrator)
+Decoration::Decoration (Ptr<Orchestrator> orchestrator) : m_orchestrator (orchestrator)
 {
-  m_orchestrator = orchestrator;
   m_id = orchestrator->Register ({this, true});
 }
 

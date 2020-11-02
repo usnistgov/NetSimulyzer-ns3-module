@@ -49,24 +49,21 @@ CategoryValueSeries::GetTypeId (void)
 CategoryValueSeries::CategoryValueSeries (Ptr<Orchestrator> orchestrator)
     : m_orchestrator (orchestrator)
 {
-  m_id = m_orchestrator->NextSeriesId ();
-  m_orchestrator->Register ({this, true});
+  m_id = m_orchestrator->Register ({this, true});
 }
 
 CategoryValueSeries::CategoryValueSeries (Ptr<Orchestrator> orchestrator,
                                           const std::vector<std::string> &categories)
     : m_orchestrator (orchestrator), m_yAxis (CreateObject<CategoryAxis> (categories))
 {
-  m_id = m_orchestrator->NextSeriesId ();
-  m_orchestrator->Register ({this, true});
+  m_id = m_orchestrator->Register ({this, true});
 }
 
 CategoryValueSeries::CategoryValueSeries (Ptr<Orchestrator> orchestrator,
                                           const std::vector<CategoryAxis::ValuePair> &categories)
     : m_orchestrator (orchestrator), m_yAxis (CreateObject<CategoryAxis> (categories))
 {
-  m_id = m_orchestrator->NextSeriesId ();
-  m_orchestrator->Register ({this, true});
+  m_id = m_orchestrator->Register ({this, true});
 }
 
 void

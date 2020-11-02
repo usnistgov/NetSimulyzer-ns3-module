@@ -45,18 +45,16 @@ RectangularArea::GetTypeId (void)
 }
 
 RectangularArea::RectangularArea (Ptr<Orchestrator> orchestrator, Rectangle bounds)
-    : m_id (orchestrator->NextAreaId ()),
-      m_orchestrator (orchestrator),
+    : m_orchestrator (orchestrator),
       m_useConstructorBounds (true), // See: NotifyConstructionCompleted (void)
       m_constructorBounds (bounds)
 {
-  m_orchestrator->Register ({this, true});
+  m_id = m_orchestrator->Register ({this, true});
 }
 
-RectangularArea::RectangularArea (Ptr<Orchestrator> orchestrator)
-    : m_id (orchestrator->NextAreaId ()), m_orchestrator (orchestrator)
+RectangularArea::RectangularArea (Ptr<Orchestrator> orchestrator) : m_orchestrator (orchestrator)
 {
-  m_orchestrator->Register ({this, true});
+  m_id = m_orchestrator->Register ({this, true});
 }
 
 void

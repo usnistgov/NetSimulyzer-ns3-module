@@ -695,25 +695,32 @@ Orchestrator::Register (Ptr<Decoration> decoration)
 {
   m_decorations.emplace_back (decoration);
 
-  return m_nextDecorationId++;
+  // Just in case
+  return static_cast<uint32_t>(m_decorations.size());
 }
 
-void
-Orchestrator::RegisterSeries (Ptr<XYSeries> series)
+uint32_t
+Orchestrator::Register (Ptr<XYSeries> series)
 {
   m_xYSeries.emplace_back (series);
+
+  return m_nextSeriesId++;
 }
 
-void
+uint32_t
 Orchestrator::Register (Ptr<CategoryValueSeries> series)
 {
   m_categorySeries.emplace_back (series);
+
+  return m_nextSeriesId++;
 }
 
-void
-Orchestrator::RegisterSeries (Ptr<SeriesCollection> series)
+uint32_t
+Orchestrator::Register (Ptr<SeriesCollection> series)
 {
   m_seriesCollections.emplace_back (series);
+
+  return m_nextSeriesId++;
 }
 
 void
@@ -728,16 +735,20 @@ Orchestrator::Register (Ptr<BuildingConfiguration> buildingConfiguration)
   m_buildings.emplace_back (buildingConfiguration);
 }
 
-void
+uint32_t
 Orchestrator::Register (Ptr<LogStream> stream)
 {
   m_streams.emplace_back (stream);
+
+  return static_cast<uint32_t>(m_streams.size());
 }
 
-void
+uint32_t
 Orchestrator::Register (Ptr<RectangularArea> area)
 {
   m_areas.emplace_back (area);
+
+  return static_cast<uint32_t>(m_areas.size());
 }
 
 void
@@ -904,24 +915,6 @@ Orchestrator::Commit (CategoryValueSeries &series)
   element["y-axis"] = makeAxisAttributes (yAxis);
 
   m_document["series"].emplace_back (element);
-}
-
-uint32_t
-Orchestrator::NextSeriesId (void)
-{
-  return m_nextSeriesId++;
-}
-
-uint32_t
-Orchestrator::NextLogId (void)
-{
-  return m_nextLogId++;
-}
-
-uint32_t
-Orchestrator::NextAreaId (void)
-{
-  return m_nextAreaId++;
 }
 
 void

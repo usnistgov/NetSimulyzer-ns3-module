@@ -162,6 +162,8 @@ public:
    * Called by the NodeConfiguration constructor, Orchestrator setter,
    * or helper, so users should not call this function directly
    *
+   * No return since ns-3 supplies Node IDs
+   *
    * \param nodeConfiguration
    * The new NodeConfiguration to register
    */
@@ -172,6 +174,8 @@ public:
    *
    * Called by the buildingConfiguration constructor, Orchestrator setter,
    * or helper, so users should not call this function directly
+   *
+   * No return since ns-3 supplies Building IDs
    *
    * \param buildingConfiguration
    * The new buildingConfiguration to register
@@ -186,8 +190,11 @@ public:
    *
    * \param series
    * The series to begin tracking
+   *
+   * \return
+   * The ID to use for the new series
    */
-  void RegisterSeries (Ptr<XYSeries> series);
+  uint32_t Register (Ptr<XYSeries> series);
 
   /**
    * \brief Flag a series to be tracked by this Orchestrator.
@@ -197,8 +204,11 @@ public:
    *
    * \param series
    * The series to begin tracking
+   *
+   * \return
+   * The ID to use for the new series
    */
-  void Register (Ptr<CategoryValueSeries> series);
+  uint32_t Register (Ptr<CategoryValueSeries> series);
 
   /**
    * \brief Flag a series to be tracked by this Orchestrator.
@@ -208,8 +218,11 @@ public:
    *
    * \param series
    * The series to begin tracking
+   *
+   * \return
+   * The ID to use for the new series
    */
-  void RegisterSeries (Ptr<SeriesCollection> series);
+  uint32_t Register (Ptr<SeriesCollection> series);
 
   /**
    * \brief Flag a stream to be tracked by this Orchestrator.
@@ -219,8 +232,11 @@ public:
    *
    * \param stream
    * The LogStream to begin tracking
+   *
+   * \return
+   * The ID to use for the new LosStream
    */
-  void Register (Ptr<LogStream> stream);
+  uint32_t Register (Ptr<LogStream> stream);
 
   /**
    * \brief Flag an area to be tracked by this Orchestrator.
@@ -230,8 +246,11 @@ public:
    *
    * \param area
    * The area to begin tracking
+   *
+   * \return
+   * The ID to use for the new area
    */
-  void Register (Ptr<RectangularArea> area);
+  uint32_t Register (Ptr<RectangularArea> area);
 
   /**
    * Commit a series created while the simulation is running.
@@ -283,43 +302,6 @@ public:
    * Orchestrator
    */
   void Commit (CategoryValueSeries &series);
-
-  /**
-   * \brief Gets the next ID that should be assigned to a new series.
-   *
-   * Produces the ID that should be assigned to a new series.
-   * Each series on a given Orchestrator must be uniquely identifiable
-   * with a number. The ID must not only be unique for a single
-   * type of series (e.g. `XYSeries`) but among all series.
-   *
-   * \return
-   * The ID to use as a series ID
-   */
-  uint32_t NextSeriesId (void);
-
-  /**
-   * \brief Gets the next ID that should be assigned to a new `LogStream`.
-   *
-   * Produces the ID that should be assigned to a new `LogStream`.
-   * Each log on a given Orchestrator must be uniquely identifiable
-   * with a number.
-   *
-   * \return
-   * The ID to use as a log ID
-   */
-  uint32_t NextLogId (void);
-
-  /**
-   * \brief Gets the next ID that should be assigned to a new area.
-   *
-   * Produces the ID that should be assigned to a new area.
-   * Each area on a given Orchestrator must be uniquely identifiable
-   * with a number, even if they are not areas of the same type
-   *
-   * \return
-   * The ID to use as an area ID
-   */
-  uint32_t NextAreaId (void);
 
   /**
    * Add a single point that will be plotted at `Simulation::Now()` time.
@@ -457,24 +439,10 @@ private:
   double m_millisecondsPerFrame;
 
   /**
-   * The ID to assign to the next series that requests it
+   * The ID to assign to the next series that requests it.
+   * Separate member since all series share the same ID space
    */
   uint32_t m_nextSeriesId{1u};
-
-  /**
-   * The ID to assign to the next `LogStream` that requests it
-   */
-  uint32_t m_nextLogId{1u};
-
-  /**
-   * The ID to assign to the next area that requests it
-   */
-  uint32_t m_nextAreaId{1u};
-
-  /**
-   * The ID to assign to the next Decoration that requests it
-   */
-  uint32_t m_nextDecorationId{1u};
 
   /**
    * Collection of tracked Decorations
