@@ -529,15 +529,6 @@ Orchestrator::SetupSimulation (void)
   // Everything else is an event
   m_currentSection = Orchestrator::Section::Events;
 
-  // Write all the spooled logs
-  for (const auto &logEvent : m_earlyLogs)
-    {
-      WriteLogMessage (logEvent);
-    }
-  m_earlyLogs.clear ();
-  // Just in case we had lots
-  m_earlyLogs.shrink_to_fit ();
-
   NS_ABORT_MSG_IF (m_startTime > m_stopTime, "StopTime must be after StartTime");
 
   Simulator::Schedule (m_startTime, &Orchestrator::PollMobility, this);
@@ -959,16 +950,6 @@ Orchestrator::WriteLogMessage (const LogMessageEvent &event)
   if (Simulator::Now () < m_startTime || Simulator::Now () > m_stopTime)
     {
       NS_LOG_DEBUG ("WriteLogMessage() Activated outside (StartTime, StopTime), Ignoring");
-      return;
-    }
-
-  if (m_currentSection != Section::Events)
-    {
-      // We can't write the message until we're in the `Events` section
-      // so store it and write later
-      NS_LOG_DEBUG ("Spooling Log until simulation starts");
-
-      m_earlyLogs.emplace_back (event);
       return;
     }
 

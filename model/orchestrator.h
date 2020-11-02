@@ -485,12 +485,6 @@ private:
   std::vector<Ptr<RectangularArea>> m_areas;
 
   /**
-   * Messages logged before the simulation was started.
-   * Stored until we get to the `Events` section
-   */
-  std::vector<LogMessageEvent> m_earlyLogs;
-
-  /**
    * Write a `position` event to the output file given it is different than the
    * previous written position
    *
