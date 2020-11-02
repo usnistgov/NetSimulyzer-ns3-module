@@ -38,6 +38,7 @@
 #include "visualizer3d-version.h"
 #include <string>
 #include <vector>
+#include <ns3/abort.h>
 #include <ns3/node.h>
 #include <ns3/ptr.h>
 #include <ns3/mobility-model.h>
@@ -220,7 +221,7 @@ Orchestrator::GetTypeId (void)
           .AddAttribute ("StartTime", "Beginning of the window to write trace information",
                          TimeValue (), MakeTimeAccessor (&Orchestrator::m_startTime),
                          MakeTimeChecker ())
-          .AddAttribute ("StopTime", "End of the window to write trace information", TimeValue (),
+          .AddAttribute ("StopTime", "End of the window to write trace information", TimeValue (Time::Max()),
                          MakeTimeAccessor (&Orchestrator::m_stopTime), MakeTimeChecker ());
 
   return tid;
@@ -537,7 +538,9 @@ Orchestrator::SetupSimulation (void)
   // Just in case we had lots
   m_earlyLogs.shrink_to_fit ();
 
-  Simulator::ScheduleNow (&Orchestrator::PollMobility, this);
+  NS_ABORT_MSG_IF (m_startTime > m_stopTime, "StopTime must be after StartTime");
+
+  Simulator::Schedule (m_startTime, &Orchestrator::PollMobility, this);
 
   Simulator::ScheduleDestroy (&Orchestrator::Flush, this);
 }
@@ -545,6 +548,14 @@ Orchestrator::SetupSimulation (void)
 void
 Orchestrator::PollMobility (void)
 {
+  // Stop the polling if we've passed StopTime
+  // StartTime addressed in scheduling
+  if (Simulator::Now () > m_stopTime)
+    {
+      NS_LOG_DEBUG ("PollMobility() Activated past StopTime, Ignoring");
+      return;
+    }
+
   for (const auto &config : m_nodes)
     {
       const auto node = config->GetObject<Node> ();
@@ -590,12 +601,24 @@ Orchestrator::DoDispose (void)
 void
 Orchestrator::HandleCourseChange (const CourseChangeEvent &event)
 {
+  if (Simulator::Now () < m_startTime || Simulator::Now () > m_stopTime)
+    {
+      NS_LOG_DEBUG ("HandleCourseChange() Activated outside (StartTime, StopTime), Ignoring");
+      return;
+    }
+
   WritePosition (event.nodeId, event.time, event.position);
 }
 
 void
 Orchestrator::HandlePositionChange (const DecorationMoveEvent &event)
 {
+  if (Simulator::Now () < m_startTime || Simulator::Now () > m_stopTime)
+    {
+      NS_LOG_DEBUG ("HandlePositionChange() Activated outside (StartTime, StopTime), Ignoring");
+      return;
+    }
+
   if (m_currentSection != Section::Events)
     {
       // We'll get the final orientation when we write the head info
@@ -617,6 +640,12 @@ Orchestrator::HandlePositionChange (const DecorationMoveEvent &event)
 void
 Orchestrator::HandleOrientationChange (const NodeOrientationChangeEvent &event)
 {
+  if (Simulator::Now () < m_startTime || Simulator::Now () > m_stopTime)
+    {
+      NS_LOG_DEBUG ("HandleOrientationChange() Activated outside (StartTime, StopTime), Ignoring");
+      return;
+    }
+
   if (m_currentSection != Section::Events)
     {
       // We'll get the final orientation when we write the head info
@@ -638,6 +667,12 @@ Orchestrator::HandleOrientationChange (const NodeOrientationChangeEvent &event)
 void
 Orchestrator::HandleOrientationChange (const DecorationOrientationChangeEvent &event)
 {
+  if (Simulator::Now () < m_startTime || Simulator::Now () > m_stopTime)
+    {
+      NS_LOG_DEBUG ("HandleOrientationChange() Activated outside (StartTime, StopTime), Ignoring");
+      return;
+    }
+
   if (m_currentSection != Section::Events)
     {
       // We'll get the final orientation when we write the head info
@@ -892,6 +927,12 @@ Orchestrator::NextAreaId (void)
 void
 Orchestrator::AppendXyValue (uint32_t id, double x, double y)
 {
+  if (Simulator::Now () < m_startTime || Simulator::Now () > m_stopTime)
+    {
+      NS_LOG_DEBUG ("AppendXyValue() Activated outside (StartTime, StopTime), Ignoring");
+      return;
+    }
+
   nlohmann::json element;
   element["type"] = "xy-series-append";
   element["milliseconds"] = Simulator::Now ().GetMilliSeconds ();
@@ -904,6 +945,12 @@ Orchestrator::AppendXyValue (uint32_t id, double x, double y)
 void
 Orchestrator::AppendCategoryValue (uint32_t id, int category, double value)
 {
+  if (Simulator::Now () < m_startTime || Simulator::Now () > m_stopTime)
+    {
+      NS_LOG_DEBUG ("AppendCategoryValue() Activated outside (StartTime, StopTime), Ignoring");
+      return;
+    }
+
   nlohmann::json element;
   element["type"] = "category-series-append";
   element["milliseconds"] = Simulator::Now ().GetMilliSeconds ();
@@ -916,6 +963,12 @@ Orchestrator::AppendCategoryValue (uint32_t id, int category, double value)
 void
 Orchestrator::WriteLogMessage (const LogMessageEvent &event)
 {
+  if (Simulator::Now () < m_startTime || Simulator::Now () > m_stopTime)
+    {
+      NS_LOG_DEBUG ("WriteLogMessage() Activated outside (StartTime, StopTime), Ignoring");
+      return;
+    }
+
   if (m_currentSection != Section::Events)
     {
       // We can't write the message until we're in the `Events` section
