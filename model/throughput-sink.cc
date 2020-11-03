@@ -70,8 +70,8 @@ ThroughputSink::GetTypeId (void)
     TypeId ("ns3::visualizer3d::ThroughputSink")
     .SetParent<ns3::Object> ()
     .SetGroupName ("visualizer3d")
-    .AddAttribute ("XYSeries", "The XY Series", PointerValue (),
-                   MakePointerAccessor (&ThroughputSink::m_series), MakePointerChecker<XYSeries> ())
+    .AddAttribute ("XYSeries", "The XY Series", TypeId::ATTR_GET, PointerValue (),
+                   MakePointerAccessor (&ThroughputSink::GetSeries), MakePointerChecker<XYSeries> ())
     .AddAttribute ("Interval", "Time between updates", TimeValue (Seconds (1)),
                    MakeTimeAccessor (&ThroughputSink::SetInterval), MakeTimeChecker ())
     .AddAttribute (
@@ -182,6 +182,12 @@ Time::Unit
 ThroughputSink::GetTimeUnit (void) const
 {
   return m_timeUnit;
+}
+
+Ptr<XYSeries>
+ThroughputSink::GetSeries (void) const
+{
+  return m_series;
 }
 
 void

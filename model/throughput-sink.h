@@ -117,6 +117,14 @@ public:
    */
   Time::Unit GetTimeUnit (void) const;
 
+  /**
+   * Gets the underlying series.
+   *
+   * \return
+   * The XYSeries tracking throughput
+   */
+  Ptr<XYSeries> GetSeries (void) const;
+
 protected:
   void DoDispose (void) override;
 
