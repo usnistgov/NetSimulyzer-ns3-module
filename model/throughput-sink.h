@@ -129,12 +129,12 @@ private:
   /**
    * The data unit used to scale the input for the Y Axis
    */
-  Unit m_unit;
+  Unit m_unit{Unit::KBit}; // Initialized here as it also depends on m_timeUnit being set
 
   /**
    * Unit of time to use for the X Axis
    */
-  Time::Unit m_timeUnit;
+  Time::Unit m_timeUnit{Time::Unit::S}; // Initialized here as it also depends on m_unit being set
 
   /**
    * Scale factor based on `m_unit`,
