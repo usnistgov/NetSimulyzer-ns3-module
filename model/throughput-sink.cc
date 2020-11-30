@@ -195,6 +195,7 @@ ThroughputSink::DoDispose (void)
 {
   m_orchestrator = nullptr;
   m_series = nullptr;
+  m_timer.Cancel();
   Object::DoDispose ();
 }
 
