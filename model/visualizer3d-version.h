@@ -48,7 +48,7 @@ const long VERSION_MAJOR = 0L;
 /**
  * The Minor version number for the module
  */
-const long VERSION_MINOR = 2L;
+const long VERSION_MINOR = 3L;
 
 /**
  * The Patch version number for the module
