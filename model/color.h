@@ -44,6 +44,8 @@
 namespace ns3 {
 namespace visualizer3d {
 
+class Color3;
+
 /**
  * Represents a 4 component RGB color with an alpha(transparency) channel
  *
@@ -82,6 +84,14 @@ public:
    * The opacity of the resulting color. (default 255)
    */
   Color4 (uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = 255u);
+
+  /**
+   * Convert a `Color3` to a `Color4` with full opacity
+   *
+   * \param color
+   * A `Color3 to read the RGB components from
+   */
+  Color4 (const Color3 &color);
 
   // They're public, sue me
 
@@ -152,6 +162,15 @@ public:
    * The amount of blue in the resulting color
    */
   Color3 (uint8_t red, uint8_t green, uint8_t blue);
+
+  /**
+   * Convert a `Color4` to a `Color3`
+   * Will result in the `alpha` being lost
+   *
+   * \param color
+   * A `Color4 to read the RGB components from
+   */
+  Color3 (const Color4 &color);
 
   // They're public, sue me
 

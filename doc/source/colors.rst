@@ -31,6 +31,11 @@ Each component may be set by the public member or by the constructor.
   memExample.green = 128u;
   memExample.blue = 128u;
 
+  // Color types may be freely converted
+  Color3 start;
+  // Convert to a full opacity(alpha) Color4
+  Color4 converted{start};
+
 
 ``Color3`` has a corresponding attribute type ``Color3Value`` which just accepts a ``Color3``.
 It's used when setting or retrieving an attribute from a model.
@@ -78,6 +83,11 @@ Each component may be set by the public member or by the constructor.
   memExample.green = 128u;
   memExample.blue = 128u;
   memExample.alpha = 128u;
+
+  // Color types may be freely converted
+  Color4 start;
+  // Drop opacity and convert to a Color3
+  Color3 converted{start};
 
 
 ``Color4``, just like ``Color3``, has a corresponding attribute type ``Color4Value``.

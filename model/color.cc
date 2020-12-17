@@ -71,6 +71,11 @@ Color4::Color4 (uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha)
 {
 }
 
+Color4::Color4 (const Color3 &color)
+    : red (color.red), green (color.green), blue (color.blue), alpha (255u)
+{
+}
+
 ATTRIBUTE_HELPER_CPP (Color4)
 
 std::ostream &
@@ -104,6 +109,10 @@ Color3::Color3 (uint8_t component) : red (component), green (component), blue (c
 }
 
 Color3::Color3 (uint8_t red, uint8_t green, uint8_t blue) : red (red), green (green), blue (blue)
+{
+}
+
+Color3::Color3 (const Color4 &color) : red (color.red), green (color.green), blue (color.blue)
 {
 }
 
