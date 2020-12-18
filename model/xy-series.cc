@@ -64,9 +64,11 @@ XYSeries::GetTypeId (void)
           .AddAttribute ("Id", "The unique ID of the series", TypeId::ATTR_GET, UintegerValue (0u),
                          MakeUintegerAccessor (&XYSeries::m_id), MakeUintegerChecker<uint32_t> ())
           .AddAttribute ("XAxis", "The X axis on the graph", PointerValue (),
-                         MakePointerAccessor (&XYSeries::m_xAxis), MakePointerChecker<ValueAxis> ())
+                         MakePointerAccessor (&XYSeries::GetXAxis, &XYSeries::SetXAxis),
+                         MakePointerChecker<ValueAxis> ())
           .AddAttribute ("YAxis", "The Y axis on the graph", PointerValue (),
-                         MakePointerAccessor (&XYSeries::m_yAxis), MakePointerChecker<ValueAxis> ())
+                         MakePointerAccessor (&XYSeries::GetYAxis, &XYSeries::SetYAxis),
+                         MakePointerChecker<ValueAxis> ())
           .AddAttribute ("Orchestrator", "Orchestrator that manages this series", PointerValue (),
                          MakePointerAccessor (&XYSeries::m_orchestrator),
                          MakePointerChecker<Orchestrator> ())
@@ -112,6 +114,30 @@ XYSeries::Commit (void)
 
   m_orchestrator->Commit (*this);
   m_committed = true;
+}
+
+Ptr<ValueAxis>
+XYSeries::GetXAxis (void) const
+{
+  return m_xAxis;
+}
+
+void
+XYSeries::SetXAxis (Ptr<ValueAxis> value)
+{
+  m_xAxis = value;
+}
+
+Ptr<ValueAxis>
+XYSeries::GetYAxis (void) const
+{
+  return m_yAxis;
+}
+
+void
+XYSeries::SetYAxis (Ptr<ValueAxis> value)
+{
+  m_yAxis = value;
 }
 
 void

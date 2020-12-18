@@ -95,6 +95,36 @@ public:
    */
   void Commit (void);
 
+  /**
+   * \return
+   * A pointer to the X Axis for this series
+   */
+  Ptr<ValueAxis> GetXAxis (void) const;
+
+  /**
+   * Replace the X Axis with `value`.
+   * Several series may reference the same axis
+   *
+   * \param value
+   * The new X Axis for this series
+   */
+  void SetXAxis (Ptr<ValueAxis> value);
+
+  /**
+   * \return
+   * A pointer to the Y Axis for this series
+   */
+  Ptr<ValueAxis> GetYAxis (void) const;
+
+  /**
+   * Replace the Y Axis with `value`.
+   * Several series may reference the same axis
+   *
+   * \param value
+   * The new Y Axis for this series
+   */
+  void SetYAxis (Ptr<ValueAxis> value);
+
 protected:
   void DoDispose (void) override;
 

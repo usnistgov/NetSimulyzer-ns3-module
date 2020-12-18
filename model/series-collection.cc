@@ -64,11 +64,11 @@ SeriesCollection::GetTypeId (void)
                          MakeUintegerChecker<uint32_t> ())
           .AddAttribute ("XAxis", "The X axis on the graph",
                          PointerValue (),
-                         MakePointerAccessor (&SeriesCollection::m_xAxis),
+                         MakePointerAccessor (&SeriesCollection::GetXAxis, &SeriesCollection::SetXAxis),
                          MakePointerChecker<ValueAxis> ())
           .AddAttribute ("YAxis", "The Y axis on the graph",
                          PointerValue (),
-                         MakePointerAccessor (&SeriesCollection::m_yAxis),
+                         MakePointerAccessor (&SeriesCollection::GetYAxis, &SeriesCollection::SetYAxis),
                          MakePointerChecker<ValueAxis> ())
           .AddAttribute ("Name", "Name to represent this series in visualizer elements",
                          StringValue (), MakeStringAccessor (&SeriesCollection::m_name),
@@ -116,13 +116,36 @@ SeriesCollection::Commit (void)
   m_committed = true;
 }
 
+Ptr<ValueAxis>
+SeriesCollection::GetXAxis (void) const
+{
+  return m_xAxis;
+}
+
+void
+SeriesCollection::SetXAxis (Ptr<ValueAxis> value)
+{
+  m_xAxis = value;
+}
+
+Ptr<ValueAxis>
+SeriesCollection::GetYAxis (void) const
+{
+  return m_yAxis;
+}
+
+void
+SeriesCollection::SetYAxis (Ptr<ValueAxis> value)
+{
+  m_yAxis = value;
+}
+
 void
 SeriesCollection::DoDispose (void)
 {
   m_orchestrator = nullptr;
   Object::DoDispose ();
 }
-
 void
 SeriesCollection::Add (uint32_t id)
 {

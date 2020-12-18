@@ -35,10 +35,10 @@ CategoryValueSeries::GetTypeId (void)
                          BooleanValue (true), MakeBooleanAccessor (&CategoryValueSeries::m_visible),
                          MakeBooleanChecker ())
           .AddAttribute ("XAxis", "The X axis on the graph", PointerValue (),
-                         MakePointerAccessor (&CategoryValueSeries::m_xAxis),
+                         MakePointerAccessor (&CategoryValueSeries::GetXAxis, &CategoryValueSeries::SetXAxis),
                          MakePointerChecker<ValueAxis> ())
           .AddAttribute ("YAxis", "The Y axis on the graph", PointerValue (),
-                         MakePointerAccessor (&CategoryValueSeries::m_yAxis),
+                         MakePointerAccessor (&CategoryValueSeries::GetYAxis, &CategoryValueSeries::SetYAxis),
                          MakePointerChecker<CategoryAxis> ())
           .AddAttribute ("Color", "Color to use for the points and connections", Color4Value (),
                          MakeColor4Accessor (&CategoryValueSeries::m_color), MakeColor4Checker ());
@@ -89,6 +89,30 @@ CategoryValueSeries::Commit (void)
 
   m_orchestrator->Commit (*this);
   m_committed = true;
+}
+
+Ptr<ValueAxis>
+CategoryValueSeries::GetXAxis (void) const
+{
+  return m_xAxis;
+}
+
+void
+CategoryValueSeries::SetXAxis (Ptr<ValueAxis> value)
+{
+  m_xAxis = value;
+}
+
+Ptr<CategoryAxis>
+CategoryValueSeries::GetYAxis (void) const
+{
+  return m_yAxis;
+}
+
+void
+CategoryValueSeries::SetYAxis (Ptr<CategoryAxis> value)
+{
+  m_yAxis = value;
 }
 
 void
