@@ -369,6 +369,12 @@ public:
   bool Check (const AttributeValue &value) const override;
 
   /**
+   * \return
+   * "ns3::visualizer3d::OptionalValue"
+   */
+  std::string GetValueTypeName (void) const override;
+
+  /**
    * Notifies ns-3 that we do not have human readable type info
    *
    * \return
