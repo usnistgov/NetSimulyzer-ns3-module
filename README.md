@@ -1,6 +1,7 @@
 # Table of Contents
 
 * [About](#about)
+* [Requirements](#requirements)
 * [Installation](#installation)
     * [Clone (Recommended)](#clone-recommended)
     * [Download ZIP](#download-zip)
@@ -15,6 +16,12 @@ Visualizer
 [GitLab-internal](https://gitlab.nist.gov/gitlab/wnd-publicsafety/visualizer/visualization) or
 [GitHub-public](https://github.com/usnistgov/ns3-visualizer3d).
 Link this module & run your scenario to see it in 3D.
+
+# Requirements
+* A C++ 17 compliant compiler
+    * Minimum supported compilers:
+        * GCC 7.3.0
+        * Clang 6.0.0
 
 # Installation
 ## Clone (Recommended)
