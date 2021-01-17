@@ -55,17 +55,17 @@ Example
 Attributes
 ----------
 
-+----------------------+---------------+--------------------+------------------------------------------+
-| Name                 | Type          | Default Value      | Description                              |
-+======================+===============+====================+==========================================+
-| Name                 | string        |                n/a | Name to use for this ``LogSteam`` in     |
-|                      |               |                    | application elements                     |
-+----------------------+---------------+--------------------+------------------------------------------+
-| Color                | :ref:`color3` | n/a - (decided by  | The font color used in the application.  |
-|                      |               | the application)   | If not provided, then drawn from the     |
-|                      |               |                    | application's Qt theme                   |
-+----------------------+---------------+--------------------+------------------------------------------+
-| Visible              | bool          |              true  | Defines if the ``LogStream`` may be      |
-|                      |               |                    | selected individually in the application |
-+----------------------+---------------+--------------------+------------------------------------------+
++----------------------+----------------------------------------+--------------------+------------------------------------------+
+| Name                 | Type                                   | Default Value      | Description                              |
++======================+========================================+====================+==========================================+
+| Name                 | string                                 |                n/a | Name to use for this ``LogSteam`` in     |
+|                      |                                        |                    | application elements                     |
++----------------------+----------------------------------------+--------------------+------------------------------------------+
+| Color                |:ref:`optional-value` <:ref:`color3`>   | n/a - (decided by  | The font color used in the application.  |
+|                      |                                        | the application)   | If not provided, then drawn from the     |
+|                      |                                        |                    | application's Qt theme                   |
++----------------------+----------------------------------------+--------------------+------------------------------------------+
+| Visible              | bool                                   |              true  | Defines if the ``LogStream`` may be      |
+|                      |                                        |                    | selected individually in the application |
++----------------------+----------------------------------------+--------------------+------------------------------------------+
 

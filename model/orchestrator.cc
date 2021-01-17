@@ -54,6 +54,7 @@
 #include <ns3/vector.h>
 #include <ns3/log-stream.h>
 #include <ns3/color.h>
+#include <ns3/optional.h>
 
 namespace {
 std::string
@@ -207,10 +208,9 @@ Orchestrator::GetTypeId (void)
           .SetGroupName ("visualizer3d")
           .AddAttribute ("MillisecondsPerFrame",
                          "Number of milliseconds a single frame in the visualizer will represent",
-                         DoubleValue (-1), // Beneath the minimum, so SetMsPerFrame is not called
-                         MakeDoubleAccessor (&Orchestrator::GetMsPerFrame,
-                                             &Orchestrator::SetMsPerFrame),
-                         MakeDoubleChecker<double> (0.0))
+                         OptionalValue<double> (),
+                         MakeOptionalAccessor<double> (&Orchestrator::m_millisecondsPerFrame),
+                         MakeOptionalChecker<double> ())
           .AddAttribute ("MobilityPollInterval", "How often to poll Nodes for their position",
                          TimeValue (MilliSeconds (100)),
                          MakeTimeAccessor (&Orchestrator::m_mobilityPollInterval),
@@ -237,8 +237,8 @@ Orchestrator::SetupSimulation (void)
   version["minor"] = VERSION_MINOR;
   version["patch"] = VERSION_PATCH;
   m_document["configuration"]["module-version"] = version;
-  if (m_msPerFrameSet)
-    m_document["configuration"]["ms-per-frame"] = m_millisecondsPerFrame;
+  if (m_millisecondsPerFrame)
+    m_document["configuration"]["ms-per-frame"] = m_millisecondsPerFrame.value();
 
   // Nodes
   auto nodes = nlohmann::json::array ();
@@ -262,12 +262,10 @@ Orchestrator::SetupSimulation (void)
       config->GetAttribute ("Scale", scale);
       element["scale"] = scale.Get ();
 
-      if (config->HeightSet ())
-        {
-          DoubleValue height;
-          config->GetAttribute ("Height", height);
-          element["height"] = height.Get ();
-        }
+      OptionalValue<double> height;
+      config->GetAttribute ("Height", height);
+      if (height)
+        element["height"] = height.GetValue();
 
       Vector3DValue orientation;
       config->GetAttribute ("Orientation", orientation);
@@ -415,12 +413,10 @@ Orchestrator::SetupSimulation (void)
       else
         element["name"] = name.Get ();
 
-      if (stream->IsColorSet ())
-        {
-          Color3Value color;
-          stream->GetAttribute ("Color", color);
-          element["color"] = colorToObject (color.Get ());
-        }
+      OptionalValue<Color3> color;
+      stream->GetAttribute ("Color", color);
+      if (color)
+        element["color"] = colorToObject (color.GetValue ());
 
       BooleanValue visible;
       stream->GetAttribute ("Visible", visible);
@@ -731,7 +727,7 @@ Orchestrator::Register (Ptr<LogStream> stream)
 {
   m_streams.emplace_back (stream);
 
-  return static_cast<uint32_t>(m_streams.size());
+  return static_cast<uint32_t> (m_streams.size ());
 }
 
 uint32_t
@@ -739,7 +735,7 @@ Orchestrator::Register (Ptr<RectangularArea> area)
 {
   m_areas.emplace_back (area);
 
-  return static_cast<uint32_t>(m_areas.size());
+  return static_cast<uint32_t> (m_areas.size ());
 }
 
 void
@@ -976,19 +972,6 @@ Orchestrator::Flush (void)
 
   m_file << m_document;
   m_file.close ();
-}
-
-double
-Orchestrator::GetMsPerFrame (void) const
-{
-  return m_millisecondsPerFrame;
-}
-
-void
-Orchestrator::SetMsPerFrame (double ms)
-{
-  m_msPerFrameSet = true;
-  m_millisecondsPerFrame = ms;
 }
 
 void

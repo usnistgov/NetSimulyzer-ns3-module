@@ -50,6 +50,7 @@ def build(bld):
         'model/event-message.h',
         'model/log-stream.h',
         'model/node-configuration.h',
+        'model/optional.h',
         'model/building-configuration.h',
         'model/category-axis.h',
         'model/category-value-series.h',

@@ -61,28 +61,28 @@ will always write the position when a ``NodeConfiguration`` is polled.
 Properties
 ----------
 
-+----------------------+---------------+--------------------+------------------------------------------+
-| Name                 | Type          | Default Value      | Description                              |
-+======================+===============+====================+==========================================+
-| MillisecondsPerFrame | double        |                n/a | Optional hint to the application for     |
-|                      |               |                    | the number of milliseconds to advance    |
-|                      |               |                    | the simulation by for one frame          |
-+----------------------+---------------+--------------------+------------------------------------------+
-| MobilityPollInterval | Time          | MilliSeconds (100) | How often to poll each child`            |
-|                      |               |                    | ``NodeConfiguration`` for their          |
-|                      |               |                    | current position. Only enabled if        |
-|                      |               |                    | ``PollMobility`` is true                 |
-+----------------------+---------------+--------------------+------------------------------------------+
-| PollMobility         | bool          |               true | Flag to toggle polling                   |
-|                      |               |                    | for Node positions                       |
-+----------------------+---------------+--------------------+------------------------------------------+
-| StartTime            | Time          |               n/a  | Optional start of the time window to     |
-|                      |               |                    | capture events in.                       |
-|                      |               |                    | Events outside the window will           |
-|                      |               |                    | be ignored                               |
-+----------------------+---------------+--------------------+------------------------------------------+
-| EndTime              | Time          |               n/a  | Optional end of the time window to       |
-|                      |               |                    | capture events in.                       |
-|                      |               |                    | Events outside the window will           |
-|                      |               |                    | be ignored                               |
-+----------------------+---------------+--------------------+------------------------------------------+
++----------------------+--------------------------------+--------------------+------------------------------------------+
+| Name                 | Type                           | Default Value      | Description                              |
++======================+================================+====================+==========================================+
+| MillisecondsPerFrame | :ref:`optional-value` <double> |                n/a | Optional hint to the application for     |
+|                      |                                |                    | the number of milliseconds to advance    |
+|                      |                                |                    | the simulation by for one frame          |
++----------------------+--------------------------------+--------------------+------------------------------------------+
+| MobilityPollInterval | Time                           | MilliSeconds (100) | How often to poll each child`            |
+|                      |                                |                    | ``NodeConfiguration`` for their          |
+|                      |                                |                    | current position. Only enabled if        |
+|                      |                                |                    | ``PollMobility`` is true                 |
++----------------------+--------------------------------+--------------------+------------------------------------------+
+| PollMobility         | bool                           |               true | Flag to toggle polling                   |
+|                      |                                |                    | for Node positions                       |
++----------------------+--------------------------------+--------------------+------------------------------------------+
+| StartTime            | Time                           |               n/a  | Optional start of the time window to     |
+|                      |                                |                    | capture events in.                       |
+|                      |                                |                    | Events outside the window will           |
+|                      |                                |                    | be ignored                               |
++----------------------+--------------------------------+--------------------+------------------------------------------+
+| EndTime              | Time                           |               n/a  | Optional end of the time window to       |
+|                      |                                |                    | capture events in.                       |
+|                      |                                |                    | Events outside the window will           |
+|                      |                                |                    | be ignored                               |
++----------------------+--------------------------------+--------------------+------------------------------------------+

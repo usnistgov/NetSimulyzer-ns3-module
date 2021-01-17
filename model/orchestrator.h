@@ -55,6 +55,7 @@
 #include <ns3/category-value-series.h>
 #include <ns3/value-axis.h>
 #include <ns3/json.hpp>
+#include <ns3/optional.h>
 #include "event-message.h"
 
 namespace ns3 {
@@ -354,26 +355,6 @@ public:
    */
   void Flush (void);
 
-  /**
-   * Get the current setting for `m_msPerFrameSet`
-   * If `SetMsPerFrame()` or the `MillisecondsPerFrame`
-   * were not set, then the return value from this is undefined
-   *
-   * \return
-   * The value for `m_msPerFrameSet`
-   */
-  double GetMsPerFrame (void) const;
-
-  /**
-   * Set the value of `m_msPerFrameSet`
-   * Prefer to set this through the `MillisecondsPerFrame`
-   * attribute
-   *
-   * \param ms
-   * The number of milliseconds to past per frame
-   */
-  void SetMsPerFrame (double ms);
-
 protected:
   void DoDispose (void) override;
 
@@ -425,18 +406,10 @@ private:
   Time m_mobilityPollInterval;
 
   /**
-   * Flag indicating if `m_millisecondsPerFrame` was set,
-   * and should output
-   */
-  bool m_msPerFrameSet{false};
-
-  /**
    * Amount of ns-3 time to pass per frame rendered in the visualizer
    * in milliseconds
-   *
-   * \see m_msPerFrameSet
    */
-  double m_millisecondsPerFrame;
+  std::optional<double> m_millisecondsPerFrame;
 
   /**
    * The ID to assign to the next series that requests it.

@@ -41,6 +41,7 @@
 #include <ns3/pointer.h>
 #include <ns3/string.h>
 #include <ns3/log.h>
+#include <ns3/optional.h>
 #include <cmath>
 
 /**
@@ -104,11 +105,10 @@ NodeConfiguration::GetTypeId (void)
           .AddAttribute ("Offset", "Offset from the Node to apply to the model", Vector3DValue (),
                          MakeVector3DAccessor (&NodeConfiguration::m_positionOffset),
                          MakeVector3DChecker ())
-          .AddAttribute (
-              "Height", "Desired height of the rendered model. Applied before `Scale`",
-              DoubleValue (),
-              MakeDoubleAccessor (&NodeConfiguration::GetHeight, &NodeConfiguration::SetHeight),
-              MakeDoubleChecker<double> (0.0))
+          .AddAttribute ("Height", "Desired height of the rendered model. Applied before `Scale`",
+                         OptionalValue<double> (),
+                         MakeOptionalAccessor<double> (&NodeConfiguration::m_height),
+                         MakeOptionalChecker<double> ())
           .AddAttribute ("PositionTolerance",
                          "The amount a Node must move to have it's position written again",
                          DoubleValue (0.05),
@@ -201,29 +201,6 @@ NodeConfiguration::SetOrientation (const Vector3D &orientation)
   event.orientation = m_orientation;
 
   m_orchestrator->HandleOrientationChange (event);
-}
-
-double
-NodeConfiguration::GetHeight (void) const
-{
-  return m_height;
-}
-
-void
-NodeConfiguration::SetHeight (double value)
-{
-  // Do not set the flag for the initial value
-  if (value <= 0.0)
-    return;
-
-  m_heightSet = true;
-  m_height = value;
-}
-
-bool
-NodeConfiguration::HeightSet (void) const
-{
-  return m_heightSet;
 }
 
 void

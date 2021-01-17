@@ -32,6 +32,7 @@ Below is a screenshot of a simple scenario loaded into the application.
   logging-messages
   orchestrator
   colors
+  optional
   series
   numeric-data
   numeric-data-categories

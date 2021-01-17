@@ -44,6 +44,8 @@
 #include <ns3/object.h>
 #include <ns3/object.h>
 #include <ns3/color.h>
+#include <ns3/optional.h>
+#include <optional>
 
 namespace ns3 {
 namespace visualizer3d {
@@ -80,35 +82,6 @@ public:
    */
   void Write (const std::string &message) const;
 
-  /**
-   * Gets if a color was specified for this stream
-   *
-   * \return
-   * True if the font color was set. False otherwise
-   */
-  bool IsColorSet (void) const;
-
-  /**
-   * Sets the font color to use in the log
-   *
-   * \param value
-   * The color value to use
-   *
-   * \see IsColorSet
-   */
-  void SetColor (Color3 value);
-
-  /**
-   * Gets the current font color.
-   * Only has meaning if `IsColorSet` is true
-   *
-   * \return
-   * The current font color
-   *
-   * \see IsColorSet
-   */
-  Color3 GetColor (void) const;
-
 protected:
   void DoDispose (void) override;
 
@@ -129,20 +102,14 @@ private:
   std::string m_name;
 
   /**
-   * Flag indicating the color value was set
-   */
-  bool m_colorSet{false};
-
-  /**
    * Flag indicating this item should appear in visualizer elements
    */
   bool m_visible;
 
   /**
-   * The the font color.
-   * Ignored if `m_colorSet` is false
+   * The font color
    */
-  Color3 m_color;
+  std::optional<Color3> m_color;
 };
 
 /**

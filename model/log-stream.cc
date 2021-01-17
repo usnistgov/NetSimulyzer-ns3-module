@@ -42,6 +42,7 @@
 #include <ns3/simulator.h>
 #include <ns3/log.h>
 #include <ns3/color.h>
+#include <ns3/optional.h>
 
 namespace ns3 {
 
@@ -69,9 +70,9 @@ LogStream::GetTypeId (void)
       MakePointerAccessor (&LogStream::m_orchestrator), MakePointerChecker<Orchestrator>())
     .AddAttribute ("Name", "Name to represent this stream in visualizer elements",
       StringValue (), MakeStringAccessor (&LogStream::m_name), MakeStringChecker ())
-    .AddAttribute ("Color", "The font color", Color3Value (),
-                   MakeColor3Accessor (&LogStream::GetColor, &LogStream::SetColor),
-                   MakeColor3Checker ())
+    .AddAttribute ("Color", "The font color", OptionalValue<Color3> (),
+                   MakeOptionalAccessor<Color3> (&LogStream::m_color),
+                   MakeOptionalChecker<Color3>())
     .AddAttribute("Visible", "Flag indicating this item should appear in Visualizer elements",
                   BooleanValue(true), MakeBooleanAccessor(&LogStream::m_visible),
                   MakeBooleanChecker())
@@ -91,32 +92,10 @@ LogStream::Write (const std::string &message) const
   m_orchestrator->WriteLogMessage (event);
 }
 
-bool
-LogStream::IsColorSet (void) const
-{
-  return m_colorSet;
-}
-
 void
 LogStream::DoDispose ()
 {
   m_orchestrator = nullptr;
-}
-
-void
-LogStream::SetColor (Color3 value)
-{
-  // Cheap hack to prevent the initial value from setting the flag
-  if (value.red != 0u || value.green != 0u || value.blue != 0u)
-    m_colorSet = true;
-
-  m_color = value;
-}
-
-Color3
-LogStream::GetColor (void) const
-{
-  return m_color;
 }
 
 LogStream &
