@@ -238,7 +238,7 @@ Orchestrator::SetupSimulation (void)
   version["patch"] = VERSION_PATCH;
   m_document["configuration"]["module-version"] = version;
   if (m_millisecondsPerFrame)
-    m_document["configuration"]["ms-per-frame"] = m_millisecondsPerFrame.value();
+    m_document["configuration"]["ms-per-frame"] = m_millisecondsPerFrame.value ();
 
   // Nodes
   auto nodes = nlohmann::json::array ();
@@ -265,7 +265,17 @@ Orchestrator::SetupSimulation (void)
       OptionalValue<double> height;
       config->GetAttribute ("Height", height);
       if (height)
-        element["height"] = height.GetValue();
+        element["height"] = height.GetValue ();
+
+      OptionalValue<Color3> baseColor;
+      config->GetAttribute ("BaseColor", baseColor);
+      if (baseColor)
+        element["base-color"] = colorToObject (baseColor.GetValue ());
+
+      OptionalValue<Color3> highlightColor;
+      config->GetAttribute ("HighlightColor", highlightColor);
+      if (highlightColor)
+        element["highlight-color"] = colorToObject (highlightColor.GetValue ());
 
       Vector3DValue orientation;
       config->GetAttribute ("Orientation", orientation);
@@ -683,7 +693,7 @@ Orchestrator::Register (Ptr<Decoration> decoration)
   m_decorations.emplace_back (decoration);
 
   // Just in case
-  return static_cast<uint32_t>(m_decorations.size());
+  return static_cast<uint32_t> (m_decorations.size ());
 }
 
 uint32_t

@@ -109,6 +109,17 @@ NodeConfiguration::GetTypeId (void)
                          OptionalValue<double> (),
                          MakeOptionalAccessor<double> (&NodeConfiguration::m_height),
                          MakeOptionalChecker<double> ())
+          .AddAttribute ("BaseColor",
+                         "The color to use as the primary color in models with configurable colors",
+                         OptionalValue<Color3> (),
+                         MakeOptionalAccessor<Color3> (&NodeConfiguration::m_baseColor),
+                         MakeOptionalChecker<Color3> ())
+          .AddAttribute ("HighlightColor",
+                         "The color to use as the secondary color"
+                         "in models with configurable colors",
+                         OptionalValue<Color3> (),
+                         MakeOptionalAccessor<Color3> (&NodeConfiguration::m_highlightColor),
+                         MakeOptionalChecker<Color3> ())
           .AddAttribute ("PositionTolerance",
                          "The amount a Node must move to have it's position written again",
                          DoubleValue (0.05),

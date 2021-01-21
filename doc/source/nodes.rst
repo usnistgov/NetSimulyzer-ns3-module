@@ -24,6 +24,43 @@ The basic setup for a ``NodeConfiguration`` is as follows:
 
   nodeHelper.Install (/* Ptr or Collection */)
 
+.. The images make this section a bit unwieldy, so exert some extra control over the pages
+.. raw:: latex
+
+    \clearpage
+
+Configurable Colors
+^^^^^^^^^^^^^^^^^^^
+Certain models provided with the application allow their colors to be set by the loaded
+scenario. An example of configurable colors follows using the "Land Drone" model distributed
+with the application
+
+.. image:: _static/reference-land-drone.png
+  :alt: Default configuration for land_drone.obj
+  :width: 406px
+  :height: 306px
+
+Base Color
+++++++++++
+The ``BaseColor`` is typically the color which occupies the majority of the surface area
+of the model. What follows is an example with the "Land Drone"'s ``BaseColor`` set to blue
+
+.. image:: _static/base-color-land-drone.png
+  :alt: Default configuration for land_drone.obj
+  :width: 406px
+  :height: 306px
+
+Highlight Color
++++++++++++++++
+The ``HighlightColor`` is typically the color used to mark details on the model
+of the model. What follows is an example with the "Land Drone"'s ``HighlightColor`` set to blue
+
+.. image:: _static/highlight-color-land-drone.png
+  :alt: Default configuration for land_drone.obj
+  :width: 406px
+  :height: 306px
+
+
 
 Mobility Model Integration
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -67,36 +104,42 @@ Unlike :ref:`location-polling`, this location tracing may not be disabled.
 Attributes
 ^^^^^^^^^^
 
-+----------------------+--------------------------------+---------------+--------------------------------------------------------------+
-| Name                 | Type                           | Default Value | Description                                                  |
-+======================+================================+===============+==============================================================+
-| Name                 | string                         | n/a           | Name to use for this ``ns3::Node`` in application elements   |
-+----------------------+--------------------------------+---------------+--------------------------------------------------------------+
-| Model                | string                         | n/a           | Relative path from the application's ``Resource``            |
-|                      |                                |               | directory to the model to show for this ``ns3::Node``        |
-+----------------------+--------------------------------+---------------+--------------------------------------------------------------+
-| Orientation          | Vector3D                       | (0, 0, 0)     | Orientation of the ``ns3::Node`` on each axis, in degrees    |
-|                      |                                |               | (e.g. vector.x = 90 applies a 90 degree rotation             |
-|                      |                                |               | on the X axis to the model)                                  |
-+----------------------+--------------------------------+---------------+--------------------------------------------------------------+
-| Scale                | double                         | 1.00          | A multiplicative scale to apply to the model.                |
-|                      |                                |               | Applied after ``Height``                                     |
-|                      |                                |               | (e.g. a value of 1.25 will apply a 1.25x scale to the model) |
-+----------------------+--------------------------------+---------------+--------------------------------------------------------------+
-| Offset               | Vector3D                       | (0, 0, 0)     | The amount to 'offset' the rendered model from the           |
-|                      |                                |               | actual position of the ``ns3::Node``                         |
-|                      |                                |               | on each axis, in ns-3 units                                  |
-+----------------------+--------------------------------+---------------+--------------------------------------------------------------+
-| Height               | :ref:`optional-value` <double> | n/a           | Desired height of the model in ns-3 units.                   |
-|                      |                                |               | Applied before ``Scale``                                     |
-+----------------------+--------------------------------+---------------+--------------------------------------------------------------+
-| PositionTolerance    | double                         | 0.05          | The amount a ``ns3::Node`` must move to have it's            |
-|                      |                                |               | position written again. In ns-3 units.                       |
-|                      |                                |               | Used only if ``UsePositionTolerance`` is ``true``            |
-+----------------------+--------------------------------+---------------+--------------------------------------------------------------+
-| UsePositionTolerance | bool                           | ``true``      | Only write positions when the ``ns3::Node`` has              |
-|                      |                                |               | moved beyond the ``PositionTolerance``                       |
-+----------------------+--------------------------------+---------------+--------------------------------------------------------------+
-| Visible              | bool                           | ``true``      | Defines if the ``ns3::Node`` is rendered in the application  |
-+----------------------+--------------------------------+---------------+--------------------------------------------------------------+
++----------------------+---------------------------------------+---------------+--------------------------------------------------------------+
+| Name                 | Type                                  | Default Value | Description                                                  |
++======================+=======================================+===============+==============================================================+
+| Name                 | string                                | n/a           | Name to use for this ``ns3::Node`` in application elements   |
++----------------------+---------------------------------------+---------------+--------------------------------------------------------------+
+| Model                | string                                | n/a           | Relative path from the application's ``Resource``            |
+|                      |                                       |               | directory to the model to show for this ``ns3::Node``        |
++----------------------+---------------------------------------+---------------+--------------------------------------------------------------+
+| Orientation          | Vector3D                              | (0, 0, 0)     | Orientation of the ``ns3::Node`` on each axis, in degrees    |
+|                      |                                       |               | (e.g. vector.x = 90 applies a 90 degree rotation             |
+|                      |                                       |               | on the X axis to the model)                                  |
++----------------------+---------------------------------------+---------------+--------------------------------------------------------------+
+| Scale                | double                                | 1.00          | A multiplicative scale to apply to the model.                |
+|                      |                                       |               | Applied after ``Height``                                     |
+|                      |                                       |               | (e.g. a value of 1.25 will apply a 1.25x scale to the model) |
++----------------------+---------------------------------------+---------------+--------------------------------------------------------------+
+| Offset               | Vector3D                              | (0, 0, 0)     | The amount to 'offset' the rendered model from the           |
+|                      |                                       |               | actual position of the ``ns3::Node``                         |
+|                      |                                       |               | on each axis, in ns-3 units                                  |
++----------------------+---------------------------------------+---------------+--------------------------------------------------------------+
+| Height               | :ref:`optional-value` <double>        | n/a           | Desired height of the model in ns-3 units.                   |
+|                      |                                       |               | Applied before ``Scale``                                     |
++----------------------+---------------------------------------+---------------+--------------------------------------------------------------+
+| BaseColor            | :ref:`optional-value` <:ref:`color3`> | n/a           | Color to apply to the base coat of models supporting         |
+|                      |                                       |               | configurable colors                                          |
++----------------------+---------------------------------------+---------------+--------------------------------------------------------------+
+| HighlightColor       | :ref:`optional-value` <:ref:`color3`> | n/a           | Color to apply to details of models supporting               |
+|                      |                                       |               | configurable colors                                          |
++----------------------+---------------------------------------+---------------+--------------------------------------------------------------+
+| PositionTolerance    | double                                | 0.05          | The amount a ``ns3::Node`` must move to have it's            |
+|                      |                                       |               | position written again. In ns-3 units.                       |
+|                      |                                       |               | Used only if ``UsePositionTolerance`` is ``true``            |
++----------------------+---------------------------------------+---------------+--------------------------------------------------------------+
+| UsePositionTolerance | bool                                  | ``true``      | Only write positions when the ``ns3::Node`` has              |
+|                      |                                       |               | moved beyond the ``PositionTolerance``                       |
++----------------------+---------------------------------------+---------------+--------------------------------------------------------------+
+| Visible              | bool                                  | ``true``      | Defines if the ``ns3::Node`` is rendered in the application  |
++----------------------+---------------------------------------+---------------+--------------------------------------------------------------+
 

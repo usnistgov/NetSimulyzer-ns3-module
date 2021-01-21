@@ -44,6 +44,8 @@
 #include <ns3/orchestrator.h>
 #include <ns3/vector.h>
 #include <ns3/optional.h>
+#include <ns3/color.h>
+#include <optional>
 
 namespace ns3 {
 namespace visualizer3d {
@@ -176,6 +178,18 @@ private:
    * in ns-3 units
    */
   std::optional<double> m_height;
+
+  /**
+   * Replacement base color for models with configurable
+   * colors
+   */
+  std::optional<Color3> m_baseColor;
+
+  /**
+   * Replacement highlight color for models with configurable
+   * colors
+   */
+  std::optional<Color3> m_highlightColor;
 
   /**
    * The amount to resize the model with 1.0 being the default size,
