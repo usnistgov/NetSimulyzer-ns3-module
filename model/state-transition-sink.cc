@@ -36,6 +36,7 @@
 #include <ns3/nstime.h>
 #include <ns3/string.h>
 #include <ns3/boolean.h>
+#include <ns3/double.h>
 
 namespace ns3 {
 namespace visualizer3d {
@@ -166,6 +167,11 @@ StateTransitionSink::DoDispose (void)
 void
 StateTransitionSink::Init (void)
 {
+  m_series->SetAttribute ("AutoUpdate", BooleanValue (true));
+  // The interval is set for 1 per unit (e.g. 1 per ms for the millisecond time unit)
+  // so just adding 1 each time should be fine
+  m_series->SetAttribute ("AutoUpdateIncrement", DoubleValue (1.0));
+
   PointerValue axis;
   m_series->GetAttribute ("YAxis", axis);
   m_categoryAxis = axis.Get<CategoryAxis> ();
@@ -199,39 +205,50 @@ void
 StateTransitionSink::SetTimeUnit (Time::Unit unit)
 {
   m_timeUnit = unit;
+  Time autoUpdateInterval;
 
   std::string unitLabel;
   switch (unit)
     {
     case Time::Y:
       unitLabel = "y";
+      autoUpdateInterval = Years (1.0);
       break;
     case Time::D:
       unitLabel = "d";
+      autoUpdateInterval = Days (1.0);
       break;
     case Time::H:
       unitLabel = "h";
+      autoUpdateInterval = Hours (1.0);
       break;
     case Time::MIN:
       unitLabel = "min";
+      autoUpdateInterval = Minutes (1.0);
       break;
     case Time::S:
       unitLabel = "s";
+      autoUpdateInterval = Seconds (1.0);
       break;
     case Time::MS:
       unitLabel = "ms";
+      autoUpdateInterval = MilliSeconds (1);
       break;
     case Time::US:
       unitLabel = "us";
+      autoUpdateInterval = MicroSeconds (1);
       break;
     case Time::NS:
       unitLabel = "ns";
+      autoUpdateInterval = NanoSeconds (1);
       break;
     case Time::PS:
       unitLabel = "ps";
+      autoUpdateInterval = PicoSeconds (1);
       break;
     case Time::FS:
       unitLabel = "fs";
+      autoUpdateInterval = FemtoSeconds (1);
       break;
     default:
       NS_ABORT_MSG ("Unrecognised time unit: " << unit);
@@ -241,6 +258,8 @@ StateTransitionSink::SetTimeUnit (Time::Unit unit)
   PointerValue axis;
   m_series->GetAttribute ("XAxis", axis);
   axis.Get<ValueAxis> ()->SetAttribute ("Name", StringValue ("Time (" + unitLabel + ')'));
+
+  m_series->SetAttribute ("AutoUpdateInterval", TimeValue (autoUpdateInterval));
 }
 
 Time::Unit

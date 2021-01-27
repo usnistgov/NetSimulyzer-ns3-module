@@ -911,6 +911,20 @@ Orchestrator::Commit (CategoryValueSeries &series)
   auto yAxis = yAxisAttr.Get<visualizer3d::CategoryAxis> ();
   element["y-axis"] = makeAxisAttributes (yAxis);
 
+  BooleanValue autoUpdate;
+  series.GetAttribute ("AutoUpdate", autoUpdate);
+  element["auto-update"] = autoUpdate.Get ();
+  if (autoUpdate.Get ())
+    {
+      TimeValue interval;
+      series.GetAttribute ("AutoUpdateInterval", interval);
+      element["auto-update-interval"] = interval.Get ().GetMilliSeconds ();
+
+      DoubleValue value;
+      series.GetAttribute ("AutoUpdateValue", value);
+      element["auto-update-value"] = value.Get ();
+    }
+
   m_document["series"].emplace_back (element);
 }
 

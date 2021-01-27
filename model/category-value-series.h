@@ -202,6 +202,21 @@ private:
   std::string m_legend;
 
   /**
+   * Enable auto-generation of points on the X axis in the application
+   */
+  bool m_autoUpdate;
+
+  /**
+   * The minimum time between generated points
+   */
+  Time m_autoUpdateInterval;
+
+  /**
+   * The value to add to the previous X value when appending points
+   */
+  double m_autoUpdateIncrement;
+
+  /**
    * Flag indicating if this series should appear individually in visualiser elements
    */
   bool m_visible;

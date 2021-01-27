@@ -1,6 +1,7 @@
 #include "category-value-series.h"
 #include <ns3/log.h>
 #include <ns3/string.h>
+#include <ns3/double.h>
 #include <ns3/pointer.h>
 #include <ns3/uinteger.h>
 #include <ns3/enum.h>
@@ -18,30 +19,67 @@ NS_OBJECT_ENSURE_REGISTERED (CategoryValueSeries);
 TypeId
 CategoryValueSeries::GetTypeId (void)
 {
+
+  // clang-format off
   static TypeId tid =
       TypeId ("ns3::visualizer3d::CategoryValueSeries")
           .SetParent<ns3::Object> ()
           .SetGroupName ("visualizer3d")
-          .AddAttribute ("Id", "The unique ID of the series", TypeId::ATTR_GET, UintegerValue (0u),
+          .AddAttribute ("Id",
+                         "The unique ID of the series",
+                         TypeId::ATTR_GET,
+                         UintegerValue (0u),
                          MakeUintegerAccessor (&CategoryValueSeries::m_id),
                          MakeUintegerChecker<uint32_t> ())
-          .AddAttribute ("Name", "Unique name to represent this series in visualizer elements",
-                         StringValue (), MakeStringAccessor (&CategoryValueSeries::m_name),
+          .AddAttribute ("Name",
+                         "Unique name to represent this series in visualizer elements",
+                         StringValue (),
+                         MakeStringAccessor (&CategoryValueSeries::m_name),
                          MakeStringChecker ())
-          .AddAttribute ("Legend", "Name for the series that appears in the chart legend",
-                         StringValue (), MakeStringAccessor (&CategoryValueSeries::m_legend),
+          .AddAttribute ("Legend",
+                         "Name for the series that appears in the chart legend",
+                         StringValue (),
+                         MakeStringAccessor (&CategoryValueSeries::m_legend),
                          MakeStringChecker ())
-          .AddAttribute ("Visible", "Should this series appear in selection elements",
-                         BooleanValue (true), MakeBooleanAccessor (&CategoryValueSeries::m_visible),
+          .AddAttribute ("Visible",
+                         "Should this series appear in selection elements",
+                         BooleanValue (true),
+                         MakeBooleanAccessor (&CategoryValueSeries::m_visible),
                          MakeBooleanChecker ())
-          .AddAttribute ("XAxis", "The X axis on the graph", PointerValue (),
+          .AddAttribute ("XAxis",
+                         "The X axis on the graph",
+                         PointerValue (),
                          MakePointerAccessor (&CategoryValueSeries::GetXAxis, &CategoryValueSeries::SetXAxis),
                          MakePointerChecker<ValueAxis> ())
-          .AddAttribute ("YAxis", "The Y axis on the graph", PointerValue (),
-                         MakePointerAccessor (&CategoryValueSeries::GetYAxis, &CategoryValueSeries::SetYAxis),
+          .AddAttribute ("YAxis",
+                         "The Y axis on the graph",
+                         PointerValue (),
+                         MakePointerAccessor (&CategoryValueSeries::GetYAxis,&CategoryValueSeries::SetYAxis),
                          MakePointerChecker<CategoryAxis> ())
-          .AddAttribute ("Color", "Color to use for the points and connections", Color4Value (),
-                         MakeColor4Accessor (&CategoryValueSeries::m_color), MakeColor4Checker ());
+          .AddAttribute ("Color",
+                         "Color to use for the points and connections",
+                         Color4Value (),
+                         MakeColor4Accessor (&CategoryValueSeries::m_color),
+                         MakeColor4Checker ())
+          .AddAttribute ("AutoUpdate",
+                         "Automatically append values in the same category (Y value) "
+                         "but with a greater X value. Must also set `AutoUpdateInterval` and "
+                         "`AutoUpdateValue`",
+                         BooleanValue (false),
+                         MakeBooleanAccessor (&CategoryValueSeries::m_autoUpdate),
+                         MakeBooleanChecker ())
+          .AddAttribute ("AutoUpdateIncrement",
+                         "The minimum time before appending `AutoUpdateValue` To the series",
+                         TimeValue(),
+                         MakeTimeAccessor(&CategoryValueSeries::m_autoUpdateInterval),
+                         MakeTimeChecker())
+          .AddAttribute ("AutoUpdateValue",
+                         "The value to append to the previous X value "
+                         "after `AutoUpdateInterval` has passed",
+                         DoubleValue(),
+                         MakeDoubleAccessor(&CategoryValueSeries::m_autoUpdateIncrement),
+                         MakeDoubleChecker<double>());
+  // clang-format on
 
   return tid;
 }
