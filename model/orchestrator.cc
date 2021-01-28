@@ -921,8 +921,8 @@ Orchestrator::Commit (CategoryValueSeries &series)
       element["auto-update-interval"] = interval.Get ().GetMilliSeconds ();
 
       DoubleValue value;
-      series.GetAttribute ("AutoUpdateValue", value);
-      element["auto-update-value"] = value.Get ();
+      series.GetAttribute ("AutoUpdateIncrement", value);
+      element["auto-update-increment"] = value.Get ();
     }
 
   m_document["series"].emplace_back (element);

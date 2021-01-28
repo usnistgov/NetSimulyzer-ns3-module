@@ -68,12 +68,12 @@ CategoryValueSeries::GetTypeId (void)
                          BooleanValue (false),
                          MakeBooleanAccessor (&CategoryValueSeries::m_autoUpdate),
                          MakeBooleanChecker ())
-          .AddAttribute ("AutoUpdateIncrement",
+          .AddAttribute ("AutoUpdateInterval",
                          "The minimum time before appending `AutoUpdateValue` To the series",
                          TimeValue(),
                          MakeTimeAccessor(&CategoryValueSeries::m_autoUpdateInterval),
                          MakeTimeChecker())
-          .AddAttribute ("AutoUpdateValue",
+          .AddAttribute ("AutoUpdateIncrement",
                          "The value to append to the previous X value "
                          "after `AutoUpdateInterval` has passed",
                          DoubleValue(),
