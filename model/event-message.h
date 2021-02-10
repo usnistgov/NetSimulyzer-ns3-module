@@ -40,7 +40,7 @@
 #include <ns3/nstime.h>
 
 namespace ns3 {
-namespace visualizer3d {
+namespace netsimulyzer {
 
 struct CourseChangeEvent
 {
@@ -85,7 +85,7 @@ struct LogMessageEvent
   std::string message;
 };
 
-} // namespace visualizer3d
+} // namespace netsimulyzer
 } // namespace ns3
 
 #endif /* EVENT_MESSAGE_H */

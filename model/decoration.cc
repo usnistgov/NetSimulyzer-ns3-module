@@ -38,7 +38,7 @@
 #include <ns3/pointer.h>
 #include <ns3/uinteger.h>
 namespace ns3 {
-namespace visualizer3d {
+namespace netsimulyzer {
 
 Decoration::Decoration (Ptr<Orchestrator> orchestrator) : m_orchestrator (orchestrator)
 {
@@ -49,9 +49,9 @@ TypeId
 Decoration::GetTypeId (void)
 {
   static TypeId tid =
-      TypeId ("ns3::visualizer3d::Decoration")
+      TypeId ("ns3::netsimulyzer::Decoration")
           .SetParent<Object> ()
-          .SetGroupName ("visualizer3d")
+          .SetGroupName ("netsimulyzer")
           .AddAttribute ("Id", "The unique ID of the Decoration", TypeId::ATTR_GET,
                          UintegerValue (0u), MakeUintegerAccessor (&Decoration::m_id),
                          MakeUintegerChecker<uint32_t> ())
@@ -146,5 +146,5 @@ Decoration::DoDispose (void)
   Object::DoDispose ();
 }
 
-} // namespace visualizer3d
+} // namespace netsimulyzer
 } // namespace ns3

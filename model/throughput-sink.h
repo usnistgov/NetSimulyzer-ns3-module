@@ -44,7 +44,7 @@
 #include <ns3/nstime.h>
 
 namespace ns3 {
-namespace visualizer3d {
+namespace netsimulyzer {
 
 class Orchestrator;
 
@@ -57,10 +57,7 @@ public:
   /**
    * The unit for the Y axis per second
    */
-  enum Unit
-  {
-    Bit, KBit, MBit, GBit, Byte, KByte, MByte, GByte
-  };
+  enum Unit { Bit, KBit, MBit, GBit, Byte, KByte, MByte, GByte };
 
   /**
    * Sets up the XYSeries and assigns the ID
@@ -153,7 +150,7 @@ private:
   /**
    * The series that tracks the value accumulated in `m_total`
    */
-  Ptr<visualizer3d::XYSeries> m_series;
+  Ptr<XYSeries> m_series;
 
   /**
    * Size of data received since last period
@@ -176,7 +173,7 @@ private:
   void UpdateAxisLabels (void);
 };
 
-} // namespace visualizer3d
+} // namespace netsimulyzer
 } // namespace ns3
 
 #endif /* THROUGHPUT_SINK_H */

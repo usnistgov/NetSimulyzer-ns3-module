@@ -2,6 +2,6 @@
 
 
 def build(bld):
-    obj = bld.create_ns3_program('visualizer3d-mobility-buildings-example',
-                                 ['visualizer3d', 'core', 'mobility', 'network'])
+    obj = bld.create_ns3_program('netsimulyzer-mobility-buildings-example',
+                                 ['netsimulyzer', 'core', 'mobility', 'network'])
     obj.source = 'mobility-buildings-example.cc'

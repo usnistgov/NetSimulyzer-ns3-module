@@ -44,7 +44,7 @@
 #include <unordered_map>
 
 namespace ns3 {
-namespace visualizer3d {
+namespace netsimulyzer {
 
 class CategoryAxis : public ns3::Object
 {
@@ -185,7 +185,7 @@ private:
   int m_nextId{1};
 };
 
-} // namespace visualizer3d
+} // namespace netsimulyzer
 } // namespace ns3
 
 #endif /* CATEGORY_AXIS_H */

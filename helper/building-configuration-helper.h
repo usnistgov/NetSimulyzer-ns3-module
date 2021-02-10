@@ -45,10 +45,10 @@
 #include <ns3/ptr.h>
 
 namespace ns3 {
-namespace visualizer3d {
+namespace netsimulyzer {
 
 /**
- * \ingroup visualizer3d
+ * \ingroup netsimulyzer
  * \brief Creates, configures, and installs BuildingConfiguration objects
  */
 class BuildingConfigurationHelper
@@ -132,7 +132,7 @@ private:
   /**
    * Factory for producing BuildingConfiguration objects
    */
-  ObjectFactory m_buildingConfiguration{"ns3::visualizer3d::BuildingConfiguration"};
+  ObjectFactory m_buildingConfiguration{"ns3::netsimulyzer::BuildingConfiguration"};
 
   /**
    * Orchestrator that manages the Buildings produced by this helper
@@ -140,7 +140,7 @@ private:
   Ptr<Orchestrator> m_orchestrator;
 };
 
-} // namespace visualizer3d
+} // namespace netsimulyzer
 } // namespace ns3
 
 #endif /* BUILDING_CONFIGURATION_HELPER_H */

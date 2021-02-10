@@ -48,7 +48,7 @@
 #include <optional>
 
 namespace ns3 {
-namespace visualizer3d {
+namespace netsimulyzer {
 
 class Orchestrator;
 
@@ -220,7 +220,7 @@ private:
   bool m_attachedMobilityTrace = false;
 };
 
-} // namespace visualizer3d
+} // namespace netsimulyzer
 } // namespace ns3
 
 #endif /* NODE_CONFIGURATION_H */

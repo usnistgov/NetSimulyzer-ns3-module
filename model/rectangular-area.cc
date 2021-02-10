@@ -5,15 +5,15 @@
 #include <ns3/enum.h>
 #include <ns3/string.h>
 
-namespace ns3 {
-namespace visualizer3d {
+namespace ns3::netsimulyzer {
 
 TypeId
 RectangularArea::GetTypeId (void)
 {
   static TypeId tid =
-      TypeId ("ns3::visualizer3d::RectangularArea")
+      TypeId ("ns3::netsimulyzer::RectangularArea")
           .SetParent<Object> ()
+          .SetGroupName("netsimulyzer")
           .AddAttribute ("Id", "The unique ID of the Area", TypeId::ATTR_GET, UintegerValue (0u),
                          MakeUintegerAccessor (&RectangularArea::m_id),
                          MakeUintegerChecker<uint32_t> ())
@@ -78,5 +78,4 @@ RectangularArea::NotifyConstructionCompleted (void)
   Object::NotifyConstructionCompleted ();
 }
 
-} // namespace visualizer3d
 } // namespace ns3

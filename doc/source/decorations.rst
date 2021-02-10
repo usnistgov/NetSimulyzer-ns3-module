@@ -21,7 +21,7 @@ A basic setup for a ``Decoration`` is as follows:
 
 .. code-block:: C++
 
-  auto decoration = CreateObject<visualizer3d::Decoration>(/* the orchestrator */);
+  auto decoration = CreateObject<netsimulyzer::Decoration>(/* the orchestrator */);
 
   decoration.SetAttribute ("Model", StringValue ("path/model.obj"));
   decoration.SetAttribute ("Height", DoubleValue (2.0));

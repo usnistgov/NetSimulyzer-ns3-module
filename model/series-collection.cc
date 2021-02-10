@@ -41,7 +41,7 @@ namespace ns3 {
 
 NS_LOG_COMPONENT_DEFINE ("SeriesCollection");
 
-namespace visualizer3d {
+namespace netsimulyzer {
 
 NS_OBJECT_ENSURE_REGISTERED (SeriesCollection);
 
@@ -55,9 +55,9 @@ SeriesCollection::GetTypeId (void)
 {
   // clang-format off
   static TypeId tid =
-      TypeId ("ns3::visualizer3d::SeriesCollection")
+      TypeId ("ns3::netsimulyzer::SeriesCollection")
           .SetParent<ns3::Object> ()
-          .SetGroupName ("visualizer3d")
+          .SetGroupName ("netsimulyzer")
           .AddAttribute ("Id", "The unique ID of the series",
                          TypeId::ATTR_GET, UintegerValue (0u),
                          MakeUintegerAccessor (&SeriesCollection::m_id),
@@ -152,5 +152,5 @@ SeriesCollection::Add (uint32_t id)
   m_seriesIds.emplace_back (id);
 }
 
-} // namespace visualizer3d
+} // namespace netsimulyzer
 } // namespace ns3

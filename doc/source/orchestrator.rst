@@ -1,8 +1,8 @@
 Orchestrator
 ============
 
-The ``Orchestrator`` manages module wide ``visualizer3d`` features, receives events, and
-manages output from the module. All ``visualizer3d`` models require a reference
+The ``Orchestrator`` manages module wide ``netsimulyzer`` features, receives events, and
+manages output from the module. All ``netsimulyzer`` models require a reference
 to an ``Orchestrator`` to function.
 
 The `Orchestrator` must be constructed **before** the simulation begins.
@@ -16,12 +16,12 @@ If just a filename is provided (e.g. ``example.json``), then it will be treated 
 path to the current working directory, like so: ``./example.json``.
 
 The output file is in JSON format. For the schema for the output file
-see the `schema.json <https://github.com/usnistgov/ns3-visualizer3d/blob/master/schema.json>`_
+see the `schema.json <https://github.com/usnistgov/NetSimulyzer/blob/master/schema.json>`_
 for the application. The '.json' extension is not required, but strongly encouraged.
 
 .. code-block:: C++
 
-  auto orchestrator = CreateObject<visualizer3d::Orchestrator> ("filename.json");
+  auto orchestrator = CreateObject<netsimulyzer::Orchestrator> ("filename.json");
 
 Most ``Orchestrator`` events are based on the simulation's time, so it may be safely placed at
 the global scope if desired.
@@ -29,7 +29,7 @@ the global scope if desired.
 .. code-block:: C++
 
   using namespace ns3;
-  auto orchestrator = CreateObject<visualizer3d::Orchestrator> ("global.json");
+  auto orchestrator = CreateObject<netsimulyzer::Orchestrator> ("global.json");
 
   int
   main ()

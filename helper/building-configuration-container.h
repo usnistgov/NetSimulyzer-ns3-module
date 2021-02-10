@@ -41,7 +41,7 @@
 #include <cstdint>
 
 namespace ns3 {
-namespace visualizer3d {
+namespace netsimulyzer {
 
 class BuildingConfigurationContainer
 {
@@ -163,7 +163,7 @@ BuildingConfigurationContainer::Iterator begin (BuildingConfigurationContainer &
  */
 BuildingConfigurationContainer::Iterator end (BuildingConfigurationContainer &c);
 
-} // namespace visualizer3d
+} // namespace netsimulyzer
 } // namespace ns3
 
 #endif /* BUILDING_CONFIGURATION_CONTAINER_H */

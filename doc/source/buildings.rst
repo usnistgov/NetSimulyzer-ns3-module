@@ -30,7 +30,7 @@ The basic setup for showing a single ``ns3::Building`` is as follows:
 
 .. code-block:: C++
 
-  visualizer3d::BuildingConfigurationHelper buildingHelper{/* orchestrator */};
+  netsimulyzer::BuildingConfigurationHelper buildingHelper{/* orchestrator */};
   buildingHelper.Install (/* Ptr or Collection */);
 
 
@@ -43,7 +43,7 @@ is the easiest way to get them all to show up.
 
 .. code-block:: C++
 
-  visualizer3d::BuildingConfigurationHelper helper{orchestrator};
+  netsimulyzer::BuildingConfigurationHelper helper{orchestrator};
   for (auto building = BuildingList::Begin (); building != BuildingList::End (); building++)
     helper.Install (*building);
 

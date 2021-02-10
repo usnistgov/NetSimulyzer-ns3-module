@@ -42,7 +42,7 @@
 #include <ns3/orchestrator.h>
 
 namespace ns3 {
-namespace visualizer3d {
+namespace netsimulyzer {
 
 class Orchestrator;
 
@@ -106,7 +106,7 @@ private:
   BoundMode m_boundMode;
 };
 
-} // namespace visualizer3d
+} // namespace netsimulyzer
 } // namespace ns3
 
 #endif /* VALUE_AXIS_H */

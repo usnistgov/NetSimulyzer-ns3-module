@@ -41,7 +41,7 @@ namespace ns3 {
 
 NS_LOG_COMPONENT_DEFINE ("NodeConfigurationHelper");
 
-namespace visualizer3d {
+namespace netsimulyzer {
 
 NodeConfigurationHelper::NodeConfigurationHelper (Ptr<Orchestrator> orchestrator)
     : m_orchestrator (orchestrator)
@@ -120,5 +120,5 @@ NodeConfigurationHelper::Install (NodeContainer &nodes,
   return results;
 }
 
-} // namespace visualizer3d
+} // namespace netsimulyzer
 } // namespace ns3

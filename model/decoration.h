@@ -44,7 +44,7 @@
 #include <ns3/vector.h>
 
 namespace ns3 {
-namespace visualizer3d {
+namespace netsimulyzer {
 
 class Orchestrator;
 
@@ -171,7 +171,7 @@ private:
   double m_scale;
 };
 
-} // namespace visualizer3d
+} // namespace netsimulyzer
 } // namespace ns3
 
 #endif /* DECORATION_H */

@@ -48,7 +48,7 @@
 #include <optional>
 
 namespace ns3 {
-namespace visualizer3d {
+namespace netsimulyzer {
 
 class Orchestrator;
 
@@ -190,7 +190,7 @@ operator<< (LogStream &stream, const char &value)
  */
 LogStream &operator<< (LogStream &stream, const char *value);
 
-} // namespace visualizer3d
+} // namespace netsimulyzer
 } // namespace ns3
 
 #endif /*LOG_STREAM_H*/

@@ -18,7 +18,7 @@ The basic setup for a ``NodeConfiguration`` is as follows:
 
 .. code-block:: C++
 
-  visualizer3d::NodeConfigurationHelper nodeHelper{/* the orchestrator */};
+  netsimulyzer::NodeConfigurationHelper nodeHelper{/* the orchestrator */};
 
   nodeHelper.SetAttribute ("Model", StringValue ("path/model.obj"));
 

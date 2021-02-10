@@ -44,7 +44,7 @@
 #include <ns3/color.h>
 
 namespace ns3 {
-namespace visualizer3d {
+namespace netsimulyzer {
 
 class Orchestrator;
 
@@ -123,7 +123,7 @@ private:
   bool m_visible;
 };
 
-} // namespace visualizer3d
+} // namespace netsimulyzer
 } // namespace ns3
 
 #endif /* BUILDING_CONFIGURATION_H */

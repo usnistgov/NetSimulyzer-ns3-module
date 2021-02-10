@@ -16,20 +16,20 @@ to ``AddPacketSize``, and the model will collect the amounts over the defined pe
 .. code-block:: C++
 
   auto app = // Something with a `TX` trace like this: `void tx(uint32_t bytes)`
-  auto throughput = CreateObject<visualizer3d::ThroughputSink>(/* orchestrator */, "Series name");
+  auto throughput = CreateObject<netsimulyzer::ThroughputSink>(/* orchestrator */, "Series name");
 
   // How often to write throughput
   throughput->SetAttribute ("Interval", TimeValue (Seconds(1.0)));
 
   // Unit to display data in, does not change the values passed to the sink
-  throughput->SetAttribute ("Unit", EnumValue (visualizer3d::ThroughputSink::Unit::KBit));
+  throughput->SetAttribute ("Unit", EnumValue (netsimulyzer::ThroughputSink::Unit::KBit));
 
   // Unit to group time by, does not affect `Interval`
   throughput->SetAttribute ("TimeUnit", EnumValue (Time::Unit::S));
 
   // Assuming "TX" = TracedCallback<uint32_t>
   app->TraceConnectWithoutContext(
-     "Tx", MakeCallback(&visualizer3d::ThroughputSink::AddPacketSize), throughput);
+     "Tx", MakeCallback(&netsimulyzer::ThroughputSink::AddPacketSize), throughput);
 
 Attributes
 ^^^^^^^^^^
@@ -84,7 +84,7 @@ Connect the model's state changed trace to ``StateTransitionSink::StateChangedNa
   // Provide a std::vector of possible string states
   const std::vector<std::string> states{"Stopped", "Waiting", "Transmitting"};
 
-  auto stateSink = CreateObject<visualizer3d::StateTransitionSink> (
+  auto stateSink = CreateObject<netsimulyzer::StateTransitionSink> (
     /* orchestrator */,
     states,
     "Stopped" // Initial state the model is in
@@ -94,7 +94,7 @@ Connect the model's state changed trace to ``StateTransitionSink::StateChangedNa
   userApp->TraceConnectWithoutContext (
       "StateChanged", // TracedCallback from user model, passing the new state
                       // like so: TracedCallback<const std::string &>
-      MakeCallback (&visualizer3d::StateTransitionSink::StateChangedName,
+      MakeCallback (&netsimulyzer::StateTransitionSink::StateChangedName,
                     stateSink));
 
 
@@ -110,13 +110,13 @@ Connect the model's state changed trace to ``StateTransitionSink::StateChangedId
   // ValuePair from CategoryAxis
   // Model::States is an enum of possible states
   // from user provided model
-  const std::vector<visualizer3d::CategoryAxis::ValuePair> states{
+  const std::vector<netsimulyzer::CategoryAxis::ValuePair> states{
     { Model::State::Stopped, "Stopped" },
     { Model::State::Waiting, "Waiting" },
     { Model::State::Transmitting, "Transmitting" }
   };
 
-  auto stateSink = CreateObject<visualizer3d::StateTransitionSink> (
+  auto stateSink = CreateObject<netsimulyzer::StateTransitionSink> (
     /* orchestrator */,
     states,
     Model::States::Stopped // Initial state must be an enum value
@@ -126,7 +126,7 @@ Connect the model's state changed trace to ``StateTransitionSink::StateChangedId
   userApp->TraceConnectWithoutContext (
       "StateChanged", // TracedCallback from user model, passing the new state
                       // like so: TracedCallback<Model::State>
-      MakeCallback (&visualizer3d::StateTransitionSink::StateChangedId,
+      MakeCallback (&netsimulyzer::StateTransitionSink::StateChangedId,
                     stateSink));
 
 

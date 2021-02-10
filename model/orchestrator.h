@@ -59,7 +59,7 @@
 #include "event-message.h"
 
 namespace ns3 {
-namespace visualizer3d {
+namespace netsimulyzer {
 
 class RectangularArea;
 class Decoration;
@@ -483,7 +483,7 @@ private:
   void CommitAll (void);
 };
 
-} // namespace visualizer3d
+} // namespace netsimulyzer
 } // namespace ns3
 
 #endif /* ORCHESTRATOR_H */

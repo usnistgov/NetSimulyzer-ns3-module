@@ -32,7 +32,7 @@ The basic setup for a ``CategoryValueSeries`` is as follows:
 .. code-block:: C++
 
   const std::vector<std::string> categories{"First", "Second", "Third", "Last"};
-  auto cvSeries = CreateObject<visualizer3d::CategoryValueSeries>(/* orchestrator */, categories);
+  auto cvSeries = CreateObject<netsimulyzer::CategoryValueSeries>(/* orchestrator */, categories);
 
   cvSeries->Append("First", 1.0);
 
@@ -42,7 +42,7 @@ To provide IDs with the String values, use :ref:`category-axis-value-pair` from 
 .. code-block:: C++
 
   using namespace ns3;
-  using namespace visualizer3d;
+  using namespace netsimulyzer;
 
   enum States { First, Second, Third, Last };
 

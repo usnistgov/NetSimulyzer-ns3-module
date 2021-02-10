@@ -44,7 +44,7 @@
 #include <ns3/color.h>
 
 namespace ns3 {
-namespace visualizer3d {
+namespace netsimulyzer {
 
 /**
  * A flat, fixed sized marker for an area of some significance to the simulation.
@@ -149,7 +149,7 @@ private:
   Color3 m_borderColor;
 };
 
-} // namespace visualizer3d
+} // namespace netsimulyzer
 } // namespace ns3
 
 #endif

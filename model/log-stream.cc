@@ -48,7 +48,7 @@ namespace ns3 {
 
 NS_LOG_COMPONENT_DEFINE ("LogStream");
 
-namespace visualizer3d {
+namespace netsimulyzer {
 
 NS_OBJECT_ENSURE_REGISTERED (LogStream);
 
@@ -61,9 +61,9 @@ TypeId
 LogStream::GetTypeId (void)
 {
   // clang-format off
-  static TypeId tid = TypeId ("ns3::visualizer3d::LogStream")
+  static TypeId tid = TypeId ("ns3::netsimulyzer::LogStream")
     .SetParent<ns3::Object> ()
-    .SetGroupName ("visualizer3d")
+    .SetGroupName ("netsimulyzer")
     .AddAttribute("Id", "The unique ID of the LogStream", TypeId::ATTR_GET, UintegerValue(0u),
       MakeUintegerAccessor(&LogStream::m_id), MakeUintegerChecker<uint32_t>())
     .AddAttribute ("Orchestrator", "Orchestrator that manages this series", PointerValue (),
@@ -105,5 +105,5 @@ operator<< (LogStream &stream, const char *value)
   return stream;
 }
 
-} // namespace visualizer3d
+} // namespace netsimulyzer
 } // namespace ns3

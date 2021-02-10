@@ -44,7 +44,7 @@
 #include <utility>
 #include <optional>
 
-namespace ns3::visualizer3d {
+namespace ns3::netsimulyzer {
 
 /**
  * Attribute wrapper for std::optional,
@@ -370,7 +370,7 @@ public:
 
   /**
    * \return
-   * "ns3::visualizer3d::OptionalValue"
+   * "ns3::netsimulyzer::OptionalValue"
    */
   std::string GetValueTypeName (void) const override;
 
@@ -414,7 +414,7 @@ template <typename T>
 std::string
 OptionalChecker<T>::GetValueTypeName (void) const
 {
-  return "ns3::visualizer3d::OptionalValue";
+  return "ns3::netsimulyzer::OptionalValue";
 }
 
 template <typename T>
@@ -433,7 +433,7 @@ OptionalChecker<T>::GetUnderlyingTypeInformation (void) const
   // under GCC or Clang
   // TODO: Maybe demangle this if people are really interested
   // See: abi::__cxa_demangle
-  return std::string{"ns3::visualizer3d::Optional<"} + typeid (T).name () + ">";
+  return std::string{"ns3::netsimulyzer::Optional<"} + typeid (T).name () + ">";
 }
 
 template <typename T>
@@ -470,6 +470,6 @@ MakeOptionalChecker (void)
 
 // TODO: Maybe Bounded Checker for Number types
 
-} // namespace ns3::visualizer3d
+} // namespace ns3::netsimulyzer
 
 #endif // OPTIONAL_H

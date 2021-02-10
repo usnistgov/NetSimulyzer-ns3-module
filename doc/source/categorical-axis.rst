@@ -62,7 +62,7 @@ Each string value should be paired with its ID in a ``ValuePair`` and passed to
 .. code-block:: C++
 
   enum State { Park, Drive, Reverse };
-  visualizer3d::CategoryAxis::ValuePair parkPair;
+  netsimulyzer::CategoryAxis::ValuePair parkPair;
 
   // If State is an `enum class` or `enum struct`
   // use static_cast<int>(State::Park)
@@ -77,7 +77,7 @@ Each string value should be paired with its ID in a ``ValuePair`` and passed to
 
   // Existing CategoryValueSeries
   series->GetAttribute("YAxis", axisValue);
-  auto axis = axisValue.Get<visualizer3d::CategoryAxis>();
+  auto axis = axisValue.Get<netsimulyzer::CategoryAxis>();
 
   // some existing axis
   axis->AddValue(parkPair);

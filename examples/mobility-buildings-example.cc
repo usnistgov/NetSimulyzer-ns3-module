@@ -39,7 +39,7 @@
 #include <ns3/core-module.h>
 #include <ns3/network-module.h>
 #include <ns3/mobility-module.h>
-#include <ns3/visualizer3d-module.h>
+#include <ns3/netsimulyzer-module.h>
 
 // Example demonstrating mobility output to the NIST visualizer
 // Uses models from the Visualization Licensed Resources repository
@@ -84,7 +84,7 @@ public:
     static TypeId tid =
         TypeId ("DummyApplication")
             .SetParent<ns3::Application> ()
-            .SetGroupName ("visualizer3d")
+            .SetGroupName ("netsimulyzer")
             // Provide some 'StateChanged' trace, or connect to the proper callbacks yourself
             .AddTraceSource ("StateChanged", "Trace called when the application changes states",
                              MakeTraceSourceAccessor (&DummyApplication::m_stateChangedTrace),
@@ -154,7 +154,7 @@ private:
 
 const std::vector<std::string> DummyApplication::States = {"Stopped", "Waiting", "Transmitting"};
 
-Ptr<visualizer3d::LogStream> eventLog;
+Ptr<netsimulyzer::LogStream> eventLog;
 
 void
 CourseChanged (Ptr<const MobilityModel> model)
@@ -178,7 +178,7 @@ main (int argc, char *argv[])
   double minSpeed = .1;
   double maxSpeed = 5;
   double duration = 100;
-  std::string outputFileName = "visualizer-3d-example.json";
+  std::string outputFileName = "netsimulyzer-mobility-buildings-example.json";
   std::string policeModelPath = "extras/models/characters/Police_Male.gltf";
   std::string fbiModelPath = "extras/models/characters/Fbi_Male.gltf";
   double modelHeight = 2.0;
@@ -253,10 +253,10 @@ main (int argc, char *argv[])
   buildings.Add (twoFloorBuilding);
 
   // ---- Visualization ----
-  auto orchestrator = CreateObject<visualizer3d::Orchestrator> (outputFileName);
+  auto orchestrator = CreateObject<netsimulyzer::Orchestrator> (outputFileName);
 
   // Mark possible Node locations
-  auto possibleNodeLocations = CreateObject<visualizer3d::RectangularArea> (
+  auto possibleNodeLocations = CreateObject<netsimulyzer::RectangularArea> (
       orchestrator, Rectangle{minNodePosition, maxNodePosition, minNodePosition, maxNodePosition});
 
   // Identify the area
@@ -266,10 +266,10 @@ main (int argc, char *argv[])
   possibleNodeLocations->SetAttribute ("Height", DoubleValue (-0.5));
 
   // Mark with a light green color
-  possibleNodeLocations->SetAttribute ("FillColor", visualizer3d::Color3Value ({204u, 255u, 204u}));
+  possibleNodeLocations->SetAttribute ("FillColor", netsimulyzer::Color3Value ({204u, 255u, 204u}));
 
-  auto infoLog = CreateObject<visualizer3d::LogStream> (orchestrator);
-  eventLog = CreateObject<visualizer3d::LogStream> (orchestrator);
+  auto infoLog = CreateObject<netsimulyzer::LogStream> (orchestrator);
+  eventLog = CreateObject<netsimulyzer::LogStream> (orchestrator);
 
   // Log the base configuration for the scenario
   *infoLog << "----- Scenario Settings -----\n";
@@ -279,7 +279,7 @@ main (int argc, char *argv[])
   *infoLog << "Model Height: " << modelHeight << '\n';
   *infoLog << "Scenario Duration (Seconds): " << duration << '\n';
 
-  visualizer3d::NodeConfigurationHelper nodeConfigHelper (orchestrator);
+  netsimulyzer::NodeConfigurationHelper nodeConfigHelper (orchestrator);
   nodeConfigHelper.Set ("Height", DoubleValue (modelHeight));
 
   nodeConfigHelper.Set ("Model", StringValue (policeModelPath));
@@ -291,7 +291,7 @@ main (int argc, char *argv[])
   // Only explicitly configured items will be shown
   // so, even if we don't have options to set
   // the buildings bust be configured
-  visualizer3d::BuildingConfigurationHelper buildingConfigHelper (orchestrator);
+  netsimulyzer::BuildingConfigurationHelper buildingConfigHelper (orchestrator);
   buildingConfigHelper.Install (buildings);
 
   // StateTraceSink
@@ -302,7 +302,7 @@ main (int argc, char *argv[])
   // Doesn't really matter what Node it's on
   police.Get (0u)->AddApplication (exampleApplication);
 
-  auto exampleStateSink = CreateObject<visualizer3d::StateTransitionSink> (
+  auto exampleStateSink = CreateObject<netsimulyzer::StateTransitionSink> (
       orchestrator, // Orchestrator for series & log
       DummyApplication::States, // Possible States (with optional IDs)
       DummyApplication::States[0] // Initial state
@@ -314,7 +314,7 @@ main (int argc, char *argv[])
   // & StateChangedId for enum/int states
   exampleApplication->TraceConnectWithoutContext (
       "StateChanged",
-      MakeCallback (&visualizer3d::StateTransitionSink::StateChangedName, exampleStateSink));
+      MakeCallback (&netsimulyzer::StateTransitionSink::StateChangedName, exampleStateSink));
 
   Simulator::Stop (Seconds (duration));
   Simulator::Run ();

@@ -40,7 +40,7 @@ namespace ns3 {
 
 NS_LOG_COMPONENT_DEFINE ("NodeConfigurationContainer");
 
-namespace visualizer3d {
+namespace netsimulyzer {
 
 NodeConfigurationContainer::NodeConfigurationContainer (void)
 {
@@ -128,5 +128,5 @@ end (NodeConfigurationContainer &c)
   return c.End ();
 }
 
-} // namespace visualizer3d
+} // namespace netsimulyzer
 } // namespace ns3

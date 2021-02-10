@@ -40,15 +40,15 @@
 #include <ns3/abort.h>
 
 namespace ns3 {
-namespace visualizer3d {
+namespace netsimulyzer {
 
 TypeId
 CategoryAxis::GetTypeId (void)
 {
   static TypeId tid =
-      TypeId ("ns3::visualizer3d::CategoryAxis")
+      TypeId ("ns3::netsimulyzer::CategoryAxis")
           .SetParent<ns3::Object> ()
-          .SetGroupName ("visualizer3d")
+          .SetGroupName ("netsimulyzer")
           .AddAttribute ("Name", "Unique name to represent this axis in visualizer elements",
                          StringValue (), MakeStringAccessor (&CategoryAxis::m_name),
                          MakeStringChecker ());
@@ -120,5 +120,5 @@ CategoryAxis::Get (const std::string &name)
   return {GetId (name), name};
 }
 
-} // namespace visualizer3d
+} // namespace netsimulyzer
 } // namespace ns3

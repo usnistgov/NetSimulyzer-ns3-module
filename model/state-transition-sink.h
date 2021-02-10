@@ -43,7 +43,7 @@
 #include <ns3/nstime.h>
 
 namespace ns3 {
-namespace visualizer3d {
+namespace netsimulyzer {
 
 /**
  * Sink class for use with an `ns3::Application`.
@@ -292,7 +292,7 @@ private:
   void ApplyStateChange (const CategoryAxis::ValuePair &pair);
 };
 
-} // namespace visualizer3d
+} // namespace netsimulyzer
 } // namespace ns3
 
 #endif

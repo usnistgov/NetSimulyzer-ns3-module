@@ -42,7 +42,7 @@
 #include <ns3/attribute-helper.h>
 
 namespace ns3 {
-namespace visualizer3d {
+namespace netsimulyzer {
 
 class Color3;
 
@@ -199,7 +199,7 @@ std::istream &operator>> (std::istream &is, Color3 &color);
 
 ATTRIBUTE_HELPER_HEADER (Color3);
 
-} // namespace visualizer3d
+} // namespace netsimulyzer
 } // namespace ns3
 
 #endif /* COLOR_H */

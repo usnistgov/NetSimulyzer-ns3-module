@@ -1,8 +1,8 @@
-ns-3 Visualizer3d Module Documentation
+ns-3 Netsimulyzer Module Documentation
 ======================================
 
 This is the documentation for the ns-3 companion module to the
-`Visualizer 3D <https://github.com/usnistgov/ns3-visualizer3d>`_ application.
+`Visualizer 3D <https://github.com/usnistgov/NetSimulyzer>`_ application.
 
 The application is an offline playback tool to display scenarios in 3D much like
 `NetAnim <https://www.nsnam.org/wiki/NetAnim>`_. Not only may topology features,

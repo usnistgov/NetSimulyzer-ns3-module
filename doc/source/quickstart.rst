@@ -3,11 +3,11 @@ Quickstart
 
 Clone the module
 ++++++++++++++++
-Clone the project into a directory called visualizer3d in the `src` folder of a supported version of *ns-3*
+Clone the project into a directory called netsimulyzer in the `src` folder of a supported version of *ns-3*
 
 .. code-block:: Bash
 
-  git clone https://github.com/usnistgov/ns3-visualizer3d-module.git visualizer3d
+  git clone https://github.com/usnistgov/NetSimulyzer-ns3-module.git netsimulyzer
 
 
 Configure waf
@@ -26,23 +26,23 @@ Include the module in your scenario. And optionally use the namespace.
 
 .. code-block:: C++
 
-  #include <ns3/visualizer3d-module.h>
+  #include <ns3/netsimulyzer-module.h>
 
   // For brevity in examples
   using namespace ns3;
 
   // Optional, not assumed in future examples
-  using namespace ns3::visualizer3d;
+  using namespace ns3::netsimulyzer;
 
 For more complex linking, see: :doc:`linking-module`
 
 
 Create an :doc:`orchestrator`, and pass it a path to an output file to create.
-The :doc:`orchestrator` is the base for all visualizer3d elements.
+The :doc:`orchestrator` is the base for all netsimulyzer elements.
 
 .. code-block:: C++
 
-  auto orchestrator = CreateObject<visualizer3d::Orchestrator> ("example.json");
+  auto orchestrator = CreateObject<netsimulyzer::Orchestrator> ("example.json");
 
 For more configuration options, see: doc:`orchestrator`
 
@@ -57,7 +57,7 @@ For additional configuration options see :doc:`nodes`.
 
 .. code-block:: C++
 
-  visualizer3d::NodeConfigurationHelper nodeHelper{orchestrator};
+  netsimulyzer::NodeConfigurationHelper nodeHelper{orchestrator};
   nodeHelper.Set ("Model",
                   StringValue ("relative/path/from/resource/dir/model.obj"));
 
@@ -81,7 +81,7 @@ For additional properties, see :doc:`buildings`
 .. code-block:: C++
 
   // Show every building in the scenario
-  visualizer3d::BuildingConfigurationHelper buildingHelper{orchestrator};
+  netsimulyzer::BuildingConfigurationHelper buildingHelper{orchestrator};
   for (auto building = BuildingList::Begin (); building != BuildingList::End (); building++)
     buildingHelper.Install (*building);
 
@@ -96,7 +96,7 @@ For more information, see :doc:`decorations`
 
 .. code-block:: C++
 
-  auto decoration = CreateObject<visualizer3d::Decoration>(orchestrator);
+  auto decoration = CreateObject<netsimulyzer::Decoration>(orchestrator);
   decoration.SetAttribute ("Model", StringValue ("relative/path/from/resource/dir/model.obj"));
   decoration.SetPosition ({5.0, 5.0, 0.0});
 
@@ -114,10 +114,10 @@ For additional configuration, see :doc:`areas`
   // ns-3 Rectangle from the Mobility Model
   // 5x5 area around the origin
   Rectangle start{-5.0, 5.0, -5.0, 5.0};
-  auto startingArea = CreateObject<visualizer3d::RectangularArea>(orchestrator, start);
+  auto startingArea = CreateObject<netsimulyzer::RectangularArea>(orchestrator, start);
 
   // The Rectangle may be constructed in place as well
-  auto finishingArea = CreateObject<visualizer3d::RectangularArea>(orchestrator, Rectangle{10.0, 7.0, 10.0, 7.0});
+  auto finishingArea = CreateObject<netsimulyzer::RectangularArea>(orchestrator, Rectangle{10.0, 7.0, 10.0, 7.0});
 
 
 Adding Log Messages
@@ -130,7 +130,7 @@ All messages on a :ref:`log-stream` must end with a newline '\\n'
 
 .. code-block:: C++
 
-  auto infoLog = CreateObject<visualizer3d::LogStream> (orchestrator);
+  auto infoLog = CreateObject<netsimulyzer::LogStream> (orchestrator);
 
   // Optional, but highly recommended you set a name for each stream
   infoLog->SetAttribute ("Name", StringValue ("Info"));
@@ -159,7 +159,7 @@ There are several types of series, but the simplest is the :ref:`xy-series`:
 
 .. code-block:: C++
 
-  auto xy = CreateObject<visualizer3d::XYSeries> (orchestrator);
+  auto xy = CreateObject<netsimulyzer::XYSeries> (orchestrator);
 
   // Optional, but highly recommended
   xy->SetAttribute ("Name", StringValue ("XY Series Example"));
@@ -167,7 +167,7 @@ There are several types of series, but the simplest is the :ref:`xy-series`:
   // Default is `Line` (line graph),
   // there is also `None` (scatter plot)
   // and `Spline` (spline graph)
-  xy->SetAttribute ("Connection", EnumValue (visualizer3d::XYSeries::Line));
+  xy->SetAttribute ("Connection", EnumValue (netsimulyzer::XYSeries::Line));
 
   // Points are added through `Append (x, y)` calls,
   // and may occur at any time

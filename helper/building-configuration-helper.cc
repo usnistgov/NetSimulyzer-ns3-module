@@ -41,7 +41,7 @@ namespace ns3 {
 
 NS_LOG_COMPONENT_DEFINE ("BuildingConfigurationHelper");
 
-namespace visualizer3d {
+namespace netsimulyzer {
 
 BuildingConfigurationHelper::BuildingConfigurationHelper (Ptr<Orchestrator> orchestrator)
     : m_orchestrator (orchestrator)
@@ -121,5 +121,5 @@ BuildingConfigurationHelper::Install (BuildingContainer &buildings,
   return results;
 }
 
-} // namespace visualizer3d
+} // namespace netsimulyzer
 } // namespace ns3

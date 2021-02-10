@@ -44,7 +44,7 @@
 #include <vector>
 
 namespace ns3 {
-namespace visualizer3d {
+namespace netsimulyzer {
 
 class Orchestrator;
 class XYSeries;
@@ -183,7 +183,7 @@ private:
   void Add (uint32_t id);
 };
 
-} // namespace visualizer3d
+} // namespace netsimulyzer
 } // namespace ns3
 
 #endif /* SERIES_COLLECTION_H */

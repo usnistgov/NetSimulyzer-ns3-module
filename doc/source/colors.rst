@@ -1,7 +1,7 @@
 Color Types
 ===========
 
-Many of the visualizer3d models have configurable colors which are set using the following classes.
+Many of the netsimulyzer models have configurable colors which are set using the following classes.
 
 
 .. _color3:

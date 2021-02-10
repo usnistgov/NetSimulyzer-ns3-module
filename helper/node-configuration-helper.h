@@ -45,10 +45,10 @@
 #include <ns3/ptr.h>
 
 namespace ns3 {
-namespace visualizer3d {
+namespace netsimulyzer {
 
 /**
- * \ingroup visualizer3d
+ * \ingroup netsimulyzer
  * \brief Creates, configures, and installs NodeConfiguration object
  */
 class NodeConfigurationHelper
@@ -131,7 +131,7 @@ private:
   /**
    * Factory for producing NodeConfiguration objects
    */
-  ObjectFactory m_nodeConfiguration{"ns3::visualizer3d::NodeConfiguration"};
+  ObjectFactory m_nodeConfiguration{"ns3::netsimulyzer::NodeConfiguration"};
 
   /**
    * Orchestrator that manages the Nodes produced by this helper
@@ -139,7 +139,7 @@ private:
   Ptr<Orchestrator> m_orchestrator;
 };
 
-} // namespace visualizer3d
+} // namespace netsimulyzer
 } // namespace ns3
 
 #endif /* NODE_CONFIGURATION_HELPER_H */

@@ -17,7 +17,7 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'visualizer3d'
+project = 'netsimulyzer'
 # copyright = '2020, NIST'
 author = 'Evan Black'
 

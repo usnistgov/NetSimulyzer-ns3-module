@@ -59,7 +59,7 @@ checkSeparator (std::istream &stream, const char separator = '|')
 }
 
 namespace ns3 {
-namespace visualizer3d {
+namespace netsimulyzer {
 
 Color4::Color4 (uint8_t component)
     : red (component), green (component), blue (component), alpha (255u)
@@ -141,5 +141,5 @@ operator>> (std::istream &is, Color3 &color)
 
 ATTRIBUTE_HELPER_CPP (Color3)
 
-} // namespace visualizer3d
+} // namespace netsimulyzer
 } // namespace ns3

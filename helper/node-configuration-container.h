@@ -40,12 +40,12 @@
 #include <cstdint>
 
 namespace ns3 {
-namespace visualizer3d {
+namespace netsimulyzer {
 
 /**
- * \ingroup visualizer3d
+ * \ingroup netsimulyzer
  * 
- * Holds a vector of ns3::visualizer3d::NodeConfiguration objects
+ * Holds a vector of ns3::netsimulyzer::NodeConfiguration objects
  */
 class NodeConfigurationContainer
 {
@@ -167,7 +167,7 @@ NodeConfigurationContainer::Iterator begin (NodeConfigurationContainer &c);
  */
 NodeConfigurationContainer::Iterator end (NodeConfigurationContainer &c);
 
-} // namespace visualizer3d
+} // namespace netsimulyzer
 } // namespace ns3
 
 #endif /* NODE_CONFIGURATION_CONTAINER_H */

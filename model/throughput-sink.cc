@@ -43,7 +43,7 @@ namespace ns3 {
 
 NS_LOG_COMPONENT_DEFINE ("ThroughputSink");
 
-namespace visualizer3d {
+namespace netsimulyzer {
 
 NS_OBJECT_ENSURE_REGISTERED (ThroughputSink);
 
@@ -51,12 +51,12 @@ ThroughputSink::ThroughputSink (Ptr<Orchestrator> orchestrator, const std::strin
     : m_orchestrator (orchestrator)
 {
   //Create the series and assign known information
-  m_series = CreateObject<visualizer3d::XYSeries> (orchestrator);
+  m_series = CreateObject<XYSeries> (orchestrator);
   m_series->SetAttribute ("Name", StringValue (name));
 
   PointerValue xAxis;
   m_series->GetAttribute ("XAxis", xAxis);
-  xAxis.Get<visualizer3d::ValueAxis> ()->SetAttribute ("Name", StringValue ("Time (s)"));
+  xAxis.Get<ValueAxis> ()->SetAttribute ("Name", StringValue ("Time (s)"));
 
   //Set callback for data dump
   m_timer.SetFunction (&ThroughputSink::WriteThroughput, this);
@@ -67,9 +67,9 @@ ThroughputSink::GetTypeId (void)
 {
   // clang-format off
   static TypeId tid =
-    TypeId ("ns3::visualizer3d::ThroughputSink")
+    TypeId ("ns3::netsimulyzer::ThroughputSink")
     .SetParent<ns3::Object> ()
-    .SetGroupName ("visualizer3d")
+    .SetGroupName ("netsimulyzer")
     .AddAttribute ("XYSeries", "The XY Series", TypeId::ATTR_GET, PointerValue (),
                    MakePointerAccessor (&ThroughputSink::GetSeries), MakePointerChecker<XYSeries> ())
     .AddAttribute ("Interval", "Time between updates", TimeValue (Seconds (1)),
@@ -195,7 +195,7 @@ ThroughputSink::DoDispose (void)
 {
   m_orchestrator = nullptr;
   m_series = nullptr;
-  m_timer.Cancel();
+  m_timer.Cancel ();
   Object::DoDispose ();
 }
 
@@ -280,5 +280,5 @@ ThroughputSink::UpdateAxisLabels (void)
       "Name", StringValue ("Throughput (" + dataUnitLabel + '/' + timeUnitLabel + ')'));
 }
 
-} // namespace visualizer3d
+} // namespace netsimulyzer
 } // namespace ns3

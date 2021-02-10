@@ -32,13 +32,12 @@
  * Author: Evan Black <evan.black@nist.gov>
  */
 
-#ifndef VISUALIZER3D_VERSION_H
-#define VISUALIZER3D_VERSION_H
+#ifndef NETSIMULYZER_VERSION_H
+#define NETSIMULYZER_VERSION_H
 
 #include <string>
 
-namespace ns3 {
-namespace visualizer3d {
+namespace ns3::netsimulyzer {
 
 /**
  * The Major version number for the module
@@ -64,7 +63,6 @@ const long VERSION_PATCH = 0L;
  */
 std::string versionString (void);
 
-} // namespace visualizer3d
-} // namespace ns3
+} // namespace ns3::netsimulyzer
 
 #endif

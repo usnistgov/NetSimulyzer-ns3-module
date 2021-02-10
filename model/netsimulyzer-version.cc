@@ -32,11 +32,10 @@
  * Author: Evan Black <evan.black@nist.gov>
  */
 
-#include "visualizer3d-version.h"
+#include "netsimulyzer-version.h"
 #include <string>
 
-namespace ns3 {
-namespace visualizer3d {
+namespace ns3::netsimulyzer {
 
 std::string
 versionString ()
@@ -45,5 +44,4 @@ versionString ()
          std::to_string (VERSION_PATCH);
 }
 
-} // namespace visualizer3d
-} // namespace ns3
+} // namespace ns3::netsimulyzer

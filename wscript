@@ -5,13 +5,13 @@
 
 
 def configure(conf):
-    conf.define("HAS_VISUALIZER3D", 1, True, 'Has visualizer3d module')
-    conf.env['HAS_VISUALIZER3D'] = True
+    conf.define("HAS_NETSIMULYZER", 1, True, 'Has netsimulyzer module')
+    conf.env['HAS_NETSIMULYZER'] = True
     conf.env.append_value('CXXFLAGS', '-std=c++17')
 
 
 def build(bld):
-    module = bld.create_ns3_module('visualizer3d', ['buildings', 'core', 'mobility'])
+    module = bld.create_ns3_module('netsimulyzer', ['buildings', 'core', 'mobility'])
 
     module.source = [
         'helper/building-configuration-container.cc',
@@ -25,22 +25,22 @@ def build(bld):
         'model/color.cc',
         'model/decoration.cc',
         'model/log-stream.cc',
+        'model/netsimulyzer-version.cc',
         'model/orchestrator.cc',
         'model/rectangular-area.cc',
         'model/series-collection.cc',
         'model/state-transition-sink.cc',
         'model/value-axis.cc',
         'model/xy-series.cc',
-        'model/throughput-sink.cc',
-        'model/visualizer3d-version.cc'
+        'model/throughput-sink.cc'
         ]
 
-    module_test = bld.create_ns3_module_test_library('visualizer3d')
+    module_test = bld.create_ns3_module_test_library('netsimulyzer')
     module_test.source = [
         ]
 
     headers = bld(features='ns3header')
-    headers.module = 'visualizer3d'
+    headers.module = 'netsimulyzer'
     headers.source = [
         'helper/building-configuration-container.h',
         'helper/building-configuration-helper.h',
@@ -49,6 +49,7 @@ def build(bld):
         'library/json.hpp',
         'model/event-message.h',
         'model/log-stream.h',
+        'model/netsimulyzer-version.h',
         'model/node-configuration.h',
         'model/optional.h',
         'model/building-configuration.h',
@@ -62,8 +63,7 @@ def build(bld):
         'model/state-transition-sink.h',
         'model/value-axis.h',
         'model/xy-series.h',
-        'model/throughput-sink.h',
-        'model/visualizer3d-version.h'
+        'model/throughput-sink.h'
         ]
 
     if bld.env.ENABLE_EXAMPLES:

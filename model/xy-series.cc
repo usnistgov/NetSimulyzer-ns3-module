@@ -44,7 +44,7 @@ namespace ns3 {
 
 NS_LOG_COMPONENT_DEFINE ("XYSeries");
 
-namespace visualizer3d {
+namespace netsimulyzer {
 
 NS_OBJECT_ENSURE_REGISTERED (XYSeries);
 
@@ -58,9 +58,9 @@ TypeId
 XYSeries::GetTypeId (void)
 {
   static TypeId tid =
-      TypeId ("ns3::visualizer3d::XYSeries")
+      TypeId ("ns3::netsimulyzer::XYSeries")
           .SetParent<ns3::Object> ()
-          .SetGroupName ("visualizer3d")
+          .SetGroupName ("netsimulyzer")
           .AddAttribute ("Id", "The unique ID of the series", TypeId::ATTR_GET, UintegerValue (0u),
                          MakeUintegerAccessor (&XYSeries::m_id), MakeUintegerChecker<uint32_t> ())
           .AddAttribute ("XAxis", "The X axis on the graph", PointerValue (),
@@ -147,5 +147,5 @@ XYSeries::DoDispose (void)
   Object::DoDispose ();
 }
 
-} // namespace visualizer3d
+} // namespace netsimulyzer
 } // namespace ns3

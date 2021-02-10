@@ -41,7 +41,7 @@
 #include <ns3/color.h>
 
 namespace ns3 {
-namespace visualizer3d {
+namespace netsimulyzer {
 
 NS_OBJECT_ENSURE_REGISTERED (BuildingConfiguration);
 
@@ -55,10 +55,11 @@ TypeId
 BuildingConfiguration::GetTypeId (void)
 {
   static TypeId tid =
-      TypeId ("ns3::visualizer3d::BuildingConfiguration")
+      TypeId ("ns3::netsimulyzer::BuildingConfiguration")
           .SetParent<Object> ()
+          .SetGroupName("netsimulyzer")
           .AddConstructor<BuildingConfiguration> ()
-          .SetGroupName ("visualizer3d")
+          .SetGroupName ("netsimulyzer")
           .AddAttribute ("Color", "Color to tint the rendered building",
                          Color3Value (Color3{204u}) /* light gray */,
                          MakeColor3Accessor (&BuildingConfiguration::m_color), MakeColor3Checker ())
@@ -92,5 +93,5 @@ BuildingConfiguration::GetOrchestrator (void) const
   return m_orchestrator;
 }
 
-} // namespace visualizer3d
+} // namespace netsimulyzer
 } // namespace ns3

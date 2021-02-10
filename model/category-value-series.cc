@@ -12,7 +12,7 @@ namespace ns3 {
 
 NS_LOG_COMPONENT_DEFINE ("CategoryValueSeries");
 
-namespace visualizer3d {
+namespace netsimulyzer {
 
 NS_OBJECT_ENSURE_REGISTERED (CategoryValueSeries);
 
@@ -22,9 +22,9 @@ CategoryValueSeries::GetTypeId (void)
 
   // clang-format off
   static TypeId tid =
-      TypeId ("ns3::visualizer3d::CategoryValueSeries")
+      TypeId ("ns3::netsimulyzer::CategoryValueSeries")
           .SetParent<ns3::Object> ()
-          .SetGroupName ("visualizer3d")
+          .SetGroupName ("netsimulyzer")
           .AddAttribute ("Id",
                          "The unique ID of the series",
                          TypeId::ATTR_GET,
@@ -160,5 +160,5 @@ CategoryValueSeries::DoDispose (void)
   Object::DoDispose ();
 }
 
-} // namespace visualizer3d
+} // namespace netsimulyzer
 } // namespace ns3

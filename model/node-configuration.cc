@@ -72,7 +72,7 @@ compareWithTolerance (const ns3::Vector3D &left, const ns3::Vector3D &right, dou
 
 namespace ns3 {
 NS_LOG_COMPONENT_DEFINE ("NodeConfiguration");
-namespace visualizer3d {
+namespace netsimulyzer {
 
 NS_OBJECT_ENSURE_REGISTERED (NodeConfiguration);
 
@@ -86,9 +86,9 @@ TypeId
 NodeConfiguration::GetTypeId (void)
 {
   static TypeId tid =
-      TypeId ("ns3::visualizer3d::NodeConfiguration")
+      TypeId ("ns3::netsimulyzer::NodeConfiguration")
           .SetParent<Object> ()
-          .SetGroupName ("visualizer3d")
+          .SetGroupName ("netsimulyzer")
           .AddConstructor<NodeConfiguration> ()
           .AddAttribute ("Name", "Name for this Node", StringValue ("Node"),
                          MakeStringAccessor (&NodeConfiguration::m_name), MakeStringChecker ())
@@ -253,10 +253,10 @@ NodeConfiguration::NotifyNewAggregate (void)
     }
 
   mobility->TraceConnectWithoutContext (
-      "CourseChange", MakeCallback (&visualizer3d::NodeConfiguration::CourseChange, this));
+      "CourseChange", MakeCallback (&netsimulyzer::NodeConfiguration::CourseChange, this));
   m_attachedMobilityTrace = true;
   Object::NotifyNewAggregate ();
 }
 
-} // namespace visualizer3d
+} // namespace netsimulyzer
 } // namespace ns3

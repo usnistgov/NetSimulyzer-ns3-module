@@ -39,7 +39,7 @@
 #include <ns3/double.h>
 
 namespace ns3 {
-namespace visualizer3d {
+namespace netsimulyzer {
 
 StateTransitionSink::StateTransitionSink (Ptr<Orchestrator> orchestrator,
                                           const std::vector<std::string> &states,
@@ -68,9 +68,9 @@ StateTransitionSink::GetTypeId (void)
 {
   // clang-format off
   static TypeId tid =
-      TypeId ("ns3::visualizer3d::StateTransitionSink")
+      TypeId ("ns3::netsimulyzer::StateTransitionSink")
           .SetParent<ns3::Object> ()
-          .SetGroupName ("visualizer3d")
+          .SetGroupName ("netsimulyzer")
           .AddAttribute ("Name", "Set the names for sub-elements", StringValue (),
                          MakeStringAccessor (&StateTransitionSink::SetNames), MakeStringChecker ())
           .AddAttribute ("Series", "The series tracking the application state", PointerValue (),
@@ -268,5 +268,5 @@ StateTransitionSink::GetTimeUnit (void) const
   return m_timeUnit;
 }
 
-} // namespace visualizer3d
+} // namespace netsimulyzer
 } // namespace ns3

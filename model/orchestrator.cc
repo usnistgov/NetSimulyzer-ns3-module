@@ -35,7 +35,7 @@
 #include "orchestrator.h"
 #include "node-configuration.h"
 #include "building-configuration.h"
-#include "visualizer3d-version.h"
+#include "netsimulyzer-version.h"
 #include <string>
 #include <vector>
 #include <ns3/abort.h>
@@ -62,12 +62,12 @@ ScaleToString (int scale)
 {
   switch (scale)
     {
-    case ns3::visualizer3d::ValueAxis::Scale::Linear:
+    case ns3::netsimulyzer::ValueAxis::Scale::Linear:
       return "linear";
-    case ns3::visualizer3d::ValueAxis::Scale::Logarithmic:
+    case ns3::netsimulyzer::ValueAxis::Scale::Logarithmic:
       return "logarithmic";
     default:
-      NS_ABORT_MSG ("Unhandled ns3::visualizer3d::ValueAxis::Scale: " << scale);
+      NS_ABORT_MSG ("Unhandled ns3::netsimulyzer::ValueAxis::Scale: " << scale);
     }
 }
 
@@ -76,17 +76,17 @@ BoundModeToString (int mode)
 {
   switch (mode)
     {
-    case ns3::visualizer3d::ValueAxis::BoundMode::Fixed:
+    case ns3::netsimulyzer::ValueAxis::BoundMode::Fixed:
       return "fixed";
-    case ns3::visualizer3d::ValueAxis::BoundMode::HighestValue:
+    case ns3::netsimulyzer::ValueAxis::BoundMode::HighestValue:
       return "highest value";
     default:
-      NS_ABORT_MSG ("Unhandled ns3::visualizer3d::ValueAxis::BoundMode: " << mode);
+      NS_ABORT_MSG ("Unhandled ns3::netsimulyzer::ValueAxis::BoundMode: " << mode);
     }
 }
 
 nlohmann::json
-colorToObject (const ns3::visualizer3d::Color3 &color)
+colorToObject (const ns3::netsimulyzer::Color3 &color)
 {
   nlohmann::json object;
 
@@ -98,7 +98,7 @@ colorToObject (const ns3::visualizer3d::Color3 &color)
 }
 
 nlohmann::json
-colorToObject (const ns3::visualizer3d::Color4 &color)
+colorToObject (const ns3::netsimulyzer::Color4 &color)
 {
   nlohmann::json object;
 
@@ -122,7 +122,7 @@ pointToObject (double x, double y)
 }
 
 nlohmann::json
-makeAxisAttributes (ns3::Ptr<ns3::visualizer3d::ValueAxis> axis)
+makeAxisAttributes (ns3::Ptr<ns3::netsimulyzer::ValueAxis> axis)
 {
   nlohmann::json element;
 
@@ -150,7 +150,7 @@ makeAxisAttributes (ns3::Ptr<ns3::visualizer3d::ValueAxis> axis)
 }
 
 nlohmann::json
-makeAxisAttributes (ns3::Ptr<ns3::visualizer3d::CategoryAxis> axis)
+makeAxisAttributes (ns3::Ptr<ns3::netsimulyzer::CategoryAxis> axis)
 {
   nlohmann::json element;
 
@@ -178,7 +178,7 @@ namespace ns3 {
 
 NS_LOG_COMPONENT_DEFINE ("Orchestrator");
 
-namespace visualizer3d {
+namespace netsimulyzer {
 
 NS_OBJECT_ENSURE_REGISTERED (Orchestrator);
 
@@ -203,9 +203,9 @@ Orchestrator::GetTypeId (void)
 {
   // clang-format off
   static TypeId tid =
-      TypeId ("ns3::visualizer3d::Orchestrator")
+      TypeId ("ns3::netsimulyzer::Orchestrator")
           .SetParent<ns3::Object> ()
-          .SetGroupName ("visualizer3d")
+          .SetGroupName ("netsimulyzer")
           .AddAttribute ("MillisecondsPerFrame",
                          "Number of milliseconds a single frame in the visualizer will represent",
                          OptionalValue<double> (),
@@ -783,13 +783,13 @@ Orchestrator::Commit (XYSeries &series)
   series.GetAttribute ("Connection", connection);
   switch (connection.Get ())
     {
-    case visualizer3d::XYSeries::ConnectionType::None:
+    case XYSeries::ConnectionType::None:
       element["connection"] = "none";
       break;
-    case visualizer3d::XYSeries::ConnectionType::Line:
+    case XYSeries::ConnectionType::Line:
       element["connection"] = "line";
       break;
-    case visualizer3d::XYSeries::ConnectionType::Spline:
+    case XYSeries::ConnectionType::Spline:
       element["connection"] = "spline";
       break;
     default:
@@ -801,10 +801,10 @@ Orchestrator::Commit (XYSeries &series)
   series.GetAttribute ("LabelMode", labelMode);
   switch (labelMode.Get ())
     {
-    case visualizer3d::XYSeries::LabelMode::Hidden:
+    case XYSeries::LabelMode::Hidden:
       element["labels"] = "hidden";
       break;
-    case visualizer3d::XYSeries::LabelMode::Shown:
+    case XYSeries::LabelMode::Shown:
       element["labels"] = "shown";
       break;
     }
@@ -816,13 +816,13 @@ Orchestrator::Commit (XYSeries &series)
   // X Axis
   PointerValue xAxisAttr;
   series.GetAttribute ("XAxis", xAxisAttr);
-  auto xAxis = xAxisAttr.Get<visualizer3d::ValueAxis> ();
+  auto xAxis = xAxisAttr.Get<ValueAxis> ();
   element["x-axis"] = makeAxisAttributes (xAxis);
 
   // Y Axis
   PointerValue yAxisAttr;
   series.GetAttribute ("YAxis", yAxisAttr);
-  auto yAxis = yAxisAttr.Get<visualizer3d::ValueAxis> ();
+  auto yAxis = yAxisAttr.Get<ValueAxis> ();
   element["y-axis"] = makeAxisAttributes (yAxis);
 
   m_document["series"].emplace_back (element);
@@ -850,13 +850,13 @@ Orchestrator::Commit (SeriesCollection &series)
   // X Axis
   PointerValue xAxisAttr;
   series.GetAttribute ("XAxis", xAxisAttr);
-  auto xAxis = xAxisAttr.Get<visualizer3d::ValueAxis> ();
+  auto xAxis = xAxisAttr.Get<ValueAxis> ();
   element["x-axis"] = makeAxisAttributes (xAxis);
 
   // Y Axis
   PointerValue yAxisAttr;
   series.GetAttribute ("YAxis", yAxisAttr);
-  auto yAxis = yAxisAttr.Get<visualizer3d::ValueAxis> ();
+  auto yAxis = yAxisAttr.Get<ValueAxis> ();
   element["y-axis"] = makeAxisAttributes (yAxis);
 
   element["child-series"] = series.GetSeriesIds ();
@@ -902,13 +902,13 @@ Orchestrator::Commit (CategoryValueSeries &series)
   // X Axis
   PointerValue xAxisAttr;
   series.GetAttribute ("XAxis", xAxisAttr);
-  auto xAxis = xAxisAttr.Get<visualizer3d::ValueAxis> ();
+  auto xAxis = xAxisAttr.Get<ValueAxis> ();
   element["x-axis"] = makeAxisAttributes (xAxis);
 
   // Y Axis
   PointerValue yAxisAttr;
   series.GetAttribute ("YAxis", yAxisAttr);
-  auto yAxis = yAxisAttr.Get<visualizer3d::CategoryAxis> ();
+  auto yAxis = yAxisAttr.Get<CategoryAxis> ();
   element["y-axis"] = makeAxisAttributes (yAxis);
 
   BooleanValue autoUpdate;
@@ -1018,5 +1018,5 @@ Orchestrator::CommitAll (void)
     }
 }
 
-} // namespace visualizer3d
+} // namespace netsimulyzer
 } // namespace ns3

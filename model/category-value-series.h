@@ -45,7 +45,7 @@
 #include <ns3/deprecated.h>
 
 namespace ns3 {
-namespace visualizer3d {
+namespace netsimulyzer {
 
 class CategoryValueSeries : public ns3::Object
 {
@@ -233,6 +233,6 @@ private:
   bool m_committed{false};
 };
 
-} // namespace visualizer3d
+} // namespace netsimulyzer
 } // namespace ns3
 #endif /* CATEGORY_VALUE_SERIES_H */

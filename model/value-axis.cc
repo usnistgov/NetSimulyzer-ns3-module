@@ -43,7 +43,7 @@ namespace ns3 {
 
 NS_LOG_COMPONENT_DEFINE ("ValueAxis");
 
-namespace visualizer3d {
+namespace netsimulyzer {
 
 NS_OBJECT_ENSURE_REGISTERED (ValueAxis);
 
@@ -51,9 +51,9 @@ TypeId
 ValueAxis::GetTypeId (void)
 {
   static TypeId tid =
-      TypeId ("ns3::visualizer3d::ValueAxis")
+      TypeId ("ns3::netsimulyzer::ValueAxis")
           .SetParent<ns3::Object> ()
-          .SetGroupName ("visualizer3d")
+          .SetGroupName ("netsimulyzer")
           .AddAttribute ("Name", "Unique name to represent this axis in visualizer elements",
                          StringValue (), MakeStringAccessor (&ValueAxis::m_name),
                          MakeStringChecker ())
@@ -81,5 +81,5 @@ ValueAxis::DoDispose (void)
   Object::DoDispose ();
 }
 
-} // namespace visualizer3d
+} // namespace netsimulyzer
 } // namespace ns3
