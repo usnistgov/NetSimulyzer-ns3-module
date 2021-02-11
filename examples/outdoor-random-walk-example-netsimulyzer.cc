@@ -145,27 +145,25 @@ main (int argc, char *argv[])
 
 #ifdef HAS_NETSIMULYZER
   auto orchestrator = CreateObject<netsimulyzer::Orchestrator> ("outdoor-random-walk-example.json");
-  //Use helper to define model for visualizing nodes and aggregate to Node object
+  // Use helper to define model for visualizing nodes and aggregate to Node object
   netsimulyzer::NodeConfigurationHelper nodeHelper{orchestrator};
   nodeHelper.Set ("Model", StringValue ("models/smartphone.obj"));
   nodeHelper.Set ("Scale", DoubleValue (4));
   nodeHelper.Install(nodes);
-  //Use helper to configure buildings and export them
+  // Use helper to configure buildings and export them
   netsimulyzer::BuildingConfigurationHelper buildingHelper{orchestrator};
-  for (auto building = buildingVector.begin(); building != buildingVector.end(); building++)
-      buildingHelper.Install(*building);
-  //Create a LogStream to output mobility events
+  for (auto &building : buildingVector)
+      buildingHelper.Install(building);
+  // Create a LogStream to output mobility events
   Ptr<netsimulyzer::LogStream> eventLog = CreateObject<netsimulyzer::LogStream> (orchestrator);
-  //Create XYSeries that will be used to display mobility (similar to a 2D plot)
+  eventLog->SetAttribute("Name", StringValue ("Event Log"));
+  // Create XYSeries that will be used to display mobility (similar to a 2D plot)
   Ptr<netsimulyzer::XYSeries> posSeries = CreateObject <netsimulyzer::XYSeries>(orchestrator);
-  posSeries->SetAttribute ("Name", StringValue("Node position" ));
+  posSeries->SetAttribute ("Name", StringValue("Node position"));
   posSeries->SetAttribute ("LabelMode", StringValue("Hidden"));
-  PointerValue xAxis;
-  posSeries->GetAttribute ("XAxis", xAxis);
-  xAxis.Get<netsimulyzer::ValueAxis> ()->SetAttribute ("Name", StringValue("X position (m)"));
-  PointerValue yAxis;
-  posSeries->GetAttribute ("YAxis", yAxis);
-  yAxis.Get<netsimulyzer::ValueAxis> ()->SetAttribute ("Name", StringValue("Y position (m)"));
+  posSeries->GetXAxis ()->SetAttribute ("Name", StringValue("X position (m)"));
+  posSeries->GetYAxis ()->SetAttribute ("Name", StringValue("Y position (m)"));
+
   //Tie together the callback function, LogStream, and XYSeries
   Config::Connect ("/NodeList/*/$ns3::MobilityModel/CourseChange", MakeBoundCallback (&CourseChanged, posSeries, eventLog));
 #endif
