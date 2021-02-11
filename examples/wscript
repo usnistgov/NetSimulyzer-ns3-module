@@ -2,18 +2,18 @@
 
 
 def build(bld):
-    obj = bld.create_ns3_program('visualizer3d-mobility-buildings-example',
-                                 ['visualizer3d', 'core', 'mobility', 'network'])
+    obj = bld.create_ns3_program('netsimulyzer-mobility-buildings-example',
+                                 ['netsimulyzer', 'core', 'mobility', 'network'])
     obj.source = 'mobility-buildings-example.cc'
 
     obj = bld.create_ns3_program('lena-radio-link-failure-netsimulyzer',
-                                 ['visualizer3d', 'core', 'mobility', 'network', 'lte'])
+                                 ['netsimulyzer', 'core', 'mobility', 'network', 'lte'])
     obj.source = 'lena-radio-link-failure-netsimulyzer.cc'
 
     obj = bld.create_ns3_program('outdoor-random-walk-example-netsimulyzer',
-                                 ['visualizer3d', 'core', 'mobility', 'network', 'buildings'])
+                                 ['netsimulyzer', 'core', 'mobility', 'network', 'buildings'])
     obj.source = 'outdoor-random-walk-example-netsimulyzer.cc'
 
     obj = bld.create_ns3_program('wifi-bianchi-netsimulyzer',
-                                 ['visualizer3d', 'core', 'mobility', 'network', 'wifi'])
+                                 ['netsimulyzer', 'core', 'mobility', 'network', 'wifi'])
     obj.source = 'wifi-bianchi-netsimulyzer.cc'

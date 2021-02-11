@@ -50,7 +50,7 @@
 #include "ns3/application-container.h"
 
 #ifdef HAS_NETSIMULYZER
-#include "ns3/visualizer3d-module.h"
+#include "ns3/netsimulyzer-module.h"
 #include "ns3/pointer.h"
 #endif
 
@@ -94,8 +94,8 @@ uint32_t pktSize = 1500; ///< packet size used for the simulation (in bytes)
   double guiResolution = 200; //refresh time in ms
 
   // Visualizer components
-  Ptr<visualizer3d::Orchestrator> orchestrator = nullptr;
-  Ptr<visualizer3d::LogStream> applicationLog = nullptr;
+  Ptr<netsimulyzer::Orchestrator> orchestrator = nullptr;
+  Ptr<netsimulyzer::LogStream> applicationLog = nullptr;
 
   // Utility function to automatically add time to log messages
   void WriteApplicationLog (std::string message)
@@ -104,15 +104,15 @@ uint32_t pktSize = 1500; ///< packet size used for the simulation (in bytes)
   }
 
   // Define graphs to visualize */
-  std::map<uint32_t, Ptr<visualizer3d::XYSeries>> cwTraceSeries;
-  std::map<uint32_t, Ptr<visualizer3d::XYSeries>> backoffTraceSeries;
-  std::map<uint32_t, Ptr<visualizer3d::ThroughputSink>> macTxTraceSeries;
-  std::map<uint32_t, Ptr<visualizer3d::ThroughputSink>> macRxTraceSeries;
-  std::map<uint32_t, Ptr<visualizer3d::SeriesCollection>> macCollections;
+  std::map<uint32_t, Ptr<netsimulyzer::XYSeries>> cwTraceSeries;
+  std::map<uint32_t, Ptr<netsimulyzer::XYSeries>> backoffTraceSeries;
+  std::map<uint32_t, Ptr<netsimulyzer::ThroughputSink>> macTxTraceSeries;
+  std::map<uint32_t, Ptr<netsimulyzer::ThroughputSink>> macRxTraceSeries;
+  std::map<uint32_t, Ptr<netsimulyzer::SeriesCollection>> macCollections;
 
-  Ptr<visualizer3d::ThroughputSink> macRxTotalTraceSeries;
+  Ptr<netsimulyzer::ThroughputSink> macRxTotalTraceSeries;
   
-  Ptr<visualizer3d::XYSeries> associatedSeries;
+  Ptr<netsimulyzer::XYSeries> associatedSeries;
   
 #endif
 
@@ -508,7 +508,7 @@ CwTrace (std::string context, uint32_t oldVal, uint32_t newVal)
   {
     if (newVal != oldVal)
     {
-      std::map <uint32_t, Ptr<visualizer3d::XYSeries>>::iterator it = cwTraceSeries.find (ContextToNodeId (context));
+      std::map <uint32_t, Ptr<netsimulyzer::XYSeries>>::iterator it = cwTraceSeries.find (ContextToNodeId (context));
       it->second->Append (Simulator::Now().GetSeconds(), newVal);
     }
   }
@@ -526,7 +526,7 @@ BackoffTrace (std::string context, uint32_t newVal)
 #ifdef HAS_NETSIMULYZER
   if (enableVisualization)
   {
-    std::map <uint32_t, Ptr<visualizer3d::XYSeries>>::iterator it = backoffTraceSeries.find (ContextToNodeId (context));
+    std::map <uint32_t, Ptr<netsimulyzer::XYSeries>>::iterator it = backoffTraceSeries.find (ContextToNodeId (context));
     it->second->Append (Simulator::Now().GetSeconds(), newVal);
   }
 #endif
@@ -680,7 +680,7 @@ MacTxTrace (std::string context, Ptr<const Packet> p)
 #ifdef HAS_NETSIMULYZER
   if (enableVisualization)
   {
-    std::map <uint32_t, Ptr<visualizer3d::ThroughputSink>>::iterator it = macTxTraceSeries.find (ContextToNodeId (context));
+    std::map <uint32_t, Ptr<netsimulyzer::ThroughputSink>>::iterator it = macTxTraceSeries.find (ContextToNodeId (context));
     it->second->AddPacketSize (p->GetSize());
   }
 #endif
@@ -696,7 +696,7 @@ MacRxTrace (std::string context, Ptr<const Packet> p)
 #ifdef HAS_NETSIMULYZER
   if (enableVisualization)
   {
-    std::map <uint32_t, Ptr<visualizer3d::ThroughputSink>>::iterator it = macRxTraceSeries.find (ContextToNodeId (context));
+    std::map <uint32_t, Ptr<netsimulyzer::ThroughputSink>>::iterator it = macRxTraceSeries.find (ContextToNodeId (context));
     it->second->AddPacketSize (p->GetSize());
     macRxTotalTraceSeries->AddPacketSize (p->GetSize());
   }
@@ -935,11 +935,11 @@ Experiment::Run (const WifiHelper &helper, const YansWifiPhyHelper &wifiPhy, con
 
     std::ostringstream oss;
     oss << "Bianchi-" << trialNumber << "-" << networkSize << "-" << infra << ".json";
-    orchestrator = CreateObject<visualizer3d::Orchestrator> (oss.str()); /** make name include trial and network size **/
+    orchestrator = CreateObject<netsimulyzer::Orchestrator> (oss.str()); /** make name include trial and network size **/
     orchestrator->SetAttribute ("MobilityPollInterval", TimeValue (MilliSeconds (guiResolution)));
 
     //Configure nodes
-    visualizer3d::NodeConfigurationHelper nodeConfigHelper (orchestrator);
+    netsimulyzer::NodeConfigurationHelper nodeConfigHelper (orchestrator);
     nodeConfigHelper.Set ("Scale", DoubleValue (0.05));
     if (infra)
     {
@@ -957,77 +957,77 @@ Experiment::Run (const WifiHelper &helper, const YansWifiPhyHelper &wifiPhy, con
     } 
 
     //Log
-    applicationLog = CreateObject<visualizer3d::LogStream> (orchestrator);
+    applicationLog = CreateObject<netsimulyzer::LogStream> (orchestrator);
     applicationLog->SetAttribute ("Name", StringValue ("Application log"));
-    applicationLog->SetAttribute("Color", visualizer3d::OptionalValue<visualizer3d::Color3>{100u, 150u, 100u});
+    applicationLog->SetAttribute("Color", netsimulyzer::OptionalValue<netsimulyzer::Color3>{100u, 150u, 100u});
 
     //Statistics
     PointerValue xAxis; 
     PointerValue yAxis;
 
-    associatedSeries = CreateObject <visualizer3d::XYSeries>(orchestrator);
+    associatedSeries = CreateObject <netsimulyzer::XYSeries>(orchestrator);
     associatedSeries->SetAttribute ("Name", StringValue("Number of associated STAs"));
-    associatedSeries->SetAttribute ("Color", visualizer3d::Color4Value(visualizer3d::Color4{204u, 111u, 4u, 255u}));
+    associatedSeries->SetAttribute ("Color", netsimulyzer::Color4Value(netsimulyzer::Color4{204u, 111u, 4u, 255u}));
 
     for (i = 0; i < nNodes; ++i)
     {
 
-      Ptr<visualizer3d::XYSeries> cwTrace = CreateObject <visualizer3d::XYSeries>(orchestrator);
+      Ptr<netsimulyzer::XYSeries> cwTrace = CreateObject <netsimulyzer::XYSeries>(orchestrator);
       cwTrace->SetAttribute ("Name", StringValue("CW for node " + std::to_string(i)));
       cwTrace->SetAttribute ("LabelMode", StringValue("Hidden"));
       PointerValue cwYAxis;
       cwTrace->GetAttribute ("YAxis", cwYAxis);
-      cwYAxis.Get<visualizer3d::ValueAxis> ()->SetAttribute ("Name", StringValue("Slots"));
+      cwYAxis.Get<netsimulyzer::ValueAxis> ()->SetAttribute ("Name", StringValue("Slots"));
 
-      cwTraceSeries.insert (std::pair<uint32_t, Ptr<visualizer3d::XYSeries>> (i, cwTrace));
+      cwTraceSeries.insert (std::pair<uint32_t, Ptr<netsimulyzer::XYSeries>> (i, cwTrace));
 
-      Ptr<visualizer3d::XYSeries> backoffTrace = CreateObject <visualizer3d::XYSeries>(orchestrator);
+      Ptr<netsimulyzer::XYSeries> backoffTrace = CreateObject <netsimulyzer::XYSeries>(orchestrator);
       backoffTrace->SetAttribute ("Name", StringValue("Backoff for node " + std::to_string(i)));
       backoffTrace->SetAttribute ("LabelMode", StringValue("Hidden"));
       PointerValue bYAxis;
       backoffTrace->GetAttribute ("YAxis", bYAxis);
-      bYAxis.Get<visualizer3d::ValueAxis> ()->SetAttribute ("Name", StringValue("Slots"));
-      backoffTraceSeries.insert (std::pair<uint32_t, Ptr<visualizer3d::XYSeries>> (i, backoffTrace));
+      bYAxis.Get<netsimulyzer::ValueAxis> ()->SetAttribute ("Name", StringValue("Slots"));
+      backoffTraceSeries.insert (std::pair<uint32_t, Ptr<netsimulyzer::XYSeries>> (i, backoffTrace));
 
-      Ptr<visualizer3d::ThroughputSink> macTxTrace = CreateObject <visualizer3d::ThroughputSink>(orchestrator, "Tx");
+      Ptr<netsimulyzer::ThroughputSink> macTxTrace = CreateObject <netsimulyzer::ThroughputSink>(orchestrator, "Tx");
       macTxTrace->SetAttribute ("Unit", StringValue ("Mb/s"));
       PointerValue txXySeries;
       macTxTrace->GetAttribute ("XYSeries", txXySeries);
-      txXySeries.Get<visualizer3d::XYSeries> ()->SetAttribute ("LabelMode", StringValue("Hidden"));
-      macTxTraceSeries.insert (std::pair<uint32_t, Ptr<visualizer3d::ThroughputSink>> (i, macTxTrace));
+      txXySeries.Get<netsimulyzer::XYSeries> ()->SetAttribute ("LabelMode", StringValue("Hidden"));
+      macTxTraceSeries.insert (std::pair<uint32_t, Ptr<netsimulyzer::ThroughputSink>> (i, macTxTrace));
 
-      Ptr<visualizer3d::ThroughputSink> macRxTrace = CreateObject <visualizer3d::ThroughputSink>(orchestrator, "Rx");
+      Ptr<netsimulyzer::ThroughputSink> macRxTrace = CreateObject <netsimulyzer::ThroughputSink>(orchestrator, "Rx");
       macRxTrace->SetAttribute ("Unit", StringValue ("Mb/s"));
       PointerValue rxXySeries;
       macRxTrace->GetAttribute ("XYSeries", rxXySeries);
-      rxXySeries.Get<visualizer3d::XYSeries> ()->SetAttribute ("LabelMode", StringValue("Hidden"));
-      macRxTraceSeries.insert (std::pair<uint32_t, Ptr<visualizer3d::ThroughputSink>> (i, macRxTrace));
+      rxXySeries.Get<netsimulyzer::XYSeries> ()->SetAttribute ("LabelMode", StringValue("Hidden"));
+      macRxTraceSeries.insert (std::pair<uint32_t, Ptr<netsimulyzer::ThroughputSink>> (i, macRxTrace));
 
     }
 
     //Add collection to group Tx/Rx per flow (i.e. Tx node 0 -> Rx node 1, etc...)
     for (i = 0; i < nNodes; ++i)
     {
-      Ptr<visualizer3d::SeriesCollection> macCollection = CreateObject <visualizer3d::SeriesCollection>(orchestrator);
+      Ptr<netsimulyzer::SeriesCollection> macCollection = CreateObject <netsimulyzer::SeriesCollection>(orchestrator);
       macCollection->SetAttribute ("Name", StringValue("MAC Traffic " + std::to_string(i) + " to " + std::to_string((i+1)%nNodes)));
       macCollection->GetAttribute ("XAxis", xAxis);
-      xAxis.Get<visualizer3d::ValueAxis> ()->SetAttribute ("Name", StringValue ("Time (s)"));
+      xAxis.Get<netsimulyzer::ValueAxis> ()->SetAttribute ("Name", StringValue ("Time (s)"));
       macCollection->GetAttribute ("YAxis", yAxis);
-      yAxis.Get<visualizer3d::ValueAxis> ()->SetAttribute ("Name", StringValue ("Throughput (Mb/s)"));
+      yAxis.Get<netsimulyzer::ValueAxis> ()->SetAttribute ("Name", StringValue ("Throughput (Mb/s)"));
       
       //Add Tx graph (this node)
       macCollection->Add (macTxTraceSeries.find(i)->second->GetSeries());
       //Add Rx graph (previous node)
       macCollection->Add (macRxTraceSeries.find((i+1)%nNodes)->second->GetSeries());
-      macCollections.insert (std::pair<uint32_t, Ptr<visualizer3d::SeriesCollection>> (i, macCollection));
+      macCollections.insert (std::pair<uint32_t, Ptr<netsimulyzer::SeriesCollection>> (i, macCollection));
     }
 
     //Total MAC Rx throughput
-    macRxTotalTraceSeries = CreateObject <visualizer3d::ThroughputSink>(orchestrator, "Total MAC Rx");
+    macRxTotalTraceSeries = CreateObject <netsimulyzer::ThroughputSink>(orchestrator, "Total MAC Rx");
     macRxTotalTraceSeries->SetAttribute ("Unit", StringValue ("Mb/s"));
     PointerValue rxXySeries;
     macRxTotalTraceSeries->GetAttribute ("XYSeries", rxXySeries);
-    rxXySeries.Get<visualizer3d::XYSeries> ()->SetAttribute ("LabelMode", StringValue("Hidden"));
+    rxXySeries.Get<netsimulyzer::XYSeries> ()->SetAttribute ("LabelMode", StringValue("Hidden"));
 
   } // end if enableVisualization
 #endif

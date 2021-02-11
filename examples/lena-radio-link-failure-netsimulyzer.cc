@@ -32,7 +32,7 @@
 #include <iomanip>
 
 #ifdef HAS_NETSIMULYZER
-#include "ns3/visualizer3d-module.h"
+#include "ns3/netsimulyzer-module.h"
 #endif
 
 using namespace ns3;
@@ -52,10 +52,10 @@ uint32_t oldByteCounter = 0;
   double guiResolution = 20; //refresh time in ms
 
   // Visualizer components
-  Ptr<visualizer3d::Orchestrator> orchestrator = nullptr;
-  Ptr<visualizer3d::LogStream> applicationLog = nullptr;
-  Ptr<visualizer3d::LogStream> ueLog = nullptr;
-  Ptr<visualizer3d::LogStream> enbLog = nullptr;
+  Ptr<netsimulyzer::Orchestrator> orchestrator = nullptr;
+  Ptr<netsimulyzer::LogStream> applicationLog = nullptr;
+  Ptr<netsimulyzer::LogStream> ueLog = nullptr;
+  Ptr<netsimulyzer::LogStream> enbLog = nullptr;
 
   //Helper function to simplify writing to logs
   void WriteApplicationLog (std::string message)
@@ -64,17 +64,17 @@ uint32_t oldByteCounter = 0;
   }
 
   //Statistics
-  Ptr<visualizer3d::ThroughputSink> appRxTraceSeries;
-  std::map<uint32_t, Ptr<visualizer3d::StateTransitionSink>> rrcStateMachines;
-  std::map<uint32_t, Ptr<visualizer3d::SeriesCollection>> rsrpCollections;
-  std::map<uint32_t, std::map<uint32_t, Ptr<visualizer3d::XYSeries>>> rsrpSeries; //maps IMSI to map of CellId to series
+  Ptr<netsimulyzer::ThroughputSink> appRxTraceSeries;
+  std::map<uint32_t, Ptr<netsimulyzer::StateTransitionSink>> rrcStateMachines;
+  std::map<uint32_t, Ptr<netsimulyzer::SeriesCollection>> rsrpCollections;
+  std::map<uint32_t, std::map<uint32_t, Ptr<netsimulyzer::XYSeries>>> rsrpSeries; //maps IMSI to map of CellId to series
 
   #define MAX_COLORS 3
-  static const visualizer3d::Color3 g_colors[MAX_COLORS] =
+  static const netsimulyzer::Color3 g_colors[MAX_COLORS] =
   {
-     visualizer3d::Color3 {245u, 0u, 0u},
-     visualizer3d::Color3 {0u, 245u, 0u},
-     visualizer3d::Color3 {0u, 0u, 245u}
+     netsimulyzer::Color3 {245u, 0u, 0u},
+     netsimulyzer::Color3 {0u, 245u, 0u},
+     netsimulyzer::Color3 {0u, 0u, 245u}
   };
 
   //Callback for UE PHY measurements
@@ -89,8 +89,8 @@ uint32_t oldByteCounter = 0;
       NS_LOG_LOGIC ("FindImsiFromLteNetDevice: " << path << ", " << ueNetDevice->GetObject<LteUeNetDevice> ()->GetImsi ());
       imsi = ueNetDevice->GetObject<LteUeNetDevice> ()->GetImsi ();
 
-      std::map<uint32_t, std::map<uint32_t, Ptr<visualizer3d::XYSeries>>>::iterator imsiToCellIt = rsrpSeries.find (imsi);
-      std::map<uint32_t, Ptr<visualizer3d::XYSeries>>::iterator cellIdToPlotIt;
+      std::map<uint32_t, std::map<uint32_t, Ptr<netsimulyzer::XYSeries>>>::iterator imsiToCellIt = rsrpSeries.find (imsi);
+      std::map<uint32_t, Ptr<netsimulyzer::XYSeries>>::iterator cellIdToPlotIt;
       if (imsiToCellIt != rsrpSeries.end())
       {
         cellIdToPlotIt = imsiToCellIt->second.find (cellId);
@@ -100,26 +100,26 @@ uint32_t oldByteCounter = 0;
         //Create collection to plot RSRP for cells detected by this IMSI
         PointerValue xAxis; 
         PointerValue yAxis;
-        Ptr<visualizer3d::SeriesCollection> rsrpCollection = CreateObject <visualizer3d::SeriesCollection>(orchestrator);
+        Ptr<netsimulyzer::SeriesCollection> rsrpCollection = CreateObject <netsimulyzer::SeriesCollection>(orchestrator);
         rsrpCollection->SetAttribute ("Name", StringValue("RSRP"));
         rsrpCollection->GetAttribute ("XAxis", xAxis);
-        xAxis.Get<visualizer3d::ValueAxis> ()->SetAttribute ("Name", StringValue ("Time (s)"));
+        xAxis.Get<netsimulyzer::ValueAxis> ()->SetAttribute ("Name", StringValue ("Time (s)"));
         rsrpCollection->GetAttribute ("YAxis", yAxis);
-        yAxis.Get<visualizer3d::ValueAxis> ()->SetAttribute ("Name", StringValue ("RSRP (dBm)"));
-        yAxis.Get<visualizer3d::ValueAxis> ()->SetAttribute ("BoundMode", StringValue ("Fixed"));
-        yAxis.Get<visualizer3d::ValueAxis> ()->SetAttribute ("Maximum", DoubleValue (-110));
-        yAxis.Get<visualizer3d::ValueAxis> ()->SetAttribute ("Minimum", DoubleValue (-140));
+        yAxis.Get<netsimulyzer::ValueAxis> ()->SetAttribute ("Name", StringValue ("RSRP (dBm)"));
+        yAxis.Get<netsimulyzer::ValueAxis> ()->SetAttribute ("BoundMode", StringValue ("Fixed"));
+        yAxis.Get<netsimulyzer::ValueAxis> ()->SetAttribute ("Maximum", DoubleValue (-110));
+        yAxis.Get<netsimulyzer::ValueAxis> ()->SetAttribute ("Minimum", DoubleValue (-140));
         rsrpCollections[imsi] = rsrpCollection;
       }
       if (imsiToCellIt == rsrpSeries.end () || cellIdToPlotIt == imsiToCellIt->second.end ())
       {
         //create new XY series to plot RSRP for this cellId
         std::cout << "Creating new entry for " << imsi << " cellId " << cellId << std::endl;
-        rsrpSeries [imsi][cellId] = CreateObject <visualizer3d::XYSeries>(orchestrator);
+        rsrpSeries [imsi][cellId] = CreateObject <netsimulyzer::XYSeries>(orchestrator);
         rsrpSeries [imsi][cellId]->SetAttribute ("Name", StringValue("Cell Id " + std::to_string(cellId)));
         rsrpSeries [imsi][cellId]->SetAttribute ("LabelMode", StringValue("Hidden"));
         rsrpSeries [imsi][cellId]->SetAttribute ("Connection", StringValue("None"));
-        rsrpSeries [imsi][cellId]->SetAttribute ("Color", visualizer3d::Color4Value(g_colors[cellId % MAX_COLORS]));
+        rsrpSeries [imsi][cellId]->SetAttribute ("Color", netsimulyzer::Color4Value(g_colors[cellId % MAX_COLORS]));
         rsrpCollections[imsi]->Add (rsrpSeries [imsi][cellId]);
       }
       //Update data point
@@ -248,7 +248,7 @@ UeStateTransition (uint64_t imsi, uint16_t cellId, uint16_t rnti, LteUeRrc::Stat
 #ifdef HAS_NETSIMULYZER
   if (enableVisualization)
   {  
-    std::map <uint32_t, Ptr<visualizer3d::StateTransitionSink>>::iterator it = rrcStateMachines.find (imsi);
+    std::map <uint32_t, Ptr<netsimulyzer::StateTransitionSink>>::iterator it = rrcStateMachines.find (imsi);
     it->second->StateChangedId (newState);
   }
 #endif
@@ -737,11 +737,11 @@ main (int argc, char *argv[])
   {
      NS_LOG_INFO ("Enabling visualization...");
 
-    orchestrator = CreateObject<visualizer3d::Orchestrator> ("lena-radio-link-failure.json"); 
+    orchestrator = CreateObject<netsimulyzer::Orchestrator> ("lena-radio-link-failure.json"); 
     orchestrator->SetAttribute ("MobilityPollInterval", TimeValue (MilliSeconds (guiResolution)));
 
     //Configure nodes
-    visualizer3d::NodeConfigurationHelper nodeConfigHelper (orchestrator);
+    netsimulyzer::NodeConfigurationHelper nodeConfigHelper (orchestrator);
     nodeConfigHelper.Set ("Scale", DoubleValue (5));
     for (uint32_t i = 0; i < ueNodes.GetN (); ++i)
     {
@@ -750,8 +750,8 @@ main (int argc, char *argv[])
       nodeConfigHelper.Install (ueNodes.Get (i));
 
       //Add state machine graphs
-      std::vector<visualizer3d::CategoryAxis::ValuePair> rrcStates;
-      visualizer3d::CategoryAxis::ValuePair rrcStateValue;
+      std::vector<netsimulyzer::CategoryAxis::ValuePair> rrcStates;
+      netsimulyzer::CategoryAxis::ValuePair rrcStateValue;
 
       for (uint32_t j = 0; j < LteUeRrc::NUM_STATES; j++)
       {
@@ -760,10 +760,10 @@ main (int argc, char *argv[])
           rrcStates.push_back (rrcStateValue);
       }
 
-      Ptr<visualizer3d::StateTransitionSink> rrcStateGraph = CreateObject <visualizer3d::StateTransitionSink>(orchestrator, rrcStates, 0);
+      Ptr<netsimulyzer::StateTransitionSink> rrcStateGraph = CreateObject <netsimulyzer::StateTransitionSink>(orchestrator, rrcStates, 0);
       rrcStateGraph->SetAttribute ("Name", StringValue("UE " + std::to_string(i+1) + " RRC State"));
       rrcStateGraph->SetAttribute ("LoggingMode", StringValue("None"));
-      rrcStateMachines.insert (std::pair<uint32_t, Ptr<visualizer3d::StateTransitionSink>> (ueDevs.Get(i)->GetObject <LteUeNetDevice> ()->GetImsi(), rrcStateGraph));
+      rrcStateMachines.insert (std::pair<uint32_t, Ptr<netsimulyzer::StateTransitionSink>> (ueDevs.Get(i)->GetObject <LteUeNetDevice> ()->GetImsi(), rrcStateGraph));
 
     } 
 
@@ -772,32 +772,32 @@ main (int argc, char *argv[])
     {
       nodeConfigHelper.Set ("Model", StringValue ("non-distributable/models/props/Billboard_pole.obj"));
       nodeConfigHelper.Set ("Name", StringValue ("Cell tower " + std::to_string(i)));
-      nodeConfigHelper.Set ("Height", visualizer3d::OptionalValue<double> (1));
+      nodeConfigHelper.Set ("Height", netsimulyzer::OptionalValue<double> (1));
       nodeConfigHelper.Set ("Orientation", Vector3DValue (Vector3D(0, 0, 0)));
       nodeConfigHelper.Install (enbNodes.Get(i));
     }
 
     //Logs
-    applicationLog = CreateObject<visualizer3d::LogStream> (orchestrator);
+    applicationLog = CreateObject<netsimulyzer::LogStream> (orchestrator);
     applicationLog->SetAttribute ("Name", StringValue ("Application log"));
-    applicationLog->SetAttribute("Color", visualizer3d::OptionalValue<visualizer3d::Color3>{100u, 150u, 100u});
+    applicationLog->SetAttribute("Color", netsimulyzer::OptionalValue<netsimulyzer::Color3>{100u, 150u, 100u});
 
-    ueLog = CreateObject<visualizer3d::LogStream> (orchestrator);
+    ueLog = CreateObject<netsimulyzer::LogStream> (orchestrator);
     ueLog->SetAttribute ("Name", StringValue ("UE log"));
-    ueLog->SetAttribute("Color", visualizer3d::OptionalValue<visualizer3d::Color3>{72u, 66u, 245u});
+    ueLog->SetAttribute("Color", netsimulyzer::OptionalValue<netsimulyzer::Color3>{72u, 66u, 245u});
 
-    enbLog = CreateObject<visualizer3d::LogStream> (orchestrator);
+    enbLog = CreateObject<netsimulyzer::LogStream> (orchestrator);
     enbLog->SetAttribute ("Name", StringValue ("eNodeB log"));
-    enbLog->SetAttribute("Color", visualizer3d::OptionalValue<visualizer3d::Color3>{125u, 8u, 0u});
+    enbLog->SetAttribute("Color", netsimulyzer::OptionalValue<netsimulyzer::Color3>{125u, 8u, 0u});
 
 
     //Statistics
-    appRxTraceSeries = CreateObject <visualizer3d::ThroughputSink>(orchestrator, "Rx");
+    appRxTraceSeries = CreateObject <netsimulyzer::ThroughputSink>(orchestrator, "Rx");
     appRxTraceSeries->SetAttribute ("Unit", StringValue ("Mb/s"));
     appRxTraceSeries->SetAttribute ("Interval", TimeValue (Seconds (0.2)));
     PointerValue rxXySeries;
     appRxTraceSeries->GetAttribute ("XYSeries", rxXySeries);
-    rxXySeries.Get<visualizer3d::XYSeries> ()->SetAttribute ("LabelMode", StringValue("Hidden"));
+    rxXySeries.Get<netsimulyzer::XYSeries> ()->SetAttribute ("LabelMode", StringValue("Hidden"));
     
   }
 #endif

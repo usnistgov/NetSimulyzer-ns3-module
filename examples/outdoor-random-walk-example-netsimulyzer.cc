@@ -27,7 +27,7 @@
 #include "ns3/network-module.h"
 
 #ifdef HAS_NETSIMULYZER
-#include "ns3/visualizer3d-module.h"
+#include "ns3/netsimulyzer-module.h"
 #endif
 
 using namespace ns3;
@@ -58,7 +58,7 @@ PrintGnuplottableBuildingListToFile (std::string filename)
 
 #ifdef HAS_NETSIMULYZER
 void
-CourseChanged (Ptr<visualizer3d::XYSeries> posSeries, Ptr<visualizer3d::LogStream> eventLog, std::string context, Ptr<const MobilityModel> model)
+CourseChanged (Ptr<netsimulyzer::XYSeries> posSeries, Ptr<netsimulyzer::LogStream> eventLog, std::string context, Ptr<const MobilityModel> model)
 {
   const auto position = model->GetPosition ();
   const auto velocity = model->GetVelocity ();
@@ -146,28 +146,28 @@ main (int argc, char *argv[])
   MobilityHelper::EnableAsciiAll (ascii.CreateFileStream ("mobility-trace-example.mob"));
 
 #ifdef HAS_NETSIMULYZER
-  auto orchestrator = CreateObject<visualizer3d::Orchestrator> ("outdoor-random-walk-example.json");
+  auto orchestrator = CreateObject<netsimulyzer::Orchestrator> ("outdoor-random-walk-example.json");
 
-  visualizer3d::NodeConfigurationHelper nodeHelper{orchestrator};
+  netsimulyzer::NodeConfigurationHelper nodeHelper{orchestrator};
   nodeHelper.Set ("Model", StringValue ("models/smartphone.obj"));
   nodeHelper.Set ("Scale", DoubleValue (4));
   nodeHelper.Install(nodes);
 
-  visualizer3d::BuildingConfigurationHelper buildingHelper{orchestrator};
+  netsimulyzer::BuildingConfigurationHelper buildingHelper{orchestrator};
   for (auto building = buildingVector.begin(); building != buildingVector.end(); building++)
       buildingHelper.Install(*building);
 
-  Ptr<visualizer3d::LogStream> eventLog = CreateObject<visualizer3d::LogStream> (orchestrator);
+  Ptr<netsimulyzer::LogStream> eventLog = CreateObject<netsimulyzer::LogStream> (orchestrator);
 
-  Ptr<visualizer3d::XYSeries> posSeries = CreateObject <visualizer3d::XYSeries>(orchestrator);
+  Ptr<netsimulyzer::XYSeries> posSeries = CreateObject <netsimulyzer::XYSeries>(orchestrator);
   posSeries->SetAttribute ("Name", StringValue("Node position" ));
   posSeries->SetAttribute ("LabelMode", StringValue("Hidden"));
   PointerValue xAxis;
   posSeries->GetAttribute ("XAxis", xAxis);
-  xAxis.Get<visualizer3d::ValueAxis> ()->SetAttribute ("Name", StringValue("X position (m)"));
+  xAxis.Get<netsimulyzer::ValueAxis> ()->SetAttribute ("Name", StringValue("X position (m)"));
   PointerValue yAxis;
   posSeries->GetAttribute ("YAxis", yAxis);
-  yAxis.Get<visualizer3d::ValueAxis> ()->SetAttribute ("Name", StringValue("Y position (m)"));
+  yAxis.Get<netsimulyzer::ValueAxis> ()->SetAttribute ("Name", StringValue("Y position (m)"));
 
   Config::Connect ("/NodeList/*/$ns3::MobilityModel/CourseChange", MakeBoundCallback (&CourseChanged, posSeries, eventLog));
 #endif
