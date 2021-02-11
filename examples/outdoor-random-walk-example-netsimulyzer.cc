@@ -58,18 +58,16 @@ PrintGnuplottableBuildingListToFile (std::string filename)
 
 #ifdef HAS_NETSIMULYZER
 void
+//Define callback function to track node mobility
 CourseChanged (Ptr<netsimulyzer::XYSeries> posSeries, Ptr<netsimulyzer::LogStream> eventLog, std::string context, Ptr<const MobilityModel> model)
 {
   const auto position = model->GetPosition ();
-  const auto velocity = model->GetVelocity ();
-
-  *eventLog << Simulator::Now ().GetMilliSeconds () << " Course Change Position: [" 
-            << position.x << ", " << position.y << ", " << position.z << "] "
-            << "Velocity [" << velocity.x << ", " << velocity.y << ", " << velocity.z << "]\n";
-
+  //Write coordinates to log
+  *eventLog << Simulator::Now ().GetSeconds () << " Course Change Position: [" 
+            << position.x << ", " << position.y << ", " << position.z << "]\n";
+  //Add data point to XYSeries
   posSeries->Append (position.x, position.y);
 }
-
 #endif
 
 
@@ -147,18 +145,18 @@ main (int argc, char *argv[])
 
 #ifdef HAS_NETSIMULYZER
   auto orchestrator = CreateObject<netsimulyzer::Orchestrator> ("outdoor-random-walk-example.json");
-
+  //Use helper to define model for visualizing nodes and aggregate to Node object
   netsimulyzer::NodeConfigurationHelper nodeHelper{orchestrator};
   nodeHelper.Set ("Model", StringValue ("models/smartphone.obj"));
   nodeHelper.Set ("Scale", DoubleValue (4));
   nodeHelper.Install(nodes);
-
+  //Use helper to configure buildings and export them
   netsimulyzer::BuildingConfigurationHelper buildingHelper{orchestrator};
   for (auto building = buildingVector.begin(); building != buildingVector.end(); building++)
       buildingHelper.Install(*building);
-
+  //Create a LogStream to output mobility events
   Ptr<netsimulyzer::LogStream> eventLog = CreateObject<netsimulyzer::LogStream> (orchestrator);
-
+  //Create XYSeries that will be used to display mobility (similar to a 2D plot)
   Ptr<netsimulyzer::XYSeries> posSeries = CreateObject <netsimulyzer::XYSeries>(orchestrator);
   posSeries->SetAttribute ("Name", StringValue("Node position" ));
   posSeries->SetAttribute ("LabelMode", StringValue("Hidden"));
@@ -168,7 +166,7 @@ main (int argc, char *argv[])
   PointerValue yAxis;
   posSeries->GetAttribute ("YAxis", yAxis);
   yAxis.Get<netsimulyzer::ValueAxis> ()->SetAttribute ("Name", StringValue("Y position (m)"));
-
+  //Tie together the callback function, LogStream, and XYSeries
   Config::Connect ("/NodeList/*/$ns3::MobilityModel/CourseChange", MakeBoundCallback (&CourseChanged, posSeries, eventLog));
 #endif
 
