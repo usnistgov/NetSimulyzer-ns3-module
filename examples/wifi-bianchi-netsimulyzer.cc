@@ -90,7 +90,7 @@ uint32_t pktSize = 1500; ///< packet size used for the simulation (in bytes)
 
 #ifdef HAS_NETSIMULYZER
   // Configuration parameters
-  bool enableVisualization = false;
+  bool enableVisualization = true;
   double guiResolution = 200; //refresh time in ms
 
   // Visualizer components

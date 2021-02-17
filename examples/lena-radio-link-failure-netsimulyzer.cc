@@ -48,7 +48,7 @@ uint32_t oldByteCounter = 0;
 
 #ifdef HAS_NETSIMULYZER
   // Configuration parameters
-  bool enableVisualization = false;
+  bool enableVisualization = true;
   double guiResolution = 20; //refresh time in ms
 
   // Visualizer components
