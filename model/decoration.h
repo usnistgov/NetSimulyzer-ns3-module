@@ -36,6 +36,7 @@
 #define DECORATION_H
 
 #include <string>
+#include <optional>
 #include <ns3/type-id.h>
 #include <ns3/object.h>
 #include <ns3/ptr.h>
@@ -98,27 +99,6 @@ public:
    */
   void SetOrientation (const Vector3D &orientation);
 
-  /**
-   * \return
-   * The set desired height if `heightSet()` is true.
-   * The default value otherwise
-   */
-  double GetHeight (void) const;
-
-  /**
-   * Set the desired height & mark that the value should be written
-   *
-   * \param value
-   * The desired height of the model in ns-3 units
-   */
-  void SetHeight (double value);
-
-  /**
-   * \return
-   * True if `Height` was set and should be read. False otherwise
-   */
-  bool HeightSet (void) const;
-
 protected:
   /**
    * \brief Disconnects the referenced Orchestrator
@@ -156,13 +136,7 @@ private:
    * Desired height of the rendered 3D model
    * in ns-3 units
    */
-  double m_height;
-
-  /**
-   * Flag indicating the optional attribute `m_height`
-   * was set and should be output
-   */
-  bool m_heightSet{false};
+  std::optional<double> m_height;
 
   /**
    * The amount to resize the model with 1.0 being the default size,

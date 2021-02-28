@@ -33,6 +33,7 @@
  */
 
 #include "decoration.h"
+#include "optional.h"
 #include <ns3/string.h>
 #include <ns3/double.h>
 #include <ns3/pointer.h>
@@ -64,9 +65,9 @@ Decoration::GetTypeId (void)
               MakeVector3DAccessor (&Decoration::GetOrientation, &Decoration::SetOrientation),
               MakeVector3DChecker ())
           .AddAttribute ("Height", "Desired height of the rendered model. Applied before `Scale`",
-                         DoubleValue (),
-                         MakeDoubleAccessor (&Decoration::GetHeight, &Decoration::SetHeight),
-                         MakeDoubleChecker<double> (0.0))
+                         OptionalValue<double> (),
+                         MakeOptionalAccessor<double> (&Decoration::m_height),
+                         MakeOptionalChecker<double> ())
           .AddAttribute ("Position", "The position of the Decoration", Vector3DValue (),
                          MakeVector3DAccessor (&Decoration::GetPosition, &Decoration::SetPosition),
                          MakeVector3DChecker ())
@@ -114,29 +115,6 @@ Decoration::SetOrientation (const Vector3D &orientation)
   event.orientation = m_orientation;
 
   m_orchestrator->HandleOrientationChange (event);
-}
-
-double
-Decoration::GetHeight (void) const
-{
-  return m_height;
-}
-
-void
-Decoration::SetHeight (double value)
-{
-  // Do not set the flag for the initial value
-  if (value <= 0.0)
-    return;
-
-  m_height = value;
-  m_heightSet = true;
-}
-
-bool
-Decoration::HeightSet (void) const
-{
-  return m_heightSet;
 }
 
 void

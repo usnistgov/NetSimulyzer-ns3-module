@@ -380,12 +380,10 @@ Orchestrator::SetupSimulation (void)
       decoration->GetAttribute ("Scale", scale);
       element["scale"] = scale.Get ();
 
-      if (decoration->HeightSet ())
-        {
-          DoubleValue height;
-          decoration->GetAttribute ("Height", height);
-          element["height"] = height.Get ();
-        }
+      OptionalValue<double> height;
+      decoration->GetAttribute ("Height", height);
+      if (height)
+        element["height"] = height.GetValue ();
 
       decorations.emplace_back (element);
     }
