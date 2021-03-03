@@ -64,9 +64,9 @@ Properties
 +----------------------+--------------------------------+--------------------+------------------------------------------+
 | Name                 | Type                           | Default Value      | Description                              |
 +======================+================================+====================+==========================================+
-| MillisecondsPerFrame | :ref:`optional-value` <double> |                n/a | Optional hint to the application for     |
+| TimeStep             | :ref:`optional-value` <int>    |                n/a | Optional hint to the application for     |
 |                      |                                |                    | the number of milliseconds to advance    |
-|                      |                                |                    | the simulation by for one frame          |
+|                      |                                |                    | the simulation by for one step           |
 +----------------------+--------------------------------+--------------------+------------------------------------------+
 | MobilityPollInterval | Time                           | MilliSeconds (100) | How often to poll each child`            |
 |                      |                                |                    | ``NodeConfiguration`` for their          |

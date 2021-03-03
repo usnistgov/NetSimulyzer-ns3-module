@@ -206,11 +206,11 @@ Orchestrator::GetTypeId (void)
       TypeId ("ns3::netsimulyzer::Orchestrator")
           .SetParent<ns3::Object> ()
           .SetGroupName ("netsimulyzer")
-          .AddAttribute ("MillisecondsPerFrame",
-                         "Number of milliseconds a single frame in the visualizer will represent",
-                         OptionalValue<double> (),
-                         MakeOptionalAccessor<double> (&Orchestrator::m_millisecondsPerFrame),
-                         MakeOptionalChecker<double> ())
+          .AddAttribute ("TimeStep",
+                         "Number of milliseconds a single step in the application will represent",
+                         OptionalValue<int> (),
+                         MakeOptionalAccessor<int> (&Orchestrator::m_timeStep),
+                         MakeOptionalChecker<int> ())
           .AddAttribute ("MobilityPollInterval", "How often to poll Nodes for their position",
                          TimeValue (MilliSeconds (100)),
                          MakeTimeAccessor (&Orchestrator::m_mobilityPollInterval),
@@ -237,8 +237,8 @@ Orchestrator::SetupSimulation (void)
   version["minor"] = VERSION_MINOR;
   version["patch"] = VERSION_PATCH;
   m_document["configuration"]["module-version"] = version;
-  if (m_millisecondsPerFrame)
-    m_document["configuration"]["ms-per-frame"] = m_millisecondsPerFrame.value ();
+  if (m_timeStep)
+    m_document["configuration"]["time-step"] = m_timeStep.value ();
 
   // Nodes
   auto nodes = nlohmann::json::array ();

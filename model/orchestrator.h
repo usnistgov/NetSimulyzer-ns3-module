@@ -406,10 +406,10 @@ private:
   Time m_mobilityPollInterval;
 
   /**
-   * Amount of ns-3 time to pass per frame rendered in the visualizer
+   * Amount of ns-3 time to pass per step in the application
    * in milliseconds
    */
-  std::optional<double> m_millisecondsPerFrame;
+  std::optional<int> m_timeStep;
 
   /**
    * The ID to assign to the next series that requests it.
