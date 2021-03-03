@@ -54,10 +54,10 @@ Attributes
 |                      |               |                   | * ``Solid`` (Default) display as a solid color    |
 |                      |               |                   | * ``Hidden`` do not display a border              |
 +----------------------+---------------+-------------------+---------------------------------------------------+
-| Fill                 | DrawMode      | Solid             | Method of displaying the fill                     |
+| Fill                 | DrawMode      | Hidden            | Method of displaying the fill                     |
 |                      |               |                   |                                                   |
-|                      |               |                   | * ``Solid`` (Default) display as a solid color    |
-|                      |               |                   | * ``Hidden`` do not display a fill                |
+|                      |               |                   | * ``Solid`` display as a solid color              |
+|                      |               |                   | * ``Hidden`` (Default) do not display a fill      |
 +----------------------+---------------+-------------------+---------------------------------------------------+
 | Height               | double        | 0.0               | Z level to display the area.                      |
 +----------------------+---------------+-------------------+---------------------------------------------------+
