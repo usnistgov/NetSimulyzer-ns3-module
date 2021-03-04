@@ -216,7 +216,8 @@ Orchestrator::GetTypeId (void)
                          MakeTimeAccessor (&Orchestrator::m_mobilityPollInterval),
                          MakeTimeChecker ())
           .AddAttribute ("PollMobility", "Flag to toggle polling for Node positions",
-                         BooleanValue (true), MakeBooleanAccessor (&Orchestrator::m_pollMobility),
+                         BooleanValue (true), MakeBooleanAccessor (&Orchestrator::GetPollMobility,
+                                                                   &Orchestrator::SetPollMobility),
                          MakeBooleanChecker ())
           .AddAttribute ("StartTime", "Beginning of the window to write trace information",
                          TimeValue (), MakeTimeAccessor (&Orchestrator::m_startTime),
@@ -535,9 +536,41 @@ Orchestrator::SetupSimulation (void)
 
   NS_ABORT_MSG_IF (m_startTime > m_stopTime, "StopTime must be after StartTime");
 
-  Simulator::Schedule (m_startTime, &Orchestrator::PollMobility, this);
+  // This method should be called immediately after the simulation starts,
+  // so using the Start Time as the delay should be fine
+  if (m_pollMobility && !m_mobilityPollEvent.has_value ())
+    m_mobilityPollEvent = Simulator::Schedule (m_startTime, &Orchestrator::PollMobility, this);
 
   Simulator::ScheduleDestroy (&Orchestrator::Flush, this);
+}
+
+void
+Orchestrator::SetPollMobility (bool enable)
+{
+  m_pollMobility = enable;
+
+  if (m_pollMobility && !m_mobilityPollEvent.has_value ())
+    {
+      if (Simulator::Now () > m_stopTime)
+        return;
+      else if (Simulator::Now () >= m_startTime)
+        m_mobilityPollEvent = Simulator::ScheduleNow (&Orchestrator::PollMobility, this);
+      else
+        m_mobilityPollEvent = Simulator::Schedule (Simulator::Now () - m_startTime,
+                                                   &Orchestrator::PollMobility, this);
+    }
+
+  else if (!m_pollMobility && m_mobilityPollEvent.has_value ())
+    {
+      Simulator::Cancel (m_mobilityPollEvent.value ());
+      m_mobilityPollEvent.reset ();
+    }
+}
+
+bool
+Orchestrator::GetPollMobility () const
+{
+  return m_pollMobility;
 }
 
 void
@@ -548,6 +581,7 @@ Orchestrator::PollMobility (void)
   if (Simulator::Now () > m_stopTime)
     {
       NS_LOG_DEBUG ("PollMobility() Activated past StopTime, Ignoring");
+      m_mobilityPollEvent.reset ();
       return;
     }
 
@@ -562,7 +596,8 @@ Orchestrator::PollMobility (void)
         }
     }
 
-  Simulator::Schedule (m_mobilityPollInterval, &Orchestrator::PollMobility, this);
+  m_mobilityPollEvent =
+      Simulator::Schedule (m_mobilityPollInterval, &Orchestrator::PollMobility, this);
 }
 
 void

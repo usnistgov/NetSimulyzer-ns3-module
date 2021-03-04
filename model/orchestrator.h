@@ -38,6 +38,7 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <optional>
 #include <unordered_map>
 #include <ns3/building-list.h>
 #include <ns3/building.h>
@@ -105,6 +106,25 @@ public:
    * Schedules polling methods.
    */
   void SetupSimulation (void);
+
+  /**
+   * Set if the mobility poll is enabled/disabled
+   * and schedule it if it was enabled
+   *
+   * \param enable
+   * True: enable & schedule the mobility poll,
+   * False: disable the mobility poll & cancel the poll event
+   */
+  void SetPollMobility (bool enable);
+
+  /**
+   * Gets in the mobility poll is enabled or not
+   *
+   * \return
+   * True: the mobility poll is enabled,
+   * False: the mobility poll is not enabled
+   */
+  bool GetPollMobility (void) const;
 
   /**
    * \brief Writes positions of configured Nodes
@@ -399,6 +419,12 @@ private:
    * Flag indicating weather or not we'll schedule and run the PollMobility() method
    */
   bool m_pollMobility;
+
+  /**
+   * Event handle for a scheduled mobility poll.
+   * Will be unset if no event is scheduled
+   */
+  std::optional<EventId> m_mobilityPollEvent;
 
   /**
    * How often to traverse the NodeList for Node positions
