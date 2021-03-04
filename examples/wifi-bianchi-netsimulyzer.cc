@@ -951,7 +951,7 @@ Experiment::Run (const WifiHelper &helper, const YansWifiPhyHelper &wifiPhy, con
     uint32_t i = infra ? 1 : 0;
     for (; i < nNodes; ++i)
     {
-      nodeConfigHelper.Set ("Model", StringValue ("models/smartphone.obj"));
+      nodeConfigHelper.Set ("Model", netsimulyzer::models::SMARTPHONE_VALUE);
       nodeConfigHelper.Set ("Name", StringValue ("Station " + std::to_string (i)));
       nodeConfigHelper.Install (wifiNodes.Get (i));
     } 

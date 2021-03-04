@@ -20,11 +20,54 @@ The basic setup for a ``NodeConfiguration`` is as follows:
 
   netsimulyzer::NodeConfigurationHelper nodeHelper{/* the orchestrator */};
 
-  nodeHelper.SetAttribute ("Model", StringValue ("path/model.obj"));
+  // Assigns the smartphone model
+  // see `netsimulyzer-3d-models.h` for the others
+  // Or provide a path to a custom one
+  nodeHelper.SetAttribute ("Model", netsimulyzer::models::SMARTPHONE_VALUE);
 
   nodeHelper.Install (/* Ptr or Collection */)
 
+Model Constants
+^^^^^^^^^^^^^^^
+
+Constants representing the models bundled with the application are provided
+with the module in ``netsimulyzer-3d-models.h`` under the ``models`` namespace.
+
+Each constant is presented with a ``std::string`` and ``ns3::StringValue`` option
+to simplify setting attribute values.
+
+Below are the provided values and their respective models
+
 .. The images make this section a bit unwieldy, so exert some extra control over the pages
+.. raw:: latex
+
+    \clearpage
+
+Smartphone
+""""""""""
+
+* ``std::string`` Constant: ``SMARTPHONE``
+* ``ns3::StringValue`` Constant: ``SMARTPHONE_VALUE``
+
+.. image:: _static/smartphone.png
+  :alt: The smartphone.obj model with default colors
+  :width: 354px
+  :height: 435px
+
+.. raw:: latex
+
+    \clearpage
+
+Land Drone
+""""""""""
+* ``std::string`` Constant: ``LAND_DRONE``
+* ``ns3::StringValue`` Constant: ``LAND_DRONE_VALUE``
+
+.. image:: _static/land-drone.png
+  :alt: The land-drone.obj model with default colors
+  :width: 369px
+  :height: 265px
+
 .. raw:: latex
 
     \clearpage

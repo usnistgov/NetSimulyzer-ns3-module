@@ -179,9 +179,8 @@ main (int argc, char *argv[])
   double maxSpeed = 5;
   double duration = 100;
   std::string outputFileName = "netsimulyzer-mobility-buildings-example.json";
-  std::string policeModelPath = "extras/models/characters/Police_Male.gltf";
-  std::string fbiModelPath = "extras/models/characters/Fbi_Male.gltf";
-  double modelHeight = 2.0;
+  std::string phoneModelPath = netsimulyzer::models::SMARTPHONE;
+  std::string droneModelPath = netsimulyzer::models::LAND_DRONE;
 
   CommandLine cmd;
   cmd.AddValue ("minNodePosition", "Minimum X/Y position a Node may move to", minNodePosition);
@@ -190,22 +189,21 @@ main (int argc, char *argv[])
   cmd.AddValue ("maxSpeed", "Maximum X/Y speed a Node may move", maxSpeed);
   cmd.AddValue ("outputFileName", "The name of the file to write the visualizer trace info",
                 outputFileName);
-  cmd.AddValue ("policeModelPath", "The path to the model file to represent the Police Nodes",
-                policeModelPath);
-  cmd.AddValue ("fbiModelPath", "The path to the model file to represent the FBI Nodes",
-                fbiModelPath);
-  cmd.AddValue ("modelHeight", "Height of the Police/FBI models in ns-3 units", modelHeight);
+  cmd.AddValue ("phoneModelPath", "The path to the model file to represent the Phone Nodes",
+                phoneModelPath);
+  cmd.AddValue ("droneModelPath", "The path to the model file to represent the Drone Nodes",
+                droneModelPath);
   cmd.AddValue ("duration", "Duration (in Seconds) of the simulation", duration);
   cmd.Parse (argc, argv);
 
   NS_ABORT_MSG_IF (duration < 1.0, "Scenario must be at least one second long");
 
   // ---- Nodes ----
-  NodeContainer police;
-  police.Create (2);
+  NodeContainer phones;
+  phones.Create (2);
 
-  NodeContainer fbi;
-  fbi.Create (2);
+  NodeContainer drones;
+  drones.Create (2);
 
   auto positionAllocator = CreateObject<RandomBoxPositionAllocator> ();
   auto positionStream = CreateObject<UniformRandomVariable> ();
@@ -229,8 +227,8 @@ main (int argc, char *argv[])
       "Speed", PointerValue (velocityStream), "Pause",
       StringValue ("ns3::ConstantRandomVariable[Constant=1.0]"));
   mobility.SetPositionAllocator (positionAllocator);
-  mobility.Install (police);
-  mobility.Install (fbi);
+  mobility.Install (phones);
+  mobility.Install (drones);
 
   for (auto iter = NodeList::Begin (); iter != NodeList::End (); iter++)
     {
@@ -275,18 +273,16 @@ main (int argc, char *argv[])
   *infoLog << "----- Scenario Settings -----\n";
   *infoLog << "Node Position Range: [" << minNodePosition << ',' << maxNodePosition << "]\n";
   *infoLog << "Node Speed Range: [" << minSpeed << ',' << maxSpeed << "]\n";
-  *infoLog << "Models: Police [" << policeModelPath << "], FBI [" << fbiModelPath << "]\n";
-  *infoLog << "Model Height: " << modelHeight << '\n';
+  *infoLog << "Models: Phone [" << phoneModelPath << "], Drone [" << droneModelPath << "]\n";
   *infoLog << "Scenario Duration (Seconds): " << duration << '\n';
 
   netsimulyzer::NodeConfigurationHelper nodeConfigHelper (orchestrator);
-  nodeConfigHelper.Set ("Height", DoubleValue (modelHeight));
 
-  nodeConfigHelper.Set ("Model", StringValue (policeModelPath));
-  nodeConfigHelper.Install (police);
+  nodeConfigHelper.Set ("Model", StringValue (phoneModelPath));
+  nodeConfigHelper.Install (phones);
 
-  nodeConfigHelper.Set ("Model", StringValue (fbiModelPath));
-  nodeConfigHelper.Install (fbi);
+  nodeConfigHelper.Set ("Model", StringValue (droneModelPath));
+  nodeConfigHelper.Install (drones);
 
   // Only explicitly configured items will be shown
   // so, even if we don't have options to set
@@ -300,7 +296,7 @@ main (int argc, char *argv[])
   exampleApplication->SetStopTime (Seconds (duration - 1.0));
 
   // Doesn't really matter what Node it's on
-  police.Get (0u)->AddApplication (exampleApplication);
+  phones.Get (0u)->AddApplication (exampleApplication);
 
   auto exampleStateSink = CreateObject<netsimulyzer::StateTransitionSink> (
       orchestrator, // Orchestrator for series & log

@@ -49,6 +49,7 @@ def build(bld):
         'library/json.hpp',
         'model/event-message.h',
         'model/log-stream.h',
+        'model/netsimulyzer-3D-models.h',
         'model/netsimulyzer-version.h',
         'model/node-configuration.h',
         'model/optional.h',

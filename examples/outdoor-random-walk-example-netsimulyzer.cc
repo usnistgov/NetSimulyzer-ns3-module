@@ -147,7 +147,7 @@ main (int argc, char *argv[])
   auto orchestrator = CreateObject<netsimulyzer::Orchestrator> ("outdoor-random-walk-example.json");
   // Use helper to define model for visualizing nodes and aggregate to Node object
   netsimulyzer::NodeConfigurationHelper nodeHelper{orchestrator};
-  nodeHelper.Set ("Model", StringValue ("models/smartphone.obj"));
+  nodeHelper.Set ("Model", netsimulyzer::models::LAND_DRONE_VALUE);
   nodeHelper.Set ("Scale", DoubleValue (4));
   nodeHelper.Install(nodes);
   // Use helper to configure buildings and export them

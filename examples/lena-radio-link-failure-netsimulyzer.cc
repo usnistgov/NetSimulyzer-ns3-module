@@ -745,7 +745,7 @@ main (int argc, char *argv[])
     nodeConfigHelper.Set ("Scale", DoubleValue (5));
     for (uint32_t i = 0; i < ueNodes.GetN (); ++i)
     {
-      nodeConfigHelper.Set ("Model", StringValue ("models/smartphone.obj"));
+      nodeConfigHelper.Set ("Model", netsimulyzer::models::SMARTPHONE_VALUE);
       nodeConfigHelper.Set ("Name", StringValue ("UE " + std::to_string (i)));
       nodeConfigHelper.Install (ueNodes.Get (i));
 
