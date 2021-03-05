@@ -382,6 +382,9 @@ NotifyRaResponseTimeoutUe (uint64_t imsi, bool contention,
             << ", preamble Tx Counter " << (uint16_t) preambleTxCounter
             << ", Max Preamble Tx Limit " << (uint16_t) maxPreambleTxLimit
             << ", UE RA response timeout";
+
+    // Write output, since we're about to crash (from `NS_FATAL_ERROR` below)
+    orchestrator->Flush();
   }
 #endif
 
