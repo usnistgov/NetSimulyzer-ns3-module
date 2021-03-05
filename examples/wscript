@@ -2,6 +2,10 @@
 
 
 def build(bld):
+    obj = bld.create_ns3_program('application-state-trace-example-netsimulyzer',
+                                 ['netsimulyzer', 'core', 'applications'])
+    obj.source = 'application-state-trace-example.cc'
+
     obj = bld.create_ns3_program('mobility-buildings-example-netsimulyzer',
                                  ['netsimulyzer', 'core', 'mobility', 'network'])
     obj.source = 'mobility-buildings-example.cc'

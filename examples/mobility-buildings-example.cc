@@ -41,10 +41,8 @@
 #include <ns3/mobility-module.h>
 #include <ns3/netsimulyzer-module.h>
 
-// Example demonstrating mobility output to the NIST visualizer
-// Uses models from the Visualization Licensed Resources repository
+// Example demonstrating mobility output to the NetSimulyzer
 // * Creates 2 buildings one the top right and the other in bottom left corner
-//
 // * Creates 4 Nodes in 2 separate groups (Phones & Drones)
 // * The Nodes move in a random direction independently
 //     For the duration of the simulation
@@ -64,95 +62,6 @@
 // (One Floor Building)
 
 using namespace ns3;
-
-/**
- * Example application for the StateTransitionSink
- */
-class DummyApplication : public Application
-{
-public:
-  // Keep a list of all possible states
-  // as strings
-  const static std::vector<std::string> States;
-
-  // States may be std::strings or enum/ints
-  typedef void (*StateChangedCallback) (const std::string &newState);
-
-  static TypeId
-  GetTypeId (void)
-  {
-    static TypeId tid =
-        TypeId ("DummyApplication")
-            .SetParent<ns3::Application> ()
-            .SetGroupName ("netsimulyzer")
-            // Provide some 'StateChanged' trace, or connect to the proper callbacks yourself
-            .AddTraceSource ("StateChanged", "Trace called when the application changes states",
-                             MakeTraceSourceAccessor (&DummyApplication::m_stateChangedTrace),
-                             "DummyApplication::StateChangedCallback");
-
-    return tid;
-  }
-
-  void
-  Stop (void)
-  {
-    // "Stopped"
-    m_currentState = DummyApplication::States[0];
-    m_stateChangedTrace (m_currentState);
-  }
-
-  void
-  Wait (void)
-  {
-    // "Waiting"
-    m_currentState = DummyApplication::States[1];
-    m_stateChangedTrace (m_currentState);
-  }
-
-  void
-  Transmit (void)
-  {
-    // "Transmitting"
-    m_currentState = DummyApplication::States[2];
-    m_stateChangedTrace (m_currentState);
-  }
-
-  void
-  ChangeState ()
-  {
-    m_stateChangeCount++;
-
-    // Create a pattern between waiting and sending
-    // Toggling between the two
-    if (m_stateChangeCount % 2u)
-      Wait ();
-    else
-      Transmit ();
-
-    m_eventId = Simulator::Schedule (Seconds (1), &DummyApplication::ChangeState, this);
-  }
-
-private:
-  std::string m_currentState{DummyApplication::States[0]};
-  unsigned int m_stateChangeCount{0};
-  EventId m_eventId;
-  TracedCallback<const std::string &> m_stateChangedTrace;
-
-  void
-  StartApplication (void) override
-  {
-    ChangeState ();
-  }
-
-  void
-  StopApplication (void) override
-  {
-    Stop ();
-    Simulator::Cancel (m_eventId);
-  }
-};
-
-const std::vector<std::string> DummyApplication::States = {"Stopped", "Waiting", "Transmitting"};
 
 Ptr<netsimulyzer::LogStream> eventLog;
 
@@ -187,7 +96,7 @@ main (int argc, char *argv[])
   cmd.AddValue ("maxNodePosition", "Maximum X/Y position a Node may move to", maxNodePosition);
   cmd.AddValue ("minSpeed", "Minimum X/Y speed a Node may move", minSpeed);
   cmd.AddValue ("maxSpeed", "Maximum X/Y speed a Node may move", maxSpeed);
-  cmd.AddValue ("outputFileName", "The name of the file to write the visualizer trace info",
+  cmd.AddValue ("outputFileName", "The name of the file to write the NetSimulyzer trace info",
                 outputFileName);
   cmd.AddValue ("phoneModelPath", "The path to the model file to represent the Phone Nodes",
                 phoneModelPath);
@@ -250,7 +159,7 @@ main (int argc, char *argv[])
   twoFloorBuilding->SetNFloors (2);
   buildings.Add (twoFloorBuilding);
 
-  // ---- Visualization ----
+  // ---- NetSimulyzer ----
   auto orchestrator = CreateObject<netsimulyzer::Orchestrator> (outputFileName);
 
   // Mark possible Node locations
@@ -289,28 +198,6 @@ main (int argc, char *argv[])
   // the buildings bust be configured
   netsimulyzer::BuildingConfigurationHelper buildingConfigHelper (orchestrator);
   buildingConfigHelper.Install (buildings);
-
-  // StateTraceSink
-  auto exampleApplication = CreateObject<DummyApplication> ();
-  exampleApplication->SetStartTime (Seconds (1.0));
-  exampleApplication->SetStopTime (Seconds (duration - 1.0));
-
-  // Doesn't really matter what Node it's on
-  phones.Get (0u)->AddApplication (exampleApplication);
-
-  auto exampleStateSink = CreateObject<netsimulyzer::StateTransitionSink> (
-      orchestrator, // Orchestrator for series & log
-      DummyApplication::States, // Possible States (with optional IDs)
-      DummyApplication::States[0] // Initial state
-  );
-
-  exampleStateSink->SetAttribute ("Name", StringValue ("Dummy Application"));
-
-  // Use StateChangedName for string states
-  // & StateChangedId for enum/int states
-  exampleApplication->TraceConnectWithoutContext (
-      "StateChanged",
-      MakeCallback (&netsimulyzer::StateTransitionSink::StateChangedName, exampleStateSink));
 
   Simulator::Stop (Seconds (duration));
   Simulator::Run ();
