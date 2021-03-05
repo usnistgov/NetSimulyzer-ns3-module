@@ -57,6 +57,7 @@ def build(bld):
         'model/category-axis.h',
         'model/category-value-series.h',
         'model/color.h',
+        'model/color-palette.h',
         'model/decoration.h',
         'model/orchestrator.h',
         'model/rectangular-area.h',

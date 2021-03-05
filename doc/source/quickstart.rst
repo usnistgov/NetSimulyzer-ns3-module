@@ -44,7 +44,7 @@ The :doc:`orchestrator` is the base for all netsimulyzer elements.
 
   auto orchestrator = CreateObject<netsimulyzer::Orchestrator> ("example.json");
 
-For more configuration options, see: doc:`orchestrator`
+For more configuration options, see: :doc:`orchestrator`
 
 
 Showing Nodes

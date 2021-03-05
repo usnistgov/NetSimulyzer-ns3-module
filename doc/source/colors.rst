@@ -99,3 +99,21 @@ It's used when setting or retrieving an attribute from a model.
 
   xySeries->SetAttribute("Color", Color4Value{color});
 
+
+.. _color-palette:
+
+Color Palette
+-------------
+.. image:: _static/color-palette.png
+  :alt: The colors available in the module
+
+To make selecting colors easier, the model comes with a pre-defined palette of colors
+defined in ``color-palette.h``. Each color has a ``Color3``, and a ``Color3Value```
+constant associated with it in the following style:
+
+.. code-block:: C++
+
+  const Color3 RED{245u, 61u, 0u};
+  const Color3Value RED_VALUE{RED};
+
+
