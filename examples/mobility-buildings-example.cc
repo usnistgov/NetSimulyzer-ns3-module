@@ -45,7 +45,7 @@
 // Uses models from the Visualization Licensed Resources repository
 // * Creates 2 buildings one the top right and the other in bottom left corner
 //
-// * Creates 4 Nodes in 2 separate groups (Police & FBI)
+// * Creates 4 Nodes in 2 separate groups (Phones & Drones)
 // * The Nodes move in a random direction independently
 //     For the duration of the simulation
 //
