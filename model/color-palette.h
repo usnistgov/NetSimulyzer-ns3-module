@@ -68,6 +68,16 @@ const Color3 BLACK{7u, 6u, 0u};
 
 const Color3 WHITE{255u, 255u, 255u};
 
+const Color3 GRAY_90{26u};
+const Color3 GRAY_80{51u};
+const Color3 GRAY_70{77u};
+const Color3 GRAY_60{102u};
+const Color3 GRAY_50{128u};
+const Color3 GRAY_40{153u};
+const Color3 GRAY_30{179u};
+const Color3 GRAY_20{204u};
+const Color3 GRAY_10{230u};
+
 // ----- Values -----
 
 const Color3Value RED_VALUE{RED};
@@ -94,6 +104,16 @@ const Color3Value DARK_PINK_VALUE{DARK_PINK};
 const Color3Value BLACK_VALUE{BLACK};
 
 const Color3Value WHITE_VALUE{WHITE};
+
+const Color3Value GRAY_90_VALUE{GRAY_90};
+const Color3Value GRAY_80_VALUE{GRAY_80};
+const Color3Value GRAY_70_VALUE{GRAY_70};
+const Color3Value GRAY_60_VALUE{GRAY_60};
+const Color3Value GRAY_50_VALUE{GRAY_50};
+const Color3Value GRAY_40_VALUE{GRAY_40};
+const Color3Value GRAY_30_VALUE{GRAY_30};
+const Color3Value GRAY_20_VALUE{GRAY_20};
+const Color3Value GRAY_10_VALUE{GRAY_10};
 }
 
 #endif //COLOR_PALETTE_H
