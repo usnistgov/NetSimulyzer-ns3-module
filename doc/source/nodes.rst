@@ -44,7 +44,7 @@ Below are the provided values and their respective models
     \clearpage
 
 Smartphone
-""""""""""
+++++++++++
 
 * ``std::string`` Constant: ``SMARTPHONE``
 * ``ns3::StringValue`` Constant: ``SMARTPHONE_VALUE``
@@ -59,7 +59,7 @@ Smartphone
     \clearpage
 
 Land Drone
-""""""""""
+++++++++++
 * ``std::string`` Constant: ``LAND_DRONE``
 * ``ns3::StringValue`` Constant: ``LAND_DRONE_VALUE``
 
@@ -76,32 +76,55 @@ Configurable Colors
 ^^^^^^^^^^^^^^^^^^^
 Certain models provided with the application allow their colors to be set by the loaded
 scenario. An example of configurable colors follows using the "Land Drone" model distributed
-with the application
+with the application and displayed with the following code:
+
+.. code-block:: C++
+
+  auto node = CreateObject<Node> ();
+
+  netsimulyzer::NodeConfigurationHelper nodeHelper{/* orchestrator */};
+  nodeHelper.Set ("Model", netsimulyzer::models::LAND_DRONE_VALUE);
+  nodeHelper.Install (node);
 
 .. image:: _static/reference-land-drone.png
   :alt: Default configuration for land_drone.obj
-  :width: 406px
-  :height: 306px
+  :width: 399px
+  :height: 263px
 
 Base Color
 ++++++++++
 The ``BaseColor`` is typically the color which occupies the majority of the surface area
 of the model. What follows is an example with the "Land Drone"'s ``BaseColor`` set to blue
 
+.. code-block:: C++
+
+  // ...
+  nodeHelper.Set ("BaseColor",
+    netsimulyzer::OptionalValue<netsimulyzer::Color3>{netsimulyzer::BLUE});
+  nodeHelper.Install (node);
+
 .. image:: _static/base-color-land-drone.png
   :alt: Default configuration for land_drone.obj
-  :width: 406px
-  :height: 306px
+  :width: 402px
+  :height: 264px
+
 
 Highlight Color
 +++++++++++++++
 The ``HighlightColor`` is typically the color used to mark details on the model
 of the model. What follows is an example with the "Land Drone"'s ``HighlightColor`` set to blue
 
+.. code-block:: C++
+
+  // ...
+  nodeHelper.Set ("HighlightColor",
+    netsimulyzer::OptionalValue<netsimulyzer::Color3>{netsimulyzer::BLUE});
+  nodeHelper.Install (node);
+
 .. image:: _static/highlight-color-land-drone.png
   :alt: Default configuration for land_drone.obj
-  :width: 406px
-  :height: 306px
+  :width: 405px
+  :height: 261px
 
 
 
