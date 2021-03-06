@@ -26,11 +26,11 @@ Example
   // these in the actual chart
   auto xyChild1 = CreateObject<XYSeries>(/* orchestrator* /);
   xyChild1->SetAttribute("Name", StringValue("Child One"));
-  xyChild1->SetAttribute("Color", Color4Value(Color4{225u, 0u, 0u})); // Red
+  xyChild1->SetAttribute("Color", RED_VALUE);
 
   auto xyChild2 = CreateObject<XYSeries>(/* orchestrator */);
   xyChild2->SetAttribute("Name", StringValue("Child Two"));
-  xyChild2->SetAttribute("Color", Color4Value(Color4{0u, 225u, 0u})); // Green
+  xyChild2->SetAttribute("Color", GREEN_VALUE);
 
 
   // Create the collection

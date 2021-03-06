@@ -58,51 +58,7 @@ checkSeparator (std::istream &stream, const char separator = '|')
     stream.setstate (std::ios::failbit);
 }
 
-namespace ns3 {
-namespace netsimulyzer {
-
-Color4::Color4 (uint8_t component)
-    : red (component), green (component), blue (component), alpha (255u)
-{
-}
-
-Color4::Color4 (uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha)
-    : red (red), green (green), blue (blue), alpha (alpha)
-{
-}
-
-Color4::Color4 (const Color3 &color)
-    : red (color.red), green (color.green), blue (color.blue), alpha (255u)
-{
-}
-
-ATTRIBUTE_HELPER_CPP (Color4)
-
-std::ostream &
-operator<< (std::ostream &os, const Color4 &color)
-{
-  os << color.red << '|' << color.green << '|' << color.blue << '|' << color.alpha;
-  return os;
-}
-
-std::istream &
-operator>> (std::istream &is, Color4 &color)
-{
-  // Be sure to match the << order
-  is >> color.red;
-  checkSeparator (is);
-
-  is >> color.green;
-  checkSeparator (is);
-
-  is >> color.blue;
-  checkSeparator (is);
-
-  is >> color.alpha;
-  checkSeparator (is);
-
-  return is;
-}
+namespace ns3::netsimulyzer {
 
 Color3::Color3 (uint8_t component) : red (component), green (component), blue (component)
 {
@@ -112,9 +68,6 @@ Color3::Color3 (uint8_t red, uint8_t green, uint8_t blue) : red (red), green (gr
 {
 }
 
-Color3::Color3 (const Color4 &color) : red (color.red), green (color.green), blue (color.blue)
-{
-}
 
 std::ostream &
 operator<< (std::ostream &os, const Color3 &color)
@@ -139,7 +92,52 @@ operator>> (std::istream &is, Color3 &color)
   return is;
 }
 
-ATTRIBUTE_HELPER_CPP (Color3)
+Ptr<const AttributeChecker>
+MakeColor3Checker (void)
+{
+  return MakeSimpleAttributeChecker<Color3Value, Color3Checker> ("Color3"
+                                                                 "Value",
+                                                                 "Color3");
+};
 
-} // namespace netsimulyzer
+Color3Value::Color3Value (const Color3 &value) : m_value (value)
+{
+}
+
+void
+Color3Value::Set (const Color3 &v)
+{
+  m_value = v;
+}
+
+Color3
+Color3Value::Get (void) const
+{
+  return m_value;
+}
+
+Ptr<AttributeValue>
+Color3Value::Copy (void) const
+{
+  return Ptr<AttributeValue>{new Color3Value{m_value}, false};
+}
+
+std::string
+Color3Value::SerializeToString (Ptr<const AttributeChecker> checker) const
+{
+  std::ostringstream oss;
+  oss << m_value;
+  return oss.str ();
+}
+
+bool
+Color3Value::DeserializeFromString (std::string value, Ptr<const AttributeChecker> checker)
+{
+  std::istringstream iss;
+  iss.str (value);
+  iss >> m_value;
+  NS_ABORT_MSG_UNLESS (iss.eof (), "Attribute value\"" << value << "\" is not properly formatted");
+  return !iss.bad () && !iss.fail ();
+}
+
 } // namespace ns3

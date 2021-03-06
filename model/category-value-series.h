@@ -224,7 +224,7 @@ private:
   /**
    * The color of the points & connections
    */
-  Color4 m_color;
+  Color3 m_color;
 
   /**
    * Flag indicating the configuration of this model was finalized and written,

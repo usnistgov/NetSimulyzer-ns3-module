@@ -30,6 +30,7 @@
 #include <vector>
 #include <stdio.h>
 #include <iomanip>
+#include <array>
 
 #ifdef HAS_NETSIMULYZER
 #include "ns3/netsimulyzer-module.h"
@@ -69,12 +70,11 @@ uint32_t oldByteCounter = 0;
   std::map<uint32_t, Ptr<netsimulyzer::SeriesCollection>> rsrpCollections;
   std::map<uint32_t, std::map<uint32_t, Ptr<netsimulyzer::XYSeries>>> rsrpSeries; //maps IMSI to map of CellId to series
 
-  #define MAX_COLORS 3
-  static const netsimulyzer::Color3 g_colors[MAX_COLORS] =
+  const std::array<netsimulyzer::Color3Value, 3> g_colors
   {
-     netsimulyzer::Color3 {245u, 0u, 0u},
-     netsimulyzer::Color3 {0u, 245u, 0u},
-     netsimulyzer::Color3 {0u, 0u, 245u}
+     netsimulyzer::RED_VALUE,
+     netsimulyzer::GREEN_VALUE,
+     netsimulyzer::BLUE_VALUE
   };
 
   //Callback for UE PHY measurements
@@ -98,7 +98,7 @@ uint32_t oldByteCounter = 0;
       if (imsiToCellIt == rsrpSeries.end ())
       {
         //Create collection to plot RSRP for cells detected by this IMSI
-        PointerValue xAxis; 
+        PointerValue xAxis;
         PointerValue yAxis;
         Ptr<netsimulyzer::SeriesCollection> rsrpCollection = CreateObject <netsimulyzer::SeriesCollection>(orchestrator);
         rsrpCollection->SetAttribute ("Name", StringValue("RSRP"));
@@ -119,7 +119,7 @@ uint32_t oldByteCounter = 0;
         rsrpSeries [imsi][cellId]->SetAttribute ("Name", StringValue("Cell Id " + std::to_string(cellId)));
         rsrpSeries [imsi][cellId]->SetAttribute ("LabelMode", StringValue("Hidden"));
         rsrpSeries [imsi][cellId]->SetAttribute ("Connection", StringValue("None"));
-        rsrpSeries [imsi][cellId]->SetAttribute ("Color", netsimulyzer::Color4Value(g_colors[cellId % MAX_COLORS]));
+        rsrpSeries [imsi][cellId]->SetAttribute ("Color", g_colors[cellId % g_colors.size()]);
         rsrpCollections[imsi]->Add (rsrpSeries [imsi][cellId]);
       }
       //Update data point
@@ -247,7 +247,7 @@ UeStateTransition (uint64_t imsi, uint16_t cellId, uint16_t rnti, LteUeRrc::Stat
   " transitions from " << ToString (oldState) << " to " << ToString (newState) << std::endl;
 #ifdef HAS_NETSIMULYZER
   if (enableVisualization)
-  {  
+  {
     std::map <uint32_t, Ptr<netsimulyzer::StateTransitionSink>>::iterator it = rrcStateMachines.find (imsi);
     it->second->StateChangedId (newState);
   }
@@ -740,7 +740,7 @@ main (int argc, char *argv[])
   {
      NS_LOG_INFO ("Enabling visualization...");
 
-    orchestrator = CreateObject<netsimulyzer::Orchestrator> ("lena-radio-link-failure.json"); 
+    orchestrator = CreateObject<netsimulyzer::Orchestrator> ("lena-radio-link-failure.json");
     orchestrator->SetAttribute ("MobilityPollInterval", TimeValue (MilliSeconds (guiResolution)));
 
     //Configure nodes
@@ -768,7 +768,7 @@ main (int argc, char *argv[])
       rrcStateGraph->SetAttribute ("LoggingMode", StringValue("None"));
       rrcStateMachines.insert (std::pair<uint32_t, Ptr<netsimulyzer::StateTransitionSink>> (ueDevs.Get(i)->GetObject <LteUeNetDevice> ()->GetImsi(), rrcStateGraph));
 
-    } 
+    }
 
     //Network
     for (uint32_t i = 0; i < enbNodes.GetN (); ++i)
@@ -801,7 +801,7 @@ main (int argc, char *argv[])
     PointerValue rxXySeries;
     appRxTraceSeries->GetAttribute ("XYSeries", rxXySeries);
     rxXySeries.Get<netsimulyzer::XYSeries> ()->SetAttribute ("LabelMode", StringValue("Hidden"));
-    
+
   }
 #endif
 

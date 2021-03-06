@@ -967,7 +967,7 @@ Experiment::Run (const WifiHelper &helper, const YansWifiPhyHelper &wifiPhy, con
 
     associatedSeries = CreateObject <netsimulyzer::XYSeries>(orchestrator);
     associatedSeries->SetAttribute ("Name", StringValue("Number of associated STAs"));
-    associatedSeries->SetAttribute ("Color", netsimulyzer::Color4Value(netsimulyzer::Color4{204u, 111u, 4u, 255u}));
+    associatedSeries->SetAttribute ("Color", netsimulyzer::Color3Value(netsimulyzer::Color3{204u, 111u, 4u}));
 
     for (i = 0; i < nNodes; ++i)
     {

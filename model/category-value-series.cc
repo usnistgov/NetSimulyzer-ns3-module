@@ -58,9 +58,9 @@ CategoryValueSeries::GetTypeId (void)
                          MakePointerChecker<CategoryAxis> ())
           .AddAttribute ("Color",
                          "Color to use for the points and connections",
-                         Color4Value (),
-                         MakeColor4Accessor (&CategoryValueSeries::m_color),
-                         MakeColor4Checker ())
+                         Color3Value (),
+                         MakeColor3Accessor (&CategoryValueSeries::m_color),
+                         MakeColor3Checker ())
           .AddAttribute ("AutoUpdate",
                          "Automatically append values in the same category (Y value) "
                          "but with a greater X value. Must also set `AutoUpdateInterval` and "

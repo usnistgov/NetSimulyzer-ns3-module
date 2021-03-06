@@ -98,19 +98,6 @@ colorToObject (const ns3::netsimulyzer::Color3 &color)
 }
 
 nlohmann::json
-colorToObject (const ns3::netsimulyzer::Color4 &color)
-{
-  nlohmann::json object;
-
-  object["red"] = color.red;
-  object["green"] = color.green;
-  object["blue"] = color.blue;
-  object["alpha"] = color.alpha;
-
-  return object;
-}
-
-nlohmann::json
 pointToObject (double x, double y)
 {
   nlohmann::json object;
@@ -842,7 +829,7 @@ Orchestrator::Commit (XYSeries &series)
       break;
     }
 
-  Color4Value color;
+  Color3Value color;
   series.GetAttribute ("Color", color);
   element["color"] = colorToObject (color.Get ());
 
@@ -928,7 +915,7 @@ Orchestrator::Commit (CategoryValueSeries &series)
   series.GetAttribute ("Visible", visible);
   element["visible"] = visible.Get ();
 
-  Color4Value color;
+  Color3Value color;
   series.GetAttribute ("Color", color);
   element["color"] = colorToObject (color.Get ());
 

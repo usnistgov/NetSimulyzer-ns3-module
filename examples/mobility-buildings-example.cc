@@ -173,7 +173,7 @@ main (int argc, char *argv[])
   possibleNodeLocations->SetAttribute ("Height", DoubleValue (-0.5));
 
   // Mark with a light green color
-  possibleNodeLocations->SetAttribute ("FillColor", netsimulyzer::Color3Value ({204u, 255u, 204u}));
+  possibleNodeLocations->SetAttribute ("FillColor", netsimulyzer::Color3Value{204u, 255u, 204u});
 
   auto infoLog = CreateObject<netsimulyzer::LogStream> (orchestrator);
   eventLog = CreateObject<netsimulyzer::LogStream> (orchestrator);

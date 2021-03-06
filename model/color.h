@@ -44,93 +44,8 @@
 namespace ns3 {
 namespace netsimulyzer {
 
-class Color3;
-
-/**
- * Represents a 4 component RGB color with an alpha(transparency) channel
- *
- * \see Color3
- */
-class Color4
-{
-public:
-  /**
-   * Initialize a black color (all components 0) with full opacity (255)
-   */
-  Color4 (void) = default;
-
-  /**
-   * Initialize all color with uniform components & full opacity (255).
-   * Allows for implicit conversions.
-   *
-   * \param component
-   * The value to set the color components to
-   */
-  Color4 (uint8_t component);
-
-  /**
-   * Initialize a color, setting each channel
-   *
-   * \param red
-   * The amount of red in the resulting color
-   *
-   * \param green
-   * The amount of green in the resulting color
-   *
-   * \param blue
-   * The amount of blue in the resulting color
-   *
-   * \param alpha
-   * The opacity of the resulting color. (default 255)
-   */
-  Color4 (uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = 255u);
-
-  /**
-   * Convert a `Color3` to a `Color4` with full opacity
-   *
-   * \param color
-   * A `Color3 to read the RGB components from
-   */
-  Color4 (const Color3 &color);
-
-  // They're public, sue me
-
-  /**
-   * The red component of the resulting color.
-   * Range [0 - 255]
-   */
-  uint8_t red{0u};
-
-  /**
-   * The green component of the resulting color.
-   * Range [0 - 255]
-   */
-  uint8_t green{0u};
-
-  /**
-   * The blue component of the resulting color.
-   * Range [0 - 255]
-   */
-  uint8_t blue{0u};
-
-  /**
-   * The opacity of the resulting color
-   * Range [0 - 255]
-   */
-  uint8_t alpha{255u};
-};
-
-// Required for the attribute....
-std::ostream &operator<< (std::ostream &os, const Color4 &color);
-std::istream &operator>> (std::istream &is, Color4 &color);
-
-ATTRIBUTE_HELPER_HEADER (Color4);
-
 /**
  * Represents a 3 component RGB color.
- * Does not support opacity
- *
- * \see Color4
  */
 class Color3
 {
@@ -163,15 +78,6 @@ public:
    */
   Color3 (uint8_t red, uint8_t green, uint8_t blue);
 
-  /**
-   * Convert a `Color4` to a `Color3`
-   * Will result in the `alpha` being lost
-   *
-   * \param color
-   * A `Color4 to read the RGB components from
-   */
-  Color3 (const Color4 &color);
-
   // They're public, sue me
 
   /**
@@ -197,7 +103,57 @@ public:
 std::ostream &operator<< (std::ostream &os, const Color3 &color);
 std::istream &operator>> (std::istream &is, Color3 &color);
 
-ATTRIBUTE_HELPER_HEADER (Color3);
+// ----- Attribute Type -----
+
+class Color3Value : public AttributeValue
+{
+public:
+  Color3Value () = default;
+  Color3Value (const Color3 &value);
+
+  template <typename... Args>
+  explicit Color3Value (Args &&...args);
+
+  void Set (const Color3 &value);
+  Color3 Get (void) const;
+  template <typename T>
+  bool
+  GetAccessor (T &value) const
+  {
+    value = T (m_value);
+    return true;
+  }
+  Ptr<AttributeValue> Copy (void) const override;
+  std::string SerializeToString (Ptr<const AttributeChecker> checker) const override;
+  bool DeserializeFromString (std::string value, Ptr<const AttributeChecker> checker) override;
+
+private:
+  Color3 m_value{};
+};
+
+template <typename... Args>
+Color3Value::Color3Value (Args &&...args) : m_value (std::forward<Args> (args)...)
+{
+}
+
+template <typename T1>
+Ptr<const AttributeAccessor>
+MakeColor3Accessor (T1 a1)
+{
+  return MakeAccessorHelper<Color3Value> (a1);
+}
+template <typename T1, typename T2>
+Ptr<const AttributeAccessor>
+MakeColor3Accessor (T1 a1, T2 a2)
+{
+  return MakeAccessorHelper<Color3Value> (a1, a2);
+};
+
+class Color3Checker : public AttributeChecker
+{
+};
+
+Ptr<const AttributeChecker> MakeColor3Checker (void);
 
 } // namespace netsimulyzer
 } // namespace ns3
