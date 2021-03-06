@@ -99,23 +99,66 @@ public:
   uint8_t blue{0u};
 };
 
-// Required for the attribute....
-std::ostream &operator<< (std::ostream &os, const Color3 &color);
-std::istream &operator>> (std::istream &is, Color3 &color);
-
 // ----- Attribute Type -----
 
+/**
+ * Attribute type for colors
+ */
 class Color3Value : public AttributeValue
 {
 public:
+  /**
+   * Initialize the attribute with
+   * a default (black) color
+   */
   Color3Value () = default;
+
+  /**
+   * Initialize the attribute with a
+   * copy of `value`
+   *
+   * \param value
+   * The color value to copy into the new attribute
+   */
   Color3Value (const Color3 &value);
 
+  /**
+   * Constructs an attribute using the same parameters as
+   * as any of the `Color3` constructors.
+   *
+   * \code{.cc}
+   * // Calls Color3::Color3(uint8_t, uint8_t, uint8_t)
+   * Color3Value color{255u, 0u, 0u};
+   *
+   * // Calls Color3::Color3(uint8_t)
+   * Color3Value color{128u};
+   * \endcode
+   *
+   * \tparam Args (Deduced)
+   * The type of each argument passed
+   *
+   * \param args
+   * The arguments normally passed to a `Color3` constructor.
+   */
   template <typename... Args>
   explicit Color3Value (Args &&...args);
 
+  /**
+   * Replaces the contained value with a
+   * copy of `value`
+   *
+   * \param value
+   * The value to replace the current value with
+   */
   void Set (const Color3 &value);
+
+  /**
+   * \return
+   * A copy of the enclosed value
+   */
   Color3 Get (void) const;
+
+
   template <typename T>
   bool
   GetAccessor (T &value) const
@@ -123,11 +166,48 @@ public:
     value = T (m_value);
     return true;
   }
+
+  /**
+   * Copies the attribute with the enclosed value.
+   *
+   * \return
+   * A copy of this attribute
+   */
   Ptr<AttributeValue> Copy (void) const override;
+
+  /**
+   * Builds a string representation of the attribute
+   * in the form:
+   * "{red}|{green}|{blue}"
+   *
+   * \param checker
+   * Unused
+   *
+   * \return
+   * A string in the form: "{red}|{green}|{blue}"
+   */
   std::string SerializeToString (Ptr<const AttributeChecker> checker) const override;
+
+  /**
+   * Converts the string `value` into a Color3 and stores it
+   * in the enclosed value
+   *
+   * \param value
+   * A string in the form: "{red}|{green}|{blue}"
+   *
+   * \param checker
+   * Unused
+   *
+   * \return
+   * True if the conversion succeeded,
+   * false otherwise.
+   */
   bool DeserializeFromString (std::string value, Ptr<const AttributeChecker> checker) override;
 
 private:
+  /**
+   * The enclosed color value
+   */
   Color3 m_value{};
 };
 
@@ -147,10 +227,6 @@ Ptr<const AttributeAccessor>
 MakeColor3Accessor (T1 a1, T2 a2)
 {
   return MakeAccessorHelper<Color3Value> (a1, a2);
-};
-
-class Color3Checker : public AttributeChecker
-{
 };
 
 Ptr<const AttributeChecker> MakeColor3Checker (void);

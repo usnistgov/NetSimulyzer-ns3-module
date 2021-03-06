@@ -68,38 +68,6 @@ Color3::Color3 (uint8_t red, uint8_t green, uint8_t blue) : red (red), green (gr
 {
 }
 
-
-std::ostream &
-operator<< (std::ostream &os, const Color3 &color)
-{
-  os << color.red << '|' << color.green << '|' << color.blue;
-  return os;
-}
-
-std::istream &
-operator>> (std::istream &is, Color3 &color)
-{
-  // Be sure to match the << order
-  is >> color.red;
-  checkSeparator (is);
-
-  is >> color.green;
-  checkSeparator (is);
-
-  is >> color.blue;
-  checkSeparator (is);
-
-  return is;
-}
-
-Ptr<const AttributeChecker>
-MakeColor3Checker (void)
-{
-  return MakeSimpleAttributeChecker<Color3Value, Color3Checker> ("Color3"
-                                                                 "Value",
-                                                                 "Color3");
-};
-
 Color3Value::Color3Value (const Color3 &value) : m_value (value)
 {
 }
@@ -122,22 +90,38 @@ Color3Value::Copy (void) const
   return Ptr<AttributeValue>{new Color3Value{m_value}, false};
 }
 
-std::string
-Color3Value::SerializeToString (Ptr<const AttributeChecker> checker) const
+std::string Color3Value::SerializeToString (Ptr<const AttributeChecker>) const
 {
   std::ostringstream oss;
-  oss << m_value;
+  oss << m_value.red << '|' << m_value.green << '|' << m_value.blue;
   return oss.str ();
 }
 
 bool
-Color3Value::DeserializeFromString (std::string value, Ptr<const AttributeChecker> checker)
+Color3Value::DeserializeFromString (std::string value, Ptr<const AttributeChecker>)
 {
   std::istringstream iss;
   iss.str (value);
-  iss >> m_value;
+
+  iss >> m_value.red;
+  checkSeparator (iss);
+
+  iss >> m_value.green;
+  checkSeparator (iss);
+
+  iss >> m_value.blue;
+  checkSeparator (iss);
+
   NS_ABORT_MSG_UNLESS (iss.eof (), "Attribute value\"" << value << "\" is not properly formatted");
   return !iss.bad () && !iss.fail ();
 }
 
-} // namespace ns3
+Ptr<const AttributeChecker>
+MakeColor3Checker (void)
+{
+  return MakeSimpleAttributeChecker<Color3Value, AttributeChecker> ("Color3"
+                                                                    "Value",
+                                                                    "Color3");
+};
+
+} // namespace ns3::netsimulyzer
