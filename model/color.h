@@ -57,12 +57,11 @@ public:
 
   /**
    * Initialize all color with uniform components
-   * Allows for implicit conversions.
    *
    * \param component
    * The value to set the color components to
    */
-  Color3 (uint8_t component);
+  explicit Color3 (uint8_t component);
 
   /**
    * Initialize a color, setting each channel
