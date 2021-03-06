@@ -142,7 +142,7 @@ etc.
 Positions written from a ``CourseChange`` callback are not subject to the ``PositionTolerance``
 and will always be written.
 
-Unlike :ref:`location-polling`, this location tracing may not be disabled.
+Unlike :ref:`orchestrator-mobility-polling`, this location tracing may not be disabled.
 
 Attributes
 ^^^^^^^^^^
