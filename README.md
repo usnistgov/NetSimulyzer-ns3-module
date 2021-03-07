@@ -1,3 +1,9 @@
+# NetSimulyzer ns-3 Module
+A flexible 3D visualizer for displaying, debugging, presenting, and understanding *ns-3* scenarios.
+
+![Application Screenshot](doc/source/_static/application-windows.png)
+
+
 # Table of Contents
 
 * [About](#about)
@@ -15,9 +21,7 @@
 
 # About
 This is the [ns-3](https://www.nsnam.org/) companion module the
-Visualizer
-[GitLab-internal](https://gitlab.nist.gov/gitlab/wnd-publicsafety/visualizer/NetSimulyzer) or
-[GitHub-public](https://github.com/usnistgov/NetSimulyzer).
+[NetSimulyzer](https://github.com/usnistgov/NetSimulyzer).
 Link this module & run your scenario to see it in 3D.
 
 # Requirements
@@ -38,34 +42,20 @@ cd src/
 ```
 
 2) Clone the project from one of the below URLs
-
-### GitHub (Public)
-
-Use this one if you wish to clone the project outside of the NIST
-network
 ```shell
 # Pick one of the below
-# HTTPS
+# HTTPS (Choose this one if you're uncertain)
 git clone https://github.com/usnistgov/NetSimulyzer-ns3-module netsimulyzer
 
 # SSH
 git clone git@github.com:usnistgov/NetSimulyzer-ns3-module.git netsimulyzer
 ```
 
-
-### GitLab (Internal)
-
-Use this one if you're working only on the NIST network
-```shell
-# Pick one of the below
-# HTTPS
-git clone https://gitlab.nist.gov/gitlab/wnd-publicsafety/visualizer/NetSimulyzer-ns3-module.git netsimulyzer
-
-# SSH
-git clone git@gitlab.nist.gov:wnd-publicsafety/visualizer/NetSimulyzer-ns3-module.git netsimulyzer
-```
-
 3) (Re)configure & (Re)build `ns-3`
+```shell
+./waf configure
+./waf
+```
 
 ## Download ZIP
 If, for whatever reason, `git` is not available. Just download the
@@ -73,33 +63,17 @@ project & unzip it into the `src` directory of `ns-3`.
 
 Note that updates will have to be performed manually using this method
 
-1) Download the ZIP of the project from one of the below URLs
+1) Download the ZIP of the project from the url below:
 
-### GitHub (Public)
 https://github.com/usnistgov/NetSimulyzer-ns3-module/archive/master.zip
 
-### GitLab (Internal)
-https://gitlab.nist.gov/gitlab/wnd-publicsafety/visualizer/NetSimulyzer-ns3-module/-/archive/master/NetSimulyzer-ns3-module-master.zip
-
 2) Unzip the file into the `ns-3` `src/` directory
-### GitHub
-```shell
-unzip NetSimulyzer-ns3-module-master.zip
-```
-
-### GitLab
 ```shell
 unzip NetSimulyzer-ns3-module-master.zip
 ```
 
 3) Rename the resulting directory to `netsimulyzer`, as ns-3 will not accept a module named differently
 than its directory.
-### GitHub
-```shell
-mv NetSimulyzer-ns3-module-master netsimulyzer
-```
-
-### GitLab
 ```shell
 mv NetSimulyzer-ns3-module-master netsimulyzer
 ```
@@ -172,7 +146,7 @@ int main ()
 {
     // ...
 
-    // Guard any visualizer references in code with the macro as well
+    // Guard any NetSimulyzer references in code with the macro as well
 #ifdef HAS_NETSIMULYZER
     auto orchestrator = CreateObject<netsimulyzer::Orchestrator> ("example.json");
     // ...
