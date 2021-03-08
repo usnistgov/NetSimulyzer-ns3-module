@@ -33,6 +33,7 @@
  */
 
 #include "xy-series.h"
+#include "color-palette.h"
 #include <ns3/log.h>
 #include <ns3/enum.h>
 #include <ns3/boolean.h>
@@ -92,7 +93,7 @@ XYSeries::GetTypeId (void)
           .AddAttribute ("Visible", "Should this series appear in selection elements",
                          BooleanValue (true), MakeBooleanAccessor (&XYSeries::m_visible),
                          MakeBooleanChecker ())
-          .AddAttribute ("Color", "Color to use for the points and connections", Color3Value (),
+          .AddAttribute ("Color", "Color to use for the points and connections", BLACK_VALUE,
                          MakeColor3Accessor (&XYSeries::m_color), MakeColor3Checker ());
   return tid;
 }

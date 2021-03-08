@@ -1,4 +1,5 @@
 #include "category-value-series.h"
+#include "color-palette.h"
 #include <ns3/log.h>
 #include <ns3/string.h>
 #include <ns3/double.h>
@@ -58,7 +59,7 @@ CategoryValueSeries::GetTypeId (void)
                          MakePointerChecker<CategoryAxis> ())
           .AddAttribute ("Color",
                          "Color to use for the points and connections",
-                         Color3Value (),
+                         BLACK_VALUE,
                          MakeColor3Accessor (&CategoryValueSeries::m_color),
                          MakeColor3Checker ())
           .AddAttribute ("AutoUpdate",

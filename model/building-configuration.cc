@@ -33,6 +33,7 @@
  */
 
 #include "building-configuration.h"
+#include "color-palette.h"
 #include <ns3/boolean.h>
 #include <ns3/double.h>
 #include <ns3/object-base.h>
@@ -57,11 +58,11 @@ BuildingConfiguration::GetTypeId (void)
   static TypeId tid =
       TypeId ("ns3::netsimulyzer::BuildingConfiguration")
           .SetParent<Object> ()
-          .SetGroupName("netsimulyzer")
+          .SetGroupName ("netsimulyzer")
           .AddConstructor<BuildingConfiguration> ()
           .SetGroupName ("netsimulyzer")
           .AddAttribute ("Color", "Color to tint the rendered building",
-                         Color3Value (Color3{204u}) /* light gray */,
+                         Color3Value (GRAY_20) /* light gray */,
                          MakeColor3Accessor (&BuildingConfiguration::m_color), MakeColor3Checker ())
           .AddAttribute ("Visible", "Defines if the Building is rendered in the visualizer",
                          BooleanValue (true),

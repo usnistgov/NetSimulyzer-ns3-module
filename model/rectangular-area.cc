@@ -1,4 +1,5 @@
 #include "rectangular-area.h"
+#include "color-palette.h"
 #include <ns3/uinteger.h>
 #include <ns3/double.h>
 #include <ns3/rectangle.h>
@@ -34,10 +35,10 @@ RectangularArea::GetTypeId (void)
                          StringValue (), MakeStringAccessor (&RectangularArea::m_name),
                          MakeStringChecker ())
           .AddAttribute ("FillColor", "Color of the area within the borders",
-                         Color3Value (Color3{204u}) /* light gray */,
+                         GRAY_20_VALUE /* light gray (20%) */,
                          MakeColor3Accessor (&RectangularArea::m_fillColor), MakeColor3Checker ())
           .AddAttribute ("BorderColor", "Color of the border surrounding the fill",
-                         Color3Value (Color3{0u}) /* black */,
+                         BLACK_VALUE /* black */,
                          MakeColor3Accessor (&RectangularArea::m_borderColor), MakeColor3Checker ())
 
       ;
