@@ -24,6 +24,14 @@ A flexible 3D visualizer for displaying, debugging, presenting, and understandin
   * [Mobility Buildings Example](#mobility-buildings-example)
   * [WiFi Bianchi](#wifi-bianchi)
   * [Outdoor Random Walk](#outdoor-random-walk)
+* [Feature Overview](#feature-overview)
+  * [Showing Nodes](#showing-nodes)
+  * [Showing Buildings](#showing-buildings)
+  * [Decorations](#decorations)
+  * [Areas](#areas)
+  * [Log Streams](#log-streams)
+  * [Series](#series)
+
 
 # About
 This is the [ns-3](https://www.nsnam.org/) companion module the
@@ -225,3 +233,113 @@ A simple example from the `buildings` module demonstrating integration into an e
 waf --run outdoor-random-walk-example-netsimulyzer
 ```
 
+# Feature Overview
+
+## Showing Nodes
+Create a `NodeConfigurationHelper`, set a model for the Nodes and `Install()`
+on the Nodes you wish to be displayed in the application.
+
+```c++
+using namespace ns3;
+
+netsimulyzer::NodeConfigurationHelper nodeHelper{orchestrator};
+nodeHelper.Set ("Model", netsimulyzer::models::SMARTPHONE_VALUE);
+
+// Shows every Node in the scenario
+for (auto node = NodeList::Begin (); node != NodeList::End (); node++)
+    nodeHelper.Install (*node);
+
+// Or install on a container
+NodeContainer containerNodes;
+containerNodes.Create (2);
+nodeHelper.Install (containerNodes);
+```
+
+## Showing Buildings
+Buildings have a similar setup to Nodes, only there is no requirement for a model.
+
+```c++
+using namespace ns3;
+
+// Show every building in the scenario
+netsimulyzer::BuildingConfigurationHelper buildingHelper{orchestrator};
+for (auto building = BuildingList::Begin (); building != BuildingList::End (); building++)
+    buildingHelper.Install (*building);
+```
+
+## Decorations
+For purely visual elements add a `Decoration`. A Decoration`
+is similar to a `NodeConfiguration` except its position is set manually.
+
+```c++
+auto decoration = CreateObject<netsimulyzer::Decoration>(orchestrator);
+decoration.SetAttribute ("Model", netsimulyzer::models::CELL_TOWER_POLE_VALUE);
+decoration.SetPosition ({5.0, 5.0, 0.0});
+```
+
+## Areas
+To draw attention to certain areas in the topology, it may be defined as an area.
+A `RectangularArea` will draw a rectangle with a border at some defined coordinates
+
+```c++
+  // ns-3 Rectangle from the Mobility Model
+  // 5x5 area around the origin
+Rectangle start{-5.0, 5.0, -5.0, 5.0};
+auto startingArea = CreateObject<netsimulyzer::RectangularArea>(orchestrator, start);
+
+// Optional (Default: Black)
+startingArea->SetAttribute ("BorderColor", GREEN_VALUE);
+
+// The Rectangle may be constructed in place as well
+auto finishingArea = CreateObject<netsimulyzer::RectangularArea>(orchestrator, Rectangle{10.0, 7.0, 10.0, 7.0});
+finishingArea->SetAttribute ("BorderColor", RED_VALUE);
+```
+
+## Log Streams
+A `LogStream` may be used to output messages at a given time during the scenario.
+A `LogStream` works similar to a C++ stream (e.g. `std::cout`).
+
+```c++
+auto infoLog = CreateObject<netsimulyzer::LogStream> (orchestrator);
+
+// Optional, but highly recommended you set a name for each stream
+infoLog->SetAttribute ("Name", StringValue ("Info"));
+
+// Use like std::cout
+// Note the * at the beginning
+// and '\n' at the end of the message
+*infoLog << "Hello "
+         << "world!\n";
+
+int number = 5;
+*infoLog << "Logs convert numbers to strings for you\n"
+         << "See: " << number << '\n';
+```
+
+## Series
+A series is a collection of points which may be displayed
+on a chart in the application.
+
+A series may be added to as the scenario runs and points
+are added at the same time during playback as they were added in
+the simulation.
+
+There are several types of series, but the simplest is the `XYSeries` shown below.
+For the other series types, refer to the documentation.
+
+```c++
+auto xy = CreateObject<netsimulyzer::XYSeries> (orchestrator);
+
+// Optional, but highly recommended
+xy->SetAttribute ("Name", StringValue ("XY Series Example"));
+
+// Default is `Line` (line graph),
+// there is also `None` (scatter plot)
+// and `Spline` (spline graph)
+xy->SetAttribute ("Connection", EnumValue (netsimulyzer::XYSeries::Line));
+
+// Points are added through `Append (x, y)` calls,
+// and may occur at any time
+// before or during the simulation
+xy->Append (1.0, 1.0);
+```
