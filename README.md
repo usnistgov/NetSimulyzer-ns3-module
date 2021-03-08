@@ -164,5 +164,21 @@ git pull
 ```
 
 ### ZIP
-TODO
+To update a ZIP installation, remove the old module and replace it with the updated one.
+
+```shell
+# From the ns-3 root
+cd src
+rm -Rf netsimulyzer
+
+#use this command, or download manually
+wget https://github.com/eeibevan/omxplaylist/archive/master.zip -O NetSimulyzer-ns3-module-master.zip
+unzip NetSimulyzer-ns3-module-master.zip
+
+# Make sure the directory in the ns-3 src/ directory is
+# named `netsimulyzer`
+mv NetSimulyzer-ns3-module-master netsimulyzer
+
+
+```
 
