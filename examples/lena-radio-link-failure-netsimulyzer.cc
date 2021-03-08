@@ -773,7 +773,7 @@ main (int argc, char *argv[])
     //Network
     for (uint32_t i = 0; i < enbNodes.GetN (); ++i)
     {
-      nodeConfigHelper.Set ("Model", StringValue ("non-distributable/models/props/Billboard_pole.obj"));
+      nodeConfigHelper.Set ("Model", netsimulyzer::models::CELL_TOWER_POLE_VALUE);
       nodeConfigHelper.Set ("Name", StringValue ("Cell tower " + std::to_string(i)));
       nodeConfigHelper.Set ("Height", netsimulyzer::OptionalValue<double> (1));
       nodeConfigHelper.Set ("Orientation", Vector3DValue (Vector3D(0, 0, 0)));

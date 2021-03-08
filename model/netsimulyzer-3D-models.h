@@ -46,6 +46,12 @@ const StringValue SMARTPHONE_VALUE{SMARTPHONE};
 const std::string LAND_DRONE{"models/land_drone.obj"};
 const StringValue LAND_DRONE_VALUE{LAND_DRONE};
 
-}
+const std::string SERVER{"models/server.obj"};
+const StringValue SERVER_VALUE{SERVER};
+
+const std::string CELL_TOWER_POLE{"models/cell_tower_pole.obj"};
+const StringValue CELL_TOWER_POLE_VALUE{CELL_TOWER_POLE};
+
+} // namespace ns3::netsimulyzer::models
 
 #endif //NETSIMULYZER_3D_MODELS_H

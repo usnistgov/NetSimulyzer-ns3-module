@@ -944,7 +944,7 @@ Experiment::Run (const WifiHelper &helper, const YansWifiPhyHelper &wifiPhy, con
     if (infra)
     {
       // First node is AP
-      nodeConfigHelper.Set ("Model", StringValue ("non-distributable/models/props/Game_Console.obj"));
+      nodeConfigHelper.Set ("Model", netsimulyzer::models::SERVER_VALUE);
       nodeConfigHelper.Set ("Name", StringValue ("AP "));
       nodeConfigHelper.Install (wifiNodes.Get (0));
     }

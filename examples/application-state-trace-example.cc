@@ -169,6 +169,13 @@ main (int argc, char *argv[])
 
   auto orchestrator = CreateObject<netsimulyzer::Orchestrator> (outputFileName);
 
+  // No Nodes Move in this scenario
+  orchestrator->SetPollMobility(false);
+
+  netsimulyzer::NodeConfigurationHelper nodeHelper{orchestrator};
+  nodeHelper.Set("Model", netsimulyzer::models::SERVER_VALUE);
+  nodeHelper.Install(node);
+
   auto exampleStateSink = CreateObject<netsimulyzer::StateTransitionSink> (
       orchestrator, // Orchestrator for series & log
       DummyApplication::States, // Possible States (with optional IDs)
