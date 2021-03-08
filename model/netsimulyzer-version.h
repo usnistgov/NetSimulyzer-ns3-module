@@ -42,12 +42,12 @@ namespace ns3::netsimulyzer {
 /**
  * The Major version number for the module
  */
-const long VERSION_MAJOR = 0L;
+const long VERSION_MAJOR = 1L;
 
 /**
  * The Minor version number for the module
  */
-const long VERSION_MINOR = 5L;
+const long VERSION_MINOR = 0L;
 
 /**
  * The Patch version number for the module
