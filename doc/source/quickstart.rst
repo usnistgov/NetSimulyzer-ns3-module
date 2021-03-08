@@ -53,13 +53,14 @@ Showing Nodes
 Create a ``NodeConfigurationHelper``, set a model for the Nodes and ``Install()``
 on the Nodes you wish to be displayed in the application.
 
-For additional configuration options see :doc:`nodes`.
+For the list of included models and
+additional configuration options see :doc:`nodes`.
 
 .. code-block:: C++
 
   netsimulyzer::NodeConfigurationHelper nodeHelper{orchestrator};
   nodeHelper.Set ("Model",
-                  StringValue ("relative/path/from/resource/dir/model.obj"));
+                  netsimulyzer::models::SMARTPHONE_VALUE);
 
   // Shows every Node in the scenario
   for (auto node = NodeList::Begin (); node != NodeList::End (); node++)
@@ -97,7 +98,7 @@ For more information, see :doc:`decorations`
 .. code-block:: C++
 
   auto decoration = CreateObject<netsimulyzer::Decoration>(orchestrator);
-  decoration.SetAttribute ("Model", StringValue ("relative/path/from/resource/dir/model.obj"));
+  decoration.SetAttribute ("Model", netsimulyzer::models::CELL_TOWER_POLE_VALUE);
   decoration.SetPosition ({5.0, 5.0, 0.0});
 
 
@@ -116,8 +117,12 @@ For additional configuration, see :doc:`areas`
   Rectangle start{-5.0, 5.0, -5.0, 5.0};
   auto startingArea = CreateObject<netsimulyzer::RectangularArea>(orchestrator, start);
 
+  // Optional (Default: Black)
+  startingArea->SetAttribute ("BorderColor", GREEN_VALUE);
+
   // The Rectangle may be constructed in place as well
   auto finishingArea = CreateObject<netsimulyzer::RectangularArea>(orchestrator, Rectangle{10.0, 7.0, 10.0, 7.0});
+  finishingArea->SetAttribute ("BorderColor", RED_VALUE);
 
 
 Adding Log Messages
