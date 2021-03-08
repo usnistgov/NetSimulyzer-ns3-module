@@ -15,7 +15,7 @@ A flexible 3D visualizer for displaying, debugging, presenting, and understandin
     * [Connecting the Module Safely](#connecting-the-module-safely)
         * [Waf (Linking)](#waf-linking)
         * [Code](#code)
-* [Updating](#updating)
+  * [Updating](#updating)
     * [Clone](#clone)
     * [ZIP](#zip)
 
