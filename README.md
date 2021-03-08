@@ -18,6 +18,12 @@ A flexible 3D visualizer for displaying, debugging, presenting, and understandin
   * [Updating](#updating)
     * [Clone](#clone)
     * [ZIP](#zip)
+* [Running the Examples](#running-the-examples)
+  * [Application State Trace Example](#application-state-trace-example)
+  * [Lena Radio Link Failure](#lena-radio-link-failure)
+  * [Mobility Buildings Example](#mobility-buildings-example)
+  * [WiFi Bianchi](#wifi-bianchi)
+  * [Outdoor Random Walk](#outdoor-random-walk)
 
 # About
 This is the [ns-3](https://www.nsnam.org/) companion module the
@@ -53,7 +59,9 @@ git clone git@github.com:usnistgov/NetSimulyzer-ns3-module.git netsimulyzer
 
 3) (Re)configure & (Re)build `ns-3`
 ```shell
-./waf configure
+# --enable-examples is optional, see `Running the Examples`
+# for how to run them
+./waf configure --enable-examples
 ./waf
 ```
 
@@ -180,5 +188,40 @@ unzip NetSimulyzer-ns3-module-master.zip
 mv NetSimulyzer-ns3-module-master netsimulyzer
 
 
+```
+
+# Running the Examples
+Listed below are the commands to run the examples provided with the
+module:
+
+## Application State Trace Example
+Example demonstrating tracing the state of a custom `ns3::Application` using the `StateTransitionSink`.
+```shell
+waf --run application-state-trace-example-netsimulyzer
+```
+
+## Lena Radio Link Failure
+An adaptation of the 'lena-radio-link-failure' example from the `LTE` module with statistics
+tied into the NetSimulyzer
+```shell
+./waf --run "lena-radio-link-failure-netsimulyzer --simTime=20 --numberOfEnbs=2 --visual=true"
+```
+
+## Mobility Buildings Example
+Example demonstrating topology/mobility output to the NetSimulyzer
+```shell
+waf --run mobility-buildings-example-netsimulyzer
+```
+
+## WiFi Bianchi
+The WiFi Bianchi example from the `wifi` module with topology, logs, and several statistics.
+```shell
+./waf --run "wifi-bianchi-netsimulyzer --trials=1 --nMinStas=10 --nMaxStas=10 --visual=true"
+```
+
+## Outdoor Random Walk
+A simple example from the `buildings` module demonstrating integration into an existing scenario
+```shell
+waf --run outdoor-random-walk-example-netsimulyzer
 ```
 
