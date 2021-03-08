@@ -18,6 +18,8 @@ A flexible 3D visualizer for displaying, debugging, presenting, and understandin
   * [Updating](#updating)
     * [Clone](#clone)
     * [ZIP](#zip)
+* [Documentation](#documentation)
+  * [Building the Documentation](#building-the-documentation)
 * [Running the Examples](#running-the-examples)
   * [Application State Trace Example](#application-state-trace-example)
   * [Lena Radio Link Failure](#lena-radio-link-failure)
@@ -197,6 +199,36 @@ mv NetSimulyzer-ns3-module-master netsimulyzer
 
 
 ```
+
+# Documentation
+For prebuilt versions of the documentation, see the
+[Releases page on GitHub](https://github.com/usnistgov/NetSimulyzer-ns3-module/releases).
+
+## Building the Documentation
+[Sphinx](https://www.sphinx-doc.org/en/master/) is required to build the documentation.
+
+To run Sphinx to build the documentation, cd into the `doc` directory in the module
+and run `make [type]` for the type of documentation you wish to build.
+
+```shell
+# From the ns-3 root directory
+cd src/netsimulyzer/doc
+
+# HTML (Several Pages)
+make html
+
+# HTML (One Page)
+make singlehtml
+
+# PDF
+make latexpdf
+
+# To list other options, just run make
+make
+```
+
+The built documentation will now be found in `doc/build/[type]`.
+
 
 # Running the Examples
 Listed below are the commands to run the examples provided with the
