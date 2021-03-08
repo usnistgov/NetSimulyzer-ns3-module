@@ -106,7 +106,7 @@ int main ()
 ## Connecting the Module Safely
 You may wish for your module to not have a hard dependency on the `netsimulyzer` module.
 The following steps will allow you to link the module & still allow your code to build &
-run without 
+run without the module being present.
 
 ### Waf (Linking)
 If you wish for your module/program to be able to build without the `netsimulyzer` module
