@@ -78,7 +78,7 @@ Attributes
 |                      |                    |                    | * ``Line`` connects each point with a straight line           |
 |                      |                    |                    | * ``Spline`` connects each point with a curved line           |
 +----------------------+--------------------+--------------------+---------------------------------------------------------------+
-| LabelMode            | LabelMode          | Shown              | Method to display point labels                                |
+| LabelMode            | LabelMode          | Hidden             | Method to display point labels                                |
 |                      |                    |                    |                                                               |
 |                      |                    |                    | * ``Shown`` Show labels on each point showing its coordinates |
 |                      |                    |                    | * ``Hidden`` Do not show labels on points                     |

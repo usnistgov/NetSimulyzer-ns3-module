@@ -80,7 +80,7 @@ XYSeries::GetTypeId (void)
                                           XYSeries::ConnectionType::Line, "Line",
                                           XYSeries::ConnectionType::Spline, "Spline"))
           .AddAttribute ("LabelMode", "How the point labels are shown",
-                         EnumValue (XYSeries::LabelMode::Shown),
+                         EnumValue (XYSeries::LabelMode::Hidden),
                          MakeEnumAccessor (&XYSeries::m_labelMode),
                          MakeEnumChecker (XYSeries::LabelMode::Hidden, "Hidden",
                                           XYSeries::LabelMode::Shown, "Shown"))
