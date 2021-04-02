@@ -154,6 +154,12 @@ ThroughputSink::SetInterval (Time interval)
 }
 
 void
+ThroughputSink::AddPacket (Ptr<const Packet> packet)
+{
+  AddPacketSize (packet->GetSize ());
+}
+
+void
 ThroughputSink::AddPacketSize (uint32_t size)
 {
   NS_LOG_FUNCTION (this << size);

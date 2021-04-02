@@ -42,6 +42,7 @@
 #include <ns3/timer.h>
 #include <ns3/orchestrator.h>
 #include <ns3/nstime.h>
+#include <ns3/packet.h>
 
 namespace ns3 {
 namespace netsimulyzer {
@@ -85,6 +86,20 @@ public:
    * \param interval The interval between data points in the XY series
    */
   void SetInterval (Time interval);
+
+  /**
+   * Increment the size of data received
+   * by the size of `packet`.
+   *
+   * For manual control of the added size
+   * see `AddPacketSize`.
+   *
+   * \param packet A packet with a size
+   * to add to the current throughput size.
+   *
+   * \see AddPacketSize()
+   */
+  void AddPacket (Ptr<const Packet> packet);
 
   /**
    * Increment the size of data received

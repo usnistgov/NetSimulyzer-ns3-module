@@ -253,6 +253,13 @@ Example demonstrating topology/mobility output to the NetSimulyzer
 waf --run mobility-buildings-example-netsimulyzer
 ```
 
+## Throughput Sink Example
+Example demonstrating how to connect the `netsimulyzer::ThroughputSink`
+to the UDP Echo Client & Server applications to graph throughput.
+```shell
+waf --run throughput-sink-example-netsimulyzer
+```
+
 ## WiFi Bianchi
 The WiFi Bianchi example from the `wifi` module with topology, logs, and several statistics.
 ```shell

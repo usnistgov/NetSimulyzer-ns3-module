@@ -11,7 +11,7 @@ def configure(conf):
 
 
 def build(bld):
-    module = bld.create_ns3_module('netsimulyzer', ['buildings', 'core', 'mobility'])
+    module = bld.create_ns3_module('netsimulyzer', ['buildings', 'core', 'network', 'mobility'])
 
     module.source = [
         'helper/building-configuration-container.cc',

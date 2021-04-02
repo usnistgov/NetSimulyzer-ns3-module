@@ -18,6 +18,11 @@ def build(bld):
                                  ['netsimulyzer', 'core', 'mobility', 'network', 'buildings'])
     obj.source = 'outdoor-random-walk-example-netsimulyzer.cc'
 
+    obj = bld.create_ns3_program('throughput-sink-example-netsimulyzer',
+                                 ['netsimulyzer', 'core', 'mobility', 'network', 'internet', 'applications',
+                                  'point-to-point'])
+    obj.source = 'throughput-sink-example-netsimulyzer.cc'
+
     obj = bld.create_ns3_program('wifi-bianchi-netsimulyzer',
                                  ['netsimulyzer', 'core', 'mobility', 'network', 'wifi'])
     obj.source = 'wifi-bianchi-netsimulyzer.cc'

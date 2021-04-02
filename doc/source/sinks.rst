@@ -15,7 +15,7 @@ to ``AddPacketSize``, and the model will collect the amounts over the defined pe
 
 .. code-block:: C++
 
-  auto app = // Something with a `TX` trace like this: `void tx(uint32_t bytes)`
+  auto app = // Something with a `TX` trace like this: `void tx(Ptr<const Packet> packet)`
   auto throughput = CreateObject<netsimulyzer::ThroughputSink>(/* orchestrator */, "Series name");
 
   // How often to write throughput
@@ -27,9 +27,11 @@ to ``AddPacketSize``, and the model will collect the amounts over the defined pe
   // Unit to group time by, does not affect `Interval`
   throughput->SetAttribute ("TimeUnit", EnumValue (Time::Unit::S));
 
-  // Assuming "TX" = TracedCallback<uint32_t>
+  // Assuming "Tx" = TracedCallback<Ptr<const Packet>>
   app->TraceConnectWithoutContext(
-     "Tx", MakeCallback(&netsimulyzer::ThroughputSink::AddPacketSize), throughput);
+     "Tx", MakeCallback(&netsimulyzer::ThroughputSink::AddPacket, throughput);
+
+See `throughput-sink-example-netsimulyzer.cc` for a more in-depth example.
 
 Attributes
 ^^^^^^^^^^
@@ -37,7 +39,8 @@ Attributes
 +----------+-------------------+----------------+-----------------------------------------------------+
 | Name     | Type              | Default Value  | Description                                         |
 +==========+===================+================+=====================================================+
-| XYSeries | :ref:`xy-series`  | n/a            | The underling series to which data is written.      |
+| XYSeries | :ref:`xy-series`  | n/a            | The underling series to which data is written,      |
+|          |                   |                | also see the ``GetSeries ()`` method                |
 +----------+-------------------+----------------+-----------------------------------------------------+
 | Interval | Time              | Seconds(1.0)   | How often to cut off and write collected throughput |
 +----------+-------------------+----------------+-----------------------------------------------------+
