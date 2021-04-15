@@ -68,6 +68,31 @@ Land Drone
   :width: 369px
   :height: 265px
 
+
+Server
+++++++
+* ``std::string`` Constant: ``SERVER``
+* ``ns3::StringValue`` Constant: ``SERVER_VALUE``
+
+.. image:: _static/server-model.png
+  :alt: The server.obj model with default colors
+  :width: 482px
+  :height: 333px
+
+Cell Tower Pole
++++++++++++++++
+This model only has a ``BaseColor``, any
+``HighlightColor`` set for this model will be ignored.
+
+* ``std::string`` Constant: ``CELL_TOWER_POLE``
+* ``ns3::StringValue`` Constant: ``CELL_TOWER_POLE_VALUE``
+
+.. image:: _static/cell-tower-model.png
+  :alt: The cell_tower_pole.obj model with default colors
+  :width: 330px
+  :height: 341px
+
+
 .. raw:: latex
 
     \clearpage
