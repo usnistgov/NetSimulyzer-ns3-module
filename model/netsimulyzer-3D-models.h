@@ -52,6 +52,20 @@ const StringValue SERVER_VALUE{SERVER};
 const std::string CELL_TOWER_POLE{"models/cell_tower_pole.obj"};
 const StringValue CELL_TOWER_POLE_VALUE{CELL_TOWER_POLE};
 
+// Simple Shapes
+
+const std::string CUBE{"models/simple/cube.obj"};
+const StringValue CUBE_VALUE{CUBE};
+
+const std::string DIAMOND{"models/simple/diamond.obj"};
+const StringValue DIAMOND_VALUE{DIAMOND};
+
+const std::string SPHERE{"models/simple/sphere.obj"};
+const StringValue SPHERE_VALUE{SPHERE};
+
+const std::string SQUARE_PYRAMID{"models/simple/square_pyramid.obj"};
+const StringValue SQUARE_PYRAMID_VALUE{SQUARE_PYRAMID};
+
 } // namespace ns3::netsimulyzer::models
 
 #endif //NETSIMULYZER_3D_MODELS_H

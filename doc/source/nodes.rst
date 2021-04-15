@@ -92,6 +92,66 @@ This model only has a ``BaseColor``, any
   :width: 330px
   :height: 341px
 
+.. raw:: latex
+
+    \clearpage
+
+Cube
+++++
+This model only has a ``BaseColor``, any
+``HighlightColor`` set for this model will be ignored.
+
+* ``std::string`` Constant: ``CUBE``
+* ``ns3::StringValue`` Constant: ``CUBE_VALUE``
+
+.. image:: _static/cube-model.png
+  :alt: The cube.obj model with default colors
+  :width: 399px
+  :height: 335px
+
+.. raw:: latex
+
+    \clearpage
+
+Diamond
++++++++
+This model only has a ``BaseColor``, any
+``HighlightColor`` set for this model will be ignored.
+
+* ``std::string`` Constant: ``DIAMOND``
+* ``ns3::StringValue`` Constant: ``DIAMOND_VALUE``
+
+.. image:: _static/diamond-model.png
+  :alt: The diamond.obj model with default colors
+  :width: 320px
+  :height: 293px
+
+Sphere
+++++++
+This model only has a ``BaseColor``, any
+``HighlightColor`` set for this model will be ignored.
+
+* ``std::string`` Constant: ``SPHERE``
+* ``ns3::StringValue`` Constant: ``SPHERE_VALUE``
+
+.. image:: _static/sphere-model.png
+  :alt: The sphere.obj model with default colors
+  :width: 281px
+  :height: 265px
+
+Square Pyramid
++++++++++++++++
+This model only has a ``BaseColor``, any
+``HighlightColor`` set for this model will be ignored.
+
+* ``std::string`` Constant: ``SQUARE_PYRAMID``
+* ``ns3::StringValue`` Constant: ``SQUARE_PYRAMID``
+
+.. image:: _static/square-pyramid-model.png
+  :alt: The square_pyramid.obj model with default colors
+  :width: 319px
+  :height: 283px
+
 
 .. raw:: latex
 
