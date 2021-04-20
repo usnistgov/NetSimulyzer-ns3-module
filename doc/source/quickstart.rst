@@ -3,7 +3,8 @@ Quickstart
 
 Clone the module
 ++++++++++++++++
-Clone the project into a directory called netsimulyzer in the `src` folder of a supported version of *ns-3*
+Clone the project into a directory called netsimulyzer into
+the `src` or `contrib` directory of a supported version of *ns-3*
 
 .. code-block:: Bash
 

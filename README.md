@@ -49,12 +49,16 @@ Link this module & run your scenario to see it in 3D.
 # Installation
 ## Clone (Recommended)
 Clone the project into a directory called `netsimulyzer` in
-the `src` folder of a supported version of ns-3
+the `src` or `contrib` directory of a supported version of ns-3
 
-1) `cd` into the `src` folder of `ns-3`
+1) `cd` into the `src` or `contrib` directory of `ns-3`
 
 ```shell
+# If using src/
 cd src/
+
+# If using contrib/
+cd contrib/
 ```
 
 2) Clone the project from one of the below URLs
@@ -76,8 +80,8 @@ git clone git@github.com:usnistgov/NetSimulyzer-ns3-module.git netsimulyzer
 ```
 
 ## Download ZIP
-If, for whatever reason, `git` is not available. Just download the
-project & unzip it into the `src` directory of `ns-3`.
+If, for whatever reason, `git` is not available, download the
+project & unzip it into the `src` or `contrib` directory of `ns-3`.
 
 Note that updates will have to be performed manually using this method
 
