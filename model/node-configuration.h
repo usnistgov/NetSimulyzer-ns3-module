@@ -133,6 +133,12 @@ public:
    */
   void SetOrientation (const Vector3D &orientation);
 
+  const std::optional<Color3> &GetBaseColor (void) const;
+  void SetBaseColor (const std::optional<Color3> &value);
+
+  const std::optional<Color3> &GetHighlightColor (void) const;
+  void SetHighlightColor (const std::optional<Color3> &value);
+
 protected:
   /**
    * \brief Disconnects the referenced Orchestrator

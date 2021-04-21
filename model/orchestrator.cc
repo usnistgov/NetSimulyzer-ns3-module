@@ -707,6 +707,45 @@ Orchestrator::HandleOrientationChange (const DecorationOrientationChangeEvent &e
   m_document["events"].emplace_back (element);
 }
 
+void
+Orchestrator::HandleColorChange (const NodeColorChangeEvent &event)
+{
+  if (Simulator::Now () < m_startTime || Simulator::Now () > m_stopTime)
+    {
+      NS_LOG_DEBUG ("HandleColorChange() Activated outside (StartTime, StopTime), Ignoring");
+      return;
+    }
+
+  if (m_currentSection != Section::Events)
+    {
+      // We'll get the final color when we write the head info
+      NS_LOG_DEBUG ("NodeColorChangeEvent ignored. Not in Events section");
+      return;
+    }
+
+  nlohmann::json element;
+  element["type"] = "node-color";
+  element["milliseconds"] = event.time.GetMilliSeconds ();
+  element["id"] = event.id;
+  switch (event.type)
+    {
+    case NodeColorChangeEvent::ColorType::Base:
+      element["color-type"] = "base";
+      break;
+    case NodeColorChangeEvent::ColorType::Highlight:
+      element["color-type"] = "highlight";
+      break;
+    default:
+      NS_ABORT_MSG ("Unhandled ColorType passed to HandleColorChange ()");
+      break;
+    }
+
+  if (event.color.has_value ())
+    element["color"] = colorToObject (event.color.value ());
+
+  m_document["events"].emplace_back (element);
+}
+
 uint32_t
 Orchestrator::Register (Ptr<Decoration> decoration)
 {

@@ -164,6 +164,13 @@ public:
   void HandleOrientationChange (const DecorationOrientationChangeEvent &event);
 
   /**
+   * Trace sink for when a Node's Base/Highlight color has changed.
+   *
+   * \param event The event info for the color change event
+   */
+  void HandleColorChange (const NodeColorChangeEvent &event);
+
+  /**
    * \brief Flag a Decoration to be tracked.
    *
    * Called by the Decoration constructor, so users should not call

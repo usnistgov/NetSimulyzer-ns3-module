@@ -77,8 +77,6 @@ public:
    */
   Color3 (uint8_t red, uint8_t green, uint8_t blue);
 
-  // They're public, sue me
-
   /**
    * The red component of the resulting color.
    * Range [0 - 255]
@@ -97,6 +95,25 @@ public:
    */
   uint8_t blue{0u};
 };
+
+/**
+ * Compare two colors for equality.
+ *
+ * \param left
+ * The color to compare with `right`
+ *
+ * \param right
+ * The color to compare with `left`
+ *
+ * \return
+ * True: if `red`, `green`, & `blue` are the same for both colors.
+ * False otherwise.
+ */
+inline bool
+operator== (const Color3 &left, const Color3 &right)
+{
+  return left.red == right.red && left.green == right.green && left.blue == right.blue;
+}
 
 // ----- Attribute Type -----
 
@@ -156,7 +173,6 @@ public:
    * A copy of the enclosed value
    */
   Color3 Get (void) const;
-
 
   template <typename T>
   bool

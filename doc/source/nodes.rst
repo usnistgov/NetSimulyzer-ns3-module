@@ -160,7 +160,10 @@ This model only has a ``BaseColor``, any
 Configurable Colors
 ^^^^^^^^^^^^^^^^^^^
 Certain models provided with the application allow their colors to be set by the loaded
-scenario. An example of configurable colors follows using the "Land Drone" model distributed
+scenario. Colors may be changed both before and during the simulation, the latter of which will
+occur during playback at the time the color was changed, much like a move event.
+
+An example of configurable colors follows using the "Land Drone" model distributed
 with the application and displayed with the following code:
 
 .. code-block:: C++

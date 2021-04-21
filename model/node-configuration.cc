@@ -43,6 +43,7 @@
 #include <ns3/log.h>
 #include <ns3/optional.h>
 #include <cmath>
+#include <optional>
 
 /**
  * Compare each component in two vectors. If their difference of each component
@@ -112,13 +113,15 @@ NodeConfiguration::GetTypeId (void)
           .AddAttribute ("BaseColor",
                          "The color to use as the primary color in models with configurable colors",
                          OptionalValue<Color3> (),
-                         MakeOptionalAccessor<Color3> (&NodeConfiguration::m_baseColor),
+                         MakeOptionalAccessor<Color3> (&NodeConfiguration::GetBaseColor,
+                                                       &NodeConfiguration::SetBaseColor),
                          MakeOptionalChecker<Color3> ())
           .AddAttribute ("HighlightColor",
                          "The color to use as the secondary color"
                          "in models with configurable colors",
                          OptionalValue<Color3> (),
-                         MakeOptionalAccessor<Color3> (&NodeConfiguration::m_highlightColor),
+                         MakeOptionalAccessor<Color3> (&NodeConfiguration::GetHighlightColor,
+                                                       &NodeConfiguration::SetHighlightColor),
                          MakeOptionalChecker<Color3> ())
           .AddAttribute ("PositionTolerance",
                          "The amount a Node must move to have it's position written again",
@@ -225,6 +228,66 @@ Ptr<Orchestrator>
 NodeConfiguration::GetOrchestrator (void) const
 {
   return m_orchestrator;
+}
+
+const std::optional<Color3> &
+NodeConfiguration::GetBaseColor (void) const
+{
+  return m_baseColor;
+}
+
+void
+NodeConfiguration::SetBaseColor (const std::optional<Color3> &value)
+{
+  if (m_baseColor == value)
+    return;
+
+  auto node = GetObject<Node> ();
+  if (!node)
+    {
+      NS_LOG_DEBUG ("Not triggering NodeColorChangeEvent event. No Node aggregated");
+      return;
+    }
+
+  m_baseColor = value;
+
+  NodeColorChangeEvent event;
+  event.time = Simulator::Now ();
+  event.id = node->GetId ();
+  event.type = NodeColorChangeEvent::ColorType::Base;
+  event.color = value;
+
+  m_orchestrator->HandleColorChange (event);
+}
+
+const std::optional<Color3> &
+NodeConfiguration::GetHighlightColor (void) const
+{
+  return m_highlightColor;
+}
+
+void
+NodeConfiguration::SetHighlightColor (const std::optional<Color3> &value)
+{
+  if (m_highlightColor == value)
+    return;
+
+  auto node = GetObject<Node> ();
+  if (!node)
+    {
+      NS_LOG_DEBUG ("Not triggering NodeColorChangeEvent event. No Node aggregated");
+      return;
+    }
+
+  m_highlightColor = value;
+
+  NodeColorChangeEvent event;
+  event.time = Simulator::Now ();
+  event.id = node->GetId ();
+  event.type = NodeColorChangeEvent::ColorType::Highlight;
+  event.color = value;
+
+  m_orchestrator->HandleColorChange (event);
 }
 
 void

@@ -38,6 +38,8 @@
 #include <cstdint>
 #include <ns3/vector.h>
 #include <ns3/nstime.h>
+#include <ns3/color.h>
+#include <optional>
 
 namespace ns3 {
 namespace netsimulyzer {
@@ -62,6 +64,16 @@ struct NodeOrientationChangeEvent
   Time time;
   uint32_t nodeId;
   Vector3D orientation;
+};
+
+struct NodeColorChangeEvent
+{
+  enum class ColorType { Base, Highlight };
+
+  Time time;
+  uint32_t id;
+  ColorType type;
+  std::optional<Color3> color;
 };
 
 struct DecorationMoveEvent
