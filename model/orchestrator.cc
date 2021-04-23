@@ -177,6 +177,7 @@ Orchestrator::Orchestrator (const std::string &output_path) : m_outputPath (outp
   // Preallocate collections since a `Commit ()` call
   // could come at any time
   m_document["series"] = nlohmann::json::array ();
+  m_document["streams"] = nlohmann::json::array ();
 
   // Create the Empty events array, so we can just append to that
   // when the event happens
@@ -392,35 +393,10 @@ Orchestrator::SetupSimulation (void)
     }
 
   // Streams
-  auto streams = nlohmann::json::array ();
   for (const auto &stream : m_streams)
     {
-      nlohmann::json element;
-      element["type"] = "stream";
-
-      UintegerValue id;
-      stream->GetAttribute ("Id", id);
-      element["id"] = id.Get ();
-
-      StringValue name;
-      stream->GetAttribute ("Name", name);
-      if (name.Get ().empty ())
-        element["name"] = std::string ("Log: ") + std::to_string (id.Get ());
-      else
-        element["name"] = name.Get ();
-
-      OptionalValue<Color3> color;
-      stream->GetAttribute ("Color", color);
-      if (color)
-        element["color"] = colorToObject (color.GetValue ());
-
-      BooleanValue visible;
-      stream->GetAttribute ("Visible", visible);
-      element["visible"] = visible.Get ();
-
-      streams.emplace_back (element);
+      stream->Commit ();
     }
-  m_document["streams"] = streams;
 
   // Areas
   auto areas = nlohmann::json::array ();
@@ -986,6 +962,35 @@ Orchestrator::Commit (CategoryValueSeries &series)
 }
 
 void
+Orchestrator::Commit (LogStream &logStream)
+{
+  nlohmann::json element;
+  element["type"] = "stream";
+
+  UintegerValue id;
+  logStream.GetAttribute ("Id", id);
+  element["id"] = id.Get ();
+
+  StringValue name;
+  logStream.GetAttribute ("Name", name);
+  if (name.Get ().empty ())
+    element["name"] = std::string ("Log: ") + std::to_string (id.Get ());
+  else
+    element["name"] = name.Get ();
+
+  OptionalValue<Color3> color;
+  logStream.GetAttribute ("Color", color);
+  if (color)
+    element["color"] = colorToObject (color.GetValue ());
+
+  BooleanValue visible;
+  logStream.GetAttribute ("Visible", visible);
+  element["visible"] = visible.Get ();
+
+  m_document["streams"].emplace_back (element);
+}
+
+void
 Orchestrator::AppendXyValue (uint32_t id, double x, double y)
 {
   if (Simulator::Now () < m_startTime || Simulator::Now () > m_stopTime)
@@ -1072,6 +1077,11 @@ Orchestrator::CommitAll (void)
   for (const auto &seriesCollection : m_seriesCollections)
     {
       seriesCollection->Commit ();
+    }
+
+  for (const auto &stream : m_streams)
+    {
+      stream->Commit ();
     }
 }
 

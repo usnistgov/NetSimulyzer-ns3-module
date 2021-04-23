@@ -332,6 +332,24 @@ public:
   void Commit (CategoryValueSeries &series);
 
   /**
+   * Commit a LogStream created while the simulation is running.
+   *
+   * Called after the LogStream is fully configured, as no more
+   * configuration may be performed afterwards.
+   *
+   * At the beginning of the simulation, all LogStreams created before it
+   * started are automatically committed.
+   *
+   * Users should call the `Commit ()` method on the object
+   * they are committing.
+   *
+   * \param logStream
+   * The configured LogStream to write. Should be a registered to this
+   * Orchestrator
+   */
+  void Commit (LogStream &logStream);
+
+  /**
    * Add a single point that will be plotted at `Simulation::Now()` time.
    * Written immediately.
    *

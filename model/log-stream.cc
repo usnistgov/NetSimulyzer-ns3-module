@@ -93,6 +93,19 @@ LogStream::Write (const std::string &message) const
 }
 
 void
+LogStream::Commit (void)
+{
+  if (m_committed)
+    {
+      NS_LOG_DEBUG ("Ignoring Commit () on already committed model");
+      return;
+    }
+
+  m_orchestrator->Commit (*this);
+  m_committed = true;
+}
+
+void
 LogStream::DoDispose ()
 {
   m_orchestrator = nullptr;

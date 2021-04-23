@@ -82,6 +82,16 @@ public:
    */
   void Write (const std::string &message) const;
 
+  /**
+   * Finalizes configuration of the LogStream.
+   *
+   * Only necessary to call manually if a LogStream is created
+   * after the simulation starts.
+   *
+   * A LogStream may only be committed once. Additional commit calls have no effect.
+   */
+  void Commit (void);
+
 protected:
   void DoDispose (void) override;
 
@@ -110,6 +120,12 @@ private:
    * The font color
    */
   std::optional<Color3> m_color;
+
+  /**
+   * Flag indicating the configuration of this model was finalized and written,
+   * and should not be written again
+   */
+  bool m_committed{false};
 };
 
 /**
