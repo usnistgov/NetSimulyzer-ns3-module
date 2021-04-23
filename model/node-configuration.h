@@ -94,10 +94,18 @@ public:
   /**
    * Called by the Orchestrator during a mobility poll.
    *
+   * If `UsePositionTolerance`, is enabled this
+   * method checks against the `PositionTolerance`.
+   * If the Node has not moved beyond the tolerance,
+   * then an empty optional is returned.
+   *
+   *
    * \return
-   * The location of the associated Node
+   * An optional with the location of the associated Node
+   * if the position should be used, an unset optional
+   * otherwise
    */
-  MobilityPollEvent MobilityPoll (void);
+  std::optional<Vector3D> MobilityPoll (void);
 
   /**
    * Sets the Orchestrator managing this Node &

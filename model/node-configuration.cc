@@ -161,34 +161,30 @@ NodeConfiguration::CourseChange (ns3::Ptr<const MobilityModel> model)
   m_orchestrator->HandleCourseChange (event);
 }
 
-MobilityPollEvent
+std::optional<Vector3D>
 NodeConfiguration::MobilityPoll (void)
 {
   auto node = GetObject<Node> ();
   NS_ABORT_MSG_IF (!node, "Mobility poll activated on NodeConfiguration with no associated Node");
 
   auto mobility = node->GetObject<MobilityModel> ();
-  NS_ABORT_MSG_IF (!mobility,
-                   "Mobility poll activated on NodeConfiguration with no associated MobilityModel");
+  if (!mobility)
+    {
+      NS_LOG_DEBUG ("Mobility poll activated on Node with no Mobility Model, ignoring");
+      return {};
+    }
 
   auto position = mobility->GetPosition ();
 
-  MobilityPollEvent event;
-  event.position = position;
   if (m_usePositionTolerance &&
       compareWithTolerance (position, m_lastPosition, m_positionTolerance))
     {
       NS_LOG_DEBUG ("Node [ID: " << node->GetId () << "] Within tolerance");
-      event.tolerance = MobilityPollEvent::ToleranceStatus::Within;
+      return {};
     }
-  else
-    {
-      NS_LOG_DEBUG ("Node [ID: " << node->GetId () << "] Not Within tolerance");
-      event.tolerance = MobilityPollEvent::ToleranceStatus::NotWithin;
-      m_lastPosition = position;
-    }
+  m_lastPosition = position;
 
-  return event;
+  return {position};
 }
 
 const Vector3D &

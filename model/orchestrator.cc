@@ -576,11 +576,9 @@ Orchestrator::PollMobility (void)
     {
       const auto node = config->GetObject<Node> ();
 
-      auto event = config->MobilityPoll ();
-      if (event.tolerance == MobilityPollEvent::ToleranceStatus::NotWithin)
-        {
-          WritePosition (node->GetId (), Simulator::Now (), event.position);
-        }
+      auto position = config->MobilityPoll ();
+      if (position)
+        WritePosition (node->GetId (), Simulator::Now (), position.value ());
     }
 
   m_mobilityPollEvent =

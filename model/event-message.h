@@ -41,22 +41,13 @@
 #include <ns3/color.h>
 #include <optional>
 
-namespace ns3 {
-namespace netsimulyzer {
+namespace ns3::netsimulyzer {
 
 struct CourseChangeEvent
 {
   Time time;
   uint32_t nodeId;
   Vector position;
-};
-
-struct MobilityPollEvent
-{
-  enum class ToleranceStatus { Within, NotWithin };
-
-  ToleranceStatus tolerance = ToleranceStatus::Within;
-  Vector3D position;
 };
 
 struct NodeOrientationChangeEvent
@@ -97,7 +88,6 @@ struct LogMessageEvent
   std::string message;
 };
 
-} // namespace netsimulyzer
-} // namespace ns3
+} // namespace ns3::netsimulyzer
 
 #endif /* EVENT_MESSAGE_H */
