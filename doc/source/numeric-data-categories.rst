@@ -130,7 +130,7 @@ Attributes
 | Visible              | bool                 | ``true``             | Defines if this series appears in                     |
 |                      |                      |                      | application elements.                                 |
 +----------------------+----------------------+----------------------+-------------------------------------------------------+
-| Color                | :ref:`color3`        | n/a                  | The color to use for point connections                |
+| Color                | :ref:`color3`        | BLUE_VALUE           | The color to use for point connections                |
 +----------------------+----------------------+----------------------+-------------------------------------------------------+
 | AutoUpdate           | bool                 | ``false``            | Indicator to the application that points in the same  |
 |                      |                      |                      | category but higher value should be generated based   |

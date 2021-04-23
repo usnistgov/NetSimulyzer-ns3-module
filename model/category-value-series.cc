@@ -59,7 +59,7 @@ CategoryValueSeries::GetTypeId (void)
                          MakePointerChecker<CategoryAxis> ())
           .AddAttribute ("Color",
                          "Color to use for the points and connections",
-                         BLACK_VALUE,
+                         BLUE_VALUE,
                          MakeColor3Accessor (&CategoryValueSeries::m_color),
                          MakeColor3Checker ())
           .AddAttribute ("AutoUpdate",

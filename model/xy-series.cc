@@ -93,7 +93,7 @@ XYSeries::GetTypeId (void)
           .AddAttribute ("Visible", "Should this series appear in selection elements",
                          BooleanValue (true), MakeBooleanAccessor (&XYSeries::m_visible),
                          MakeBooleanChecker ())
-          .AddAttribute ("Color", "Color to use for the points and connections", BLACK_VALUE,
+          .AddAttribute ("Color", "Color to use for the points and connections", BLUE_VALUE,
                          MakeColor3Accessor (&XYSeries::m_color), MakeColor3Checker ());
   return tid;
 }
