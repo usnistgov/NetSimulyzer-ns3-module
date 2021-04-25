@@ -38,23 +38,20 @@
 #include "color.h"
 
 /**
- * Verifies the next character in the stream is `separator`,
+ * Verifies the next character in the stream is a pipe '|' character,
  * otherwise sets `stream`'s failbit.
  * Also consumes the character.
  *
  * \param stream
  * The input stream to read from
- *
- * \param separator
- * The separator character to check for
  */
 static void
-checkSeparator (std::istream &stream, const char separator = '|')
+CheckSeparator (std::istream &stream)
 {
   char in;
   stream >> in;
 
-  if (in != separator)
+  if (in != '|')
     stream.setstate (std::ios::failbit);
 }
 
@@ -104,13 +101,13 @@ Color3Value::DeserializeFromString (std::string value, Ptr<const AttributeChecke
   iss.str (value);
 
   iss >> m_value.red;
-  checkSeparator (iss);
+  CheckSeparator (iss);
 
   iss >> m_value.green;
-  checkSeparator (iss);
+  CheckSeparator (iss);
 
   iss >> m_value.blue;
-  checkSeparator (iss);
+  CheckSeparator (iss);
 
   NS_ABORT_MSG_UNLESS (iss.eof (), "Attribute value\"" << value << "\" is not properly formatted");
   return !iss.bad () && !iss.fail ();
