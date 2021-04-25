@@ -40,6 +40,7 @@
 #include <cstdint>
 #include <ns3/attribute.h>
 #include <ns3/attribute-helper.h>
+#include <ostream>
 
 namespace ns3 {
 namespace netsimulyzer {
@@ -76,6 +77,22 @@ public:
    * The amount of blue in the resulting color
    */
   Color3 (uint8_t red, uint8_t green, uint8_t blue);
+
+  /**
+   * Output the color as a string in the form:
+   * '"Color3{red: `red` green: `green` blue: `blue`}'
+   * With `red`, `green`, & `blue` being the Color3 members
+   *
+   * \param os
+   * The stream to output on
+   *
+   * \param color3
+   * The color to print
+   *
+   * \return
+   * The stream to chain more outputs
+   */
+  friend std::ostream &operator<< (std::ostream &os, const Color3 &color);
 
   /**
    * The red component of the resulting color.

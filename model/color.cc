@@ -36,6 +36,7 @@
  */
 
 #include "color.h"
+#include <string>
 
 /**
  * Verifies the next character in the stream is a pipe '|' character,
@@ -63,6 +64,15 @@ Color3::Color3 (uint8_t component) : red (component), green (component), blue (c
 
 Color3::Color3 (uint8_t red, uint8_t green, uint8_t blue) : red (red), green (green), blue (blue)
 {
+}
+
+std::ostream &
+operator<< (std::ostream &os, const Color3 &color)
+{
+  // use `std::to_string` to avoid converting the uint8's straight to characters
+  os << "Color3{red: " << std::to_string (color.red) << " green: " << std::to_string (color.green)
+     << " blue: " << std::to_string (color.blue) << '}';
+  return os;
 }
 
 Color3Value::Color3Value (const Color3 &value) : m_value (value)
