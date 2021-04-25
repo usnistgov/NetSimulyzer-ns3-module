@@ -145,6 +145,8 @@ void
 XYSeries::DoDispose (void)
 {
   m_orchestrator = nullptr;
+  m_xAxis = nullptr;
+  m_yAxis = nullptr;
   Object::DoDispose ();
 }
 
