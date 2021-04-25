@@ -63,10 +63,10 @@ public:
   /**
    * Sets up the XYSeries and assigns the ID
    *
-   * \param m_orchestrator
+   * \param orchestrator
    * The orchestrator to tie this series to
    */
-  explicit XYSeries (Ptr<Orchestrator> m_orchestrator);
+  explicit XYSeries (Ptr<Orchestrator> orchestrator);
 
   /**
    * \brief Get the class TypeId

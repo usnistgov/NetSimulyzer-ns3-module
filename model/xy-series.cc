@@ -49,10 +49,10 @@ namespace netsimulyzer {
 
 NS_OBJECT_ENSURE_REGISTERED (XYSeries);
 
-XYSeries::XYSeries (Ptr<Orchestrator> m_orchestrator) : m_orchestrator (m_orchestrator)
+XYSeries::XYSeries (Ptr<Orchestrator> orchestrator) : m_orchestrator (orchestrator)
 {
   // There doesn't seem to be a Ptr from `this`, so this is as close as we can get
-  m_id = m_orchestrator->Register ({this, true});
+  m_id = orchestrator->Register ({this, true});
 }
 
 TypeId
