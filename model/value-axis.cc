@@ -39,11 +39,7 @@
 #include <ns3/double.h>
 #include <ns3/pointer.h>
 
-namespace ns3 {
-
-NS_LOG_COMPONENT_DEFINE ("ValueAxis");
-
-namespace netsimulyzer {
+namespace ns3::netsimulyzer {
 
 NS_OBJECT_ENSURE_REGISTERED (ValueAxis);
 
@@ -74,12 +70,4 @@ ValueAxis::GetTypeId (void)
   return tid;
 }
 
-void
-ValueAxis::DoDispose (void)
-{
-  m_orchestrator = nullptr;
-  Object::DoDispose ();
-}
-
-} // namespace netsimulyzer
-} // namespace ns3
+} // namespace ns3::netsimulyzer

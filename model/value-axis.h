@@ -43,8 +43,6 @@
 
 namespace ns3::netsimulyzer {
 
-class Orchestrator;
-
 /**
  * Defines an axis with a linear or logarithmic scale
  */
@@ -68,15 +66,7 @@ public:
    */
   static TypeId GetTypeId (void);
 
-protected:
-  void DoDispose (void) override;
-
 private:
-  /**
-   * Pointer to the Orchestrator that manages this axis
-   */
-  Ptr<Orchestrator> m_orchestrator;
-
   /**
    * Name for the axis used in visualizer elements
    */
