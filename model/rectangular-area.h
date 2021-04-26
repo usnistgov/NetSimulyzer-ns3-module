@@ -43,8 +43,7 @@
 #include <ns3/rectangle.h>
 #include <ns3/color.h>
 
-namespace ns3 {
-namespace netsimulyzer {
+namespace ns3::netsimulyzer {
 
 /**
  * A flat, fixed sized marker for an area of some significance to the simulation.
@@ -149,7 +148,6 @@ private:
   Color3 m_borderColor;
 };
 
-} // namespace netsimulyzer
-} // namespace ns3
+} // namespace ns3::netsimulyzer
 
 #endif

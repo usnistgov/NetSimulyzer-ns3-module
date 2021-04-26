@@ -41,8 +41,7 @@
 #include <ns3/ptr.h>
 #include <ns3/orchestrator.h>
 
-namespace ns3 {
-namespace netsimulyzer {
+namespace ns3::netsimulyzer {
 
 class Orchestrator;
 
@@ -106,7 +105,6 @@ private:
   BoundMode m_boundMode;
 };
 
-} // namespace netsimulyzer
-} // namespace ns3
+} // namespace ns3::netsimulyzer
 
 #endif /* VALUE_AXIS_H */

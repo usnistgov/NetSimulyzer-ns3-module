@@ -43,8 +43,7 @@
 #include <vector>
 #include <unordered_map>
 
-namespace ns3 {
-namespace netsimulyzer {
+namespace ns3::netsimulyzer {
 
 class CategoryAxis : public ns3::Object
 {
@@ -185,7 +184,6 @@ private:
   int m_nextId{1};
 };
 
-} // namespace netsimulyzer
-} // namespace ns3
+} // namespace ns3::netsimulyzer
 
 #endif /* CATEGORY_AXIS_H */

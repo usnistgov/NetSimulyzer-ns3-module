@@ -41,8 +41,7 @@
 #include <ns3/value-axis.h>
 #include <ns3/color.h>
 
-namespace ns3 {
-namespace netsimulyzer {
+namespace ns3::netsimulyzer {
 
 class Orchestrator;
 class ValueAxis;
@@ -188,7 +187,6 @@ private:
   bool m_committed{false};
 };
 
-} // namespace netsimulyzer
-} // namespace ns3
+} // namespace ns3::netsimulyzer
 
 #endif /* XY_SERIES_H */

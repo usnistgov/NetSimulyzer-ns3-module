@@ -44,8 +44,7 @@
 #include <ns3/nstime.h>
 #include <ns3/packet.h>
 
-namespace ns3 {
-namespace netsimulyzer {
+namespace ns3::netsimulyzer {
 
 class Orchestrator;
 
@@ -188,7 +187,6 @@ private:
   void UpdateAxisLabels (void);
 };
 
-} // namespace netsimulyzer
-} // namespace ns3
+} // namespace ns3::netsimulyzer
 
 #endif /* THROUGHPUT_SINK_H */

@@ -44,8 +44,7 @@
 #include <ns3/color.h>
 #include <ns3/deprecated.h>
 
-namespace ns3 {
-namespace netsimulyzer {
+namespace ns3::netsimulyzer {
 
 class CategoryValueSeries : public ns3::Object
 {
@@ -233,6 +232,5 @@ private:
   bool m_committed{false};
 };
 
-} // namespace netsimulyzer
-} // namespace ns3
+} // namespace ns3::netsimulyzer
 #endif /* CATEGORY_VALUE_SERIES_H */

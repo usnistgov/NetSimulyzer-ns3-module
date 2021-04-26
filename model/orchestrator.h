@@ -59,8 +59,7 @@
 #include <ns3/optional.h>
 #include "event-message.h"
 
-namespace ns3 {
-namespace netsimulyzer {
+namespace ns3::netsimulyzer {
 
 class RectangularArea;
 class Decoration;
@@ -534,7 +533,6 @@ private:
   void CommitAll (void);
 };
 
-} // namespace netsimulyzer
-} // namespace ns3
+} // namespace ns3::netsimulyzer
 
 #endif /* ORCHESTRATOR_H */

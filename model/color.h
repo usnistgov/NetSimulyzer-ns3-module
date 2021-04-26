@@ -42,8 +42,7 @@
 #include <ns3/attribute-helper.h>
 #include <ostream>
 
-namespace ns3 {
-namespace netsimulyzer {
+namespace ns3::netsimulyzer {
 
 /**
  * Represents a 3 component RGB color.
@@ -263,7 +262,6 @@ MakeColor3Accessor (T1 a1, T2 a2)
 
 Ptr<const AttributeChecker> MakeColor3Checker (void);
 
-} // namespace netsimulyzer
-} // namespace ns3
+} // namespace ns3::netsimulyzer
 
 #endif /* COLOR_H */

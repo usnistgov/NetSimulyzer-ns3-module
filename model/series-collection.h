@@ -43,8 +43,7 @@
 #include <ns3/value-axis.h>
 #include <vector>
 
-namespace ns3 {
-namespace netsimulyzer {
+namespace ns3::netsimulyzer {
 
 class Orchestrator;
 class XYSeries;
@@ -183,7 +182,6 @@ private:
   void Add (uint32_t id);
 };
 
-} // namespace netsimulyzer
-} // namespace ns3
+} // namespace ns3::netsimulyzer
 
 #endif /* SERIES_COLLECTION_H */

@@ -47,8 +47,7 @@
 #include <ns3/color.h>
 #include <optional>
 
-namespace ns3 {
-namespace netsimulyzer {
+namespace ns3::netsimulyzer {
 
 class Orchestrator;
 
@@ -234,7 +233,6 @@ private:
   bool m_attachedMobilityTrace = false;
 };
 
-} // namespace netsimulyzer
-} // namespace ns3
+} // namespace ns3::netsimulyzer
 
 #endif /* NODE_CONFIGURATION_H */

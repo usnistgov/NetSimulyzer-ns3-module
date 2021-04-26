@@ -47,8 +47,7 @@
 #include <ns3/optional.h>
 #include <optional>
 
-namespace ns3 {
-namespace netsimulyzer {
+namespace ns3::netsimulyzer {
 
 class Orchestrator;
 
@@ -206,7 +205,6 @@ operator<< (LogStream &stream, const char &value)
  */
 LogStream &operator<< (LogStream &stream, const char *value);
 
-} // namespace netsimulyzer
-} // namespace ns3
+} // namespace ns3::netsimulyzer
 
 #endif /*LOG_STREAM_H*/

@@ -42,8 +42,7 @@
 #include <ns3/timer.h>
 #include <ns3/nstime.h>
 
-namespace ns3 {
-namespace netsimulyzer {
+namespace ns3::netsimulyzer {
 
 /**
  * Sink class for use with an `ns3::Application`.
@@ -292,7 +291,6 @@ private:
   void ApplyStateChange (const CategoryAxis::ValuePair &pair);
 };
 
-} // namespace netsimulyzer
-} // namespace ns3
+} // namespace ns3::netsimulyzer
 
 #endif
