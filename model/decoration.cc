@@ -39,10 +39,14 @@
 #include <ns3/pointer.h>
 #include <ns3/uinteger.h>
 namespace ns3 {
+NS_LOG_COMPONENT_DEFINE ("Decoration");
 namespace netsimulyzer {
+
+NS_OBJECT_ENSURE_REGISTERED (Decoration);
 
 Decoration::Decoration (Ptr<Orchestrator> orchestrator) : m_orchestrator (orchestrator)
 {
+  NS_LOG_FUNCTION (this << orchestrator);
   m_id = orchestrator->Register ({this, true});
 }
 
@@ -82,12 +86,14 @@ Decoration::GetTypeId (void)
 const Vector3D &
 Decoration::GetPosition () const
 {
+  NS_LOG_FUNCTION (this);
   return m_position;
 }
 
 void
 Decoration::SetPosition (const Vector3D &position)
 {
+  NS_LOG_FUNCTION (this << position);
   m_position = position;
 
   DecorationMoveEvent event;
@@ -101,12 +107,14 @@ Decoration::SetPosition (const Vector3D &position)
 const Vector3D &
 Decoration::GetOrientation () const
 {
+  NS_LOG_FUNCTION (this);
   return m_orientation;
 }
 
 void
 Decoration::SetOrientation (const Vector3D &orientation)
 {
+  NS_LOG_FUNCTION (this << orientation);
   m_orientation = orientation;
 
   DecorationOrientationChangeEvent event;
@@ -120,6 +128,7 @@ Decoration::SetOrientation (const Vector3D &orientation)
 void
 Decoration::DoDispose (void)
 {
+  NS_LOG_FUNCTION (this);
   m_orchestrator = nullptr;
   Object::DoDispose ();
 }

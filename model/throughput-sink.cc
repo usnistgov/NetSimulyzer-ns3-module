@@ -50,6 +50,7 @@ NS_OBJECT_ENSURE_REGISTERED (ThroughputSink);
 ThroughputSink::ThroughputSink (Ptr<Orchestrator> orchestrator, const std::string &name)
     : m_orchestrator (orchestrator)
 {
+  NS_LOG_FUNCTION (this << orchestrator << name);
   //Create the series and assign known information
   m_series = CreateObject<XYSeries> (orchestrator);
   m_series->SetAttribute ("Name", StringValue (name));
@@ -156,6 +157,7 @@ ThroughputSink::SetInterval (Time interval)
 void
 ThroughputSink::AddPacket (Ptr<const Packet> packet)
 {
+  NS_LOG_FUNCTION (this << packet);
   AddPacketSize (packet->GetSize ());
 }
 
@@ -180,6 +182,7 @@ ThroughputSink::WriteThroughput ()
 void
 ThroughputSink::SetTimeUnit (Time::Unit unit)
 {
+  NS_LOG_FUNCTION (this << unit);
   m_timeUnit = unit;
   UpdateAxisLabels ();
 }
@@ -187,18 +190,21 @@ ThroughputSink::SetTimeUnit (Time::Unit unit)
 Time::Unit
 ThroughputSink::GetTimeUnit (void) const
 {
+  NS_LOG_FUNCTION (this);
   return m_timeUnit;
 }
 
 Ptr<XYSeries>
 ThroughputSink::GetSeries (void) const
 {
+  NS_LOG_FUNCTION (this);
   return m_series;
 }
 
 void
 ThroughputSink::DoDispose (void)
 {
+  NS_LOG_FUNCTION (this);
   m_orchestrator = nullptr;
   m_series = nullptr;
   m_timer.Cancel ();
@@ -208,6 +214,7 @@ ThroughputSink::DoDispose (void)
 void
 ThroughputSink::UpdateAxisLabels (void)
 {
+  NS_LOG_FUNCTION (this);
   std::string timeUnitLabel;
   switch (m_timeUnit)
     {

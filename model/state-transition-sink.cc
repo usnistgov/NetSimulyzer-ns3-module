@@ -39,7 +39,10 @@
 #include <ns3/double.h>
 
 namespace ns3 {
+NS_LOG_COMPONENT_DEFINE ("StateTransitionSink");
 namespace netsimulyzer {
+
+NS_OBJECT_ENSURE_REGISTERED (StateTransitionSink);
 
 StateTransitionSink::StateTransitionSink (Ptr<Orchestrator> orchestrator,
                                           const std::vector<std::string> &states,
@@ -48,6 +51,7 @@ StateTransitionSink::StateTransitionSink (Ptr<Orchestrator> orchestrator,
       m_series (CreateObject<CategoryValueSeries> (orchestrator, states)),
       m_log (CreateObject<LogStream> (orchestrator))
 {
+  NS_LOG_FUNCTION (this << orchestrator << initialState);
   Init ();
   SetInitialState (initialState);
 }
@@ -59,6 +63,7 @@ StateTransitionSink::StateTransitionSink (Ptr<Orchestrator> orchestrator,
       m_series (CreateObject<CategoryValueSeries> (orchestrator, states)),
       m_log (CreateObject<LogStream> (orchestrator))
 {
+  NS_LOG_FUNCTION (this << orchestrator << initialState);
   Init ();
   SetInitialState (initialState);
 }
@@ -109,6 +114,7 @@ StateTransitionSink::GetTypeId (void)
 void
 StateTransitionSink::SetInitialState (const std::string &state)
 {
+  NS_LOG_FUNCTION (this << state);
   const auto &pair = m_categoryAxis->Get (state);
   m_currentState = pair.key;
   m_currentStateLabel = pair.value;
@@ -117,6 +123,7 @@ StateTransitionSink::SetInitialState (const std::string &state)
 void
 StateTransitionSink::SetInitialState (int state)
 {
+  NS_LOG_FUNCTION (this << state);
   const auto &pair = m_categoryAxis->Get (state);
   m_currentState = pair.key;
   m_currentStateLabel = pair.value;
@@ -125,18 +132,21 @@ StateTransitionSink::SetInitialState (int state)
 void
 StateTransitionSink::StateChangedName (const std::string &newState)
 {
+  NS_LOG_FUNCTION (this << newState);
   ApplyStateChange (m_categoryAxis->Get (newState));
 }
 
 void
 StateTransitionSink::StateChangedId (int newState)
 {
+  NS_LOG_FUNCTION (this << newState);
   ApplyStateChange (m_categoryAxis->Get (newState));
 }
 
 void
 StateTransitionSink::SetLoggingMode (StateTransitionSink::LoggingMode mode)
 {
+  NS_LOG_FUNCTION (this << mode);
   m_loggingMode = mode;
   m_log->SetAttribute ("Visible", BooleanValue (mode != LoggingMode::None));
 }
@@ -144,18 +154,21 @@ StateTransitionSink::SetLoggingMode (StateTransitionSink::LoggingMode mode)
 StateTransitionSink::LoggingMode
 StateTransitionSink::GetLoggingMode (void) const
 {
+  NS_LOG_FUNCTION (this);
   return m_loggingMode;
 }
 
 void
 StateTransitionSink::Write (void)
 {
+  NS_LOG_FUNCTION (this);
   m_series->Append (m_currentState, Simulator::Now ().ToDouble (m_timeUnit));
 }
 
 void
 StateTransitionSink::DoDispose (void)
 {
+  NS_LOG_FUNCTION (this);
   m_orchestrator = nullptr;
   m_categoryAxis = nullptr;
   m_series = nullptr;
@@ -167,6 +180,7 @@ StateTransitionSink::DoDispose (void)
 void
 StateTransitionSink::Init (void)
 {
+  NS_LOG_FUNCTION (this);
   m_series->SetAttribute ("AutoUpdate", BooleanValue (true));
   // The interval is set for 1 per unit (e.g. 1 per ms for the millisecond time unit)
   // so just adding 1 each time should be fine
@@ -181,6 +195,7 @@ StateTransitionSink::Init (void)
 void
 StateTransitionSink::ApplyStateChange (const CategoryAxis::ValuePair &pair)
 {
+  NS_LOG_FUNCTION (this << pair.key << pair.value);
   // Write points before and after change
   Write ();
 
@@ -197,6 +212,7 @@ StateTransitionSink::ApplyStateChange (const CategoryAxis::ValuePair &pair)
 void
 StateTransitionSink::SetNames (const std::string &name)
 {
+  NS_LOG_FUNCTION (this << name);
   m_series->SetAttribute ("Name", StringValue (name));
   m_log->SetAttribute ("Name", StringValue (name));
 }
@@ -204,6 +220,7 @@ StateTransitionSink::SetNames (const std::string &name)
 void
 StateTransitionSink::SetTimeUnit (Time::Unit unit)
 {
+  NS_LOG_FUNCTION (this << unit);
   m_timeUnit = unit;
   Time autoUpdateInterval;
 
@@ -265,6 +282,7 @@ StateTransitionSink::SetTimeUnit (Time::Unit unit)
 Time::Unit
 StateTransitionSink::GetTimeUnit (void) const
 {
+  NS_LOG_FUNCTION (this);
   return m_timeUnit;
 }
 

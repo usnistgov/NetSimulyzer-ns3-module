@@ -42,15 +42,14 @@
 #include <ns3/string.h>
 
 namespace ns3 {
-
 NS_LOG_COMPONENT_DEFINE ("XYSeries");
-
 namespace netsimulyzer {
 
 NS_OBJECT_ENSURE_REGISTERED (XYSeries);
 
 XYSeries::XYSeries (Ptr<Orchestrator> orchestrator) : m_orchestrator (orchestrator)
 {
+  NS_LOG_FUNCTION (this << m_orchestrator);
   // There doesn't seem to be a Ptr from `this`, so this is as close as we can get
   m_id = orchestrator->Register ({this, true});
 }
@@ -101,12 +100,14 @@ XYSeries::GetTypeId (void)
 void
 XYSeries::Append (double x, double y)
 {
+  NS_LOG_FUNCTION (this << x << y);
   m_orchestrator->AppendXyValue (m_id, x, y);
 }
 
 void
 XYSeries::Commit (void)
 {
+  NS_LOG_FUNCTION (this);
   if (m_committed)
     {
       NS_LOG_DEBUG ("Ignoring Commit () on already committed model");
@@ -120,30 +121,35 @@ XYSeries::Commit (void)
 Ptr<ValueAxis>
 XYSeries::GetXAxis (void) const
 {
+  NS_LOG_FUNCTION (this);
   return m_xAxis;
 }
 
 void
 XYSeries::SetXAxis (Ptr<ValueAxis> value)
 {
+  NS_LOG_FUNCTION (this << value);
   m_xAxis = value;
 }
 
 Ptr<ValueAxis>
 XYSeries::GetYAxis (void) const
 {
+  NS_LOG_FUNCTION (this);
   return m_yAxis;
 }
 
 void
 XYSeries::SetYAxis (Ptr<ValueAxis> value)
 {
+  NS_LOG_FUNCTION (this << value);
   m_yAxis = value;
 }
 
 void
 XYSeries::DoDispose (void)
 {
+  NS_LOG_FUNCTION (this);
   m_orchestrator = nullptr;
   m_xAxis = nullptr;
   m_yAxis = nullptr;

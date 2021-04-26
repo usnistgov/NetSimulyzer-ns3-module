@@ -10,9 +10,7 @@
 #include <ns3/type-id.h>
 
 namespace ns3 {
-
 NS_LOG_COMPONENT_DEFINE ("CategoryValueSeries");
-
 namespace netsimulyzer {
 
 NS_OBJECT_ENSURE_REGISTERED (CategoryValueSeries);
@@ -88,6 +86,7 @@ CategoryValueSeries::GetTypeId (void)
 CategoryValueSeries::CategoryValueSeries (Ptr<Orchestrator> orchestrator)
     : m_orchestrator (orchestrator)
 {
+  NS_LOG_FUNCTION (this << orchestrator);
   m_id = m_orchestrator->Register ({this, true});
 }
 
@@ -95,6 +94,7 @@ CategoryValueSeries::CategoryValueSeries (Ptr<Orchestrator> orchestrator,
                                           const std::vector<std::string> &categories)
     : m_orchestrator (orchestrator), m_yAxis (CreateObject<CategoryAxis> (categories))
 {
+  NS_LOG_FUNCTION (this << orchestrator);
   m_id = m_orchestrator->Register ({this, true});
 }
 
@@ -102,24 +102,28 @@ CategoryValueSeries::CategoryValueSeries (Ptr<Orchestrator> orchestrator,
                                           const std::vector<CategoryAxis::ValuePair> &categories)
     : m_orchestrator (orchestrator), m_yAxis (CreateObject<CategoryAxis> (categories))
 {
+  NS_LOG_FUNCTION (this << orchestrator);
   m_id = m_orchestrator->Register ({this, true});
 }
 
 void
 CategoryValueSeries::Append (int category, double value)
 {
+  NS_LOG_FUNCTION (this << category << value);
   m_orchestrator->AppendCategoryValue (m_id, category, value);
 }
 
 void
 CategoryValueSeries::Append (const std::string &category, double value)
 {
+  NS_LOG_FUNCTION (this << category << value);
   Append (m_yAxis->GetId (category), value);
 }
 
 void
 CategoryValueSeries::Commit (void)
 {
+  NS_LOG_FUNCTION (this);
   if (m_committed)
     {
       NS_LOG_DEBUG ("Ignoring Commit () on already committed model");
@@ -133,30 +137,35 @@ CategoryValueSeries::Commit (void)
 Ptr<ValueAxis>
 CategoryValueSeries::GetXAxis (void) const
 {
+  NS_LOG_FUNCTION (this);
   return m_xAxis;
 }
 
 void
 CategoryValueSeries::SetXAxis (Ptr<ValueAxis> value)
 {
+  NS_LOG_FUNCTION (this << value);
   m_xAxis = value;
 }
 
 Ptr<CategoryAxis>
 CategoryValueSeries::GetYAxis (void) const
 {
+  NS_LOG_FUNCTION (this);
   return m_yAxis;
 }
 
 void
 CategoryValueSeries::SetYAxis (Ptr<CategoryAxis> value)
 {
+  NS_LOG_FUNCTION (this << value);
   m_yAxis = value;
 }
 
 void
 CategoryValueSeries::DoDispose (void)
 {
+  NS_LOG_FUNCTION (this);
   m_orchestrator = nullptr;
   m_xAxis = nullptr;
   m_yAxis = nullptr;

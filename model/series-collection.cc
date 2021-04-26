@@ -38,15 +38,14 @@
 #include "series-collection.h"
 
 namespace ns3 {
-
 NS_LOG_COMPONENT_DEFINE ("SeriesCollection");
-
 namespace netsimulyzer {
 
 NS_OBJECT_ENSURE_REGISTERED (SeriesCollection);
 
 SeriesCollection::SeriesCollection (Ptr<Orchestrator> orchestrator) : m_orchestrator (orchestrator)
 {
+  NS_LOG_FUNCTION (this << orchestrator);
   m_id = m_orchestrator->Register ({this, true});
 }
 
@@ -89,6 +88,7 @@ SeriesCollection::GetTypeId (void)
 void
 SeriesCollection::Add (Ptr<XYSeries> series)
 {
+  NS_LOG_FUNCTION (this << series);
   UintegerValue id;
   series->GetAttribute ("Id", id);
   Add (id.Get ());
@@ -100,12 +100,14 @@ SeriesCollection::Add (Ptr<XYSeries> series)
 std::vector<uint32_t>
 SeriesCollection::GetSeriesIds (void)
 {
+  NS_LOG_FUNCTION (this);
   return m_seriesIds;
 }
 
 void
 SeriesCollection::Commit (void)
 {
+  NS_LOG_FUNCTION (this);
   if (m_committed)
     {
       NS_LOG_DEBUG ("Ignoring Commit () on already committed model");
@@ -119,30 +121,35 @@ SeriesCollection::Commit (void)
 Ptr<ValueAxis>
 SeriesCollection::GetXAxis (void) const
 {
+  NS_LOG_FUNCTION (this);
   return m_xAxis;
 }
 
 void
 SeriesCollection::SetXAxis (Ptr<ValueAxis> value)
 {
+  NS_LOG_FUNCTION (this);
   m_xAxis = value;
 }
 
 Ptr<ValueAxis>
 SeriesCollection::GetYAxis (void) const
 {
+  NS_LOG_FUNCTION (this);
   return m_yAxis;
 }
 
 void
 SeriesCollection::SetYAxis (Ptr<ValueAxis> value)
 {
+  NS_LOG_FUNCTION (this);
   m_yAxis = value;
 }
 
 void
 SeriesCollection::DoDispose (void)
 {
+  NS_LOG_FUNCTION (this);
   m_orchestrator = nullptr;
   m_xAxis = nullptr;
   m_yAxis = nullptr;
@@ -151,6 +158,7 @@ SeriesCollection::DoDispose (void)
 void
 SeriesCollection::Add (uint32_t id)
 {
+  NS_LOG_FUNCTION (this << id);
   m_seriesIds.emplace_back (id);
 }
 

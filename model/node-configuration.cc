@@ -80,6 +80,7 @@ NS_OBJECT_ENSURE_REGISTERED (NodeConfiguration);
 NodeConfiguration::NodeConfiguration (Ptr<Orchestrator> orchestrator)
     : m_orchestrator (orchestrator)
 {
+  NS_LOG_FUNCTION (this << orchestrator);
   m_orchestrator->Register ({this, true});
 }
 
@@ -143,9 +144,11 @@ NodeConfiguration::GetTypeId (void)
                          MakePointerChecker<Orchestrator> ());
   return tid;
 }
+
 void
 NodeConfiguration::DoDispose (void)
 {
+  NS_LOG_FUNCTION (this);
   m_orchestrator = nullptr;
   Object::DoDispose ();
 }
@@ -153,6 +156,7 @@ NodeConfiguration::DoDispose (void)
 void
 NodeConfiguration::CourseChange (ns3::Ptr<const MobilityModel> model)
 {
+  NS_LOG_FUNCTION (this << model);
   CourseChangeEvent event;
   event.time = Simulator::Now ();
   event.nodeId = model->GetObject<Node> ()->GetId ();
@@ -164,6 +168,7 @@ NodeConfiguration::CourseChange (ns3::Ptr<const MobilityModel> model)
 std::optional<Vector3D>
 NodeConfiguration::MobilityPoll (void)
 {
+  NS_LOG_FUNCTION (this);
   auto node = GetObject<Node> ();
   NS_ABORT_MSG_IF (!node, "Mobility poll activated on NodeConfiguration with no associated Node");
 
@@ -190,11 +195,14 @@ NodeConfiguration::MobilityPoll (void)
 const Vector3D &
 NodeConfiguration::GetOrientation () const
 {
+  NS_LOG_FUNCTION (this);
   return m_orientation;
 }
+
 void
 NodeConfiguration::SetOrientation (const Vector3D &orientation)
 {
+  NS_LOG_FUNCTION (this << orientation);
   m_orientation = orientation;
   // If we haven't been aggregated with a Node yet.
   // Assume we're still setting up
@@ -216,6 +224,7 @@ NodeConfiguration::SetOrientation (const Vector3D &orientation)
 void
 NodeConfiguration::SetOrchestrator (Ptr<Orchestrator> orchestrator)
 {
+  NS_LOG_FUNCTION (this << orchestrator);
   m_orchestrator = orchestrator;
   m_orchestrator->Register ({this, true});
 }
@@ -223,18 +232,21 @@ NodeConfiguration::SetOrchestrator (Ptr<Orchestrator> orchestrator)
 Ptr<Orchestrator>
 NodeConfiguration::GetOrchestrator (void) const
 {
+  NS_LOG_FUNCTION (this);
   return m_orchestrator;
 }
 
 const std::optional<Color3> &
 NodeConfiguration::GetBaseColor (void) const
 {
+  NS_LOG_FUNCTION (this);
   return m_baseColor;
 }
 
 void
 NodeConfiguration::SetBaseColor (const std::optional<Color3> &value)
 {
+  NS_LOG_FUNCTION (this);
   if (m_baseColor == value)
     return;
 
@@ -259,12 +271,14 @@ NodeConfiguration::SetBaseColor (const std::optional<Color3> &value)
 const std::optional<Color3> &
 NodeConfiguration::GetHighlightColor (void) const
 {
+  NS_LOG_FUNCTION (this);
   return m_highlightColor;
 }
 
 void
 NodeConfiguration::SetHighlightColor (const std::optional<Color3> &value)
 {
+  NS_LOG_FUNCTION (this);
   if (m_highlightColor == value)
     return;
 
@@ -289,6 +303,7 @@ NodeConfiguration::SetHighlightColor (const std::optional<Color3> &value)
 void
 NodeConfiguration::NotifyNewAggregate (void)
 {
+  NS_LOG_FUNCTION (this);
   // Make sure we don't attach the trace more than once
   if (m_attachedMobilityTrace)
     {

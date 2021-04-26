@@ -6,7 +6,11 @@
 #include <ns3/enum.h>
 #include <ns3/string.h>
 
-namespace ns3::netsimulyzer {
+namespace ns3 {
+NS_LOG_COMPONENT_DEFINE ("RectangularArea");
+namespace netsimulyzer {
+
+NS_OBJECT_ENSURE_REGISTERED (RectangularArea);
 
 TypeId
 RectangularArea::GetTypeId (void)
@@ -14,7 +18,7 @@ RectangularArea::GetTypeId (void)
   static TypeId tid =
       TypeId ("ns3::netsimulyzer::RectangularArea")
           .SetParent<Object> ()
-          .SetGroupName("netsimulyzer")
+          .SetGroupName ("netsimulyzer")
           .AddAttribute ("Id", "The unique ID of the Area", TypeId::ATTR_GET, UintegerValue (0u),
                          MakeUintegerAccessor (&RectangularArea::m_id),
                          MakeUintegerChecker<uint32_t> ())
@@ -50,17 +54,20 @@ RectangularArea::RectangularArea (Ptr<Orchestrator> orchestrator, Rectangle boun
       m_useConstructorBounds (true), // See: NotifyConstructionCompleted (void)
       m_constructorBounds (bounds)
 {
+  NS_LOG_FUNCTION (this << orchestrator << bounds);
   m_id = m_orchestrator->Register ({this, true});
 }
 
 RectangularArea::RectangularArea (Ptr<Orchestrator> orchestrator) : m_orchestrator (orchestrator)
 {
+  NS_LOG_FUNCTION (this << orchestrator);
   m_id = m_orchestrator->Register ({this, true});
 }
 
 void
 RectangularArea::DoDispose (void)
 {
+  NS_LOG_FUNCTION (this);
   m_orchestrator = nullptr;
   Object::DoDispose ();
 }
@@ -68,6 +75,8 @@ RectangularArea::DoDispose (void)
 void
 RectangularArea::NotifyConstructionCompleted (void)
 {
+  NS_LOG_FUNCTION (this);
+
   // Annoying hack to allow the bounds to be set by the
   // constructor.
   // Since ns-3 will supply a default value and overwrite members
@@ -79,4 +88,5 @@ RectangularArea::NotifyConstructionCompleted (void)
   Object::NotifyConstructionCompleted ();
 }
 
+} // namespace netsimulyzer
 } // namespace ns3

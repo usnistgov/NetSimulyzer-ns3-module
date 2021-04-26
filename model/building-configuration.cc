@@ -42,6 +42,7 @@
 #include <ns3/color.h>
 
 namespace ns3 {
+NS_LOG_COMPONENT_DEFINE ("BuildingConfiguration");
 namespace netsimulyzer {
 
 NS_OBJECT_ENSURE_REGISTERED (BuildingConfiguration);
@@ -49,6 +50,7 @@ NS_OBJECT_ENSURE_REGISTERED (BuildingConfiguration);
 BuildingConfiguration::BuildingConfiguration (Ptr<Orchestrator> orchestrator)
     : m_orchestrator (orchestrator)
 {
+  NS_LOG_FUNCTION (this << orchestrator);
   m_orchestrator->Register ({this, true});
 }
 
@@ -77,6 +79,7 @@ BuildingConfiguration::GetTypeId (void)
 void
 BuildingConfiguration::DoDispose (void)
 {
+  NS_LOG_FUNCTION (this);
   m_orchestrator = nullptr;
   Object::DoDispose ();
 }
@@ -84,6 +87,7 @@ BuildingConfiguration::DoDispose (void)
 void
 BuildingConfiguration::SetOrchestrator (Ptr<Orchestrator> orchestrator)
 {
+  NS_LOG_FUNCTION (this << orchestrator);
   m_orchestrator = orchestrator;
   m_orchestrator->Register ({this, true});
 }
@@ -91,6 +95,7 @@ BuildingConfiguration::SetOrchestrator (Ptr<Orchestrator> orchestrator)
 Ptr<Orchestrator>
 BuildingConfiguration::GetOrchestrator (void) const
 {
+  NS_LOG_FUNCTION (this);
   return m_orchestrator;
 }
 

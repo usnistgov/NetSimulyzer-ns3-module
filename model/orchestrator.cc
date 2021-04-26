@@ -162,15 +162,14 @@ makeAxisAttributes (ns3::Ptr<ns3::netsimulyzer::CategoryAxis> axis)
 } // namespace
 
 namespace ns3 {
-
 NS_LOG_COMPONENT_DEFINE ("Orchestrator");
-
 namespace netsimulyzer {
 
 NS_OBJECT_ENSURE_REGISTERED (Orchestrator);
 
 Orchestrator::Orchestrator (const std::string &output_path) : m_outputPath (output_path)
 {
+  NS_LOG_FUNCTION (this << output_path);
   m_file.open (output_path);
   NS_ABORT_MSG_IF (!m_file, "Failed to open output file");
 
@@ -220,6 +219,7 @@ Orchestrator::GetTypeId (void)
 void
 Orchestrator::SetupSimulation (void)
 {
+  NS_LOG_FUNCTION (this);
   // Header
   auto version = nlohmann::json{};
   version["major"] = VERSION_MAJOR;
@@ -510,6 +510,7 @@ Orchestrator::SetupSimulation (void)
 void
 Orchestrator::SetPollMobility (bool enable)
 {
+  NS_LOG_FUNCTION (this);
   m_pollMobility = enable;
 
   if (m_pollMobility && !m_mobilityPollEvent.has_value ())
@@ -533,12 +534,14 @@ Orchestrator::SetPollMobility (bool enable)
 bool
 Orchestrator::GetPollMobility () const
 {
+  NS_LOG_FUNCTION (this);
   return m_pollMobility;
 }
 
 void
 Orchestrator::PollMobility (void)
 {
+  NS_LOG_FUNCTION (this);
   // Stop the polling if we've passed StopTime
   // StartTime addressed in scheduling
   if (Simulator::Now () > m_stopTime)
@@ -564,6 +567,7 @@ Orchestrator::PollMobility (void)
 void
 Orchestrator::WritePosition (uint32_t nodeId, Time time, Vector3D position)
 {
+  NS_LOG_FUNCTION (this << nodeId << time << position);
   nlohmann::json element;
   element["type"] = "node-position";
   element["milliseconds"] = time.GetMilliSeconds ();
@@ -577,6 +581,7 @@ Orchestrator::WritePosition (uint32_t nodeId, Time time, Vector3D position)
 void
 Orchestrator::DoDispose (void)
 {
+  NS_LOG_FUNCTION (this);
   Flush ();
   m_xYSeries.clear ();
   m_categorySeries.clear ();
@@ -592,6 +597,7 @@ Orchestrator::DoDispose (void)
 void
 Orchestrator::HandleCourseChange (const CourseChangeEvent &event)
 {
+  NS_LOG_FUNCTION (this);
   if (Simulator::Now () < m_startTime || Simulator::Now () > m_stopTime)
     {
       NS_LOG_DEBUG ("HandleCourseChange() Activated outside (StartTime, StopTime), Ignoring");
@@ -604,6 +610,7 @@ Orchestrator::HandleCourseChange (const CourseChangeEvent &event)
 void
 Orchestrator::HandlePositionChange (const DecorationMoveEvent &event)
 {
+  NS_LOG_FUNCTION (this);
   if (Simulator::Now () < m_startTime || Simulator::Now () > m_stopTime)
     {
       NS_LOG_DEBUG ("HandlePositionChange() Activated outside (StartTime, StopTime), Ignoring");
@@ -631,6 +638,7 @@ Orchestrator::HandlePositionChange (const DecorationMoveEvent &event)
 void
 Orchestrator::HandleOrientationChange (const NodeOrientationChangeEvent &event)
 {
+  NS_LOG_FUNCTION (this);
   if (Simulator::Now () < m_startTime || Simulator::Now () > m_stopTime)
     {
       NS_LOG_DEBUG ("HandleOrientationChange() Activated outside (StartTime, StopTime), Ignoring");
@@ -658,6 +666,7 @@ Orchestrator::HandleOrientationChange (const NodeOrientationChangeEvent &event)
 void
 Orchestrator::HandleOrientationChange (const DecorationOrientationChangeEvent &event)
 {
+  NS_LOG_FUNCTION (this);
   if (Simulator::Now () < m_startTime || Simulator::Now () > m_stopTime)
     {
       NS_LOG_DEBUG ("HandleOrientationChange() Activated outside (StartTime, StopTime), Ignoring");
@@ -684,6 +693,7 @@ Orchestrator::HandleOrientationChange (const DecorationOrientationChangeEvent &e
 void
 Orchestrator::HandleColorChange (const NodeColorChangeEvent &event)
 {
+  NS_LOG_FUNCTION (this);
   if (Simulator::Now () < m_startTime || Simulator::Now () > m_stopTime)
     {
       NS_LOG_DEBUG ("HandleColorChange() Activated outside (StartTime, StopTime), Ignoring");
@@ -723,6 +733,7 @@ Orchestrator::HandleColorChange (const NodeColorChangeEvent &event)
 uint32_t
 Orchestrator::Register (Ptr<Decoration> decoration)
 {
+  NS_LOG_FUNCTION (this << decoration);
   m_decorations.emplace_back (decoration);
 
   // Just in case
@@ -732,6 +743,7 @@ Orchestrator::Register (Ptr<Decoration> decoration)
 uint32_t
 Orchestrator::Register (Ptr<XYSeries> series)
 {
+  NS_LOG_FUNCTION (this << series);
   m_xYSeries.emplace_back (series);
 
   return m_nextSeriesId++;
@@ -740,6 +752,7 @@ Orchestrator::Register (Ptr<XYSeries> series)
 uint32_t
 Orchestrator::Register (Ptr<CategoryValueSeries> series)
 {
+  NS_LOG_FUNCTION (this << series);
   m_categorySeries.emplace_back (series);
 
   return m_nextSeriesId++;
@@ -748,6 +761,7 @@ Orchestrator::Register (Ptr<CategoryValueSeries> series)
 uint32_t
 Orchestrator::Register (Ptr<SeriesCollection> series)
 {
+  NS_LOG_FUNCTION (this << series);
   m_seriesCollections.emplace_back (series);
 
   return m_nextSeriesId++;
@@ -756,18 +770,21 @@ Orchestrator::Register (Ptr<SeriesCollection> series)
 void
 Orchestrator::Register (Ptr<NodeConfiguration> nodeConfiguration)
 {
+  NS_LOG_FUNCTION (this << nodeConfiguration);
   m_nodes.emplace_back (nodeConfiguration);
 }
 
 void
 Orchestrator::Register (Ptr<BuildingConfiguration> buildingConfiguration)
 {
+  NS_LOG_FUNCTION (this << buildingConfiguration);
   m_buildings.emplace_back (buildingConfiguration);
 }
 
 uint32_t
 Orchestrator::Register (Ptr<LogStream> stream)
 {
+  NS_LOG_FUNCTION (this << stream);
   m_streams.emplace_back (stream);
 
   return static_cast<uint32_t> (m_streams.size ());
@@ -776,6 +793,7 @@ Orchestrator::Register (Ptr<LogStream> stream)
 uint32_t
 Orchestrator::Register (Ptr<RectangularArea> area)
 {
+  NS_LOG_FUNCTION (this << area);
   m_areas.emplace_back (area);
 
   return static_cast<uint32_t> (m_areas.size ());
@@ -784,7 +802,7 @@ Orchestrator::Register (Ptr<RectangularArea> area)
 void
 Orchestrator::Commit (XYSeries &series)
 {
-  using namespace ns3;
+  NS_LOG_FUNCTION (this);
   nlohmann::json element;
   element["type"] = "xy-series";
 
@@ -864,7 +882,7 @@ Orchestrator::Commit (XYSeries &series)
 void
 Orchestrator::Commit (SeriesCollection &series)
 {
-  using namespace ns3;
+  NS_LOG_FUNCTION (this);
   nlohmann::json element;
   element["type"] = "series-collection";
 
@@ -900,7 +918,7 @@ Orchestrator::Commit (SeriesCollection &series)
 void
 Orchestrator::Commit (CategoryValueSeries &series)
 {
-  using namespace ns3;
+  NS_LOG_FUNCTION (this);
   nlohmann::json element;
   element["type"] = "category-value-series";
 
@@ -964,6 +982,7 @@ Orchestrator::Commit (CategoryValueSeries &series)
 void
 Orchestrator::Commit (LogStream &logStream)
 {
+  NS_LOG_FUNCTION (this);
   nlohmann::json element;
   element["type"] = "stream";
 
@@ -993,6 +1012,7 @@ Orchestrator::Commit (LogStream &logStream)
 void
 Orchestrator::AppendXyValue (uint32_t id, double x, double y)
 {
+  NS_LOG_FUNCTION (this << id << x << y);
   if (Simulator::Now () < m_startTime || Simulator::Now () > m_stopTime)
     {
       NS_LOG_DEBUG ("AppendXyValue() Activated outside (StartTime, StopTime), Ignoring");
@@ -1011,6 +1031,7 @@ Orchestrator::AppendXyValue (uint32_t id, double x, double y)
 void
 Orchestrator::AppendCategoryValue (uint32_t id, int category, double value)
 {
+  NS_LOG_FUNCTION (this << id << category << value);
   if (Simulator::Now () < m_startTime || Simulator::Now () > m_stopTime)
     {
       NS_LOG_DEBUG ("AppendCategoryValue() Activated outside (StartTime, StopTime), Ignoring");
@@ -1029,6 +1050,7 @@ Orchestrator::AppendCategoryValue (uint32_t id, int category, double value)
 void
 Orchestrator::WriteLogMessage (const LogMessageEvent &event)
 {
+  NS_LOG_FUNCTION (this);
   if (Simulator::Now () < m_startTime || Simulator::Now () > m_stopTime)
     {
       NS_LOG_DEBUG ("WriteLogMessage() Activated outside (StartTime, StopTime), Ignoring");
@@ -1063,6 +1085,7 @@ Orchestrator::Flush (void)
 void
 Orchestrator::CommitAll (void)
 {
+  NS_LOG_FUNCTION (this);
   // Just go through and commit everything
   // since extra commits have no effect
 

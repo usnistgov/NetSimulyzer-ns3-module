@@ -54,6 +54,7 @@ NS_OBJECT_ENSURE_REGISTERED (LogStream);
 
 LogStream::LogStream (Ptr<Orchestrator> orchestrator) : m_orchestrator (orchestrator)
 {
+  NS_LOG_FUNCTION (this << orchestrator);
   m_id = orchestrator->Register ({this, true});
 }
 
@@ -84,6 +85,8 @@ LogStream::GetTypeId (void)
 void
 LogStream::Write (const std::string &message) const
 {
+  NS_LOG_FUNCTION (this << message);
+
   LogMessageEvent event;
   event.id = m_id;
   event.time = Simulator::Now ();
@@ -95,6 +98,8 @@ LogStream::Write (const std::string &message) const
 void
 LogStream::Commit (void)
 {
+  NS_LOG_FUNCTION (this);
+
   if (m_committed)
     {
       NS_LOG_DEBUG ("Ignoring Commit () on already committed model");
@@ -108,6 +113,7 @@ LogStream::Commit (void)
 void
 LogStream::DoDispose ()
 {
+  NS_LOG_FUNCTION (this);
   m_orchestrator = nullptr;
 }
 
