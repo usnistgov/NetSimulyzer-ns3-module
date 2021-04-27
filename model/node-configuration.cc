@@ -250,14 +250,14 @@ NodeConfiguration::SetBaseColor (const std::optional<Color3> &value)
   if (m_baseColor == value)
     return;
 
+  m_baseColor = value;
+
   auto node = GetObject<Node> ();
   if (!node)
     {
       NS_LOG_DEBUG ("Not triggering NodeColorChangeEvent event. No Node aggregated");
       return;
     }
-
-  m_baseColor = value;
 
   NodeColorChangeEvent event;
   event.time = Simulator::Now ();
@@ -282,14 +282,14 @@ NodeConfiguration::SetHighlightColor (const std::optional<Color3> &value)
   if (m_highlightColor == value)
     return;
 
+  m_highlightColor = value;
+
   auto node = GetObject<Node> ();
   if (!node)
     {
       NS_LOG_DEBUG ("Not triggering NodeColorChangeEvent event. No Node aggregated");
       return;
     }
-
-  m_highlightColor = value;
 
   NodeColorChangeEvent event;
   event.time = Simulator::Now ();
