@@ -104,12 +104,8 @@ int
 CategoryAxis::GetId (const std::string &name) const
 {
   NS_LOG_FUNCTION (this << name);
-  // TODO: When/If ns3 updates to C++ 14, use auto instead
-  const auto iter =
-      std::find_if (m_values.begin (), m_values.end (),
-                    [&name] (const std::unordered_map<int, std::string>::value_type &value) {
-                      return value.second == name;
-                    });
+  const auto iter = std::find_if (m_values.begin (), m_values.end (),
+                                  [&name] (const auto &value) { return value.second == name; });
 
   if (iter == m_values.end ())
     NS_ABORT_MSG ("Name: " << name << " not registered with CategoryAxis");
