@@ -748,7 +748,7 @@ main (int argc, char *argv[])
     nodeConfigHelper.Set ("Scale", DoubleValue (5));
     for (uint32_t i = 0; i < ueNodes.GetN (); ++i)
     {
-      nodeConfigHelper.Set ("Model", netsimulyzer::models::SMARTPHONE_VALUE);
+      nodeConfigHelper.Set ("Model", netsimulyzer::models::LAND_DRONE_VALUE);
       nodeConfigHelper.Set ("Name", StringValue ("UE " + std::to_string (i)));
       nodeConfigHelper.Install (ueNodes.Get (i));
 
@@ -777,7 +777,7 @@ main (int argc, char *argv[])
     {
       nodeConfigHelper.Set ("Model", netsimulyzer::models::CELL_TOWER_POLE_VALUE);
       nodeConfigHelper.Set ("Name", StringValue ("Cell tower " + std::to_string(i)));
-      nodeConfigHelper.Set ("Height", netsimulyzer::OptionalValue<double> (1));
+      nodeConfigHelper.Set ("Height", netsimulyzer::OptionalValue<double> (10));
       nodeConfigHelper.Set ("Orientation", Vector3DValue (Vector3D(0, 0, 0)));
       nodeConfigHelper.Install (enbNodes.Get(i));
     }
