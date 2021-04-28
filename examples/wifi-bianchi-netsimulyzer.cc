@@ -828,11 +828,12 @@ Experiment::Run (const WifiHelper &helper, const YansWifiPhyHelper &wifiPhy, con
   double angle = (static_cast<double> (360) / (nNodes - 1));
   for (uint32_t i = 0; i < (nNodes - 1); ++i)
     {
-//#ifdef HAS_NETSIMULYZER
-//      positionAlloc->Add (Vector (1.0 + (2 * cos ((i * angle * PI) / 180)), 1.0 + (2 * sin ((i * angle * PI) / 180)), 0.0));
-//#else
+#ifdef HAS_NETSIMULYZER
+      //Give slightly more distance between devices
+      positionAlloc->Add (Vector (1.0 + (0.1 * cos ((i * angle * PI) / 180)), 1.0 + (0.1 * sin ((i * angle * PI) / 180)), 0.0));
+#else
       positionAlloc->Add (Vector (1.0 + (0.001 * cos ((i * angle * PI) / 180)), 1.0 + (0.001 * sin ((i * angle * PI) / 180)), 0.05));
-//#endif
+#endif
     }
 
   mobility.SetPositionAllocator (positionAlloc);
