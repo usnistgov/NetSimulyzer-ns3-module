@@ -225,6 +225,7 @@ Orchestrator::SetupSimulation (void)
   version["major"] = VERSION_MAJOR;
   version["minor"] = VERSION_MINOR;
   version["patch"] = VERSION_PATCH;
+  version["suffix"] = VERSION_SUFFIX;
   m_document["configuration"]["module-version"] = version;
   if (m_timeStep)
     m_document["configuration"]["time-step"] = m_timeStep.value ();

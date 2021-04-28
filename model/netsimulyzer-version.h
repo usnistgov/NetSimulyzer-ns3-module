@@ -55,11 +55,16 @@ const long VERSION_MINOR = 0L;
 const long VERSION_PATCH = 0L;
 
 /**
+ * Any additional version qualifiers ("dev" or "release")
+ */
+const std::string VERSION_SUFFIX = "dev";
+
+/**
  * Give the std::string representation of
  * the version with dots separating each component
  *
  * @return
- * A string in the form M_MAJOR.M_MINOR.M_PATCH
+ * A string in the form M_MAJOR.M_MINOR.M_PATCH-M_SUFFIX
  */
 std::string versionString (void);
 

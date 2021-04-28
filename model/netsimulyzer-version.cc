@@ -41,7 +41,7 @@ std::string
 versionString ()
 {
   return std::to_string (VERSION_MAJOR) + '.' + std::to_string (VERSION_MINOR) + '.' +
-         std::to_string (VERSION_PATCH);
+         std::to_string (VERSION_PATCH) + '-' + VERSION_SUFFIX;
 }
 
 } // namespace ns3::netsimulyzer
