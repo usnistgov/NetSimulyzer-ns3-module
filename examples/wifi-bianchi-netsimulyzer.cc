@@ -954,6 +954,20 @@ Experiment::Run (const WifiHelper &helper, const YansWifiPhyHelper &wifiPhy, con
     {
       nodeConfigHelper.Set ("Model", netsimulyzer::models::SMARTPHONE_VALUE);
       nodeConfigHelper.Set ("Name", StringValue ("Station " + std::to_string (i)));
+      //Give each phone a different shade of grey
+      nodeConfigHelper.Set ("BaseColor", netsimulyzer::OptionalValue<netsimulyzer::Color3>{(100+150.0/(i+1)), (100+150.0/(i+1)), (100+150.0/(i+1))});
+      //Highlight the nodes used for demo
+      if (i == 7)
+      {
+        nodeConfigHelper.Set ("HighlightColor", netsimulyzer::OptionalValue<netsimulyzer::Color3>{netsimulyzer::BLUE});
+      } else if (i == 8)
+      {
+        nodeConfigHelper.Set ("HighlightColor", netsimulyzer::OptionalValue<netsimulyzer::Color3>{netsimulyzer::GREEN});
+      } else
+      {
+        nodeConfigHelper.Set ("HighlightColor", netsimulyzer::OptionalValue<netsimulyzer::Color3>{netsimulyzer::GRAY_80});
+      }
+
       nodeConfigHelper.Install (wifiNodes.Get (i));
     } 
 
@@ -968,7 +982,7 @@ Experiment::Run (const WifiHelper &helper, const YansWifiPhyHelper &wifiPhy, con
 
     associatedSeries = CreateObject <netsimulyzer::XYSeries>(orchestrator);
     associatedSeries->SetAttribute ("Name", StringValue("Number of associated STAs"));
-    associatedSeries->SetAttribute ("Color", netsimulyzer::Color3Value(netsimulyzer::Color3{204u, 111u, 4u}));
+    associatedSeries->SetAttribute ("Color", netsimulyzer::Color3Value{204u, 111u, 4u});
 
     for (i = 0; i < nNodes; ++i)
     {
@@ -1002,6 +1016,7 @@ Experiment::Run (const WifiHelper &helper, const YansWifiPhyHelper &wifiPhy, con
       PointerValue rxXySeries;
       macRxTrace->GetAttribute ("XYSeries", rxXySeries);
       rxXySeries.Get<netsimulyzer::XYSeries> ()->SetAttribute ("LabelMode", StringValue("Hidden"));
+      rxXySeries.Get<netsimulyzer::XYSeries> ()->SetAttribute ("Color", netsimulyzer::GREEN_VALUE);
       macRxTraceSeries.insert (std::pair<uint32_t, Ptr<netsimulyzer::ThroughputSink>> (i, macRxTrace));
 
     }

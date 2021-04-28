@@ -161,6 +161,7 @@ main (int argc, char *argv[])
   Ptr<netsimulyzer::XYSeries> posSeries = CreateObject <netsimulyzer::XYSeries>(orchestrator);
   posSeries->SetAttribute ("Name", StringValue("Node position"));
   posSeries->SetAttribute ("LabelMode", StringValue("Hidden"));
+  posSeries->SetAttribute ("Color", netsimulyzer::BLUE_VALUE);
   posSeries->GetXAxis ()->SetAttribute ("Name", StringValue("X position (m)"));
   posSeries->GetYAxis ()->SetAttribute ("Name", StringValue("Y position (m)"));
 

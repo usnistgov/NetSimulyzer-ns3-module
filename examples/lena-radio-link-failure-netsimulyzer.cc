@@ -767,7 +767,9 @@ main (int argc, char *argv[])
       rrcStateGraph->SetAttribute ("Name", StringValue("UE " + std::to_string(i+1) + " RRC State"));
       rrcStateGraph->SetAttribute ("LoggingMode", StringValue("None"));
       rrcStateMachines.insert (std::pair<uint32_t, Ptr<netsimulyzer::StateTransitionSink>> (ueDevs.Get(i)->GetObject <LteUeNetDevice> ()->GetImsi(), rrcStateGraph));
-
+      PointerValue stateSeries;
+      rrcStateGraph->GetAttribute ("Series", stateSeries);
+      stateSeries.Get<netsimulyzer::CategoryValueSeries> ()->SetAttribute ("Color", netsimulyzer::BLUE_VALUE);
     }
 
     //Network
@@ -783,15 +785,15 @@ main (int argc, char *argv[])
     //Logs
     applicationLog = CreateObject<netsimulyzer::LogStream> (orchestrator);
     applicationLog->SetAttribute ("Name", StringValue ("Application log"));
-    applicationLog->SetAttribute("Color", netsimulyzer::OptionalValue<netsimulyzer::Color3>{100u, 150u, 100u});
+    applicationLog->SetAttribute("Color", netsimulyzer::OptionalValue<netsimulyzer::Color3>{netsimulyzer::GREEN});
 
     ueLog = CreateObject<netsimulyzer::LogStream> (orchestrator);
     ueLog->SetAttribute ("Name", StringValue ("UE log"));
-    ueLog->SetAttribute("Color", netsimulyzer::OptionalValue<netsimulyzer::Color3>{72u, 66u, 245u});
+    ueLog->SetAttribute("Color", netsimulyzer::OptionalValue<netsimulyzer::Color3>{netsimulyzer::BLUE});
 
     enbLog = CreateObject<netsimulyzer::LogStream> (orchestrator);
     enbLog->SetAttribute ("Name", StringValue ("eNodeB log"));
-    enbLog->SetAttribute("Color", netsimulyzer::OptionalValue<netsimulyzer::Color3>{125u, 8u, 0u});
+    enbLog->SetAttribute("Color", netsimulyzer::OptionalValue<netsimulyzer::Color3>{netsimulyzer::RED});
 
 
     //Statistics
@@ -801,6 +803,7 @@ main (int argc, char *argv[])
     PointerValue rxXySeries;
     appRxTraceSeries->GetAttribute ("XYSeries", rxXySeries);
     rxXySeries.Get<netsimulyzer::XYSeries> ()->SetAttribute ("LabelMode", StringValue("Hidden"));
+    rxXySeries.Get<netsimulyzer::XYSeries> ()->SetAttribute ("Color", netsimulyzer::BLUE_VALUE);
 
   }
 #endif
