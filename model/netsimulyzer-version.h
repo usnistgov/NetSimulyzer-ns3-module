@@ -55,9 +55,9 @@ const long VERSION_MINOR = 0L;
 const long VERSION_PATCH = 0L;
 
 /**
- * Any additional version qualifiers ("dev" or "release")
+ * Any additional version qualifiers ("pre" or "release")
  */
-const std::string VERSION_SUFFIX = "dev";
+const std::string VERSION_SUFFIX = "pre";
 
 /**
  * Give the std::string representation of
