@@ -52,12 +52,12 @@ const long VERSION_MINOR = 0L;
 /**
  * The Patch version number for the module
  */
-const long VERSION_PATCH = 0L;
+const long VERSION_PATCH = 1L;
 
 /**
  * Any additional version qualifiers ("pre" or "release")
  */
-const std::string VERSION_SUFFIX = "pre";
+const std::string VERSION_SUFFIX = "release";
 
 /**
  * Give the std::string representation of
