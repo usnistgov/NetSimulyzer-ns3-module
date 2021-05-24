@@ -22,7 +22,7 @@ project = 'netsimulyzer'
 author = 'Evan Black'
 
 # The full version, including alpha/beta/rc tags
-release = '1.0.1-release'
+release = '1.0.2-pre'
 
 
 # -- General configuration ---------------------------------------------------
