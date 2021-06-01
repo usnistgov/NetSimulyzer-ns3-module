@@ -1079,6 +1079,11 @@ Orchestrator::Flush (void)
   // Make all models are in the document
   CommitAll ();
 
+  // Inform the application of the actual end time
+  // using the Stop Time if it was set
+  m_document["configuration"]["max-time-ms"] =
+      std::min (m_stopTime.GetMilliSeconds (), Simulator::Now ().GetMilliSeconds ());
+
   m_file << m_document;
   m_file.close ();
 }
