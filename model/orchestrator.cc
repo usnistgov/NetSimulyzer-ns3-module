@@ -36,6 +36,7 @@
 #include "node-configuration.h"
 #include "building-configuration.h"
 #include "netsimulyzer-version.h"
+#include "xy-series.h"
 #include <string>
 #include <vector>
 #include <ns3/abort.h>
@@ -1026,6 +1027,53 @@ Orchestrator::AppendXyValue (uint32_t id, double x, double y)
   element["series-id"] = id;
   element["x"] = x;
   element["y"] = y;
+  m_document["events"].emplace_back (element);
+}
+
+void
+Orchestrator::AppendXyValues (uint32_t id, const std::vector<XYPoint> &points)
+{
+  NS_LOG_FUNCTION (this << id);
+
+  if (Simulator::Now () < m_startTime || Simulator::Now () > m_stopTime)
+    {
+      NS_LOG_DEBUG ("AppendXyValue() Activated outside (StartTime, StopTime), Ignoring");
+      return;
+    }
+
+  nlohmann::json element;
+  element["type"] = "xy-series-append-array";
+  element["milliseconds"] = Simulator::Now ().GetMilliSeconds ();
+  element["series-id"] = id;
+
+  auto elementArray = nlohmann::json::array ();
+  for (const auto &point : points)
+    {
+      elementArray.emplace_back (nlohmann::json{
+          {"x", point.x},
+          {"y", point.y},
+      });
+    }
+
+  element["points"] = elementArray;
+  m_document["events"].emplace_back (element);
+}
+
+void
+Orchestrator::ClearXySeries (uint32_t id)
+{
+  NS_LOG_FUNCTION (this << id);
+
+  if (Simulator::Now () < m_startTime || Simulator::Now () > m_stopTime)
+    {
+      NS_LOG_DEBUG ("ClearXySeries() Activated outside (StartTime, StopTime), Ignoring");
+      return;
+    }
+
+  nlohmann::json element;
+  element["type"] = "xy-series-clear";
+  element["milliseconds"] = Simulator::Now ().GetMilliSeconds ();
+  element["series-id"] = id;
   m_document["events"].emplace_back (element);
 }
 

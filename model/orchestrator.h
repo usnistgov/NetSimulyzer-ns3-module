@@ -67,6 +67,7 @@ class NodeConfiguration;
 class BuildingConfiguration;
 class LogStream;
 class SeriesCollection;
+class XYPoint;
 class XYSeries;
 class CategoryValueSeries;
 class ValueAxis;
@@ -362,6 +363,32 @@ public:
    * The value to plot on the second axis
    */
   void AppendXyValue (uint32_t id, double x, double y);
+
+  /**
+   * Add several points that will be plotted at `Simulation::Now()` time.
+   * Written immediately as a single event.
+   *
+   * \param id
+   * The ID of the series to append to
+   *
+   * \param points
+   * The points to append to the series
+   */
+  void AppendXyValues (uint32_t id, const std::vector<XYPoint> &points);
+
+  /**
+   * Hides all of the points currently shown
+   * for the series at `Simulation::Now()` time.
+   *
+   * Users should call `Clear()` on the individual series,
+   * rather than this method
+   *
+   * \param id
+   * The ID of the XYSeries to write the clear event for.
+   *
+   * \see XYSeries::Clear()
+   */
+  void ClearXySeries (uint32_t id);
 
   /**
    * Add a single point that will be plotted at `Simulation::Now()` time.

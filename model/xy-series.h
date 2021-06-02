@@ -35,6 +35,7 @@
 
 #include <string>
 #include <cstdint>
+#include <vector>
 #include <ns3/object.h>
 #include <ns3/ptr.h>
 #include <ns3/orchestrator.h>
@@ -45,6 +46,15 @@ namespace ns3::netsimulyzer {
 
 class Orchestrator;
 class ValueAxis;
+
+/**
+ * Representation of a single point on an XYSeries
+ */
+struct XYPoint
+{
+  double x;
+  double y;
+};
 
 class XYSeries : public ns3::Object
 {
@@ -84,6 +94,36 @@ public:
    * The value to plot on the second axis
    */
   void Append (double x, double y);
+
+  /**
+   * Add a single point that will be plotted at `Simulation::Now()` time.
+   *
+   * The same as void `Append(double x, double y)`
+   *
+   * \param point
+   * The value to append to the series
+   *
+   * \see Append(double x, double y)
+   */
+  void Append (const XYPoint &point);
+
+  /**
+   * Add several points at once that will be plotted at `Simulation::Now()` time.
+   * The points in `points` will be appended in order they appear in the vector.
+   *
+   * This is much more efficient than calling the single `Append()` functions
+   * if many points are known at once.
+   *
+   * \param points
+   * A vector of points to append to the series.
+   */
+  void Append (const std::vector<XYPoint> &points);
+
+  /**
+   * Hides all of the points currently shown
+   * for the series at `Simulation::Now()` time.
+   */
+  void Clear (void);
 
   /**
    * Finalizes configuration of the series.

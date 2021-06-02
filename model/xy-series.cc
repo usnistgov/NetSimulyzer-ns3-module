@@ -105,6 +105,27 @@ XYSeries::Append (double x, double y)
 }
 
 void
+XYSeries::Append (const XYPoint &point)
+{
+  NS_LOG_FUNCTION (this << point.x << point.y);
+  m_orchestrator->AppendXyValue (m_id, point.x, point.y);
+}
+
+void
+XYSeries::Append (const std::vector<XYPoint> &points)
+{
+  NS_LOG_FUNCTION (this);
+  m_orchestrator->AppendXyValues (m_id, points);
+}
+
+void
+XYSeries::Clear (void)
+{
+  NS_LOG_FUNCTION (this);
+  m_orchestrator->ClearXySeries (m_id);
+}
+
+void
 XYSeries::Commit (void)
 {
   NS_LOG_FUNCTION (this);
@@ -145,7 +166,6 @@ XYSeries::SetYAxis (Ptr<ValueAxis> value)
   NS_LOG_FUNCTION (this << value);
   m_yAxis = value;
 }
-
 void
 XYSeries::DoDispose (void)
 {
