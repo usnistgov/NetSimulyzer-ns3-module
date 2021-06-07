@@ -39,6 +39,7 @@
 #include "xy-series.h"
 #include <string>
 #include <vector>
+#include <map>
 #include <ns3/abort.h>
 #include <ns3/node.h>
 #include <ns3/ptr.h>
@@ -56,6 +57,8 @@
 #include <ns3/log-stream.h>
 #include <ns3/color.h>
 #include <ns3/optional.h>
+#include <ns3/point-to-point-channel.h>
+#include <ns3/point-to-point-net-device.h>
 
 namespace {
 std::string
@@ -232,6 +235,7 @@ Orchestrator::SetupSimulation (void)
     m_document["configuration"]["time-step"] = m_timeStep.value ();
 
   // Nodes
+  std::multimap<unsigned int, unsigned int> deviceLinkMap;
   auto nodes = nlohmann::json::array ();
   for (const auto &config : m_nodes)
     {
@@ -239,7 +243,8 @@ Orchestrator::SetupSimulation (void)
 
       nlohmann::json element;
       element["type"] = "node";
-      element["id"] = node->GetId ();
+      const auto nodeId = node->GetId ();
+      element["id"] = nodeId;
 
       StringValue name;
       config->GetAttribute ("Name", name);
@@ -299,9 +304,61 @@ Orchestrator::SetupSimulation (void)
           element["position"]["y"] = 0.0;
           element["position"]["z"] = 0.0;
         }
+
+      // Check NetDevices for p2p links
+      for (auto i = 0u; i < node->GetNDevices (); i++)
+        {
+          const auto device = node->GetDevice (i);
+
+          // We only support Point-to-Point links for now
+          if (!device->IsPointToPoint ())
+            continue;
+
+          auto baseChannel = device->GetChannel ();
+          if (!baseChannel)
+            continue;
+
+          auto p2pChannel = DynamicCast<PointToPointChannel> (baseChannel);
+          if (!p2pChannel)
+            continue;
+
+          for (auto j = 0u; j < p2pChannel->GetNDevices (); j++)
+            {
+              auto channelNode = p2pChannel->GetDevice (j)->GetNode ();
+              if (channelNode->GetId () == nodeId)
+                continue;
+
+              // Check to see if we've already written this link
+              // from the other devices perspective
+              const auto otherNodeId = channelNode->GetId ();
+              auto otherNode = deviceLinkMap.find (otherNodeId);
+              // If we've already recorded the other pointing to
+              // this node, then there's no need to duplicate
+              if (otherNode != deviceLinkMap.end () && otherNode->second == nodeId)
+                continue;
+
+              deviceLinkMap.insert ({nodeId, otherNodeId});
+            }
+        }
+
       nodes.emplace_back (element);
     }
   m_document["nodes"] = nodes;
+
+  auto links = nlohmann::json::array ();
+  for (const auto &[key, value] : deviceLinkMap)
+    {
+      nlohmann::json element;
+      element["type"] = "point-to-point";
+
+      auto linkNodes = nlohmann::json::array ();
+      linkNodes.emplace_back (key);
+      linkNodes.emplace_back (value);
+      element["node-ids"] = linkNodes;
+
+      links.emplace_back (element);
+    }
+  m_document["links"] = links;
 
   // Buildings
   auto buildings = nlohmann::json::array ();
