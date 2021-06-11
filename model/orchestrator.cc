@@ -328,6 +328,11 @@ Orchestrator::SetupSimulation (void)
               if (channelNode->GetId () == nodeId)
                 continue;
 
+              // Check to make sure the remote Node is configured for display
+              // If not, then ignore the link as we can't display it
+              if (channelNode->GetObject<NodeConfiguration> () == nullptr)
+                continue;
+
               // Check to see if we've already written this link
               // from the other devices perspective
               const auto otherNodeId = channelNode->GetId ();
