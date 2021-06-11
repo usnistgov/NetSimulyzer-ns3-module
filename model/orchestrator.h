@@ -67,7 +67,7 @@ class NodeConfiguration;
 class BuildingConfiguration;
 class LogStream;
 class SeriesCollection;
-class XYPoint;
+struct XYPoint;
 class XYSeries;
 class CategoryValueSeries;
 class ValueAxis;
