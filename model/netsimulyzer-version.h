@@ -57,7 +57,7 @@ const long VERSION_PATCH = 2L;
 /**
  * Any additional version qualifiers ("pre" or "release")
  */
-const std::string VERSION_SUFFIX = "pre";
+const std::string VERSION_SUFFIX = "release";
 
 /**
  * Give the std::string representation of
