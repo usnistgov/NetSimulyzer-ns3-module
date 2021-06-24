@@ -49,15 +49,11 @@ Link this module & run your scenario to see it in 3D.
 # Installation
 ## Clone (Recommended)
 Clone the project into a directory called `netsimulyzer` in
-the `src` or `contrib` directory of a supported version of ns-3
+the `contrib` directory of a supported version of ns-3
 
-1) `cd` into the `src` or `contrib` directory of `ns-3`
+1) `cd` into the `contrib` directory of `ns-3`
 
 ```shell
-# If using src/
-cd src/
-
-# If using contrib/
 cd contrib/
 ```
 
@@ -81,7 +77,7 @@ git clone git@github.com:usnistgov/NetSimulyzer-ns3-module.git netsimulyzer
 
 ## Download ZIP
 If, for whatever reason, `git` is not available, download the
-project & unzip it into the `src` or `contrib` directory of `ns-3`.
+project & unzip it into the `contrib` directory of `ns-3`.
 
 Note that updates will have to be performed manually using this method
 
@@ -89,7 +85,7 @@ Note that updates will have to be performed manually using this method
 
 https://github.com/usnistgov/NetSimulyzer-ns3-module/archive/master.zip
 
-2) Unzip the file into the `ns-3` `src/` directory
+2) Unzip the file into the `ns-3` `contrib/` directory
 ```shell
 unzip NetSimulyzer-ns3-module-master.zip
 ```
@@ -181,7 +177,7 @@ int main ()
 To update the cloned module, move to the module's root directory and perform a `git pull`
 ```shell
 # From the ns-3 root
-cd src/netsimulyzer
+cd contrib/netsimulyzer
 git pull
 ```
 
@@ -190,14 +186,14 @@ To update a ZIP installation, remove the old module and replace it with the upda
 
 ```shell
 # From the ns-3 root
-cd src
+cd contrib
 rm -Rf netsimulyzer
 
 #use this command, or download manually
-wget https://github.com/eeibevan/omxplaylist/archive/master.zip -O NetSimulyzer-ns3-module-master.zip
+wget https://github.com/usnistgov/NetSimulyzer-ns3-module/archive/refs/heads/master.zip -O NetSimulyzer-ns3-module-master.zip
 unzip NetSimulyzer-ns3-module-master.zip
 
-# Make sure the directory in the ns-3 src/ directory is
+# Make sure the directory in the ns-3 contrib/ directory is
 # named `netsimulyzer`
 mv NetSimulyzer-ns3-module-master netsimulyzer
 
@@ -216,7 +212,7 @@ and run `make [type]` for the type of documentation you wish to build.
 
 ```shell
 # From the ns-3 root directory
-cd src/netsimulyzer/doc
+cd contrib/netsimulyzer/doc
 
 # HTML (Several Pages)
 make html
