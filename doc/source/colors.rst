@@ -34,7 +34,8 @@ Each component may be set by the public member or by the constructor.
 
 ``Color3`` has a corresponding attribute type ``Color3Value`` which accepts the
 same constructor as a ``Color3``, or just accepts a ``Color3``.
-It's used when setting or retrieving an attribute from a model.
+It's used when setting or retrieving an attribute from a model. As well as
+corresponding ``Color3OptionalValue`` types for attributes backed by ``OptionalValue``.
 
 .. code-block:: C++
 
@@ -48,6 +49,9 @@ It's used when setting or retrieving an attribute from a model.
   // Use of the palette constants is highly recommended
   building->SetAttribute("Color", RED_VALUE);
 
+  // Palette constants for OptionalValue attributes exist as well
+  node->SetAttribute("BaseColor", BLUE_OPTIONAL_VALUE);
+
 .. _color-palette:
 
 Color Palette
@@ -56,12 +60,13 @@ Color Palette
   :alt: The colors available in the module
 
 To make selecting colors easier, the model comes with a pre-defined palette of colors
-defined in ``color-palette.h``. Each color has a ``Color3``, and a ``Color3Value```
-constant associated with it in the following style:
+defined in ``color-palette.h``. Each color has a ``Color3``, ``Color3Value``, and ``Color3OptionalValue``
+constants associated with it in the following style:
 
 .. code-block:: C++
 
   const Color3 RED{245u, 61u, 0u};
   const Color3Value RED_VALUE{RED};
+  const OptionalValue<Color3> RED_OPTIONAL_VALUE{RED};
 
 

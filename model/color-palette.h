@@ -40,6 +40,7 @@
 #define COLOR_PALETTE_H
 
 #include "color.h"
+#include "optional.h"
 
 namespace ns3::netsimulyzer {
 
@@ -80,6 +81,7 @@ const Color3 GRAY_10{230u};
 
 // ----- Values -----
 
+// --- Color3Value ---
 const Color3Value RED_VALUE{RED};
 const Color3Value DARK_RED_VALUE{DARK_RED};
 
@@ -114,6 +116,42 @@ const Color3Value GRAY_40_VALUE{GRAY_40};
 const Color3Value GRAY_30_VALUE{GRAY_30};
 const Color3Value GRAY_20_VALUE{GRAY_20};
 const Color3Value GRAY_10_VALUE{GRAY_10};
-}
+
+// --- OptionalValue ---
+const OptionalValue<Color3> RED_OPTIONAL_VALUE{RED};
+const OptionalValue<Color3> DARK_RED_OPTIONAL_VALUE{DARK_RED};
+
+const OptionalValue<Color3> GREEN_OPTIONAL_VALUE{GREEN};
+const OptionalValue<Color3> DARK_GREEN_OPTIONAL_VALUE{DARK_GREEN};
+
+const OptionalValue<Color3> BLUE_OPTIONAL_VALUE{BLUE};
+const OptionalValue<Color3> DARK_BLUE_OPTIONAL_VALUE{DARK_BLUE};
+
+const OptionalValue<Color3> ORANGE_OPTIONAL_VALUE{ORANGE};
+const OptionalValue<Color3> DARK_ORANGE_OPTIONAL_VALUE{DARK_ORANGE};
+
+const OptionalValue<Color3> YELLOW_OPTIONAL_VALUE{YELLOW};
+const OptionalValue<Color3> DARK_YELLOW_OPTIONAL_VALUE{DARK_YELLOW};
+
+const OptionalValue<Color3> PURPLE_OPTIONAL_VALUE{PURPLE};
+const OptionalValue<Color3> DARK_PURPLE_OPTIONAL_VALUE{DARK_PURPLE};
+
+const OptionalValue<Color3> PINK_OPTIONAL_VALUE{PINK};
+const OptionalValue<Color3> DARK_PINK_OPTIONAL_VALUE{DARK_PINK};
+
+const OptionalValue<Color3> BLACK_OPTIONAL_VALUE{BLACK};
+
+const OptionalValue<Color3> WHITE_OPTIONAL_VALUE{WHITE};
+
+const OptionalValue<Color3> GRAY_90_OPTIONAL_VALUE{GRAY_90};
+const OptionalValue<Color3> GRAY_80_OPTIONAL_VALUE{GRAY_80};
+const OptionalValue<Color3> GRAY_70_OPTIONAL_VALUE{GRAY_70};
+const OptionalValue<Color3> GRAY_60_OPTIONAL_VALUE{GRAY_60};
+const OptionalValue<Color3> GRAY_50_OPTIONAL_VALUE{GRAY_50};
+const OptionalValue<Color3> GRAY_40_OPTIONAL_VALUE{GRAY_40};
+const OptionalValue<Color3> GRAY_30_OPTIONAL_VALUE{GRAY_30};
+const OptionalValue<Color3> GRAY_20_OPTIONAL_VALUE{GRAY_20};
+const OptionalValue<Color3> GRAY_10_OPTIONAL_VALUE{GRAY_10};
+} // namespace ns3::netsimulyzer
 
 #endif //COLOR_PALETTE_H
