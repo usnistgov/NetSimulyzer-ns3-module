@@ -55,6 +55,15 @@ Example
   // collection
 
 
+Automatic Color Assignment
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If the ``AutoColor`` is set to ``true`` (default ``false``). the collection
+will assign a color from its internal palette to each ``XYSeries`` added
+to it. This palette may be accessed with the ``GetAutoColorPalette ()``
+and ``SetAutoColorPalette ()`` methods.
+
+
 Attributes
 ^^^^^^^^^^
 
@@ -72,6 +81,10 @@ Attributes
 | HideAddedSeries      | bool              | true                      | Hides series added to this collection.See the ``Visible``   |
 |                      |                   |                           | attribute for :ref:`xy-series` for more info                |
 +----------------------+-------------------+---------------------------+-------------------------------------------------------------+
+| AutoColor            | bool              | false                     | Overwrites the ``Color`` attribute of added series with one |
+|                      |                   |                           | selected from the internal palette.                         |
++----------------------+-------------------+---------------------------+-------------------------------------------------------------+
+
 
 
 

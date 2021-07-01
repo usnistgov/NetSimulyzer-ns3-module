@@ -36,6 +36,7 @@
 #include <ns3/pointer.h>
 #include <ns3/boolean.h>
 #include "series-collection.h"
+#include <utility>
 
 namespace ns3 {
 NS_LOG_COMPONENT_DEFINE ("SeriesCollection");
@@ -72,6 +73,11 @@ SeriesCollection::GetTypeId (void)
           .AddAttribute ("Name", "Name to represent this series in visualizer elements",
                          StringValue (), MakeStringAccessor (&SeriesCollection::m_name),
                          MakeStringChecker ())
+          .AddAttribute("AutoColor", "Overwrite the color of each added series with a color "
+                                     "from the auto-color palette",
+                        BooleanValue (false),
+                        MakeBooleanAccessor (&SeriesCollection::m_autoColor),
+                        MakeBooleanChecker())
           .AddAttribute("HideAddedSeries", "Set the `Visible` attribute "
                                             "to newly added series to `false`",
                         BooleanValue (true),
@@ -95,6 +101,15 @@ SeriesCollection::Add (Ptr<XYSeries> series)
 
   if (m_hideAddedSeries)
     series->SetAttribute ("Visible", BooleanValue (false));
+
+  if (m_autoColor && !m_autoColorPalette.empty ())
+    {
+      series->SetAttribute ("Color", m_autoColorPalette[m_autoColorIndex]);
+      m_autoColorIndex++;
+
+      if (m_autoColorIndex >= m_autoColorPalette.size ())
+        m_autoColorIndex = 0u;
+    }
 }
 
 std::vector<uint32_t>
@@ -102,6 +117,23 @@ SeriesCollection::GetSeriesIds (void)
 {
   NS_LOG_FUNCTION (this);
   return m_seriesIds;
+}
+
+const std::vector<Color3Value> &
+SeriesCollection::GetAutoColorPalette (void) const
+{
+  NS_LOG_FUNCTION (this);
+  return m_autoColorPalette;
+}
+
+void
+SeriesCollection::SetAutoColorPalette (std::vector<Color3Value> values)
+{
+  NS_LOG_FUNCTION (this);
+  m_autoColorPalette = std::move (values);
+
+  // Reset the index since we have a new collection
+  m_autoColorIndex = 0u;
 }
 
 void

@@ -41,6 +41,9 @@
 #include <ns3/orchestrator.h>
 #include <ns3/xy-series.h>
 #include <ns3/value-axis.h>
+#include <ns3/color.h>
+#include <ns3/color-palette.h>
+#include <cstddef>
 #include <vector>
 
 namespace ns3::netsimulyzer {
@@ -83,6 +86,27 @@ public:
    * \return The collection of Series IDs
    */
   std::vector<uint32_t> GetSeriesIds (void);
+
+  /**
+   * Gets the current palette of available colors for
+   * auto assignment if the `AutoColor` attribute is set.
+   * In the order they would be assigned
+   *
+   * \return
+   * The list of colors available for auto-assignment
+   */
+  const std::vector<Color3Value> &GetAutoColorPalette (void) const;
+
+  /**
+   * Replaces the list of colors used when the `AutoColor` attribute
+   * is set.
+   *
+   * These colors are assigned to series in the order they appear in `values`.
+   *
+   * \param values
+   * The list of colors to use for assigned series
+   */
+  void SetAutoColorPalette (std::vector<Color3Value> values);
 
   /**
    * Finalizes configuration of the series.
@@ -164,6 +188,33 @@ private:
    * and should not be written again
    */
   bool m_committed{false};
+
+  /**
+   * Flag indicating added series should have their color overwritten with one of
+   * the colors from `m_autoColorPalette`
+   *
+   * \see m_autoColorPalette
+   */
+  bool m_autoColor;
+
+  /**
+   * The palette used to set added series colors if `m_autoColor` is set.
+   *
+   * \see m_autoColor
+   * \see m_autoColorIndex
+   */
+  std::vector<Color3Value> m_autoColorPalette{
+      BLUE_VALUE,       DARK_BLUE_VALUE,   RED_VALUE,         DARK_RED_VALUE, GREEN_VALUE,
+      DARK_GREEN_VALUE, ORANGE_VALUE,      DARK_ORANGE_VALUE, YELLOW_VALUE,   DARK_YELLOW_VALUE,
+      PURPLE_VALUE,     DARK_PURPLE_VALUE, PINK_VALUE,        DARK_PINK_VALUE};
+
+  /**
+   * The index for the next color in `m_autoColorPalette` to use for an assigned series
+   *
+   * \see m_autoColor
+   * \see m_autoColorPalette
+   */
+  std::size_t m_autoColorIndex{0u};
 
   /**
    * Should we set the `Visible`attribute on added series to `false`
