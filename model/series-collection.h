@@ -204,9 +204,9 @@ private:
    * \see m_autoColorIndex
    */
   std::vector<Color3Value> m_autoColorPalette{
-      BLUE_VALUE,       DARK_BLUE_VALUE,   RED_VALUE,         DARK_RED_VALUE, GREEN_VALUE,
-      DARK_GREEN_VALUE, ORANGE_VALUE,      DARK_ORANGE_VALUE, YELLOW_VALUE,   DARK_YELLOW_VALUE,
-      PURPLE_VALUE,     DARK_PURPLE_VALUE, PINK_VALUE,        DARK_PINK_VALUE};
+      BLUE_VALUE,        RED_VALUE,         GREEN_VALUE,       ORANGE_VALUE,   YELLOW_VALUE,
+      PURPLE_VALUE,      PINK_VALUE,        DARK_BLUE_VALUE,   DARK_RED_VALUE, DARK_GREEN_VALUE,
+      DARK_ORANGE_VALUE, DARK_YELLOW_VALUE, DARK_PURPLE_VALUE, DARK_PINK_VALUE};
 
   /**
    * The index for the next color in `m_autoColorPalette` to use for an assigned series
