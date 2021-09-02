@@ -313,14 +313,15 @@ template <typename T>
 std::string
 OptionalValue<T>::SerializeToString (Ptr<const AttributeChecker> checker) const
 {
-  NS_ABORT_MSG ("Unsupported Operation 'SerializeToString()'");
+  NS_LOG_WARN ("Unsupported Operation 'SerializeToString()'");
   return {};
 }
+
 template <typename T>
 bool
 OptionalValue<T>::DeserializeFromString (std::string value, Ptr<const AttributeChecker> checker)
 {
-  NS_ABORT_MSG ("Unsupported Operation 'DeserializeFromString()'");
+  NS_LOG_WARN ("Unsupported Operation 'DeserializeFromString()'");
   return false;
 }
 
