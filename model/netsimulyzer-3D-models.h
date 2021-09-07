@@ -52,6 +52,18 @@ const StringValue SERVER_VALUE{SERVER};
 const std::string CELL_TOWER_POLE{"models/cell_tower_pole.obj"};
 const StringValue CELL_TOWER_POLE_VALUE{CELL_TOWER_POLE};
 
+const std::string CELL_TOWER{"models/cellphone_tower.obj"};
+const StringValue CELL_TOWER_VALUE{CELL_TOWER};
+
+const std::string CAR{"models/car.obj"};
+const StringValue CAR_VALUE{CAR};
+
+const std::string QUADCOPTER_UAV{"models/quadcopter_uav.obj"};
+const StringValue QUADCOPTER_UAV_VALUE{QUADCOPTER_UAV};
+
+const std::string ROUTER{"models/router.obj"};
+const StringValue ROUTER_VALUE{ROUTER};
+
 // Simple Shapes
 
 const std::string CUBE{"models/simple/cube.obj"};
