@@ -37,12 +37,12 @@
 
 #include <ns3/attribute.h>
 #include <ns3/attribute-helper.h>
-#include <ns3/log.h>
 #include <type_traits>
 #include <memory>
 #include <typeinfo>
 #include <utility>
 #include <optional>
+#include <iostream>
 
 namespace ns3::netsimulyzer {
 
@@ -313,7 +313,7 @@ template <typename T>
 std::string
 OptionalValue<T>::SerializeToString (Ptr<const AttributeChecker> checker) const
 {
-  NS_LOG_WARN ("Unsupported Operation 'SerializeToString()'");
+  std::cerr << "Unsupported Operation 'SerializeToString()'!\n";
   return {};
 }
 
@@ -321,7 +321,7 @@ template <typename T>
 bool
 OptionalValue<T>::DeserializeFromString (std::string value, Ptr<const AttributeChecker> checker)
 {
-  NS_LOG_WARN ("Unsupported Operation 'DeserializeFromString()'");
+  std::cerr << "Unsupported Operation 'DeserializeFromString()'!\n";
   return false;
 }
 
