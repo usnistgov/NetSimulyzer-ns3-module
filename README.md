@@ -307,13 +307,15 @@ for (auto building = BuildingList::Begin (); building != BuildingList::End (); b
 ```
 
 ## Decorations
-For purely visual elements add a `Decoration`. A Decoration`
+For purely visual elements add a `Decoration`. A Decoration
 is similar to a `NodeConfiguration` except its position is set manually.
 
 ```c++
 auto decoration = CreateObject<netsimulyzer::Decoration>(orchestrator);
-decoration.SetAttribute ("Model", netsimulyzer::models::CELL_TOWER_POLE_VALUE);
-decoration.SetPosition ({5.0, 5.0, 0.0});
+decoration->SetAttribute ("Model", netsimulyzer::models::CELL_TOWER_POLE_VALUE);
+decoration->SetAttribute ("Height", OptionalValue<double>{250.0});
+decoration->SetPosition ({5.0, 5.0, 0.0});
+
 ```
 
 ## Areas

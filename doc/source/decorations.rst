@@ -23,8 +23,8 @@ A basic setup for a ``Decoration`` is as follows:
 
   auto decoration = CreateObject<netsimulyzer::Decoration>(/* the orchestrator */);
 
-  decoration.SetAttribute ("Model", StringValue ("path/model.obj"));
-  decoration.SetAttribute ("Height", DoubleValue (2.0));
+  decoration->SetAttribute ("Model", StringValue ("path/model.obj"));
+  decoration->SetAttribute ("Height", OptionalValue<double> (2.0));
 
   // May also use SetAttribute("Position")
   decoration.SetPosition ({5.0, 5.0, 0.0});
@@ -33,20 +33,20 @@ A basic setup for a ``Decoration`` is as follows:
 Attributes
 ^^^^^^^^^^
 
-+----------------------+-------------------+---------------+--------------------------------------------------------------+
-| Name                 | Type              | Default Value | Description                                                  |
-+======================+===================+===============+==============================================================+
-| Model                | string            | n/a           | Relative path from the application's ``Resource``            |
-|                      |                   |               | directory to the model to show for this ``Decoration``       |
-+----------------------+-------------------+---------------+--------------------------------------------------------------+
-| Orientation          | Vector3D          | (0, 0, 0)     | Orientation of this ``Decoration`` on each axis, in degrees. |
-+----------------------+-------------------+---------------+--------------------------------------------------------------+
-| Scale                | double            | 1.00          | A multiplicative scale to apply to the model.                |
-|                      |                   |               | Applied after ``Height``                                     |
-+----------------------+-------------------+---------------+--------------------------------------------------------------+
-| Height               | double            | n/a           | Desired height of the model in ns-3 units.                   |
-|                      |                   |               | Applied before ``Scale``                                     |
-+----------------------+-------------------+---------------+--------------------------------------------------------------+
-| Position             | Vector3D          | (0, 0, 0)     | Position to show this ``Decoration`` in the scenario.        |
-+----------------------+-------------------+---------------+--------------------------------------------------------------+
++----------------------+-----------------------------------+---------------+--------------------------------------------------------------+
+| Name                 | Type                              | Default Value | Description                                                  |
++======================+===================================+===============+==============================================================+
+| Model                | string                            | n/a           | Relative path from the application's ``Resource``            |
+|                      |                                   |               | directory to the model to show for this ``Decoration``       |
++----------------------+-----------------------------------+---------------+--------------------------------------------------------------+
+| Orientation          | Vector3D                          | (0, 0, 0)     | Orientation of this ``Decoration`` on each axis, in degrees. |
++----------------------+-----------------------------------+---------------+--------------------------------------------------------------+
+| Scale                | double                            | 1.00          | A multiplicative scale to apply to the model.                |
+|                      |                                   |               | Applied after ``Height``                                     |
++----------------------+-----------------------------------+---------------+--------------------------------------------------------------+
+| Height               | :ref:`optional-value` <double>    | n/a           | Desired height of the model in ns-3 units.                   |
+|                      |                                   |               | Applied before ``Scale``                                     |
++----------------------+-----------------------------------+---------------+--------------------------------------------------------------+
+| Position             | Vector3D                          | (0, 0, 0)     | Position to show this ``Decoration`` in the scenario.        |
++----------------------+-----------------------------------+---------------+--------------------------------------------------------------+
 
