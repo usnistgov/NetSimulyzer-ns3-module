@@ -27,7 +27,7 @@ A basic setup for a ``Decoration`` is as follows:
   decoration->SetAttribute ("Height", OptionalValue<double> (2.0));
 
   // May also use SetAttribute("Position")
-  decoration.SetPosition ({5.0, 5.0, 0.0});
+  decoration->SetPosition ({5.0, 5.0, 0.0});
 
 
 Attributes
