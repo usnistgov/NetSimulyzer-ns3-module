@@ -44,7 +44,8 @@ Attributes
 | Scale                | double                            | 1.00          | A multiplicative scale to apply to the model.                |
 |                      |                                   |               | Applied after ``Height``                                     |
 +----------------------+-----------------------------------+---------------+--------------------------------------------------------------+
-| Height               | :ref:`optional-value` <double>    | n/a           | Desired height of the model in ns-3 units.                   |
+| Height               | :ref:`optional-value` <double>    | n/a           | Calculates a scale, maintaining the aspect ratio, such       |
+|                      |                                   |               | that the height of the model matches this value.             |
 |                      |                                   |               | Applied before ``Scale``                                     |
 +----------------------+-----------------------------------+---------------+--------------------------------------------------------------+
 | Position             | Vector3D                          | (0, 0, 0)     | Position to show this ``Decoration`` in the scenario.        |

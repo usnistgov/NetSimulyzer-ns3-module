@@ -278,7 +278,8 @@ Attributes
 |                      |                                       |               | actual position of the ``ns3::Node``                         |
 |                      |                                       |               | on each axis, in ns-3 units                                  |
 +----------------------+---------------------------------------+---------------+--------------------------------------------------------------+
-| Height               | :ref:`optional-value` <double>        | n/a           | Desired height of the model in ns-3 units.                   |
+| Height               | :ref:`optional-value` <double>        | n/a           | Calculates a scale, maintaining the aspect ratio, such       |
+|                      |                                       |               | that the height of the model matches this value.             |
 |                      |                                       |               | Applied before ``Scale``                                     |
 +----------------------+---------------------------------------+---------------+--------------------------------------------------------------+
 | BaseColor            | :ref:`optional-value` <:ref:`color3`> | n/a           | Color to apply to the base coat of models supporting         |
