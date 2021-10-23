@@ -153,3 +153,65 @@ Attributes
 +-------------+------------------------------+----------------+---------------------------------------------------------+
 | TimeUnit    | Time::Unit                   | Time::S        | Unit to display time values in.                         |
 +-------------+------------------------------+----------------+---------------------------------------------------------+
+
+
+EcdfSink
+--------
+
+The ``EcdfSink`` generates a graph of a empirical cumulative distribution function
+using an :ref:`xy-series`, based on the data points added to it via ``Append ()``.
+
+The graph may be regenerated every time a point is added (the default), based on an interval,
+or manually by calling ``Flush ()``
+
+See `ecdf-sink-example.cc` for an example.
+
+Attributes
+^^^^^^^^^^
+
++----------------------+----------------------------------+--------------------+----------------------------------------------------------------------------------------------------+
+| Name                 | Type                             | Default Value      | Description                                                                                        |
++======================+==================================+====================+====================================================================================================+
+| Series               | :ref:`xy-series`                 | n/a                | The underling series to which data is written,                                                     |
+|                      |                                  |                    | also see the ``GetSeries ()`` method                                                               |
++----------------------+----------------------------------+--------------------+----------------------------------------------------------------------------------------------------+
+| Connection           | :ref:`xy-series`::ConnectionType | Line               | Convenience attribute to change the type of generated plot.                                        |
+|                      |                                  |                    | See :ref:`xy-connection-types`                                                                     |
+|                      |                                  |                    |                                                                                                    |
+|                      |                                  |                    | * ``None`` Sows only a point at the given data point and frequency                                 |
+|                      |                                  |                    | * ``Line`` Show each value as a 'step' with a horizontal line between data points                  |
+|                      |                                  |                    | * ``Spline`` Unsupported for this helper type                                                      |
++----------------------+----------------------------------+--------------------+----------------------------------------------------------------------------------------------------+
+| FlushMode            | FlushMode                        | OnWrite            | When to regenerate the plot.                                                                       |
+|                      |                                  |                    |                                                                                                    |
+|                      |                                  |                    | * ``OnWrite`` Every time a new point is added with ``Append ()``                                   |
+|                      |                                  |                    | * ``Interval`` Regenerates the graph after after the time in the ``Interval`` attribute has passed |
+|                      |                                  |                    | * ``Manual`` The graph will only regenerate when ``Flush ()`` is called                            |
++----------------------+----------------------------------+--------------------+----------------------------------------------------------------------------------------------------+
+| Interval             | Time                             | Seconds(1.0)       | How often to regenerate the plot when using ``Interval`` mode                                      |
++----------------------+----------------------------------+--------------------+----------------------------------------------------------------------------------------------------+
+| XAxis                | :ref:`value-axis`                | n/a                | Convenience attribute to access the series X Axis. See: ``GetXAxis ()``                            |
++----------------------+----------------------------------+--------------------+----------------------------------------------------------------------------------------------------+
+| YAxis                | :ref:`value-axis`                | n/a                | Convenience attribute to access the series Y Axis. See: ``GetYAxis ()``                            |
++----------------------+----------------------------------+--------------------+----------------------------------------------------------------------------------------------------+
+
+Connection Types
+^^^^^^^^^^^^^^^^
+
+Line
+++++
+The default connection mode. Creates "steps" between each value.
+
+.. image:: _static/ecdf-line.png
+  :alt: ECDF Line Plot in the Application
+  :width: 458px
+  :height: 402px
+
+None
+++++
+Draws points only at the exact value & frequency
+
+.. image:: _static/ecdf-scatter.png
+  :alt: ECDF Scatter Plot in the Application
+  :width: 458px
+  :height: 402px

@@ -6,6 +6,11 @@ def build(bld):
                                  ['netsimulyzer', 'core', 'applications'])
     obj.source = 'application-state-trace-example.cc'
 
+    obj = bld.create_ns3_program('ecdf-sink-example-netsimulyzer',
+                                 ['netsimulyzer', 'applications', 'core', 'internet', 'mobility',
+                                  'network', 'point-to-point'])
+    obj.source = 'ecdf-sink-example-netsimulyzer.cc'
+
     obj = bld.create_ns3_program('mobility-buildings-example-netsimulyzer',
                                  ['netsimulyzer', 'core', 'mobility', 'network', 'buildings'])
     obj.source = 'mobility-buildings-example.cc'

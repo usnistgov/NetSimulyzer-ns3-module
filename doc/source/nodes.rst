@@ -76,8 +76,8 @@ Server
 
 .. image:: _static/server-model.png
   :alt: The server.obj model with default colors
-  :width: 482px
-  :height: 333px
+  :width: 516px
+  :height: 317px
 
 Cell Tower Pole
 +++++++++++++++
@@ -87,7 +87,7 @@ This model only has a ``BaseColor``, any
 * ``std::string`` Constant: ``CELL_TOWER_POLE``
 * ``ns3::StringValue`` Constant: ``CELL_TOWER_POLE_VALUE``
 
-.. image:: _static/cell-tower-model.png
+.. image:: _static/cell-tower-pole-model.png
   :alt: The cell_tower_pole.obj model with default colors
   :width: 330px
   :height: 341px
@@ -95,6 +95,63 @@ This model only has a ``BaseColor``, any
 .. raw:: latex
 
     \clearpage
+
+Cell Tower
+++++++++++
+* ``std::string`` Constant: ``CELL_TOWER``
+* ``ns3::StringValue`` Constant: ``CELL_TOWER_VALUE``
+
+.. image:: _static/cell-tower-model.png
+  :alt: The cell_tower.obj model with default colors
+  :width: 409px
+  :height: 486px
+
+.. raw:: latex
+
+    \clearpage
+
+Quadcopter UAV
+++++++++++++++
+* ``std::string`` Constant: ``QUADCOPTER_UAV``
+* ``ns3::StringValue`` Constant: ``QUADCOPTER_UAV_VALUE``
+
+.. image:: _static/quadcopter-model.png
+  :alt: The quadcopter_uav.obj model with default colors
+  :width: 433px
+  :height: 398px
+
+.. raw:: latex
+
+    \clearpage
+
+Car
++++
+* ``std::string`` Constant: ``CAR``
+* ``ns3::StringValue`` Constant: ``CAR_VALUE``
+
+.. image:: _static/car-model.png
+  :alt: The router.obj model with default colors
+  :width: 492px
+  :height: 390px
+
+.. raw:: latex
+
+    \clearpage
+
+Router
+++++++
+* ``std::string`` Constant: ``ROUTER``
+* ``ns3::StringValue`` Constant: ``ROUTER_VALUE``
+
+.. image:: _static/router-model.png
+  :alt: The router.obj model with default colors
+  :width: 408px
+  :height: 367px
+
+.. raw:: latex
+
+    \clearpage
+
 
 Cube
 ++++
@@ -278,7 +335,8 @@ Attributes
 |                      |                                       |               | actual position of the ``ns3::Node``                         |
 |                      |                                       |               | on each axis, in ns-3 units                                  |
 +----------------------+---------------------------------------+---------------+--------------------------------------------------------------+
-| Height               | :ref:`optional-value` <double>        | n/a           | Desired height of the model in ns-3 units.                   |
+| Height               | :ref:`optional-value` <double>        | n/a           | Calculates a scale, maintaining the aspect ratio, such       |
+|                      |                                       |               | that the height of the model matches this value.             |
 |                      |                                       |               | Applied before ``Scale``                                     |
 +----------------------+---------------------------------------+---------------+--------------------------------------------------------------+
 | BaseColor            | :ref:`optional-value` <:ref:`color3`> | n/a           | Color to apply to the base coat of models supporting         |
