@@ -85,8 +85,11 @@ public:
   static TypeId GetTypeId (void);
 
   /**
+   * Callback called when the mobility model attached to a Node
+   * triggers the 'CourseChange' trace
    *
    * \param model
+   * The mobility model that triggered the trace
    */
   void CourseChange (Ptr<const MobilityModel> model);
 
