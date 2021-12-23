@@ -98,6 +98,55 @@ public:
    */
   void SetOrientation (const Vector3D &orientation);
 
+  /**
+   * Convenience method for changing the `Scale` attribute
+   *
+   * \param scale
+   * A new value to use for the scale. Must be greater than 0
+   */
+  void SetScale (double scale);
+
+  /**
+   * Convenience method for changing the `ScaleAxes` attribute.
+   *
+   * \param scale
+   * A vector of 3 values to use for scales on each axis
+   * in the order [x, y, z]. Must all be greater than 0
+   */
+  void SetScale (const Vector3D &scale);
+
+  /**
+   * Convenience method for changing the `ScaleAxes` attribute.
+   *
+   * \param scale
+   * A vector of 3 values to use for scales on each axis
+   * in the order [x, y, z]. Must all be greater than 0
+   */
+  void SetScaleAxes (const Vector3D &scale);
+
+  /**
+   * Convenience method for retrieving the `Scale` attribute. Note that
+   * the model may also have other scales applied to it.
+   *
+   * \return
+   * The current uniform scale value.
+   *
+   * /see GetScaleAxes()
+   */
+  double GetScale (void) const;
+
+  /**
+   * Convenience method for retrieving the `ScaleAxes` attribute. Note that
+   * the model may also have other scales applied to it.
+   *
+   * \return
+   * The current non-uniform scale values for each axis,
+   * in the order [x, y, z].
+   *
+   * /see GetScale()
+   */
+  const Vector3D &GetScaleAxes (void) const;
+
 protected:
   /**
    * \brief Disconnects the referenced Orchestrator
@@ -142,6 +191,18 @@ private:
    * 0.5 being 1/2 size, etc.
    */
   double m_scale;
+
+  /**
+   * Similar to `m_scale`, but for each axis. In the order [x, y, z].
+   *
+   * A value of [1.25, 1, 1] will scale the model up by 25% on the X
+   * axis, and keep the other axes the same size
+   *
+   * Allows for non-uniform scales
+   *
+   * \see m_scale
+   */
+  Vector3D m_scaleAxes;
 };
 
 } // namespace ns3::netsimulyzer

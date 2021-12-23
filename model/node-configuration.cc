@@ -101,9 +101,16 @@ NodeConfiguration::GetTypeId (void)
                          MakeVector3DAccessor (&NodeConfiguration::GetOrientation,
                                                &NodeConfiguration::SetOrientation),
                          MakeVector3DChecker ())
-          .AddAttribute ("Scale", "The scale to apply to the rendered model", DoubleValue (1.0),
-                         MakeDoubleAccessor (&NodeConfiguration::m_scale),
+          .AddAttribute ("Scale",
+                         "The percentage to scale the model in all directions (uniform scale)",
+                         DoubleValue (1.0), MakeDoubleAccessor (&NodeConfiguration::m_scale),
                          MakeDoubleChecker<double> (0))
+          .AddAttribute ("ScaleAxes",
+                         "The scale to apply each axis in the order [x, y, z]. "
+                         "similar to `Scale`, but allows for non-uniform scales",
+                         Vector3DValue (Vector3D{1.0, 1.0, 1.0}),
+                         MakeVector3DAccessor (&NodeConfiguration::m_scaleAxes),
+                         MakeVector3DChecker ())
           .AddAttribute ("Offset", "Offset from the Node to apply to the model", Vector3DValue (),
                          MakeVector3DAccessor (&NodeConfiguration::m_positionOffset),
                          MakeVector3DChecker ())
@@ -298,6 +305,36 @@ NodeConfiguration::SetHighlightColor (const std::optional<Color3> &value)
   event.color = value;
 
   m_orchestrator->HandleColorChange (event);
+}
+
+void
+NodeConfiguration::SetScale (double scale)
+{
+  m_scale = scale;
+}
+
+void
+NodeConfiguration::SetScale (const Vector3D &scale)
+{
+  SetScaleAxes (scale);
+}
+
+void
+NodeConfiguration::SetScaleAxes (const Vector3D &scale)
+{
+  m_scaleAxes = scale;
+}
+
+double
+NodeConfiguration::GetScale (void) const
+{
+  return m_scale;
+}
+
+const Vector3D &
+NodeConfiguration::GetScaleAxes (void) const
+{
+  return m_scaleAxes;
 }
 
 void

@@ -256,7 +256,14 @@ Orchestrator::SetupSimulation (void)
 
       DoubleValue scale;
       config->GetAttribute ("Scale", scale);
-      element["scale"] = scale.Get ();
+      Vector3DValue scaleAxes;
+      config->GetAttribute ("ScaleAxes", scaleAxes);
+      auto outputScale = nlohmann::json::object ();
+      outputScale["x"] = scale.Get () * scaleAxes.Get ().x;
+      outputScale["y"] = scale.Get () * scaleAxes.Get ().y;
+      outputScale["z"] = scale.Get () * scaleAxes.Get ().z;
+
+      element["scale"] = outputScale;
 
       OptionalValue<double> height;
       config->GetAttribute ("Height", height);
@@ -431,7 +438,14 @@ Orchestrator::SetupSimulation (void)
 
       DoubleValue scale;
       decoration->GetAttribute ("Scale", scale);
-      element["scale"] = scale.Get ();
+      Vector3DValue scaleAxes;
+      decoration->GetAttribute ("ScaleAxes", scaleAxes);
+      auto outputScale = nlohmann::json::object ();
+      outputScale["x"] = scale.Get () * scaleAxes.Get ().x;
+      outputScale["y"] = scale.Get () * scaleAxes.Get ().y;
+      outputScale["z"] = scale.Get () * scaleAxes.Get ().z;
+
+      element["scale"] = outputScale;
 
       OptionalValue<double> height;
       decoration->GetAttribute ("Height", height);

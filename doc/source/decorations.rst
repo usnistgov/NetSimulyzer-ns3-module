@@ -33,21 +33,29 @@ A basic setup for a ``Decoration`` is as follows:
 Attributes
 ^^^^^^^^^^
 
-+----------------------+-----------------------------------+---------------+--------------------------------------------------------------+
-| Name                 | Type                              | Default Value | Description                                                  |
-+======================+===================================+===============+==============================================================+
-| Model                | string                            | n/a           | Relative path from the application's ``Resource``            |
-|                      |                                   |               | directory to the model to show for this ``Decoration``       |
-+----------------------+-----------------------------------+---------------+--------------------------------------------------------------+
-| Orientation          | Vector3D                          | (0, 0, 0)     | Orientation of this ``Decoration`` on each axis, in degrees. |
-+----------------------+-----------------------------------+---------------+--------------------------------------------------------------+
-| Scale                | double                            | 1.00          | A multiplicative scale to apply to the model.                |
-|                      |                                   |               | Applied after ``Height``                                     |
-+----------------------+-----------------------------------+---------------+--------------------------------------------------------------+
-| Height               | :ref:`optional-value` <double>    | n/a           | Calculates a scale, maintaining the aspect ratio, such       |
-|                      |                                   |               | that the height of the model matches this value.             |
-|                      |                                   |               | Applied before ``Scale``                                     |
-+----------------------+-----------------------------------+---------------+--------------------------------------------------------------+
-| Position             | Vector3D                          | (0, 0, 0)     | Position to show this ``Decoration`` in the scenario.        |
-+----------------------+-----------------------------------+---------------+--------------------------------------------------------------+
++----------------------+-----------------------------------+-----------------+--------------------------------------------------------------+
+| Name                 | Type                              | Default Value   | Description                                                  |
++======================+===================================+=================+==============================================================+
+| Model                | string                            | n/a             | Relative path from the application's ``Resource``            |
+|                      |                                   |                 | directory to the model to show for this ``Decoration``       |
++----------------------+-----------------------------------+-----------------+--------------------------------------------------------------+
+| Orientation          | Vector3D                          | (0, 0, 0)       | Orientation of this ``Decoration`` on each axis, in degrees. |
++----------------------+-----------------------------------+-----------------+--------------------------------------------------------------+
+| Scale                | double                            | 1.00            | A multiplicative scale to apply to the model.                |
+|                      |                                   |                 | Applied after ``Height``                                     |
++----------------------+-----------------------------------+-----------------+--------------------------------------------------------------+
+| ScaleAxes            | Vector3D                          | (1.0, 1.0, 1.0) | Similar to ``Scale``, but for each axis. In the order        |
+|                      |                                   |                 | ``[x, y, z]``.  Applied after ``Height``                     |
+|                      |                                   |                 | (e.g. A value of [1.25, 1, 1] will scale the model up        |
+|                      |                                   |                 | by 25% on the X axis, and keep the other axes                |
+|                      |                                   |                 | the same size) Also see the                                  |
+|                      |                                   |                 | ``SetScale(Vector3D)``/``SetScaleAxes(Vector3D)``/           |
+|                      |                                   |                 | ``GetScaleAxes()`` methods                                   |
++----------------------+-----------------------------------+-----------------+--------------------------------------------------------------+
+| Height               | :ref:`optional-value` <double>    | n/a             | Calculates a scale, maintaining the aspect ratio, such       |
+|                      |                                   |                 | that the height of the model matches this value.             |
+|                      |                                   |                 | Applied before ``Scale``                                     |
++----------------------+-----------------------------------+-----------------+--------------------------------------------------------------+
+| Position             | Vector3D                          | (0, 0, 0)       | Position to show this ``Decoration`` in the scenario.        |
++----------------------+-----------------------------------+-----------------+--------------------------------------------------------------+
 

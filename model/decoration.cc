@@ -77,6 +77,11 @@ Decoration::GetTypeId (void)
                          MakeVector3DChecker ())
           .AddAttribute ("Scale", "The scale to apply to the rendered model", DoubleValue (1.0),
                          MakeDoubleAccessor (&Decoration::m_scale), MakeDoubleChecker<double> (0))
+          .AddAttribute ("ScaleAxes",
+                         "The scale to apply each axis in the order [x, y, z]. "
+                         "similar to `Scale`, but allows for non-uniform scales",
+                         Vector3DValue (Vector3D{1.0, 1.0, 1.0}),
+                         MakeVector3DAccessor (&Decoration::m_scaleAxes), MakeVector3DChecker ())
           .AddAttribute ("Orchestrator", "Orchestrator that manages this Decoration",
                          PointerValue (), MakePointerAccessor (&Decoration::m_orchestrator),
                          MakePointerChecker<Orchestrator> ());
@@ -123,6 +128,35 @@ Decoration::SetOrientation (const Vector3D &orientation)
   event.orientation = m_orientation;
 
   m_orchestrator->HandleOrientationChange (event);
+}
+
+void
+Decoration::SetScale (double scale)
+{
+  m_scale = scale;
+}
+void
+Decoration::SetScale (const Vector3D &scale)
+{
+  SetScaleAxes (scale);
+}
+
+void
+Decoration::SetScaleAxes (const Vector3D &scale)
+{
+  m_scaleAxes = scale;
+}
+
+double
+Decoration::GetScale (void) const
+{
+  return m_scale;
+}
+
+const Vector3D &
+Decoration::GetScaleAxes (void) const
+{
+  return m_scaleAxes;
 }
 
 void
