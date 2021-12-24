@@ -344,8 +344,23 @@ Attributes
 |                      |                                       |                 | actual position of the ``ns3::Node``                         |
 |                      |                                       |                 | on each axis, in ns-3 units                                  |
 +----------------------+---------------------------------------+-----------------+--------------------------------------------------------------+
-| Height               | :ref:`optional-value` <double>        | n/a             | Calculates a scale, maintaining the aspect ratio, such       |
-|                      |                                       |                 | that the height of the model matches this value.             |
+| KeepRatio            | bool                                  | ``true``        | When scaling with the ``Height``, ``Width``,                 |
+|                      |                                       |                 | and ``Depth`` attributes, use only the value that produces   |
+|                      |                                       |                 | the largest model. Keeping the scale uniform.                |
++----------------------+---------------------------------------+-----------------+--------------------------------------------------------------+
+| Height               | :ref:`optional-value` <double>        | n/a             | Calculates a scale, such that the height of the model        |
+|                      |                     |                 |                 | matches this value in ns-3 units. Maintains the aspect       |
+|                      |                                       |                 | ratio if  ``KeepRatio`` is ``true`` (The default)            |
+|                      |                                       |                 | Applied before ``Scale``                                     |
++----------------------+---------------------------------------+-----------------+--------------------------------------------------------------+
+| Width                | :ref:`optional-value` <double>        | n/a             | Calculates a scale, such that the width of the model         |
+|                      |                                       |                 | matches this value in ns-3 units. Maintains the aspect       |
+|                      |                                       |                 | ratio if  ``KeepRatio`` is ``true`` (The default)            |
+|                      |                                       |                 | Applied before ``Scale``                                     |
++----------------------+---------------------------------------+-----------------+--------------------------------------------------------------+
+| Depth                | :ref:`optional-value` <double>        | n/a             | Calculates a scale, such that the depth of the model         |
+|                      |                                       |                 | matches this value in ns-3 units. Maintains the aspect       |
+|                      |                                       |                 | ratio if  ``KeepRatio`` is ``true`` (The default)            |
 |                      |                                       |                 | Applied before ``Scale``                                     |
 +----------------------+---------------------------------------+-----------------+--------------------------------------------------------------+
 | BaseColor            | :ref:`optional-value` <:ref:`color3`> | n/a             | Color to apply to the base coat of models supporting         |

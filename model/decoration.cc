@@ -35,6 +35,7 @@
 #include "decoration.h"
 #include "optional.h"
 #include <ns3/string.h>
+#include <ns3/boolean.h>
 #include <ns3/double.h>
 #include <ns3/pointer.h>
 #include <ns3/uinteger.h>
@@ -68,9 +69,27 @@ Decoration::GetTypeId (void)
               Vector3DValue (),
               MakeVector3DAccessor (&Decoration::GetOrientation, &Decoration::SetOrientation),
               MakeVector3DChecker ())
+          .AddAttribute ("KeepRatio",
+                         "When scaling with the `Height`, `Width`, and `Depth` attributes, "
+                         "use only the value that produces the largest model. "
+                         "Keeping the scale uniform",
+                         BooleanValue (true), MakeBooleanAccessor (&Decoration::m_keepRatio),
+                         MakeBooleanChecker ())
           .AddAttribute ("Height", "Desired height of the rendered model. Applied before `Scale`",
                          OptionalValue<double> (),
                          MakeOptionalAccessor<double> (&Decoration::m_height),
+                         MakeOptionalChecker<double> ())
+          .AddAttribute ("Width",
+                         "Desired width of the rendered model in ns-3 units. "
+                         "Applied before `Scale`",
+                         OptionalValue<double> (),
+                         MakeOptionalAccessor<double> (&Decoration::m_width),
+                         MakeOptionalChecker<double> ())
+          .AddAttribute ("Depth",
+                         "Desired depth of the rendered model in ns-3 units. "
+                         "Applied before `Scale`",
+                         OptionalValue<double> (),
+                         MakeOptionalAccessor<double> (&Decoration::m_depth),
                          MakeOptionalChecker<double> ())
           .AddAttribute ("Position", "The position of the Decoration", Vector3DValue (),
                          MakeVector3DAccessor (&Decoration::GetPosition, &Decoration::SetPosition),

@@ -107,16 +107,37 @@ NodeConfiguration::GetTypeId (void)
                          MakeDoubleChecker<double> (0))
           .AddAttribute ("ScaleAxes",
                          "The scale to apply each axis in the order [x, y, z]. "
-                         "similar to `Scale`, but allows for non-uniform scales",
+                         "similar to `Scale`, but allows for non-uniform scales. "
+                         "Ignores `KeepRatio`",
                          Vector3DValue (Vector3D{1.0, 1.0, 1.0}),
                          MakeVector3DAccessor (&NodeConfiguration::m_scaleAxes),
                          MakeVector3DChecker ())
           .AddAttribute ("Offset", "Offset from the Node to apply to the model", Vector3DValue (),
                          MakeVector3DAccessor (&NodeConfiguration::m_positionOffset),
                          MakeVector3DChecker ())
-          .AddAttribute ("Height", "Desired height of the rendered model. Applied before `Scale`",
+          .AddAttribute ("KeepRatio",
+                         "When scaling with the `Height`, `Width`, and `Depth` attributes, "
+                         "use only the value that produces the largest model. "
+                         "Keeping the scale uniform",
+                         BooleanValue (true), MakeBooleanAccessor (&NodeConfiguration::m_keepRatio),
+                         MakeBooleanChecker ())
+          .AddAttribute ("Height",
+                         "Desired height of the rendered model in ns-3 units. "
+                         "Applied before `Scale`",
                          OptionalValue<double> (),
                          MakeOptionalAccessor<double> (&NodeConfiguration::m_height),
+                         MakeOptionalChecker<double> ())
+          .AddAttribute ("Width",
+                         "Desired width of the rendered model in ns-3 units. "
+                         "Applied before `Scale`",
+                         OptionalValue<double> (),
+                         MakeOptionalAccessor<double> (&NodeConfiguration::m_width),
+                         MakeOptionalChecker<double> ())
+          .AddAttribute ("Depth",
+                         "Desired depth of the rendered model in ns-3 units. "
+                         "Applied before `Scale`",
+                         OptionalValue<double> (),
+                         MakeOptionalAccessor<double> (&NodeConfiguration::m_depth),
                          MakeOptionalChecker<double> ())
           .AddAttribute ("BaseColor",
                          "The color to use as the primary color in models with configurable colors",

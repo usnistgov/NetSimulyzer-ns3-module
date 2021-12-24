@@ -265,10 +265,26 @@ Orchestrator::SetupSimulation (void)
 
       element["scale"] = outputScale;
 
+      auto targetScale = nlohmann::json::object ();
+      BooleanValue keepRatio;
+      config->GetAttribute ("KeepRatio", keepRatio);
+      targetScale["keep-ratio"] = keepRatio.Get ();
+
       OptionalValue<double> height;
       config->GetAttribute ("Height", height);
       if (height)
-        element["height"] = height.GetValue ();
+        targetScale["height"] = height.GetValue ();
+
+      OptionalValue<double> width;
+      config->GetAttribute ("Width", width);
+      if (width)
+        targetScale["width"] = width.GetValue ();
+
+      OptionalValue<double> depth;
+      config->GetAttribute ("Depth", depth);
+      if (depth)
+        targetScale["depth"] = depth.GetValue ();
+      element["target-scale"] = targetScale;
 
       OptionalValue<Color3> baseColor;
       config->GetAttribute ("BaseColor", baseColor);
@@ -447,10 +463,26 @@ Orchestrator::SetupSimulation (void)
 
       element["scale"] = outputScale;
 
+      auto targetScale = nlohmann::json::object ();
+      BooleanValue keepRatio;
+      decoration->GetAttribute ("KeepRatio", keepRatio);
+      targetScale["keep-ratio"] = keepRatio.Get ();
+
       OptionalValue<double> height;
       decoration->GetAttribute ("Height", height);
       if (height)
-        element["height"] = height.GetValue ();
+        targetScale["height"] = height.GetValue ();
+
+      OptionalValue<double> width;
+      decoration->GetAttribute ("Width", width);
+      if (width)
+        targetScale["width"] = width.GetValue ();
+
+      OptionalValue<double> depth;
+      decoration->GetAttribute ("Depth", depth);
+      if (depth)
+        targetScale["depth"] = depth.GetValue ();
+      element["target-scale"] = targetScale;
 
       decorations.emplace_back (element);
     }

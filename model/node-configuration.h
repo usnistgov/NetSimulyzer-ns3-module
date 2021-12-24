@@ -239,10 +239,37 @@ private:
   Vector3D m_positionOffset;
 
   /**
+   * Flag for use with `Height`, `Width`, and `Depth`
+   * attributes. When set, if more than one of the
+   * mentioned attributes are set, then only the
+   * largest scale takes effect. Keeping the
+   * scale uniform
+   */
+  bool m_keepRatio;
+
+  /**
    * Desired height of the rendered 3D model
    * in ns-3 units
+   *
+   * /see m_keepRatio
    */
   std::optional<double> m_height;
+
+  /**
+   * Desired width of the rendered 3D model
+   * in ns-3 units
+   *
+   * /see m_keepRatio
+   */
+  std::optional<double> m_width;
+
+  /**
+   * Desired depth of the rendered 3D model
+   * in ns-3 units
+   *
+   * /see m_keepRatio
+   */
+  std::optional<double> m_depth;
 
   /**
    * Replacement base color for models with configurable
