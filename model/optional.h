@@ -313,7 +313,7 @@ template <typename T>
 std::string
 OptionalValue<T>::SerializeToString (Ptr<const AttributeChecker> checker) const
 {
-  std::cerr << "Unsupported Operation 'SerializeToString()'!\n";
+  // TODO: Somehow opt us out of config store serialization
   return {};
 }
 
@@ -321,7 +321,6 @@ template <typename T>
 bool
 OptionalValue<T>::DeserializeFromString (std::string value, Ptr<const AttributeChecker> checker)
 {
-  std::cerr << "Unsupported Operation 'DeserializeFromString()'!\n";
   return false;
 }
 
