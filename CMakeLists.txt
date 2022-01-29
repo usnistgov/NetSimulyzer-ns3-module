@@ -84,3 +84,4 @@ build_lib(
     ${libpoint-to-point}
 )
 
+target_compile_definitions(libnetsimulyzer PUBLIC HAS_NETSIMULYZER)
