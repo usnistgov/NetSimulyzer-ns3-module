@@ -13,7 +13,7 @@ A flexible 3D visualizer for displaying, debugging, presenting, and understandin
     * [Download ZIP](#download-zip)
     * [Connecting the Module Quickly](#connecting-the-module-quickly)
     * [Connecting the Module Safely](#connecting-the-module-safely)
-        * [Waf (Linking)](#waf-linking)
+        * [Build System](#build-system)
         * [Code](#code)
   * [Updating](#updating)
     * [Clone](#clone)
@@ -68,11 +68,12 @@ git clone git@github.com:usnistgov/NetSimulyzer-ns3-module.git netsimulyzer
 ```
 
 3) (Re)configure & (Re)build `ns-3`
+If you're using a version of ns-3 without CMake, replace `./ns3 ` with `./waf`
 ```shell
 # --enable-examples is optional, see `Running the Examples`
 # for how to run them
-./waf configure --enable-examples
-./waf
+./ns3 configure --enable-examples
+./ns3
 ```
 
 ## Download ZIP
@@ -97,8 +98,36 @@ mv NetSimulyzer-ns3-module-master netsimulyzer
 ```
 
 ## Connecting the Module Quickly
-If you are linking your module/program to the `netsimulyzer` module add the following to your `wscript`
+If you are linking your module/program to the `netsimulyzer` module add the following to your `CMakeLists.txt`(CMake)
+or `wscript`(Waf)
 
+### CMake
+For CMake, add the NetSimulyzer's target `${libnetsimulyzer}` to your `libraries_to_link` list
+```cmake
+# Example
+build_lib_example(
+  NAME your-example-name
+  SOURCE_FILES example.cc
+  LIBRARIES_TO_LINK
+    ${libnetsimulyzer}
+    # ...
+)
+
+# Module
+build_lib(
+  LIBNAME your-module-name
+  SOURCE_FILES
+    # ...
+  HEADER_FILES
+    # ...
+  LIBRARIES_TO_LINK
+    ${libnetsimulyzer}
+    # ...
+)
+```
+
+### waf (Legacy)
+For waf, add the NetSimulyzer's module name `netsimulyzer` to the dependency list
 ```python
 # Program
 obj = bld.create_ns3_program('program-name', ['netsimulyzer', '''...'''])
@@ -126,9 +155,62 @@ You may wish for your module to not have a hard dependency on the `netsimulyzer`
 The following steps will allow you to link the module & still allow your code to build &
 run without the module being present.
 
-### Waf (Linking)
+### Build System
+
+#### CMake
+Check for the NetSimulyzer in the `ns3-all-enabled-modules` list to confirm
+if the module is present.
+
+Note: if the module linking to the NetSimulyzer module is in the `src/` directory,
+then you'll need to add the `HAS_NETSIMULYZER` C++ define
+yourself when you check for the presence of the module.
+See the N.B. comment in the example below
+
+```cmake
+# Create a list of your required modules to link
+# 'core' & 'mobility' are just examples here
+set(libraries_to_link "${libcore};${libmobility}")
+
+# Check if the `netsimulyzer` module is in the enabled modules list
+if("netsimulyzer" IN_LIST ns3-all-enabled-modules)
+    # If it's there, then it's safe to add to the library list
+    list(APPEND libraries_to_link ${libnetsimulyzer})
+
+   # N.B if the module you're linking to is in the `src/` directory
+   # of ns-3, then (at least for now), you must also add the C++ define
+   # yourself, like this.
+   #
+   # There's no harm in repeated definitions of the same value, so there's no
+   # need to guard this statement
+   add_definitions(-DHAS_NETSIMULYZER)
+endif()
+
+# Use the `libraries_to_link` list as your dependency list
+
+# Module
+build_lib(
+  LIBNAME your-module 
+  SOURCE_FILES
+    # ...
+  HEADER_FILES
+    # ...
+  LIBRARIES_TO_LINK
+    ${libraries_to_link}
+)
+
+# Example
+build_lib_example(
+  NAME your-scenario
+  SOURCE_FILES scenario.cc
+  LIBRARIES_TO_LINK
+    ${libraries_to_link}
+)
+
+```
+
+#### Waf
 If you wish for your module/program to be able to build without the `netsimulyzer` module
-you may check for it's existence by reading `bld.env['HAS_NETSIMULYZER']` in your `wscript`. See below:
+you may check for its existence by reading `bld.env['HAS_NETSIMULYZER']` in your `wscript`. See below:
 
 ```python
 def build(bld):
@@ -150,6 +232,10 @@ def build(bld):
 In addition to the variable in the build environment, the module also defines a C++ macro
 also named `HAS_NETSIMULYZER`. This macro may be used in C++ code to check for the presence
 of the `netsimulyzer` module.
+
+Note, if you're using CMake and the module is in the `src/` directory, you may have to add
+this definition yourself (`scratch/` and module examples are fine).
+See [the CMake build system section for more information](#build-system).
 
 See the below code sample:
 ```cpp
@@ -234,42 +320,44 @@ The built documentation will now be found in `doc/build/[type]`.
 Listed below are the commands to run the examples provided with the
 module:
 
+If you're using a version of ns-3 without CMake, replace `./ns3 run ` with `./waf --run`
+
 ## Application State Trace Example
 Example demonstrating tracing the state of a custom `ns3::Application` using the `StateTransitionSink`.
 ```shell
-waf --run application-state-trace-example-netsimulyzer
+./ns3 run application-state-trace-example-netsimulyzer
 ```
 
 ## Lena Radio Link Failure
 An adaptation of the 'lena-radio-link-failure' example from the `LTE` module with statistics
 tied into the NetSimulyzer
 ```shell
-./waf --run "lena-radio-link-failure-netsimulyzer --simTime=20 --numberOfEnbs=2 --visual=true"
+./ns3 run "lena-radio-link-failure-netsimulyzer --simTime=20 --numberOfEnbs=2 --visual=true"
 ```
 
 ## Mobility Buildings Example
 Example demonstrating topology/mobility output to the NetSimulyzer
 ```shell
-waf --run mobility-buildings-example-netsimulyzer
+./ns3 run mobility-buildings-example-netsimulyzer
 ```
 
 ## Throughput Sink Example
 Example demonstrating how to connect the `netsimulyzer::ThroughputSink`
 to the UDP Echo Client & Server applications to graph throughput.
 ```shell
-waf --run throughput-sink-example-netsimulyzer
+./ns3 run throughput-sink-example-netsimulyzer
 ```
 
 ## WiFi Bianchi
 The WiFi Bianchi example from the `wifi` module with topology, logs, and several statistics.
 ```shell
-./waf --run "wifi-bianchi-netsimulyzer --trials=1 --nMinStas=10 --nMaxStas=10 --visual=true"
+./ns3 run "wifi-bianchi-netsimulyzer --trials=1 --nMinStas=10 --nMaxStas=10 --visual=true"
 ```
 
 ## Outdoor Random Walk
 A simple example from the `buildings` module demonstrating integration into an existing scenario
 ```shell
-waf --run outdoor-random-walk-example-netsimulyzer
+./ns3 run outdoor-random-walk-example-netsimulyzer
 ```
 
 # Feature Overview
