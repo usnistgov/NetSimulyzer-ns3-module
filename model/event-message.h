@@ -39,6 +39,7 @@
 #include <ns3/vector.h>
 #include <ns3/nstime.h>
 #include <ns3/color.h>
+#include <ns3/color-palette.h>
 #include <optional>
 
 namespace ns3::netsimulyzer {
@@ -48,6 +49,15 @@ struct CourseChangeEvent
   Time time;
   uint32_t nodeId;
   Vector position;
+};
+
+struct TransmitEvent
+{
+  Time time;
+  uint32_t nodeId;
+  Time duration;
+  double targetSize;
+  Color3 color;
 };
 
 struct NodeOrientationChangeEvent

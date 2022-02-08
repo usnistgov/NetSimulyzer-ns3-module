@@ -193,6 +193,39 @@ NodeConfiguration::CourseChange (ns3::Ptr<const MobilityModel> model)
   m_orchestrator->HandleCourseChange (event);
 }
 
+void
+NodeConfiguration::Transmit (Time duration, double targetSize, Color3 color)
+{
+  NS_LOG_FUNCTION (this << duration << targetSize);
+
+  // If we haven't been aggregated with a Node yet.
+  // Assume we're still setting up
+  const auto node = GetObject<const Node> ();
+  if (!node)
+    {
+      NS_LOG_DEBUG ("Not triggering NodeTransmit event. No Node aggregated");
+      return;
+    }
+
+  TransmitEvent event;
+  event.time = Simulator::Now ();
+  event.nodeId = node->GetId ();
+  event.duration = duration;
+  event.targetSize = targetSize;
+  event.color = color;
+
+  if (lastTransmissionEnd > event.time + event.duration)
+    {
+      NS_LOG_WARN ("Node ID: " + std::to_string (event.nodeId) +
+                   " transmission event interrupted. "
+                   "Expected end: " +
+                   std::to_string (lastTransmissionEnd.GetMilliSeconds ()) + "ms " +
+                   "Current time: " + std::to_string (event.time.GetMilliSeconds ()) + "ms");
+    }
+
+  m_orchestrator->HandleTransmit (event);
+}
+
 std::optional<Vector3D>
 NodeConfiguration::MobilityPoll (void)
 {

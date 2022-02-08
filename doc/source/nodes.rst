@@ -312,6 +312,36 @@ and will always be written.
 
 Unlike :ref:`orchestrator-mobility-polling`, this location tracing may not be disabled.
 
+
+Transmission Animations
+^^^^^^^^^^^^^^^^^^^^^^^
+
+To visualize wireless transmissions, the ``NodeConfiguration`` class provides the ``Transmit()``
+method. The signature for this method is below:
+
+.. cpp:function:: void NodeConfiguration::Transmit (Time duration, double targetSize, Color3 color = GRAY_30)
+
+
+When called, this displays an expanding sphere in the application. The sphere will expand for ``duration``
+and grow to ``targetSize``. Optionally, the color of the sphere may be specified (default gray).
+
+Only one ongoing transmission is allowed per ``Node``. If another transmission is started before
+the previous one has been completed, the animation will stop for the previous transmission,
+and the new transmission's animation will play.
+
+.. figure:: _static/transmission_starting.png
+  :alt: Transmission Starting
+  :scale: 50
+
+  Transmission bubble starting
+
+.. figure:: _static/transmission_growing.png
+  :alt: Transmission Starting
+  :scale: 50
+
+  A transmission in progress
+
+
 Attributes
 ^^^^^^^^^^
 

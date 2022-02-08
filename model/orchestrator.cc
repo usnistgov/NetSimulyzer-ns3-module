@@ -840,6 +840,28 @@ Orchestrator::HandleColorChange (const NodeColorChangeEvent &event)
   m_document["events"].emplace_back (element);
 }
 
+void
+Orchestrator::HandleTransmit (const TransmitEvent &event)
+{
+  NS_LOG_FUNCTION (this);
+
+  if (Simulator::Now () < m_startTime || Simulator::Now () > m_stopTime)
+    {
+      NS_LOG_DEBUG ("HandleTransmit() Activated outside (StartTime, StopTime), Ignoring");
+      return;
+    }
+
+  nlohmann::json element;
+  element["type"] = "node-transmit";
+  element["milliseconds"] = event.time.GetMilliSeconds ();
+  element["id"] = event.nodeId;
+  element["duration"] = event.duration.GetMilliSeconds();
+  element["target-size"] = event.targetSize;
+  element["color"] = colorToObject (event.color);
+
+  m_document["events"].emplace_back (element);
+}
+
 uint32_t
 Orchestrator::Register (Ptr<Decoration> decoration)
 {

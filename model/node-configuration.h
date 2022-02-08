@@ -94,6 +94,33 @@ public:
   void CourseChange (Ptr<const MobilityModel> model);
 
   /**
+   * Triggers in the application,
+   * a bubble to grow out of the center
+   * of the Node, which expands for
+   * `duration` and until it reaches `targetSize`.
+   * To visually indicate a transmission of
+   * some sort has occurred.
+   *
+   * \warning Only one transmission per node
+   * may be occurring at once. If another transmission
+   * is triggered while one is still ongoing,
+   * the ongoing transmission will be cut off, and
+   * the new one will begin.
+   *
+   * \param duration
+   * How long the transmission bubble
+   * grows.
+   *
+   * \param targetSize
+   * What size the bubble should be
+   * when `duration` has passed
+   *
+   * \param color
+   * What color to draw the transmission bubble
+   */
+  void Transmit(Time duration, double targetSize, Color3 color = GRAY_30);
+
+  /**
    * Called by the Orchestrator during a mobility poll.
    *
    * If `UsePositionTolerance`, is enabled this
@@ -322,6 +349,12 @@ private:
    * Flag tracking if we've connected the CourseChanged callback to a MobilityModel
    */
   bool m_attachedMobilityTrace = false;
+
+  /**
+   * Time the last transmission event was supposed to end.
+   * Used for logging warnings about truncated transmissions
+   */
+  Time lastTransmissionEnd{Seconds (-1.0)};
 };
 
 } // namespace ns3::netsimulyzer

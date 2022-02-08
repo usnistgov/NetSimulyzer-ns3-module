@@ -171,6 +171,17 @@ public:
   void HandleColorChange (const NodeColorChangeEvent &event);
 
   /**
+   * Trace sink for when a Node has indicated it's transmitting.
+   *
+   * Prefer to use `NodeConfiguration::Transmit`, instead
+   * of calling this directly.
+   *
+   * \param event The event info for the transmit event
+   * \see NodeConfiguration::Transmit
+   */
+  void HandleTransmit (const TransmitEvent &event);
+
+  /**
    * \brief Flag a Decoration to be tracked.
    *
    * Called by the Decoration constructor, so users should not call
