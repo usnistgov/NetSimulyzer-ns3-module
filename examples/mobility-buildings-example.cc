@@ -169,9 +169,6 @@ main (int argc, char *argv[])
   // Identify the area
   possibleNodeLocations->SetAttribute ("Name", StringValue ("Possible Node Locations"));
 
-  // Move the area indicator slightly below the feet of the Nodes
-  possibleNodeLocations->SetAttribute ("Height", DoubleValue (-0.5));
-
   // Mark with a light green color
   possibleNodeLocations->SetAttribute ("FillColor", netsimulyzer::Color3Value{204u, 255u, 204u});
 
