@@ -152,6 +152,12 @@ const OptionalValue<Color3> GRAY_40_OPTIONAL_VALUE{GRAY_40};
 const OptionalValue<Color3> GRAY_30_OPTIONAL_VALUE{GRAY_30};
 const OptionalValue<Color3> GRAY_20_OPTIONAL_VALUE{GRAY_20};
 const OptionalValue<Color3> GRAY_10_OPTIONAL_VALUE{GRAY_10};
+
+const std::vector<Color3Value> COLOR_PALETTE{
+    BLUE_VALUE,        RED_VALUE,         GREEN_VALUE,       ORANGE_VALUE,   YELLOW_VALUE,
+    PURPLE_VALUE,      PINK_VALUE,        DARK_BLUE_VALUE,   DARK_RED_VALUE, DARK_GREEN_VALUE,
+    DARK_ORANGE_VALUE, DARK_YELLOW_VALUE, DARK_PURPLE_VALUE, DARK_PINK_VALUE};
+
 } // namespace ns3::netsimulyzer
 
 #endif //COLOR_PALETTE_H

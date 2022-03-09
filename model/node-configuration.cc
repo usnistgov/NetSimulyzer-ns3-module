@@ -45,6 +45,8 @@
 #include <cmath>
 #include <optional>
 
+namespace {
+
 /**
  * Compare each component in two vectors. If their difference of each component
  * is less than or equal to the given tolerance. Then they are equal.
@@ -71,6 +73,23 @@ compareWithTolerance (const ns3::Vector3D &left, const ns3::Vector3D &right, dou
          (std::abs (left.z - right.z) <= tolerance);
 }
 
+ns3::netsimulyzer::Color3
+NextTrailColor (void)
+{
+  using namespace ns3::netsimulyzer;
+
+  static auto colorIter = COLOR_PALETTE.begin ();
+  const auto &color = colorIter->Get ();
+  colorIter++;
+
+  if (colorIter == COLOR_PALETTE.end ())
+    colorIter = COLOR_PALETTE.begin ();
+
+  return color;
+}
+
+} // namespace
+
 namespace ns3 {
 NS_LOG_COMPONENT_DEFINE ("NodeConfiguration");
 namespace netsimulyzer {
@@ -87,6 +106,7 @@ NodeConfiguration::NodeConfiguration (Ptr<Orchestrator> orchestrator)
 TypeId
 NodeConfiguration::GetTypeId (void)
 {
+  // clang-format off
   static TypeId tid =
       TypeId ("ns3::netsimulyzer::NodeConfiguration")
           .SetParent<Object> ()
@@ -152,6 +172,13 @@ NodeConfiguration::GetTypeId (void)
                          MakeOptionalAccessor<Color3> (&NodeConfiguration::GetHighlightColor,
                                                        &NodeConfiguration::SetHighlightColor),
                          MakeOptionalChecker<Color3> ())
+          .AddAttribute ("MotionTrailColor",
+                         "The color of the optional motion trail"
+                         "if unset, uses either the `BaseColor`, `HighlightColor`, or"
+                         "the next color in the palette, in that order.",
+                         OptionalValue<Color3> (),
+                         MakeOptionalAccessor<Color3> (&NodeConfiguration::m_trailColor),
+                         MakeOptionalChecker<Color3> ())
           .AddAttribute ("PositionTolerance",
                          "The amount a Node must move to have it's position written again",
                          DoubleValue (0.05),
@@ -170,6 +197,7 @@ NodeConfiguration::GetTypeId (void)
                          MakePointerAccessor (&NodeConfiguration::GetOrchestrator,
                                               &NodeConfiguration::SetOrchestrator),
                          MakePointerChecker<Orchestrator> ());
+  // clang-format on
   return tid;
 }
 
@@ -421,6 +449,15 @@ NodeConfiguration::NotifyNewAggregate (void)
       "CourseChange", MakeCallback (&netsimulyzer::NodeConfiguration::CourseChange, this));
   m_attachedMobilityTrace = true;
   Object::NotifyNewAggregate ();
+}
+
+void
+NodeConfiguration::NotifyConstructionCompleted (void)
+{
+  // Since we cannot provide dynamic default
+  // values in the Type ID, provide it here
+  m_trailColor = NextTrailColor ();
+  ObjectBase::NotifyConstructionCompleted ();
 }
 
 } // namespace netsimulyzer

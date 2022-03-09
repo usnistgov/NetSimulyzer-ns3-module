@@ -163,6 +163,21 @@ makeAxisAttributes (ns3::Ptr<ns3::netsimulyzer::CategoryAxis> axis)
   return element;
 }
 
+ns3::netsimulyzer::Color3
+NextTrailColor (void)
+{
+  using namespace ns3::netsimulyzer;
+
+  static auto colorIter = COLOR_PALETTE.begin ();
+  const auto &color = colorIter->Get ();
+  colorIter++;
+
+  if (colorIter == COLOR_PALETTE.end ())
+    colorIter = COLOR_PALETTE.begin ();
+
+  return color;
+}
+
 } // namespace
 
 namespace ns3 {
@@ -295,6 +310,19 @@ Orchestrator::SetupSimulation (void)
       config->GetAttribute ("HighlightColor", highlightColor);
       if (highlightColor)
         element["highlight-color"] = colorToObject (highlightColor.GetValue ());
+
+      Color3 trailColor;
+      OptionalValue<Color3> trailColorAttr;
+      config->GetAttribute ("MotionTrailColor", trailColorAttr);
+      if (trailColorAttr)
+        trailColor = trailColorAttr.GetValue ();
+      else if (baseColor)
+        trailColor = baseColor.GetValue ();
+      else if (highlightColor)
+        trailColor = highlightColor.GetValue ();
+      else
+        trailColor = NextTrailColor ();
+      element["trail-color"] = colorToObject (trailColor);
 
       Vector3DValue orientation;
       config->GetAttribute ("Orientation", orientation);
@@ -615,6 +643,11 @@ Orchestrator::SetupSimulation (void)
     m_mobilityPollEvent = Simulator::Schedule (m_startTime, &Orchestrator::PollMobility, this);
 
   Simulator::ScheduleDestroy (&Orchestrator::Flush, this);
+
+  // Mark that simulation has begun,
+  // so we can begin tracking mobility
+  // events
+  m_simulationStarted = true;
 }
 
 void
@@ -713,6 +746,11 @@ Orchestrator::HandleCourseChange (const CourseChangeEvent &event)
       NS_LOG_DEBUG ("HandleCourseChange() Activated outside (StartTime, StopTime), Ignoring");
       return;
     }
+  else if (!m_simulationStarted)
+    {
+      NS_LOG_DEBUG ("HandleCourseChange() Activated before simulation started, Ignoring");
+      return;
+    }
 
   WritePosition (event.nodeId, event.time, event.position);
 }
@@ -724,6 +762,11 @@ Orchestrator::HandlePositionChange (const DecorationMoveEvent &event)
   if (Simulator::Now () < m_startTime || Simulator::Now () > m_stopTime)
     {
       NS_LOG_DEBUG ("HandlePositionChange() Activated outside (StartTime, StopTime), Ignoring");
+      return;
+    }
+  else if (!m_simulationStarted)
+    {
+      NS_LOG_DEBUG ("HandleCourseChange() Activated before simulation started, Ignoring");
       return;
     }
 
@@ -855,7 +898,7 @@ Orchestrator::HandleTransmit (const TransmitEvent &event)
   element["type"] = "node-transmit";
   element["milliseconds"] = event.time.GetMilliSeconds ();
   element["id"] = event.nodeId;
-  element["duration"] = event.duration.GetMilliSeconds();
+  element["duration"] = event.duration.GetMilliSeconds ();
   element["target-size"] = event.targetSize;
   element["color"] = colorToObject (event.color);
 

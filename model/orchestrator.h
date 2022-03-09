@@ -483,6 +483,12 @@ private:
   bool m_pollMobility;
 
   /**
+   * Flag indicated we've hit the `SetupSimulation` method
+   * which runs at the start of the simulation
+   */
+  bool m_simulationStarted{false};
+
+  /**
    * Event handle for a scheduled mobility poll.
    * Will be unset if no event is scheduled
    */

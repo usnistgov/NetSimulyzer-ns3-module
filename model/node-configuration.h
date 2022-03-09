@@ -118,7 +118,7 @@ public:
    * \param color
    * What color to draw the transmission bubble
    */
-  void Transmit(Time duration, double targetSize, Color3 color = GRAY_30);
+  void Transmit (Time duration, double targetSize, Color3 color = GRAY_30);
 
   /**
    * Called by the Orchestrator during a mobility poll.
@@ -233,6 +233,8 @@ protected:
 
   void NotifyNewAggregate (void) override;
 
+  void NotifyConstructionCompleted (void) override;
+
 private:
   /**
    * Pointer to the Orchestrator managing this node
@@ -309,6 +311,12 @@ private:
    * colors
    */
   std::optional<Color3> m_highlightColor;
+
+  /**
+   * Color of the motion trail that
+   * follows this Node in the application.
+   */
+  std::optional<Color3> m_trailColor;
 
   /**
    * The amount to resize the model with 1.0 being the default size,

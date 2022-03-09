@@ -341,6 +341,27 @@ and the new transmission's animation will play.
 
   A transmission in progress
 
+.. raw:: latex
+
+    \clearpage
+
+Motion Trails
+^^^^^^^^^^^^^
+
+In the application, the user may opt to see a colored line tracing the
+mobility of the ``Node``s in the simulation. By default,
+the ``BaseColor``, or ``HighlightColor`` will be used for
+the trail's color. If neither of those are set, then
+the module will choose the next color in the palette.
+The trail color may be set on its own with the
+``MotionTrailColor`` attribute.
+
+
+.. figure:: _static/motion-trail-one.png
+  :alt: A motion trail following a Node
+  :scale: 50
+
+  A motion trail following a Node
 
 Attributes
 ^^^^^^^^^^
@@ -398,6 +419,11 @@ Attributes
 +----------------------+---------------------------------------+-----------------+--------------------------------------------------------------+
 | HighlightColor       | :ref:`optional-value` <:ref:`color3`> | n/a             | Color to apply to details of models supporting               |
 |                      |                                       |                 | configurable colors                                          |
++----------------------+---------------------------------------+-----------------+--------------------------------------------------------------+
+| MotionTrailColor     | :ref:`optional-value` <:ref:`color3`> | n/a             | The color of the optional motion trail, which follows the    |
+|                      |                                       |                 | ``Node`` in the application. If unset, uses ``BaseColor``,   |
+|                      |                                       |                 | ``HighlightColor`` , or the next color in the palette        |
+|                      |                                       |                 | in that order.                                               |
 +----------------------+---------------------------------------+-----------------+--------------------------------------------------------------+
 | PositionTolerance    | double                                | 0.05            | The amount a ``ns3::Node`` must move to have it's            |
 |                      |                                       |                 | position written again. In ns-3 units.                       |
