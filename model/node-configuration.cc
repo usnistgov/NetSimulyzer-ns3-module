@@ -33,6 +33,7 @@
  */
 
 #include "node-configuration.h"
+#include <sstream>
 #include <ns3/boolean.h>
 #include <ns3/double.h>
 #include <ns3/mobility-model.h>
@@ -244,11 +245,12 @@ NodeConfiguration::Transmit (Time duration, double targetSize, Color3 color)
 
   if (lastTransmissionEnd > event.time + event.duration)
     {
-      NS_LOG_WARN ("Node ID: " + std::to_string (event.nodeId) +
-                   " transmission event interrupted. "
-                   "Expected end: " +
-                   std::to_string (lastTransmissionEnd.GetMilliSeconds ()) + "ms " +
-                   "Current time: " + std::to_string (event.time.GetMilliSeconds ()) + "ms");
+      std::stringstream ss;
+      ss << "Node ID: " << event.nodeId
+         << " transmission event interrupted. Expected end: " << lastTransmissionEnd
+         << " Current time: " << event.time;
+
+      NS_LOG_WARN (ss.str ());
     }
 
   m_orchestrator->HandleTransmit (event);

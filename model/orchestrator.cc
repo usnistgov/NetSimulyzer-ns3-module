@@ -215,8 +215,11 @@ Orchestrator::GetTypeId (void)
           .AddAttribute ("TimeStep",
                          "Number of milliseconds a single step in the application will represent",
                          OptionalValue<int> (),
-                         MakeOptionalAccessor<int> (&Orchestrator::m_timeStep),
-                         MakeOptionalChecker<int> ())
+                         MakeOptionalAccessor<int> (&Orchestrator::GetTimeStepCompat,
+                                                    &Orchestrator::SetTimeStepCompat),
+                         MakeOptionalChecker<int> (),
+                         TypeId::DEPRECATED,
+                          "Please use `SetTimeStep()` instead")
           .AddAttribute ("MobilityPollInterval", "How often to poll Nodes for their position",
                          TimeValue (MilliSeconds (100)),
                          MakeTimeAccessor (&Orchestrator::m_mobilityPollInterval),
@@ -236,6 +239,37 @@ Orchestrator::GetTypeId (void)
 }
 
 void
+Orchestrator::SetTimeStep (Time step, Time::Unit granularity)
+{
+  NS_LOG_FUNCTION (this << step << granularity);
+  NS_ABORT_MSG_IF (granularity != Time::Unit::MS && granularity != Time::Unit::US &&
+                       granularity != Time::Unit::NS,
+                   "'granularity' Passed to `Orchestrator::SetTimeStep` Must be either "
+                   "`Time::Unit::MS`,'Time::Unit::US`, or `Time::Unit::NS`");
+
+  m_timeStep = step;
+  m_timeStepGranularity = granularity;
+}
+
+void
+Orchestrator::ClearTimeStep (void)
+{
+  NS_LOG_FUNCTION (this);
+  m_timeStep.reset ();
+  m_timeStepGranularity.reset ();
+}
+
+std::optional<Orchestrator::TimeStepPair>
+Orchestrator::GetTimeStep () const
+{
+  NS_LOG_FUNCTION (this);
+  if (m_timeStep && m_timeStepGranularity)
+    return TimeStepPair{m_timeStep.value (), m_timeStepGranularity.value ()};
+
+  return {};
+}
+
+void
 Orchestrator::SetupSimulation (void)
 {
   NS_LOG_FUNCTION (this);
@@ -246,8 +280,28 @@ Orchestrator::SetupSimulation (void)
   version["patch"] = VERSION_PATCH;
   version["suffix"] = VERSION_SUFFIX;
   m_document["configuration"]["module-version"] = version;
-  if (m_timeStep)
-    m_document["configuration"]["time-step"] = m_timeStep.value ();
+  if (m_timeStep && m_timeStepGranularity)
+    {
+      auto object = nlohmann::json::object ();
+      object["increment"] = m_timeStep->GetNanoSeconds ();
+
+      switch (m_timeStepGranularity.value ())
+        {
+        default:
+          [[fallthrough]];
+        case Time::MS:
+          object["granularity"] = "milliseconds";
+          break;
+        case Time::US:
+          object["granularity"] = "microseconds";
+          break;
+        case Time::NS:
+          object["granularity"] = "nanoseconds";
+          break;
+        }
+
+      m_document["configuration"]["time-step"] = object;
+    }
 
   // Nodes
   std::multimap<unsigned int, unsigned int> deviceLinkMap;
@@ -713,7 +767,7 @@ Orchestrator::WritePosition (uint32_t nodeId, Time time, Vector3D position)
   NS_LOG_FUNCTION (this << nodeId << time << position);
   nlohmann::json element;
   element["type"] = "node-position";
-  element["milliseconds"] = time.GetMilliSeconds ();
+  element["nanoseconds"] = time.GetNanoSeconds ();
   element["id"] = nodeId;
   element["x"] = position.x;
   element["y"] = position.y;
@@ -779,7 +833,7 @@ Orchestrator::HandlePositionChange (const DecorationMoveEvent &event)
 
   nlohmann::json element;
   element["type"] = "decoration-position";
-  element["milliseconds"] = event.time.GetMilliSeconds ();
+  element["nanoseconds"] = event.time.GetNanoSeconds ();
   element["id"] = event.id;
   element["x"] = event.position.x;
   element["y"] = event.position.y;
@@ -807,7 +861,7 @@ Orchestrator::HandleOrientationChange (const NodeOrientationChangeEvent &event)
 
   nlohmann::json element;
   element["type"] = "node-orientation";
-  element["milliseconds"] = event.time.GetMilliSeconds ();
+  element["nanoseconds"] = event.time.GetNanoSeconds ();
   element["id"] = event.nodeId;
   element["x"] = event.orientation.x;
   element["y"] = event.orientation.y;
@@ -835,7 +889,7 @@ Orchestrator::HandleOrientationChange (const DecorationOrientationChangeEvent &e
 
   nlohmann::json element;
   element["type"] = "decoration-orientation";
-  element["milliseconds"] = event.time.GetMilliSeconds ();
+  element["nanoseconds"] = event.time.GetNanoSeconds ();
   element["id"] = event.id;
   element["x"] = event.orientation.x;
   element["y"] = event.orientation.y;
@@ -862,7 +916,7 @@ Orchestrator::HandleColorChange (const NodeColorChangeEvent &event)
 
   nlohmann::json element;
   element["type"] = "node-color";
-  element["milliseconds"] = event.time.GetMilliSeconds ();
+  element["nanoseconds"] = event.time.GetNanoSeconds ();
   element["id"] = event.id;
   switch (event.type)
     {
@@ -896,9 +950,9 @@ Orchestrator::HandleTransmit (const TransmitEvent &event)
 
   nlohmann::json element;
   element["type"] = "node-transmit";
-  element["milliseconds"] = event.time.GetMilliSeconds ();
+  element["nanoseconds"] = event.time.GetNanoSeconds ();
   element["id"] = event.nodeId;
-  element["duration"] = event.duration.GetMilliSeconds ();
+  element["duration"] = event.duration.GetNanoSeconds ();
   element["target-size"] = event.targetSize;
   element["color"] = colorToObject (event.color);
 
@@ -1144,7 +1198,7 @@ Orchestrator::Commit (CategoryValueSeries &series)
     {
       TimeValue interval;
       series.GetAttribute ("AutoUpdateInterval", interval);
-      element["auto-update-interval"] = interval.Get ().GetMilliSeconds ();
+      element["auto-update-interval"] = interval.Get ().GetNanoSeconds ();
 
       DoubleValue value;
       series.GetAttribute ("AutoUpdateIncrement", value);
@@ -1196,7 +1250,7 @@ Orchestrator::AppendXyValue (uint32_t id, double x, double y)
 
   nlohmann::json element;
   element["type"] = "xy-series-append";
-  element["milliseconds"] = Simulator::Now ().GetMilliSeconds ();
+  element["nanoseconds"] = Simulator::Now ().GetNanoSeconds ();
   element["series-id"] = id;
   element["x"] = x;
   element["y"] = y;
@@ -1216,7 +1270,7 @@ Orchestrator::AppendXyValues (uint32_t id, const std::vector<XYPoint> &points)
 
   nlohmann::json element;
   element["type"] = "xy-series-append-array";
-  element["milliseconds"] = Simulator::Now ().GetMilliSeconds ();
+  element["nanoseconds"] = Simulator::Now ().GetNanoSeconds ();
   element["series-id"] = id;
 
   auto elementArray = nlohmann::json::array ();
@@ -1245,7 +1299,7 @@ Orchestrator::ClearXySeries (uint32_t id)
 
   nlohmann::json element;
   element["type"] = "xy-series-clear";
-  element["milliseconds"] = Simulator::Now ().GetMilliSeconds ();
+  element["nanoseconds"] = Simulator::Now ().GetNanoSeconds ();
   element["series-id"] = id;
   m_document["events"].emplace_back (element);
 }
@@ -1262,7 +1316,7 @@ Orchestrator::AppendCategoryValue (uint32_t id, int category, double value)
 
   nlohmann::json element;
   element["type"] = "category-series-append";
-  element["milliseconds"] = Simulator::Now ().GetMilliSeconds ();
+  element["nanoseconds"] = Simulator::Now ().GetNanoSeconds ();
   element["series-id"] = id;
   element["category"] = category;
   element["value"] = value;
@@ -1280,7 +1334,7 @@ Orchestrator::WriteLogMessage (const LogMessageEvent &event)
     }
 
   nlohmann::json element;
-  element["milliseconds"] = event.time.GetMilliSeconds ();
+  element["nanoseconds"] = Simulator::Now ().GetNanoSeconds ();
   element["type"] = "stream-append";
   element["stream-id"] = event.id;
   element["data"] = event.message;
@@ -1302,8 +1356,8 @@ Orchestrator::Flush (void)
 
   // Inform the application of the actual end time
   // using the Stop Time if it was set
-  m_document["configuration"]["max-time-ms"] =
-      std::min (m_stopTime.GetMilliSeconds (), Simulator::Now ().GetMilliSeconds ());
+  m_document["configuration"]["max-time"] =
+      std::min (m_stopTime.GetNanoSeconds (), Simulator::Now ().GetNanoSeconds ());
 
   m_file << m_document;
   m_file.close ();
@@ -1332,6 +1386,26 @@ Orchestrator::CommitAll (void)
   for (const auto &stream : m_streams)
     {
       stream->Commit ();
+    }
+}
+std::optional<int>
+Orchestrator::GetTimeStepCompat (void) const
+{
+  if (m_timeStep)
+    return m_timeStep.value ().GetMilliSeconds ();
+
+  return {};
+}
+
+void
+Orchestrator::SetTimeStepCompat (const std::optional<int> &milliseconds)
+{
+  if (milliseconds)
+    SetTimeStep (MilliSeconds (milliseconds.value ()), Time::Unit::MS);
+  else
+    {
+      m_timeStep.reset ();
+      m_timeStepGranularity.reset ();
     }
 }
 

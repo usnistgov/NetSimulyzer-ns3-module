@@ -58,31 +58,49 @@ If ``NodeConfiguration::UsePositionTolerance`` is false, then the ``Orchestrator
 will always write the position when a ``NodeConfiguration`` is polled.
 
 
+Time Step and Granularity Hinting
+---------------------------------
+
+In order to indicate to the application that the simulation should
+be run at a given granularity (e.g. should be examined at the microsecond level)
+the ``SetTimeStep`` method may be used. The signature for the method follows:
+
+.. cpp:function:: void Orchestrator::SetTimeStep(Time step, Time::Unit granularity)
+
+
+This method records a ``step``, or how many time units should advance at one time,
+and a ``granularity``, or what level to display time units in the application.
+
+Both values are hints to the application, and do take precedence over user
+preference, but may still be changed by the user once the simulation is
+loaded into the application.
+
 Properties
 ----------
 
-+----------------------+--------------------------------+--------------------+------------------------------------------+
-| Name                 | Type                           | Default Value      | Description                              |
-+======================+================================+====================+==========================================+
-| TimeStep             | :ref:`optional-value` <int>    |                n/a | Optional hint to the application for     |
-|                      |                                |                    | the number of milliseconds to advance    |
-|                      |                                |                    | the simulation by for one step           |
-+----------------------+--------------------------------+--------------------+------------------------------------------+
-| MobilityPollInterval | Time                           | MilliSeconds (100) | How often to poll each child`            |
-|                      |                                |                    | ``NodeConfiguration`` for their          |
-|                      |                                |                    | current position. Only enabled if        |
-|                      |                                |                    | ``PollMobility`` is true                 |
-+----------------------+--------------------------------+--------------------+------------------------------------------+
-| PollMobility         | bool                           |               true | Flag to toggle polling                   |
-|                      |                                |                    | for Node positions                       |
-+----------------------+--------------------------------+--------------------+------------------------------------------+
-| StartTime            | Time                           |               n/a  | Optional start of the time window to     |
-|                      |                                |                    | capture events in.                       |
-|                      |                                |                    | Events outside the window will           |
-|                      |                                |                    | be ignored                               |
-+----------------------+--------------------------------+--------------------+------------------------------------------+
-| EndTime              | Time                           |               n/a  | Optional end of the time window to       |
-|                      |                                |                    | capture events in.                       |
-|                      |                                |                    | Events outside the window will           |
-|                      |                                |                    | be ignored                               |
-+----------------------+--------------------------------+--------------------+------------------------------------------+
++------------------------------+--------------------------------+--------------------+------------------------------------------+
+| Name                         | Type                           | Default Value      | Description                              |
++==============================+================================+====================+==========================================+
+| TimeStep                     | :ref:`optional-value` <int>    |                n/a | Optional hint to the application for     |
+| (Deprecated)                 |                                |                    | the number of milliseconds to advance    |
+| Use:                         |                                |                    | the simulation by for one step           |
+|``Orchestrator::SetTimeStep`` |                                |                    |                                          |
++------------------------------+--------------------------------+--------------------+------------------------------------------+
+| MobilityPollInterval         | Time                           | MilliSeconds (100) | How often to poll each child`            |
+|                              |                                |                    | ``NodeConfiguration`` for their          |
+|                              |                                |                    | current position. Only enabled if        |
+|                              |                                |                    | ``PollMobility`` is true                 |
++------------------------------+--------------------------------+--------------------+------------------------------------------+
+| PollMobility                 | bool                           |               true | Flag to toggle polling                   |
+|                              |                                |                    | for Node positions                       |
++------------------------------+--------------------------------+--------------------+------------------------------------------+
+| StartTime                    | Time                           |               n/a  | Optional start of the time window to     |
+|                              |                                |                    | capture events in.                       |
+|                              |                                |                    | Events outside the window will           |
+|                              |                                |                    | be ignored                               |
++------------------------------+--------------------------------+--------------------+------------------------------------------+
+| EndTime                      | Time                           |               n/a  | Optional end of the time window to       |
+|                              |                                |                    | capture events in.                       |
+|                              |                                |                    | Events outside the window will           |
+|                              |                                |                    | be ignored                               |
++------------------------------+--------------------------------+--------------------+------------------------------------------+
