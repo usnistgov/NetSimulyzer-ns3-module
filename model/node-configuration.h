@@ -233,8 +233,6 @@ protected:
 
   void NotifyNewAggregate (void) override;
 
-  void NotifyConstructionCompleted (void) override;
-
 private:
   /**
    * Pointer to the Orchestrator managing this node

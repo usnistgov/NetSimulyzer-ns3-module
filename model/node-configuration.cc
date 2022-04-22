@@ -74,21 +74,6 @@ compareWithTolerance (const ns3::Vector3D &left, const ns3::Vector3D &right, dou
          (std::abs (left.z - right.z) <= tolerance);
 }
 
-ns3::netsimulyzer::Color3
-NextTrailColor (void)
-{
-  using namespace ns3::netsimulyzer;
-
-  static auto colorIter = COLOR_PALETTE.begin ();
-  const auto &color = colorIter->Get ();
-  colorIter++;
-
-  if (colorIter == COLOR_PALETTE.end ())
-    colorIter = COLOR_PALETTE.begin ();
-
-  return color;
-}
-
 } // namespace
 
 namespace ns3 {
@@ -451,15 +436,6 @@ NodeConfiguration::NotifyNewAggregate (void)
       "CourseChange", MakeCallback (&netsimulyzer::NodeConfiguration::CourseChange, this));
   m_attachedMobilityTrace = true;
   Object::NotifyNewAggregate ();
-}
-
-void
-NodeConfiguration::NotifyConstructionCompleted (void)
-{
-  // Since we cannot provide dynamic default
-  // values in the Type ID, provide it here
-  m_trailColor = NextTrailColor ();
-  ObjectBase::NotifyConstructionCompleted ();
 }
 
 } // namespace netsimulyzer
