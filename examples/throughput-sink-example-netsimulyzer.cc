@@ -141,7 +141,7 @@ main (int argc, char *argv[])
   auto orchestrator = CreateObject<netsimulyzer::Orchestrator> (outputFileName);
 
   // Suggest a faster playback, since not too much happens (optional)
-  orchestrator->SetAttribute ("TimeStep", netsimulyzer::OptionalValue<int>{100});
+  orchestrator->SetTimeStep(MilliSeconds(100), Time::MS);
 
   // The Nodes don't move during the simulation, so disable mobility polling (Optional)
   orchestrator->SetAttribute ("PollMobility", BooleanValue (false));
