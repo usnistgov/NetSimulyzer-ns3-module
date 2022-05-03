@@ -33,6 +33,7 @@
  */
 
 #include "node-configuration.h"
+#include <sstream>
 #include <ns3/boolean.h>
 #include <ns3/double.h>
 #include <ns3/mobility-model.h>
@@ -44,6 +45,8 @@
 #include <ns3/optional.h>
 #include <cmath>
 #include <optional>
+
+namespace {
 
 /**
  * Compare each component in two vectors. If their difference of each component
@@ -71,6 +74,8 @@ compareWithTolerance (const ns3::Vector3D &left, const ns3::Vector3D &right, dou
          (std::abs (left.z - right.z) <= tolerance);
 }
 
+} // namespace
+
 namespace ns3 {
 NS_LOG_COMPONENT_DEFINE ("NodeConfiguration");
 namespace netsimulyzer {
@@ -87,6 +92,7 @@ NodeConfiguration::NodeConfiguration (Ptr<Orchestrator> orchestrator)
 TypeId
 NodeConfiguration::GetTypeId (void)
 {
+  // clang-format off
   static TypeId tid =
       TypeId ("ns3::netsimulyzer::NodeConfiguration")
           .SetParent<Object> ()
@@ -101,15 +107,43 @@ NodeConfiguration::GetTypeId (void)
                          MakeVector3DAccessor (&NodeConfiguration::GetOrientation,
                                                &NodeConfiguration::SetOrientation),
                          MakeVector3DChecker ())
-          .AddAttribute ("Scale", "The scale to apply to the rendered model", DoubleValue (1.0),
-                         MakeDoubleAccessor (&NodeConfiguration::m_scale),
+          .AddAttribute ("Scale",
+                         "The percentage to scale the model in all directions (uniform scale)",
+                         DoubleValue (1.0), MakeDoubleAccessor (&NodeConfiguration::m_scale),
                          MakeDoubleChecker<double> (0))
+          .AddAttribute ("ScaleAxes",
+                         "The scale to apply each axis in the order [x, y, z]. "
+                         "similar to `Scale`, but allows for non-uniform scales. "
+                         "Ignores `KeepRatio`",
+                         Vector3DValue (Vector3D{1.0, 1.0, 1.0}),
+                         MakeVector3DAccessor (&NodeConfiguration::m_scaleAxes),
+                         MakeVector3DChecker ())
           .AddAttribute ("Offset", "Offset from the Node to apply to the model", Vector3DValue (),
                          MakeVector3DAccessor (&NodeConfiguration::m_positionOffset),
                          MakeVector3DChecker ())
-          .AddAttribute ("Height", "Desired height of the rendered model. Applied before `Scale`",
+          .AddAttribute ("KeepRatio",
+                         "When scaling with the `Height`, `Width`, and `Depth` attributes, "
+                         "use only the value that produces the largest model. "
+                         "Keeping the scale uniform",
+                         BooleanValue (true), MakeBooleanAccessor (&NodeConfiguration::m_keepRatio),
+                         MakeBooleanChecker ())
+          .AddAttribute ("Height",
+                         "Desired height of the rendered model in ns-3 units. "
+                         "Applied before `Scale`",
                          OptionalValue<double> (),
                          MakeOptionalAccessor<double> (&NodeConfiguration::m_height),
+                         MakeOptionalChecker<double> ())
+          .AddAttribute ("Width",
+                         "Desired width of the rendered model in ns-3 units. "
+                         "Applied before `Scale`",
+                         OptionalValue<double> (),
+                         MakeOptionalAccessor<double> (&NodeConfiguration::m_width),
+                         MakeOptionalChecker<double> ())
+          .AddAttribute ("Depth",
+                         "Desired depth of the rendered model in ns-3 units. "
+                         "Applied before `Scale`",
+                         OptionalValue<double> (),
+                         MakeOptionalAccessor<double> (&NodeConfiguration::m_depth),
                          MakeOptionalChecker<double> ())
           .AddAttribute ("BaseColor",
                          "The color to use as the primary color in models with configurable colors",
@@ -123,6 +157,13 @@ NodeConfiguration::GetTypeId (void)
                          OptionalValue<Color3> (),
                          MakeOptionalAccessor<Color3> (&NodeConfiguration::GetHighlightColor,
                                                        &NodeConfiguration::SetHighlightColor),
+                         MakeOptionalChecker<Color3> ())
+          .AddAttribute ("MotionTrailColor",
+                         "The color of the optional motion trail"
+                         "if unset, uses either the `BaseColor`, `HighlightColor`, or"
+                         "the next color in the palette, in that order.",
+                         OptionalValue<Color3> (),
+                         MakeOptionalAccessor<Color3> (&NodeConfiguration::m_trailColor),
                          MakeOptionalChecker<Color3> ())
           .AddAttribute ("PositionTolerance",
                          "The amount a Node must move to have it's position written again",
@@ -142,6 +183,7 @@ NodeConfiguration::GetTypeId (void)
                          MakePointerAccessor (&NodeConfiguration::GetOrchestrator,
                                               &NodeConfiguration::SetOrchestrator),
                          MakePointerChecker<Orchestrator> ());
+  // clang-format on
   return tid;
 }
 
@@ -163,6 +205,40 @@ NodeConfiguration::CourseChange (ns3::Ptr<const MobilityModel> model)
   event.position = model->GetPosition ();
 
   m_orchestrator->HandleCourseChange (event);
+}
+
+void
+NodeConfiguration::Transmit (Time duration, double targetSize, Color3 color)
+{
+  NS_LOG_FUNCTION (this << duration << targetSize);
+
+  // If we haven't been aggregated with a Node yet.
+  // Assume we're still setting up
+  const auto node = GetObject<const Node> ();
+  if (!node)
+    {
+      NS_LOG_DEBUG ("Not triggering NodeTransmit event. No Node aggregated");
+      return;
+    }
+
+  TransmitEvent event;
+  event.time = Simulator::Now ();
+  event.nodeId = node->GetId ();
+  event.duration = duration;
+  event.targetSize = targetSize;
+  event.color = color;
+
+  if (lastTransmissionEnd > event.time + event.duration)
+    {
+      std::stringstream ss;
+      ss << "Node ID: " << event.nodeId
+         << " transmission event interrupted. Expected end: " << lastTransmissionEnd
+         << " Current time: " << event.time;
+
+      NS_LOG_WARN (ss.str ());
+    }
+
+  m_orchestrator->HandleTransmit (event);
 }
 
 std::optional<Vector3D>
@@ -298,6 +374,36 @@ NodeConfiguration::SetHighlightColor (const std::optional<Color3> &value)
   event.color = value;
 
   m_orchestrator->HandleColorChange (event);
+}
+
+void
+NodeConfiguration::SetScale (double scale)
+{
+  m_scale = scale;
+}
+
+void
+NodeConfiguration::SetScale (const Vector3D &scale)
+{
+  SetScaleAxes (scale);
+}
+
+void
+NodeConfiguration::SetScaleAxes (const Vector3D &scale)
+{
+  m_scaleAxes = scale;
+}
+
+double
+NodeConfiguration::GetScale (void) const
+{
+  return m_scale;
+}
+
+const Vector3D &
+NodeConfiguration::GetScaleAxes (void) const
+{
+  return m_scaleAxes;
 }
 
 void

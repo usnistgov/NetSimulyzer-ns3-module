@@ -96,6 +96,47 @@ public:
   static TypeId GetTypeId (void);
 
   /**
+   * Sets the suggested time step for playback in
+   * the application.
+   *
+   * \param step
+   * The amount of time to pass per frame.
+   *
+   * \param granularity
+   * The level of granularity to show in the application.
+   * Must be one of the following:
+   * `Unit::MS` (Milliseconds)
+   * `Unit::US` (Microseconds)
+   * `Unit::NS` (Nanoseconds)
+   */
+  void SetTimeStep (Time step, Time::Unit granularity);
+
+  /**
+   * Unsets the time step set by `SetTimeStep`
+   */
+  void ClearTimeStep (void);
+
+  /**
+   * A pair containing the current time step
+   * and suggested granularity
+   */
+  struct TimeStepPair
+  {
+    Time timeStep;
+    Time::Unit granularity;
+  };
+
+  /**
+   * Gets the suggested time step and granularity.
+   * If no time set was set, returns an empty `optional`
+   *
+   * \return
+   * An `optional`, set if `SetTimeStep` was called, contains
+   * the current suggested time step and unit.
+   */
+  std::optional<TimeStepPair> GetTimeStep (void) const;
+
+  /**
    * \brief Collect Global & Node/Building configs, Schedule Polls
    *
    * Write the global configuration.
@@ -169,6 +210,17 @@ public:
    * \param event The event info for the color change event
    */
   void HandleColorChange (const NodeColorChangeEvent &event);
+
+  /**
+   * Trace sink for when a Node has indicated it's transmitting.
+   *
+   * Prefer to use `NodeConfiguration::Transmit`, instead
+   * of calling this directly.
+   *
+   * \param event The event info for the transmit event
+   * \see NodeConfiguration::Transmit
+   */
+  void HandleTransmit (const TransmitEvent &event);
 
   /**
    * \brief Flag a Decoration to be tracked.
@@ -431,6 +483,31 @@ protected:
 
 private:
   /**
+   * Gets the time step in a way that's compatible with the
+   * deprecated `TimeStep` attribute
+   *
+   * \return
+   * A `std::optional`, set if a time step was set,
+   * potentially containing the current time step in
+   * milliseconds
+   */
+  std::optional<int> GetTimeStepCompat (void) const;
+
+  /**
+   * Sets the time step in a way that's compatible with the
+   * deprecated `TimeStep` attribute.
+   *
+   * Set the time step to `milliseconds` and the
+   * granularity to `Time::Unit::MS` (Milliseconds)
+   *
+   * \param milliseconds
+   * An optional value for the time step for use in the application
+   * in milliseconds. If this optional is empty, then
+   * the existing time step is cleared
+   */
+  void SetTimeStepCompat (const std::optional<int> &milliseconds);
+
+  /**
    * Path to output JSON to
    */
   std::string m_outputPath;
@@ -472,6 +549,12 @@ private:
   bool m_pollMobility;
 
   /**
+   * Flag indicated we've hit the `SetupSimulation` method
+   * which runs at the start of the simulation
+   */
+  bool m_simulationStarted{false};
+
+  /**
    * Event handle for a scheduled mobility poll.
    * Will be unset if no event is scheduled
    */
@@ -484,9 +567,14 @@ private:
 
   /**
    * Amount of ns-3 time to pass per step in the application
-   * in milliseconds
+   * in nanoseconds
    */
-  std::optional<int> m_timeStep;
+  std::optional<Time> m_timeStep;
+
+  /**
+   * The suggested unit for the `m_timeStep`
+   */
+  std::optional<Time::Unit> m_timeStepGranularity;
 
   /**
    * The ID to assign to the next series that requests it.

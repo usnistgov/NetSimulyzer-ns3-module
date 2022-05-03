@@ -35,6 +35,7 @@
 #include "decoration.h"
 #include "optional.h"
 #include <ns3/string.h>
+#include <ns3/boolean.h>
 #include <ns3/double.h>
 #include <ns3/pointer.h>
 #include <ns3/uinteger.h>
@@ -68,15 +69,38 @@ Decoration::GetTypeId (void)
               Vector3DValue (),
               MakeVector3DAccessor (&Decoration::GetOrientation, &Decoration::SetOrientation),
               MakeVector3DChecker ())
+          .AddAttribute ("KeepRatio",
+                         "When scaling with the `Height`, `Width`, and `Depth` attributes, "
+                         "use only the value that produces the largest model. "
+                         "Keeping the scale uniform",
+                         BooleanValue (true), MakeBooleanAccessor (&Decoration::m_keepRatio),
+                         MakeBooleanChecker ())
           .AddAttribute ("Height", "Desired height of the rendered model. Applied before `Scale`",
                          OptionalValue<double> (),
                          MakeOptionalAccessor<double> (&Decoration::m_height),
+                         MakeOptionalChecker<double> ())
+          .AddAttribute ("Width",
+                         "Desired width of the rendered model in ns-3 units. "
+                         "Applied before `Scale`",
+                         OptionalValue<double> (),
+                         MakeOptionalAccessor<double> (&Decoration::m_width),
+                         MakeOptionalChecker<double> ())
+          .AddAttribute ("Depth",
+                         "Desired depth of the rendered model in ns-3 units. "
+                         "Applied before `Scale`",
+                         OptionalValue<double> (),
+                         MakeOptionalAccessor<double> (&Decoration::m_depth),
                          MakeOptionalChecker<double> ())
           .AddAttribute ("Position", "The position of the Decoration", Vector3DValue (),
                          MakeVector3DAccessor (&Decoration::GetPosition, &Decoration::SetPosition),
                          MakeVector3DChecker ())
           .AddAttribute ("Scale", "The scale to apply to the rendered model", DoubleValue (1.0),
                          MakeDoubleAccessor (&Decoration::m_scale), MakeDoubleChecker<double> (0))
+          .AddAttribute ("ScaleAxes",
+                         "The scale to apply each axis in the order [x, y, z]. "
+                         "similar to `Scale`, but allows for non-uniform scales",
+                         Vector3DValue (Vector3D{1.0, 1.0, 1.0}),
+                         MakeVector3DAccessor (&Decoration::m_scaleAxes), MakeVector3DChecker ())
           .AddAttribute ("Orchestrator", "Orchestrator that manages this Decoration",
                          PointerValue (), MakePointerAccessor (&Decoration::m_orchestrator),
                          MakePointerChecker<Orchestrator> ());
@@ -123,6 +147,35 @@ Decoration::SetOrientation (const Vector3D &orientation)
   event.orientation = m_orientation;
 
   m_orchestrator->HandleOrientationChange (event);
+}
+
+void
+Decoration::SetScale (double scale)
+{
+  m_scale = scale;
+}
+void
+Decoration::SetScale (const Vector3D &scale)
+{
+  SetScaleAxes (scale);
+}
+
+void
+Decoration::SetScaleAxes (const Vector3D &scale)
+{
+  m_scaleAxes = scale;
+}
+
+double
+Decoration::GetScale (void) const
+{
+  return m_scale;
+}
+
+const Vector3D &
+Decoration::GetScaleAxes (void) const
+{
+  return m_scaleAxes;
 }
 
 void

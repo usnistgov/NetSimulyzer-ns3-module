@@ -163,6 +163,21 @@ makeAxisAttributes (ns3::Ptr<ns3::netsimulyzer::CategoryAxis> axis)
   return element;
 }
 
+ns3::netsimulyzer::Color3
+NextTrailColor (void)
+{
+  using namespace ns3::netsimulyzer;
+
+  static auto colorIter = COLOR_PALETTE.begin ();
+  const auto &color = colorIter->Get ();
+  colorIter++;
+
+  if (colorIter == COLOR_PALETTE.end ())
+    colorIter = COLOR_PALETTE.begin ();
+
+  return color;
+}
+
 } // namespace
 
 namespace ns3 {
@@ -200,8 +215,11 @@ Orchestrator::GetTypeId (void)
           .AddAttribute ("TimeStep",
                          "Number of milliseconds a single step in the application will represent",
                          OptionalValue<int> (),
-                         MakeOptionalAccessor<int> (&Orchestrator::m_timeStep),
-                         MakeOptionalChecker<int> ())
+                         MakeOptionalAccessor<int> (&Orchestrator::GetTimeStepCompat,
+                                                    &Orchestrator::SetTimeStepCompat),
+                         MakeOptionalChecker<int> (),
+                         TypeId::DEPRECATED,
+                          "Please use `SetTimeStep()` instead")
           .AddAttribute ("MobilityPollInterval", "How often to poll Nodes for their position",
                          TimeValue (MilliSeconds (100)),
                          MakeTimeAccessor (&Orchestrator::m_mobilityPollInterval),
@@ -221,6 +239,37 @@ Orchestrator::GetTypeId (void)
 }
 
 void
+Orchestrator::SetTimeStep (Time step, Time::Unit granularity)
+{
+  NS_LOG_FUNCTION (this << step << granularity);
+  NS_ABORT_MSG_IF (granularity != Time::Unit::MS && granularity != Time::Unit::US &&
+                       granularity != Time::Unit::NS,
+                   "'granularity' Passed to `Orchestrator::SetTimeStep` Must be either "
+                   "`Time::Unit::MS`,'Time::Unit::US`, or `Time::Unit::NS`");
+
+  m_timeStep = step;
+  m_timeStepGranularity = granularity;
+}
+
+void
+Orchestrator::ClearTimeStep (void)
+{
+  NS_LOG_FUNCTION (this);
+  m_timeStep.reset ();
+  m_timeStepGranularity.reset ();
+}
+
+std::optional<Orchestrator::TimeStepPair>
+Orchestrator::GetTimeStep () const
+{
+  NS_LOG_FUNCTION (this);
+  if (m_timeStep && m_timeStepGranularity)
+    return TimeStepPair{m_timeStep.value (), m_timeStepGranularity.value ()};
+
+  return {};
+}
+
+void
 Orchestrator::SetupSimulation (void)
 {
   NS_LOG_FUNCTION (this);
@@ -231,8 +280,28 @@ Orchestrator::SetupSimulation (void)
   version["patch"] = VERSION_PATCH;
   version["suffix"] = VERSION_SUFFIX;
   m_document["configuration"]["module-version"] = version;
-  if (m_timeStep)
-    m_document["configuration"]["time-step"] = m_timeStep.value ();
+  if (m_timeStep && m_timeStepGranularity)
+    {
+      auto object = nlohmann::json::object ();
+      object["increment"] = m_timeStep->GetNanoSeconds ();
+
+      switch (m_timeStepGranularity.value ())
+        {
+        default:
+          [[fallthrough]];
+        case Time::MS:
+          object["granularity"] = "milliseconds";
+          break;
+        case Time::US:
+          object["granularity"] = "microseconds";
+          break;
+        case Time::NS:
+          object["granularity"] = "nanoseconds";
+          break;
+        }
+
+      m_document["configuration"]["time-step"] = object;
+    }
 
   // Nodes
   std::multimap<unsigned int, unsigned int> deviceLinkMap;
@@ -256,12 +325,35 @@ Orchestrator::SetupSimulation (void)
 
       DoubleValue scale;
       config->GetAttribute ("Scale", scale);
-      element["scale"] = scale.Get ();
+      Vector3DValue scaleAxes;
+      config->GetAttribute ("ScaleAxes", scaleAxes);
+      auto outputScale = nlohmann::json::object ();
+      outputScale["x"] = scale.Get () * scaleAxes.Get ().x;
+      outputScale["y"] = scale.Get () * scaleAxes.Get ().y;
+      outputScale["z"] = scale.Get () * scaleAxes.Get ().z;
+
+      element["scale"] = outputScale;
+
+      auto targetScale = nlohmann::json::object ();
+      BooleanValue keepRatio;
+      config->GetAttribute ("KeepRatio", keepRatio);
+      targetScale["keep-ratio"] = keepRatio.Get ();
 
       OptionalValue<double> height;
       config->GetAttribute ("Height", height);
       if (height)
-        element["height"] = height.GetValue ();
+        targetScale["height"] = height.GetValue ();
+
+      OptionalValue<double> width;
+      config->GetAttribute ("Width", width);
+      if (width)
+        targetScale["width"] = width.GetValue ();
+
+      OptionalValue<double> depth;
+      config->GetAttribute ("Depth", depth);
+      if (depth)
+        targetScale["depth"] = depth.GetValue ();
+      element["target-scale"] = targetScale;
 
       OptionalValue<Color3> baseColor;
       config->GetAttribute ("BaseColor", baseColor);
@@ -272,6 +364,19 @@ Orchestrator::SetupSimulation (void)
       config->GetAttribute ("HighlightColor", highlightColor);
       if (highlightColor)
         element["highlight-color"] = colorToObject (highlightColor.GetValue ());
+
+      Color3 trailColor;
+      OptionalValue<Color3> trailColorAttr;
+      config->GetAttribute ("MotionTrailColor", trailColorAttr);
+      if (trailColorAttr)
+        trailColor = trailColorAttr.GetValue ();
+      else if (baseColor)
+        trailColor = baseColor.GetValue ();
+      else if (highlightColor)
+        trailColor = highlightColor.GetValue ();
+      else
+        trailColor = NextTrailColor ();
+      element["trail-color"] = colorToObject (trailColor);
 
       Vector3DValue orientation;
       config->GetAttribute ("Orientation", orientation);
@@ -431,12 +536,35 @@ Orchestrator::SetupSimulation (void)
 
       DoubleValue scale;
       decoration->GetAttribute ("Scale", scale);
-      element["scale"] = scale.Get ();
+      Vector3DValue scaleAxes;
+      decoration->GetAttribute ("ScaleAxes", scaleAxes);
+      auto outputScale = nlohmann::json::object ();
+      outputScale["x"] = scale.Get () * scaleAxes.Get ().x;
+      outputScale["y"] = scale.Get () * scaleAxes.Get ().y;
+      outputScale["z"] = scale.Get () * scaleAxes.Get ().z;
+
+      element["scale"] = outputScale;
+
+      auto targetScale = nlohmann::json::object ();
+      BooleanValue keepRatio;
+      decoration->GetAttribute ("KeepRatio", keepRatio);
+      targetScale["keep-ratio"] = keepRatio.Get ();
 
       OptionalValue<double> height;
       decoration->GetAttribute ("Height", height);
       if (height)
-        element["height"] = height.GetValue ();
+        targetScale["height"] = height.GetValue ();
+
+      OptionalValue<double> width;
+      decoration->GetAttribute ("Width", width);
+      if (width)
+        targetScale["width"] = width.GetValue ();
+
+      OptionalValue<double> depth;
+      decoration->GetAttribute ("Depth", depth);
+      if (depth)
+        targetScale["depth"] = depth.GetValue ();
+      element["target-scale"] = targetScale;
 
       decorations.emplace_back (element);
     }
@@ -569,6 +697,11 @@ Orchestrator::SetupSimulation (void)
     m_mobilityPollEvent = Simulator::Schedule (m_startTime, &Orchestrator::PollMobility, this);
 
   Simulator::ScheduleDestroy (&Orchestrator::Flush, this);
+
+  // Mark that simulation has begun,
+  // so we can begin tracking mobility
+  // events
+  m_simulationStarted = true;
 }
 
 void
@@ -634,7 +767,7 @@ Orchestrator::WritePosition (uint32_t nodeId, Time time, Vector3D position)
   NS_LOG_FUNCTION (this << nodeId << time << position);
   nlohmann::json element;
   element["type"] = "node-position";
-  element["milliseconds"] = time.GetMilliSeconds ();
+  element["nanoseconds"] = time.GetNanoSeconds ();
   element["id"] = nodeId;
   element["x"] = position.x;
   element["y"] = position.y;
@@ -667,6 +800,11 @@ Orchestrator::HandleCourseChange (const CourseChangeEvent &event)
       NS_LOG_DEBUG ("HandleCourseChange() Activated outside (StartTime, StopTime), Ignoring");
       return;
     }
+  else if (!m_simulationStarted)
+    {
+      NS_LOG_DEBUG ("HandleCourseChange() Activated before simulation started, Ignoring");
+      return;
+    }
 
   WritePosition (event.nodeId, event.time, event.position);
 }
@@ -680,6 +818,11 @@ Orchestrator::HandlePositionChange (const DecorationMoveEvent &event)
       NS_LOG_DEBUG ("HandlePositionChange() Activated outside (StartTime, StopTime), Ignoring");
       return;
     }
+  else if (!m_simulationStarted)
+    {
+      NS_LOG_DEBUG ("HandleCourseChange() Activated before simulation started, Ignoring");
+      return;
+    }
 
   if (m_currentSection != Section::Events)
     {
@@ -690,7 +833,7 @@ Orchestrator::HandlePositionChange (const DecorationMoveEvent &event)
 
   nlohmann::json element;
   element["type"] = "decoration-position";
-  element["milliseconds"] = event.time.GetMilliSeconds ();
+  element["nanoseconds"] = event.time.GetNanoSeconds ();
   element["id"] = event.id;
   element["x"] = event.position.x;
   element["y"] = event.position.y;
@@ -718,7 +861,7 @@ Orchestrator::HandleOrientationChange (const NodeOrientationChangeEvent &event)
 
   nlohmann::json element;
   element["type"] = "node-orientation";
-  element["milliseconds"] = event.time.GetMilliSeconds ();
+  element["nanoseconds"] = event.time.GetNanoSeconds ();
   element["id"] = event.nodeId;
   element["x"] = event.orientation.x;
   element["y"] = event.orientation.y;
@@ -746,7 +889,7 @@ Orchestrator::HandleOrientationChange (const DecorationOrientationChangeEvent &e
 
   nlohmann::json element;
   element["type"] = "decoration-orientation";
-  element["milliseconds"] = event.time.GetMilliSeconds ();
+  element["nanoseconds"] = event.time.GetNanoSeconds ();
   element["id"] = event.id;
   element["x"] = event.orientation.x;
   element["y"] = event.orientation.y;
@@ -773,7 +916,7 @@ Orchestrator::HandleColorChange (const NodeColorChangeEvent &event)
 
   nlohmann::json element;
   element["type"] = "node-color";
-  element["milliseconds"] = event.time.GetMilliSeconds ();
+  element["nanoseconds"] = event.time.GetNanoSeconds ();
   element["id"] = event.id;
   switch (event.type)
     {
@@ -790,6 +933,28 @@ Orchestrator::HandleColorChange (const NodeColorChangeEvent &event)
 
   if (event.color.has_value ())
     element["color"] = colorToObject (event.color.value ());
+
+  m_document["events"].emplace_back (element);
+}
+
+void
+Orchestrator::HandleTransmit (const TransmitEvent &event)
+{
+  NS_LOG_FUNCTION (this);
+
+  if (Simulator::Now () < m_startTime || Simulator::Now () > m_stopTime)
+    {
+      NS_LOG_DEBUG ("HandleTransmit() Activated outside (StartTime, StopTime), Ignoring");
+      return;
+    }
+
+  nlohmann::json element;
+  element["type"] = "node-transmit";
+  element["nanoseconds"] = event.time.GetNanoSeconds ();
+  element["id"] = event.nodeId;
+  element["duration"] = event.duration.GetNanoSeconds ();
+  element["target-size"] = event.targetSize;
+  element["color"] = colorToObject (event.color);
 
   m_document["events"].emplace_back (element);
 }
@@ -1033,7 +1198,7 @@ Orchestrator::Commit (CategoryValueSeries &series)
     {
       TimeValue interval;
       series.GetAttribute ("AutoUpdateInterval", interval);
-      element["auto-update-interval"] = interval.Get ().GetMilliSeconds ();
+      element["auto-update-interval"] = interval.Get ().GetNanoSeconds ();
 
       DoubleValue value;
       series.GetAttribute ("AutoUpdateIncrement", value);
@@ -1085,7 +1250,7 @@ Orchestrator::AppendXyValue (uint32_t id, double x, double y)
 
   nlohmann::json element;
   element["type"] = "xy-series-append";
-  element["milliseconds"] = Simulator::Now ().GetMilliSeconds ();
+  element["nanoseconds"] = Simulator::Now ().GetNanoSeconds ();
   element["series-id"] = id;
   element["x"] = x;
   element["y"] = y;
@@ -1105,7 +1270,7 @@ Orchestrator::AppendXyValues (uint32_t id, const std::vector<XYPoint> &points)
 
   nlohmann::json element;
   element["type"] = "xy-series-append-array";
-  element["milliseconds"] = Simulator::Now ().GetMilliSeconds ();
+  element["nanoseconds"] = Simulator::Now ().GetNanoSeconds ();
   element["series-id"] = id;
 
   auto elementArray = nlohmann::json::array ();
@@ -1134,7 +1299,7 @@ Orchestrator::ClearXySeries (uint32_t id)
 
   nlohmann::json element;
   element["type"] = "xy-series-clear";
-  element["milliseconds"] = Simulator::Now ().GetMilliSeconds ();
+  element["nanoseconds"] = Simulator::Now ().GetNanoSeconds ();
   element["series-id"] = id;
   m_document["events"].emplace_back (element);
 }
@@ -1151,7 +1316,7 @@ Orchestrator::AppendCategoryValue (uint32_t id, int category, double value)
 
   nlohmann::json element;
   element["type"] = "category-series-append";
-  element["milliseconds"] = Simulator::Now ().GetMilliSeconds ();
+  element["nanoseconds"] = Simulator::Now ().GetNanoSeconds ();
   element["series-id"] = id;
   element["category"] = category;
   element["value"] = value;
@@ -1169,7 +1334,7 @@ Orchestrator::WriteLogMessage (const LogMessageEvent &event)
     }
 
   nlohmann::json element;
-  element["milliseconds"] = event.time.GetMilliSeconds ();
+  element["nanoseconds"] = Simulator::Now ().GetNanoSeconds ();
   element["type"] = "stream-append";
   element["stream-id"] = event.id;
   element["data"] = event.message;
@@ -1191,8 +1356,8 @@ Orchestrator::Flush (void)
 
   // Inform the application of the actual end time
   // using the Stop Time if it was set
-  m_document["configuration"]["max-time-ms"] =
-      std::min (m_stopTime.GetMilliSeconds (), Simulator::Now ().GetMilliSeconds ());
+  m_document["configuration"]["max-time"] =
+      std::min (m_stopTime.GetNanoSeconds (), Simulator::Now ().GetNanoSeconds ());
 
   m_file << m_document;
   m_file.close ();
@@ -1221,6 +1386,26 @@ Orchestrator::CommitAll (void)
   for (const auto &stream : m_streams)
     {
       stream->Commit ();
+    }
+}
+std::optional<int>
+Orchestrator::GetTimeStepCompat (void) const
+{
+  if (m_timeStep)
+    return m_timeStep.value ().GetMilliSeconds ();
+
+  return {};
+}
+
+void
+Orchestrator::SetTimeStepCompat (const std::optional<int> &milliseconds)
+{
+  if (milliseconds)
+    SetTimeStep (MilliSeconds (milliseconds.value ()), Time::Unit::MS);
+  else
+    {
+      m_timeStep.reset ();
+      m_timeStepGranularity.reset ();
     }
 }
 

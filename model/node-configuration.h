@@ -85,10 +85,40 @@ public:
   static TypeId GetTypeId (void);
 
   /**
+   * Callback called when the mobility model attached to a Node
+   * triggers the 'CourseChange' trace
    *
    * \param model
+   * The mobility model that triggered the trace
    */
   void CourseChange (Ptr<const MobilityModel> model);
+
+  /**
+   * Triggers in the application,
+   * a bubble to grow out of the center
+   * of the Node, which expands for
+   * `duration` and until it reaches `targetSize`.
+   * To visually indicate a transmission of
+   * some sort has occurred.
+   *
+   * \warning Only one transmission per node
+   * may be occurring at once. If another transmission
+   * is triggered while one is still ongoing,
+   * the ongoing transmission will be cut off, and
+   * the new one will begin.
+   *
+   * \param duration
+   * How long the transmission bubble
+   * grows.
+   *
+   * \param targetSize
+   * What size the bubble should be
+   * when `duration` has passed
+   *
+   * \param color
+   * What color to draw the transmission bubble
+   */
+  void Transmit (Time duration, double targetSize, Color3 color = GRAY_30);
 
   /**
    * Called by the Orchestrator during a mobility poll.
@@ -146,6 +176,55 @@ public:
   const std::optional<Color3> &GetHighlightColor (void) const;
   void SetHighlightColor (const std::optional<Color3> &value);
 
+  /**
+   * Convenience method for changing the `Scale` attribute
+   *
+   * \param scale
+   * A new value to use for the scale. Must be greater than 0
+   */
+  void SetScale (double scale);
+
+  /**
+   * Convenience method for changing the `ScaleAxes` attribute.
+   *
+   * \param scale
+   * A vector of 3 values to use for scales on each axis
+   * in the order [x, y, z]. Must all be greater than 0
+   */
+  void SetScale (const Vector3D &scale);
+
+  /**
+   * Convenience method for changing the `ScaleAxes` attribute.
+   *
+   * \param scale
+   * A vector of 3 values to use for scales on each axis
+   * in the order [x, y, z]. Must all be greater than 0
+   */
+  void SetScaleAxes (const Vector3D &scale);
+
+  /**
+   * Convenience method for retrieving the `Scale` attribute. Note that
+   * the model may also have other scales applied to it.
+   *
+   * \return
+   * The current uniform scale value.
+   *
+   * /see GetScaleAxes()
+   */
+  double GetScale (void) const;
+
+  /**
+   * Convenience method for retrieving the `ScaleAxes` attribute. Note that
+   * the model may also have other scales applied to it.
+   *
+   * \return
+   * The current non-uniform scale values for each axis,
+   * in the order [x, y, z].
+   *
+   * /see GetScale()
+   */
+  const Vector3D &GetScaleAxes (void) const;
+
 protected:
   /**
    * \brief Disconnects the referenced Orchestrator
@@ -187,10 +266,37 @@ private:
   Vector3D m_positionOffset;
 
   /**
+   * Flag for use with `Height`, `Width`, and `Depth`
+   * attributes. When set, if more than one of the
+   * mentioned attributes are set, then only the
+   * largest scale takes effect. Keeping the
+   * scale uniform
+   */
+  bool m_keepRatio;
+
+  /**
    * Desired height of the rendered 3D model
    * in ns-3 units
+   *
+   * /see m_keepRatio
    */
   std::optional<double> m_height;
+
+  /**
+   * Desired width of the rendered 3D model
+   * in ns-3 units
+   *
+   * /see m_keepRatio
+   */
+  std::optional<double> m_width;
+
+  /**
+   * Desired depth of the rendered 3D model
+   * in ns-3 units
+   *
+   * /see m_keepRatio
+   */
+  std::optional<double> m_depth;
 
   /**
    * Replacement base color for models with configurable
@@ -205,10 +311,28 @@ private:
   std::optional<Color3> m_highlightColor;
 
   /**
+   * Color of the motion trail that
+   * follows this Node in the application.
+   */
+  std::optional<Color3> m_trailColor;
+
+  /**
    * The amount to resize the model with 1.0 being the default size,
    * 0.5 being 1/2 size, etc.
    */
   double m_scale;
+
+  /**
+   * Similar to `m_scale`, but for each axis. In the order [x, y, z].
+   *
+   * A value of [1.25, 1, 1] will scale the model up by 25% on the X
+   * axis, and keep the other axes the same size
+   *
+   * Allows for non-uniform scales
+   *
+   * \see m_scale
+   */
+  Vector3D m_scaleAxes;
 
   /**
    * The amount a Node must move to have it's position written again.
@@ -231,6 +355,12 @@ private:
    * Flag tracking if we've connected the CourseChanged callback to a MobilityModel
    */
   bool m_attachedMobilityTrace = false;
+
+  /**
+   * Time the last transmission event was supposed to end.
+   * Used for logging warnings about truncated transmissions
+   */
+  Time lastTransmissionEnd{Seconds (-1.0)};
 };
 
 } // namespace ns3::netsimulyzer
