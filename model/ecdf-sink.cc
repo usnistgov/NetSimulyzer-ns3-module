@@ -194,6 +194,18 @@ EcdfSink::GetInterval (void) const
 }
 
 void
+EcdfSink::SetRangeFixed (double min, double max)
+{
+  m_series->GetXAxis ()->FixedRange (min, max);
+}
+
+void
+EcdfSink::SetRangeScaling (double min, double max)
+{
+  m_series->GetXAxis ()->ScalingRange (min, max);
+}
+
+void
 EcdfSink::Flush (void)
 {
   m_series->Clear ();
@@ -241,7 +253,7 @@ EcdfSink::DoDispose (void)
 }
 
 bool
-EcdfSink::PointFrequency::operator< (const EcdfSink::PointFrequency &other) const
+EcdfSink::PointFrequency::operator<(const EcdfSink::PointFrequency &other) const
 {
   return point < other.point;
 }

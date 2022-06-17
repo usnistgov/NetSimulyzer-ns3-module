@@ -136,6 +136,60 @@ public:
    */
   Ptr<XYSeries> GetSeries (void) const;
 
+  /**
+   * Convenience method to access the X axis of the
+   * contained series
+   *
+   * \return
+   * A pointer to the `ValueAxis` used for the X axis
+   * of the contained series
+   */
+  Ptr<ValueAxis> GetXAxis (void) const;
+
+  /**
+   * Convenience method to access the Y axis of the
+   * contained series
+   *
+   * \return
+   * A pointer to the `ValueAxis` used for the Y axis
+   * of the contained series
+   */
+  Ptr<ValueAxis> GetYAxis (void) const;
+
+  /**
+   * Convenience method to set up the throughput (Y) axis with a
+   * fixed range.
+   *
+   * This is the equivalent of calling:
+   * `sink->GetYAxis ()->FixedRange (min, max)`
+   *
+   * \param min
+   * The minimum expected value passed to `Append()`.
+   * Should be less than, but not equal to `max`.
+   *
+   * \param max
+   * The maximum expected value passed to `Append()`.
+   * Should be greater than, but not equal to `min`
+   */
+  void SetThroughputRangeFixed (double min, double max);
+
+  /**
+   * Convenience method to set up the throughput (Y) axis with a
+   * scaling range (the default).
+   *
+   * This is the equivalent of calling:
+   * `sink->GetYAxis ()->ScalingRange (min, max)`
+   *
+   * \param min
+   * The starting minimum value of the Y axis,
+   * Should be less than, but not equal to `max`.
+   *
+   * \param max
+   * The starting maximum value of the Y axis,
+   * Should be greater than, but not equal to `min`
+   */
+  void SetThroughputRangeScaling (double min, double max);
+
 protected:
   void DoDispose (void) override;
 

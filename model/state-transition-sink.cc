@@ -158,6 +158,36 @@ StateTransitionSink::GetLoggingMode (void) const
   return m_loggingMode;
 }
 
+Ptr<CategoryValueSeries>
+StateTransitionSink::GetSeries (void) const
+{
+  return m_series;
+}
+
+Ptr<ValueAxis>
+StateTransitionSink::GetXAxis (void) const
+{
+  return m_series->GetXAxis();
+}
+
+Ptr<CategoryAxis>
+StateTransitionSink::GetYAxis (void) const
+{
+  return m_series->GetYAxis();
+}
+
+void
+StateTransitionSink::SetTimeRangeFixed (double min, double max)
+{
+  m_series->GetXAxis()->FixedRange (min, max);
+}
+
+void
+StateTransitionSink::SetTimeRangeScaling (double min, double max)
+{
+  m_series->GetXAxis()->ScalingRange (min, max);
+}
+
 void
 StateTransitionSink::Write (void)
 {

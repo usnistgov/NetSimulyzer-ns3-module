@@ -201,6 +201,30 @@ ThroughputSink::GetSeries (void) const
   return m_series;
 }
 
+Ptr<ValueAxis>
+ThroughputSink::GetXAxis (void) const
+{
+  return m_series->GetXAxis();
+}
+
+Ptr<ValueAxis>
+ThroughputSink::GetYAxis (void) const
+{
+  return m_series->GetYAxis();
+}
+
+void
+ThroughputSink::SetThroughputRangeFixed (double min, double max)
+{
+  m_series->GetYAxis()->FixedRange (min, max);
+}
+
+void
+ThroughputSink::SetThroughputRangeScaling (double min, double max)
+{
+  m_series->GetYAxis()->ScalingRange(min, max);
+}
+
 void
 ThroughputSink::DoDispose (void)
 {
