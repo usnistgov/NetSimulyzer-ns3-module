@@ -66,6 +66,52 @@ public:
    */
   static TypeId GetTypeId (void);
 
+  /**
+   * Convenience method to set up the axis with a
+   * fixed range. In the application, this axis
+   * will *not* grow to accommodate new items
+   *
+   * \param min
+   * The minimum value for the range, should be greater than `max`,
+   * but not equal to
+   *
+   * \param max
+   * The maximum value for the range, should be less than `min`,
+   * but not equal to.
+   */
+  void FixedRange (double min, double max);
+
+  /**
+   * Convenience method to set up the axis with a
+   * scaling `HighestValue` range.
+   * In the application, this axis will grow
+   * to accommodate new items.
+   *
+   * Provides a default range of 0 to 1.
+   * If more precise control is desired,
+   * use the overload with `min` and `max`
+   * parameters
+   *
+   * \see ::ScalingRange (double min, double max)
+   */
+  void ScalingRange ();
+
+  /**
+   * Convenience method to set up the axis with a
+   * scaling `HighestValue` range.
+   * In the application, this axis will grow
+   * to accommodate new items.
+   *
+   * \param min
+   * The minimum value for the range, should be greater than `max`,
+   * but not equal to
+   *
+   * \param max
+   * The maximum value for the range, should be less than `min`,
+   * but not equal to.
+   */
+  void ScalingRange (double min, double max);
+
 private:
   /**
    * Name for the axis used in visualizer elements

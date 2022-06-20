@@ -33,6 +33,7 @@
  */
 
 #include "value-axis.h"
+#include <algorithm>
 #include <ns3/log.h>
 #include <ns3/enum.h>
 #include <ns3/string.h>
@@ -68,6 +69,30 @@ ValueAxis::GetTypeId (void)
               MakeEnumChecker (ValueAxis::Linear, "Linear", ValueAxis::Logarithmic, "Logarithmic"));
 
   return tid;
+}
+
+void
+ValueAxis::FixedRange (double min, double max)
+{
+  m_boundMode = BoundMode::Fixed;
+  m_min = std::min (min, max);
+  m_max = std::max (min, max);
+}
+
+void
+ValueAxis::ScalingRange ()
+{
+  m_boundMode = BoundMode::HighestValue;
+  m_min = 0.0;
+  m_max = 1.0;
+}
+
+void
+ValueAxis::ScalingRange (double min, double max)
+{
+  m_boundMode = BoundMode::HighestValue;
+  m_min = std::min (min, max);
+  m_max = std::max (min, max);
 }
 
 } // namespace ns3::netsimulyzer

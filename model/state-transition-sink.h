@@ -220,6 +220,68 @@ public:
   LoggingMode GetLoggingMode (void) const;
 
   /**
+   * Convenience method to access the contained series
+   *
+   * \return
+   * A pointer to the contained `CategoryValueSeries`
+   */
+  Ptr<CategoryValueSeries> GetSeries (void) const;
+
+  /**
+   * Convenience method to access the X axis of the
+   * contained series
+   *
+   * \return
+   * A pointer to the `ValueAxis` used for the X axis
+   * of the contained series
+   */
+  Ptr<ValueAxis> GetXAxis (void) const;
+
+  /**
+   * Convenience method to access the Y axis of the
+   * contained series
+   *
+   * \return
+   * A pointer to the `CategoryAxis` used for the Y axis
+   * of the contained series
+   */
+  Ptr<CategoryAxis> GetYAxis (void) const;
+
+  /**
+   * Convenience method to set up the time (X) axis with a
+   * fixed range.
+   *
+   * This is the equivalent of calling:
+   * `sink->GetXAxis ()->FixedRange (min, max)`
+   *
+   * \param min
+   * The minimum expected value passed to `Append()`.
+   * Should be less than, but not equal to `max`.
+   *
+   * \param max
+   * The maximum expected value passed to `Append()`.
+   * Should be greater than, but not equal to `min`
+   */
+  void SetTimeRangeFixed (double min, double max);
+
+  /**
+   * Convenience method to set up the time (X) axis with a
+   * scaling range (the default).
+   *
+   * This is the equivalent of calling:
+   * `sink->GetXAxis ()->ScalingRange (min, max)`
+   *
+   * \param min
+   * The starting minimum value of the X axis,
+   * Should be less than, but not equal to `max`.
+   *
+   * \param max
+   * The starting maximum value of the X axis,
+   * Should be greater than, but not equal to `min`
+   */
+  void SetTimeRangeScaling (double min, double max);
+
+  /**
    * Write the current application state to the series
    */
   void Write (void);

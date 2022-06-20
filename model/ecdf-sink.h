@@ -185,6 +185,40 @@ public:
   Time GetInterval (void) const;
 
   /**
+   * Convenience method to set up the value (X) axis with a
+   * fixed range.
+   *
+   * This is the equivalent of calling:
+   * `ecdf->GetXAxis ()->FixedRange (min, max)`
+   *
+   * \param min
+   * The minimum expected value passed to `Append()`.
+   * Should be less than, but not equal to `max`.
+   *
+   * \param max
+   * The maximum expected value passed to `Append()`.
+   * Should be greater than, but not equal to `min`
+   */
+  void SetRangeFixed(double min, double max);
+
+  /**
+   * Convenience method to set up the value (X) axis with a
+   * scaling range.
+   *
+   * This is the equivalent of calling:
+   * `ecdf->GetXAxis ()->ScalingRange (min, max)`
+   *
+   * \param min
+   * The starting minimum value of the X axis,
+   * Should be less than, but not equal to `max`.
+   *
+   * \param max
+   * The starting maximum value of the X axis,
+   * Should be greater than, but not equal to `min`
+   */
+  void SetRangeScaling(double min, double max);
+
+  /**
    * Appends a new measured value to the contained data.
    *
    * if the flush mode is `FlushMode::OnWrite`, then this
