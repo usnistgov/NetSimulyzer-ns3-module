@@ -266,6 +266,13 @@ private:
   Vector3D m_positionOffset;
 
   /**
+   * Flag to automatically adjust the orientation
+   * of the Node to face the direction given
+   * by the last position, and the new position
+   */
+  bool m_faceForward;
+
+  /**
    * Flag for use with `Height`, `Width`, and `Depth`
    * attributes. When set, if more than one of the
    * mentioned attributes are set, then only the
