@@ -85,3 +85,6 @@ build_lib(
 )
 
 target_compile_definitions(libnetsimulyzer PUBLIC HAS_NETSIMULYZER)
+
+# This seems to only work with core modules if it's a cached value
+set(HAS_NETSIMULYZER TRUE CACHE BOOL "NetSimulyzer ns-3 module")
