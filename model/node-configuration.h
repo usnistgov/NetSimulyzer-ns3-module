@@ -318,6 +318,13 @@ private:
   std::optional<Color3> m_highlightColor;
 
   /**
+   * Flag to show/hide the motion trail
+   * if the application is set to
+   * the 'Enabled Only' mode
+   */
+  bool m_enableMotionTrail;
+
+  /**
    * Color of the motion trail that
    * follows this Node in the application.
    */

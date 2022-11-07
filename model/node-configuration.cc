@@ -190,6 +190,13 @@ NodeConfiguration::GetTypeId (void)
                          MakeOptionalAccessor<Color3> (&NodeConfiguration::GetHighlightColor,
                                                        &NodeConfiguration::SetHighlightColor),
                          MakeOptionalChecker<Color3> ())
+          .AddAttribute ("EnableMotionTrail",
+                         "Flag to show/hide the motion trail "
+                         "if the application is set to "
+                         "the 'Enabled Only' motion trail mode",
+                         BooleanValue(false),
+                         MakeBooleanAccessor(&NodeConfiguration::m_enableMotionTrail),
+                         MakeBooleanChecker())
           .AddAttribute ("MotionTrailColor",
                          "The color of the optional motion trail"
                          "if unset, uses either the `BaseColor`, `HighlightColor`, or"

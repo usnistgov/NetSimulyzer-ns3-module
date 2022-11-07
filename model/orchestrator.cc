@@ -365,6 +365,10 @@ Orchestrator::SetupSimulation (void)
       if (highlightColor)
         element["highlight-color"] = colorToObject (highlightColor.GetValue ());
 
+      BooleanValue trailEnabled;
+      config->GetAttribute("EnableMotionTrail", trailEnabled);
+      element["trail-enabled"] = trailEnabled.Get();
+
       Color3 trailColor;
       OptionalValue<Color3> trailColorAttr;
       config->GetAttribute ("MotionTrailColor", trailColorAttr);

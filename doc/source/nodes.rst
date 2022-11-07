@@ -356,6 +356,11 @@ the module will choose the next color in the palette.
 The trail color may be set on its own with the
 ``MotionTrailColor`` attribute.
 
+The motion trail may be toggled for an individual ``Node``
+using the ``EnableMotionTrail`` attribute, and setting
+the motion trail display option in the application
+to "Enabled Only"
+
 
 .. figure:: _static/motion-trail-one.png
   :alt: A motion trail following a Node
@@ -419,6 +424,9 @@ Attributes
 +----------------------+---------------------------------------+-----------------+--------------------------------------------------------------+
 | HighlightColor       | :ref:`optional-value` <:ref:`color3`> | n/a             | Color to apply to details of models supporting               |
 |                      |                                       |                 | configurable colors                                          |
++----------------------+---------------------------------------+-----------------+--------------------------------------------------------------+
+| EnableMotionTrail    | bool                                  | ``false``       | Flag to show/hide the motion trail if the application is     |
+|                      |                                       |                 | set to the 'Enabled Only' motion trail mode                  |
 +----------------------+---------------------------------------+-----------------+--------------------------------------------------------------+
 | MotionTrailColor     | :ref:`optional-value` <:ref:`color3`> | n/a             | The color of the optional motion trail, which follows the    |
 |                      |                                       |                 | ``Node`` in the application. If unset, uses ``BaseColor``,   |
