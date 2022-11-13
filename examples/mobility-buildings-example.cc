@@ -183,13 +183,12 @@ main (int argc, char *argv[])
   *infoLog << "Scenario Duration (Seconds): " << duration << '\n';
 
   netsimulyzer::NodeConfigurationHelper nodeConfigHelper (orchestrator);
+  nodeConfigHelper.Set("EnableMotionTrail", BooleanValue(true));
 
   nodeConfigHelper.Set ("Model", StringValue (phoneModelPath));
-  nodeConfigHelper.Set("EnableMotionTrail", BooleanValue(true));
   nodeConfigHelper.Install (phones);
 
   nodeConfigHelper.Set ("Model", StringValue (droneModelPath));
-  nodeConfigHelper.Set("EnableMotionTrail", BooleanValue(false));
   nodeConfigHelper.Install (drones);
 
   // Only explicitly configured items will be shown
