@@ -319,6 +319,10 @@ Orchestrator::SetupSimulation (void)
       config->GetAttribute ("Name", name);
       element["name"] = name.Get ();
 
+      BooleanValue labelEnabled;
+      config->GetAttribute("EnableLabel", labelEnabled);
+      element["label-enabled"] = labelEnabled.Get();
+
       StringValue model;
       config->GetAttribute ("Model", model);
       element["model"] = model.Get ();

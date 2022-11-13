@@ -245,6 +245,14 @@ private:
   std::string m_name;
 
   /**
+   * Flag to enable displaying the
+   * label for this Node in the
+   * application if it it
+   * set to the 'Enabled Only' mode
+   */
+  bool m_enableLabel;
+
+  /**
    * Path to the model installed in the visualizer used to represent this node
    */
   std::string m_model;

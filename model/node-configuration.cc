@@ -122,8 +122,17 @@ NodeConfiguration::GetTypeId (void)
           .SetParent<Object> ()
           .SetGroupName ("netsimulyzer")
           .AddConstructor<NodeConfiguration> ()
-          .AddAttribute ("Name", "Name for this Node", StringValue ("Node"),
-                         MakeStringAccessor (&NodeConfiguration::m_name), MakeStringChecker ())
+          .AddAttribute ("Name", "Name for this Node",
+                         StringValue ("Node"),
+                         MakeStringAccessor (&NodeConfiguration::m_name),
+                         MakeStringChecker ())
+          .AddAttribute ("EnableLabel",
+                         "Flag to show/hide the label above the Node "
+                         "if the application is set to "
+                         "the 'Enabled Only' label mode",
+                         BooleanValue(true),
+                         MakeBooleanAccessor(&NodeConfiguration::m_enableLabel),
+                         MakeBooleanChecker())
           .AddAttribute ("Model", "Filename of the model to represent this Node", StringValue (),
                          MakeStringAccessor (&NodeConfiguration::m_model), MakeStringChecker ())
           .AddAttribute ("Orientation", "Orientation of the Node on each axis in degrees",
