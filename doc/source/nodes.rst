@@ -68,6 +68,13 @@ Land Drone
   :width: 369px
   :height: 265px
 
+Laptop
+++++++
+* ``std::string`` Constant: ``LAPTOP``
+* ``ns3::StringValue`` Constant: ``LAPTOP_VALUE``
+
+.. image:: _static/laptop-model.png
+  :alt: The laptop.obj model with default colors
 
 Server
 ++++++
@@ -78,6 +85,14 @@ Server
   :alt: The server.obj model with default colors
   :width: 516px
   :height: 317px
+
+Single Board Computer
++++++++++++++++++++++
+* ``std::string`` Constant: ``SINGLE_BOARD_COMPUTER``
+* ``ns3::StringValue`` Constant: ``SINGLE_BOARD_COMPUTER_VALUE``
+
+.. image:: _static/single-board-model.png
+  :alt: The single-board-computer.obj model with default colors
 
 Cell Tower Pole
 +++++++++++++++
