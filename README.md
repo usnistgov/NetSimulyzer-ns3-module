@@ -171,8 +171,7 @@ See the N.B. comment in the example below
 # 'core' & 'mobility' are just examples here
 set(libraries_to_link "${libcore};${libmobility}")
 
-# Check if the `netsimulyzer` module is in the enabled modules list
-if("netsimulyzer" IN_LIST ns3-all-enabled-modules)
+if(HAS_NETSIMULYZER)
     # If it's there, then it's safe to add to the library list
     list(APPEND libraries_to_link ${libnetsimulyzer})
 

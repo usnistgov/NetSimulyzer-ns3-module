@@ -74,6 +74,29 @@ compareWithTolerance (const ns3::Vector3D &left, const ns3::Vector3D &right, dou
          (std::abs (left.z - right.z) <= tolerance);
 }
 
+/**
+ * Calculate the angle to rotate the netsimulyzer model to face the direction
+ * given by the ray through `last` to `next`
+ *
+ * \param last
+ * The previous position of the Node
+ *
+ * \param next
+ * The position of the Node currently being applied
+ *
+ * @return
+ * The Z orientation (in degrees) to rotate the model to
+ */
+double
+faceForwardAngle (const ns3::Vector3D &last, const ns3::Vector3D &next)
+{
+  // clang-format off
+  return std::atan2((next.y - last.y), (next.x - last.x))
+             * 180/3.14 // Convert Radians to Degrees
+             + 90.0; // Offset for default NetSimulyzer model orientation TODO: Adjust models to remove this
+  // clang-format on
+}
+
 } // namespace
 
 namespace ns3 {
@@ -93,13 +116,23 @@ TypeId
 NodeConfiguration::GetTypeId (void)
 {
   // clang-format off
+  // clang-format on
   static TypeId tid =
       TypeId ("ns3::netsimulyzer::NodeConfiguration")
           .SetParent<Object> ()
           .SetGroupName ("netsimulyzer")
           .AddConstructor<NodeConfiguration> ()
-          .AddAttribute ("Name", "Name for this Node", StringValue ("Node"),
-                         MakeStringAccessor (&NodeConfiguration::m_name), MakeStringChecker ())
+          .AddAttribute ("Name", "Name for this Node",
+                         StringValue ("Node"),
+                         MakeStringAccessor (&NodeConfiguration::m_name),
+                         MakeStringChecker ())
+          .AddAttribute ("EnableLabel",
+                         "Flag to show/hide the label above the Node "
+                         "if the application is set to "
+                         "the 'Enabled Only' label mode",
+                         BooleanValue(true),
+                         MakeBooleanAccessor(&NodeConfiguration::m_enableLabel),
+                         MakeBooleanChecker())
           .AddAttribute ("Model", "Filename of the model to represent this Node", StringValue (),
                          MakeStringAccessor (&NodeConfiguration::m_model), MakeStringChecker ())
           .AddAttribute ("Orientation", "Orientation of the Node on each axis in degrees",
@@ -121,6 +154,14 @@ NodeConfiguration::GetTypeId (void)
           .AddAttribute ("Offset", "Offset from the Node to apply to the model", Vector3DValue (),
                          MakeVector3DAccessor (&NodeConfiguration::m_positionOffset),
                          MakeVector3DChecker ())
+          .AddAttribute ("FaceForward",
+                         "Automatically change the 2D orientation of "
+                         "the Node to face the directions pointed to "
+                         "by the ray drawn from the last position to "
+                         "the current one",
+                         BooleanValue (false),
+                         MakeBooleanAccessor (&NodeConfiguration::m_faceForward),
+                         MakeBooleanChecker ())
           .AddAttribute ("KeepRatio",
                          "When scaling with the `Height`, `Width`, and `Depth` attributes, "
                          "use only the value that produces the largest model. "
@@ -158,6 +199,13 @@ NodeConfiguration::GetTypeId (void)
                          MakeOptionalAccessor<Color3> (&NodeConfiguration::GetHighlightColor,
                                                        &NodeConfiguration::SetHighlightColor),
                          MakeOptionalChecker<Color3> ())
+          .AddAttribute ("EnableMotionTrail",
+                         "Flag to show/hide the motion trail "
+                         "if the application is set to "
+                         "the 'Enabled Only' motion trail mode",
+                         BooleanValue(false),
+                         MakeBooleanAccessor(&NodeConfiguration::m_enableMotionTrail),
+                         MakeBooleanChecker())
           .AddAttribute ("MotionTrailColor",
                          "The color of the optional motion trail"
                          "if unset, uses either the `BaseColor`, `HighlightColor`, or"
@@ -183,7 +231,6 @@ NodeConfiguration::GetTypeId (void)
                          MakePointerAccessor (&NodeConfiguration::GetOrchestrator,
                                               &NodeConfiguration::SetOrchestrator),
                          MakePointerChecker<Orchestrator> ());
-  // clang-format on
   return tid;
 }
 
@@ -205,6 +252,12 @@ NodeConfiguration::CourseChange (ns3::Ptr<const MobilityModel> model)
   event.position = model->GetPosition ();
 
   m_orchestrator->HandleCourseChange (event);
+
+  if (m_faceForward)
+    SetOrientation (
+        {m_orientation.x, m_orientation.y, faceForwardAngle (m_lastPosition, event.position)});
+
+  m_lastPosition = event.position;
 }
 
 void
@@ -255,7 +308,7 @@ NodeConfiguration::MobilityPoll (void)
       return {};
     }
 
-  auto position = mobility->GetPosition ();
+  const auto position = mobility->GetPosition ();
 
   if (m_usePositionTolerance &&
       compareWithTolerance (position, m_lastPosition, m_positionTolerance))
@@ -263,6 +316,10 @@ NodeConfiguration::MobilityPoll (void)
       NS_LOG_DEBUG ("Node [ID: " << node->GetId () << "] Within tolerance");
       return {};
     }
+
+  if (m_faceForward)
+    SetOrientation (
+        {m_orientation.x, m_orientation.y, faceForwardAngle (m_lastPosition, position)});
   m_lastPosition = position;
 
   return {position};

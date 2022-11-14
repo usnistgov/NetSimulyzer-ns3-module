@@ -636,31 +636,39 @@ TracePacketReception (std::string context, Ptr<const Packet> p, uint16_t channel
     }
 }
 
+/**
+ * Contention window trace.
+ *
+ * \param context The context.
+ * \param cw The contention window.
+ */
 void
-CwTrace (std::string context, uint32_t oldVal, uint32_t newVal)
+CwTrace (std::string context, uint32_t cw, uint8_t /* linkId */)
 {
-  NS_LOG_INFO ("CW time=" << Simulator::Now () << " node=" << ContextToNodeId (context)
-                          << " val=" << newVal);
-  if (tracing)
+    NS_LOG_INFO("CW time=" << Simulator::Now() << " node=" << ContextToNodeId(context)
+                           << " val=" << cw);
+    if (tracing)
     {
-      cwTraceFile << Simulator::Now ().GetSeconds () << " " << ContextToNodeId (context) << " "
-                  << newVal << std::endl;
+        cwTraceFile << Simulator::Now().GetSeconds() << " " << ContextToNodeId(context) << " " << cw
+                    << std::endl;
     }
 #ifdef HAS_NETSIMULYZER
-  if (enableVisualization)
+    if (enableVisualization)
     {
-      if (newVal != oldVal)
-        {
-          std::map<uint32_t, Ptr<netsimulyzer::XYSeries>>::iterator it =
-              cwTraceSeries.find (ContextToNodeId (context));
-          it->second->Append (Simulator::Now ().GetSeconds (), newVal);
-        }
+        cwTraceSeries.find(ContextToNodeId(context))
+            ->second->Append(Simulator::Now().GetSeconds(), cw);
     }
 #endif
 }
 
+/**
+ * Backoff trace.
+ *
+ * \param context The context.
+ * \param newVal The backoff value.
+ */
 void
-BackoffTrace (std::string context, uint32_t newVal)
+BackoffTrace (std::string context, uint32_t newVal, uint8_t /* linkId */)
 {
   NS_LOG_INFO ("Backoff time=" << Simulator::Now () << " node=" << ContextToNodeId (context)
                                << " val=" << newVal);
@@ -672,10 +680,9 @@ BackoffTrace (std::string context, uint32_t newVal)
 #ifdef HAS_NETSIMULYZER
   if (enableVisualization)
     {
-      std::map<uint32_t, Ptr<netsimulyzer::XYSeries>>::iterator it =
-          backoffTraceSeries.find (ContextToNodeId (context));
-      it->second->Append (Simulator::Now ().GetSeconds (), newVal);
-    }
+      backoffTraceSeries.find(ContextToNodeId(context))
+          ->second->Append(Simulator::Now().GetSeconds(), newVal);
+  }
 #endif
 }
 

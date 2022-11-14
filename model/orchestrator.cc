@@ -319,6 +319,10 @@ Orchestrator::SetupSimulation (void)
       config->GetAttribute ("Name", name);
       element["name"] = name.Get ();
 
+      BooleanValue labelEnabled;
+      config->GetAttribute("EnableLabel", labelEnabled);
+      element["label-enabled"] = labelEnabled.Get();
+
       StringValue model;
       config->GetAttribute ("Model", model);
       element["model"] = model.Get ();
@@ -364,6 +368,10 @@ Orchestrator::SetupSimulation (void)
       config->GetAttribute ("HighlightColor", highlightColor);
       if (highlightColor)
         element["highlight-color"] = colorToObject (highlightColor.GetValue ());
+
+      BooleanValue trailEnabled;
+      config->GetAttribute("EnableMotionTrail", trailEnabled);
+      element["trail-enabled"] = trailEnabled.Get();
 
       Color3 trailColor;
       OptionalValue<Color3> trailColorAttr;

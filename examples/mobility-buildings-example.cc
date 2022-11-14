@@ -183,6 +183,7 @@ main (int argc, char *argv[])
   *infoLog << "Scenario Duration (Seconds): " << duration << '\n';
 
   netsimulyzer::NodeConfigurationHelper nodeConfigHelper (orchestrator);
+  nodeConfigHelper.Set("EnableMotionTrail", BooleanValue(true));
 
   nodeConfigHelper.Set ("Model", StringValue (phoneModelPath));
   nodeConfigHelper.Install (phones);

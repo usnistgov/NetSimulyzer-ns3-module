@@ -245,6 +245,14 @@ private:
   std::string m_name;
 
   /**
+   * Flag to enable displaying the
+   * label for this Node in the
+   * application if it it
+   * set to the 'Enabled Only' mode
+   */
+  bool m_enableLabel;
+
+  /**
    * Path to the model installed in the visualizer used to represent this node
    */
   std::string m_model;
@@ -264,6 +272,13 @@ private:
    * to apply to the rendered model
    */
   Vector3D m_positionOffset;
+
+  /**
+   * Flag to automatically adjust the orientation
+   * of the Node to face the direction given
+   * by the last position, and the new position
+   */
+  bool m_faceForward;
 
   /**
    * Flag for use with `Height`, `Width`, and `Depth`
@@ -309,6 +324,13 @@ private:
    * colors
    */
   std::optional<Color3> m_highlightColor;
+
+  /**
+   * Flag to show/hide the motion trail
+   * if the application is set to
+   * the 'Enabled Only' mode
+   */
+  bool m_enableMotionTrail;
 
   /**
    * Color of the motion trail that
