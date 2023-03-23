@@ -33,147 +33,179 @@
  */
 
 #include "xy-series.h"
+
 #include "color-palette.h"
-#include <ns3/log.h>
-#include <ns3/enum.h>
+
 #include <ns3/boolean.h>
-#include <ns3/uinteger.h>
+#include <ns3/enum.h>
+#include <ns3/log.h>
 #include <ns3/pointer.h>
 #include <ns3/string.h>
+#include <ns3/uinteger.h>
 
-namespace ns3 {
-NS_LOG_COMPONENT_DEFINE ("XYSeries");
-namespace netsimulyzer {
-
-NS_OBJECT_ENSURE_REGISTERED (XYSeries);
-
-XYSeries::XYSeries (Ptr<Orchestrator> orchestrator) : m_orchestrator (orchestrator)
+namespace ns3
 {
-  NS_LOG_FUNCTION (this << m_orchestrator);
-  // There doesn't seem to be a Ptr from `this`, so this is as close as we can get
-  m_id = orchestrator->Register ({this, true});
+NS_LOG_COMPONENT_DEFINE("XYSeries");
+
+namespace netsimulyzer
+{
+
+NS_OBJECT_ENSURE_REGISTERED(XYSeries);
+
+XYSeries::XYSeries(Ptr<Orchestrator> orchestrator)
+    : m_orchestrator(orchestrator)
+{
+    NS_LOG_FUNCTION(this << m_orchestrator);
+    // There doesn't seem to be a Ptr from `this`, so this is as close as we can get
+    m_id = orchestrator->Register({this, true});
 }
 
 TypeId
-XYSeries::GetTypeId (void)
+XYSeries::GetTypeId(void)
 {
-  static TypeId tid =
-      TypeId ("ns3::netsimulyzer::XYSeries")
-          .SetParent<ns3::Object> ()
-          .SetGroupName ("netsimulyzer")
-          .AddAttribute ("Id", "The unique ID of the series", TypeId::ATTR_GET, UintegerValue (0u),
-                         MakeUintegerAccessor (&XYSeries::m_id), MakeUintegerChecker<uint32_t> ())
-          .AddAttribute ("XAxis", "The X axis on the graph", PointerValue (),
-                         MakePointerAccessor (&XYSeries::GetXAxis, &XYSeries::SetXAxis),
-                         MakePointerChecker<ValueAxis> ())
-          .AddAttribute ("YAxis", "The Y axis on the graph", PointerValue (),
-                         MakePointerAccessor (&XYSeries::GetYAxis, &XYSeries::SetYAxis),
-                         MakePointerChecker<ValueAxis> ())
-          .AddAttribute ("Orchestrator", "Orchestrator that manages this series", PointerValue (),
-                         MakePointerAccessor (&XYSeries::m_orchestrator),
-                         MakePointerChecker<Orchestrator> ())
-          .AddAttribute ("Connection", "Type of connection to form between points in the series",
-                         EnumValue (XYSeries::ConnectionType::Line),
-                         MakeEnumAccessor (&XYSeries::m_connection),
-                         MakeEnumChecker (XYSeries::ConnectionType::None, "None",
-                                          XYSeries::ConnectionType::Line, "Line",
-                                          XYSeries::ConnectionType::Spline, "Spline"))
-          .AddAttribute ("LabelMode", "How the point labels are shown",
-                         EnumValue (XYSeries::LabelMode::Hidden),
-                         MakeEnumAccessor (&XYSeries::m_labelMode),
-                         MakeEnumChecker (XYSeries::LabelMode::Hidden, "Hidden",
-                                          XYSeries::LabelMode::Shown, "Shown"))
-          .AddAttribute ("Name", "Name to represent this series in visualizer elements",
-                         StringValue (), MakeStringAccessor (&XYSeries::m_name),
-                         MakeStringChecker ())
-          .AddAttribute ("Legend", "Name for the series that appears in the chart legend",
-                         StringValue (), MakeStringAccessor (&XYSeries::m_legend),
-                         MakeStringChecker ())
-          .AddAttribute ("Visible", "Should this series appear in selection elements",
-                         BooleanValue (true), MakeBooleanAccessor (&XYSeries::m_visible),
-                         MakeBooleanChecker ())
-          .AddAttribute ("Color", "Color to use for the points and connections", BLUE_VALUE,
-                         MakeColor3Accessor (&XYSeries::m_color), MakeColor3Checker ());
-  return tid;
+    static TypeId tid =
+        TypeId("ns3::netsimulyzer::XYSeries")
+            .SetParent<ns3::Object>()
+            .SetGroupName("netsimulyzer")
+            .AddAttribute("Id",
+                          "The unique ID of the series",
+                          TypeId::ATTR_GET,
+                          UintegerValue(0u),
+                          MakeUintegerAccessor(&XYSeries::m_id),
+                          MakeUintegerChecker<uint32_t>())
+            .AddAttribute("XAxis",
+                          "The X axis on the graph",
+                          PointerValue(),
+                          MakePointerAccessor(&XYSeries::GetXAxis, &XYSeries::SetXAxis),
+                          MakePointerChecker<ValueAxis>())
+            .AddAttribute("YAxis",
+                          "The Y axis on the graph",
+                          PointerValue(),
+                          MakePointerAccessor(&XYSeries::GetYAxis, &XYSeries::SetYAxis),
+                          MakePointerChecker<ValueAxis>())
+            .AddAttribute("Orchestrator",
+                          "Orchestrator that manages this series",
+                          PointerValue(),
+                          MakePointerAccessor(&XYSeries::m_orchestrator),
+                          MakePointerChecker<Orchestrator>())
+            // clang-format off
+            .AddAttribute("Connection",
+                          "Type of connection to form between points in the series",
+                          EnumValue(XYSeries::ConnectionType::Line),
+                          MakeEnumAccessor(&XYSeries::m_connection),
+                          MakeEnumChecker(
+                              XYSeries::ConnectionType::None, "None",
+                              XYSeries::ConnectionType::Line, "Line",
+                              XYSeries::ConnectionType::Spline,"Spline"))
+            .AddAttribute("LabelMode",
+                          "How the point labels are shown",
+                          EnumValue(XYSeries::LabelMode::Hidden),
+                          MakeEnumAccessor(&XYSeries::m_labelMode),
+                          MakeEnumChecker(
+                              XYSeries::LabelMode::Hidden,"Hidden",
+                              XYSeries::LabelMode::Shown,"Shown"))
+            // clang-format on
+            .AddAttribute("Name",
+                          "Name to represent this series in visualizer elements",
+                          StringValue(),
+                          MakeStringAccessor(&XYSeries::m_name),
+                          MakeStringChecker())
+            .AddAttribute("Legend",
+                          "Name for the series that appears in the chart legend",
+                          StringValue(),
+                          MakeStringAccessor(&XYSeries::m_legend),
+                          MakeStringChecker())
+            .AddAttribute("Visible",
+                          "Should this series appear in selection elements",
+                          BooleanValue(true),
+                          MakeBooleanAccessor(&XYSeries::m_visible),
+                          MakeBooleanChecker())
+            .AddAttribute("Color",
+                          "Color to use for the points and connections",
+                          BLUE_VALUE,
+                          MakeColor3Accessor(&XYSeries::m_color),
+                          MakeColor3Checker());
+    return tid;
 }
 
 void
-XYSeries::Append (double x, double y)
+XYSeries::Append(double x, double y)
 {
-  NS_LOG_FUNCTION (this << x << y);
-  m_orchestrator->AppendXyValue (m_id, x, y);
+    NS_LOG_FUNCTION(this << x << y);
+    m_orchestrator->AppendXyValue(m_id, x, y);
 }
 
 void
-XYSeries::Append (const XYPoint &point)
+XYSeries::Append(const XYPoint& point)
 {
-  NS_LOG_FUNCTION (this << point.x << point.y);
-  m_orchestrator->AppendXyValue (m_id, point.x, point.y);
+    NS_LOG_FUNCTION(this << point.x << point.y);
+    m_orchestrator->AppendXyValue(m_id, point.x, point.y);
 }
 
 void
-XYSeries::Append (const std::vector<XYPoint> &points)
+XYSeries::Append(const std::vector<XYPoint>& points)
 {
-  NS_LOG_FUNCTION (this);
-  m_orchestrator->AppendXyValues (m_id, points);
+    NS_LOG_FUNCTION(this);
+    m_orchestrator->AppendXyValues(m_id, points);
 }
 
 void
-XYSeries::Clear (void)
+XYSeries::Clear(void)
 {
-  NS_LOG_FUNCTION (this);
-  m_orchestrator->ClearXySeries (m_id);
+    NS_LOG_FUNCTION(this);
+    m_orchestrator->ClearXySeries(m_id);
 }
 
 void
-XYSeries::Commit (void)
+XYSeries::Commit(void)
 {
-  NS_LOG_FUNCTION (this);
-  if (m_committed)
+    NS_LOG_FUNCTION(this);
+    if (m_committed)
     {
-      NS_LOG_DEBUG ("Ignoring Commit () on already committed model");
-      return;
+        NS_LOG_DEBUG("Ignoring Commit () on already committed model");
+        return;
     }
 
-  m_orchestrator->Commit (*this);
-  m_committed = true;
+    m_orchestrator->Commit(*this);
+    m_committed = true;
 }
 
 Ptr<ValueAxis>
-XYSeries::GetXAxis (void) const
+XYSeries::GetXAxis(void) const
 {
-  NS_LOG_FUNCTION (this);
-  return m_xAxis;
+    NS_LOG_FUNCTION(this);
+    return m_xAxis;
 }
 
 void
-XYSeries::SetXAxis (Ptr<ValueAxis> value)
+XYSeries::SetXAxis(Ptr<ValueAxis> value)
 {
-  NS_LOG_FUNCTION (this << value);
-  m_xAxis = value;
+    NS_LOG_FUNCTION(this << value);
+    m_xAxis = value;
 }
 
 Ptr<ValueAxis>
-XYSeries::GetYAxis (void) const
+XYSeries::GetYAxis(void) const
 {
-  NS_LOG_FUNCTION (this);
-  return m_yAxis;
+    NS_LOG_FUNCTION(this);
+    return m_yAxis;
 }
 
 void
-XYSeries::SetYAxis (Ptr<ValueAxis> value)
+XYSeries::SetYAxis(Ptr<ValueAxis> value)
 {
-  NS_LOG_FUNCTION (this << value);
-  m_yAxis = value;
+    NS_LOG_FUNCTION(this << value);
+    m_yAxis = value;
 }
+
 void
-XYSeries::DoDispose (void)
+XYSeries::DoDispose(void)
 {
-  NS_LOG_FUNCTION (this);
-  m_orchestrator = nullptr;
-  m_xAxis = nullptr;
-  m_yAxis = nullptr;
-  Object::DoDispose ();
+    NS_LOG_FUNCTION(this);
+    m_orchestrator = nullptr;
+    m_xAxis = nullptr;
+    m_yAxis = nullptr;
+    Object::DoDispose();
 }
 
 } // namespace netsimulyzer

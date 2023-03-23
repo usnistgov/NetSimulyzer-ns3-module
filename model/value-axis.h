@@ -35,110 +35,120 @@
 #ifndef VALUE_AXIS_H
 #define VALUE_AXIS_H
 
-#include <string>
-#include <cstdint>
 #include <ns3/object.h>
-#include <ns3/ptr.h>
 #include <ns3/orchestrator.h>
+#include <ns3/ptr.h>
 
-namespace ns3::netsimulyzer {
+#include <cstdint>
+#include <string>
+
+namespace ns3::netsimulyzer
+{
 
 /**
  * Defines an axis with a linear or logarithmic scale
  */
 class ValueAxis : public ns3::Object
 {
-public:
-  /**
-   * The method to scale between tick marks on the axis
-   */
-  enum Scale { Linear, Logarithmic };
+  public:
+    /**
+     * The method to scale between tick marks on the axis
+     */
+    enum Scale
+    {
+        Linear,
+        Logarithmic
+    };
 
-  /**
-   * How the boundaries of the axis may move given a new value
-   */
-  enum BoundMode { Fixed, HighestValue };
+    /**
+     * How the boundaries of the axis may move given a new value
+     */
+    enum BoundMode
+    {
+        Fixed,
+        HighestValue
+    };
 
-  /**
-   * \brief Get the class TypeId
-   *
-   * \return the TypeId
-   */
-  static TypeId GetTypeId (void);
+    /**
+     * \brief Get the class TypeId
+     *
+     * \return the TypeId
+     */
+    static TypeId GetTypeId(void);
 
-  /**
-   * Convenience method to set up the axis with a
-   * fixed range. In the application, this axis
-   * will *not* grow to accommodate new items
-   *
-   * \param min
-   * The minimum value for the range, should be greater than `max`,
-   * but not equal to
-   *
-   * \param max
-   * The maximum value for the range, should be less than `min`,
-   * but not equal to.
-   */
-  void FixedRange (double min, double max);
+    /**
+     * Convenience method to set up the axis with a
+     * fixed range. In the application, this axis
+     * will *not* grow to accommodate new items
+     *
+     * \param min
+     * The minimum value for the range, should be greater than `max`,
+     * but not equal to
+     *
+     * \param max
+     * The maximum value for the range, should be less than `min`,
+     * but not equal to.
+     */
+    void FixedRange(double min, double max);
 
-  /**
-   * Convenience method to set up the axis with a
-   * scaling `HighestValue` range.
-   * In the application, this axis will grow
-   * to accommodate new items.
-   *
-   * Provides a default range of 0 to 1.
-   * If more precise control is desired,
-   * use the overload with `min` and `max`
-   * parameters
-   *
-   * \see ::ScalingRange (double min, double max)
-   */
-  void ScalingRange ();
+    /**
+     * Convenience method to set up the axis with a
+     * scaling `HighestValue` range.
+     * In the application, this axis will grow
+     * to accommodate new items.
+     *
+     * Provides a default range of 0 to 1.
+     * If more precise control is desired,
+     * use the overload with `min` and `max`
+     * parameters
+     *
+     * \see ::ScalingRange (double min, double max)
+     */
+    void ScalingRange();
 
-  /**
-   * Convenience method to set up the axis with a
-   * scaling `HighestValue` range.
-   * In the application, this axis will grow
-   * to accommodate new items.
-   *
-   * \param min
-   * The minimum value for the range, should be greater than `max`,
-   * but not equal to
-   *
-   * \param max
-   * The maximum value for the range, should be less than `min`,
-   * but not equal to.
-   */
-  void ScalingRange (double min, double max);
+    /**
+     * Convenience method to set up the axis with a
+     * scaling `HighestValue` range.
+     * In the application, this axis will grow
+     * to accommodate new items.
+     *
+     * \param min
+     * The minimum value for the range, should be greater than `max`,
+     * but not equal to
+     *
+     * \param max
+     * The maximum value for the range, should be less than `min`,
+     * but not equal to.
+     */
+    void ScalingRange(double min, double max);
 
-private:
-  /**
-   * Name for the axis used in visualizer elements
-   */
-  std::string m_name;
+  private:
+    /**
+     * Name for the axis used in visualizer elements
+     */
+    std::string m_name;
 
-  /**
-   * The minimum possible value on the axis.
-   * Should be less then the maximum.
-   */
-  double m_min;
+    /**
+     * The minimum possible value on the axis.
+     * Should be less then the maximum.
+     */
+    double m_min;
 
-  /**
-   * The maximum value to be represented on the axis.
-   * Should be grater than minimum.
-   */
-  double m_max;
+    /**
+     * The maximum value to be represented on the axis.
+     * Should be grater than minimum.
+     */
+    double m_max;
 
-  /**
-   * The method to scale between tick marks on the axis
-   */
-  Scale m_scale;
+    /**
+     * The method to scale between tick marks on the axis
+     */
+    Scale m_scale;
 
-  /**
-   * How the boundaries of the axis may move
-   */
-  BoundMode m_boundMode;
+    /**
+     * How the boundaries of the axis may move
+     */
+    BoundMode m_boundMode;
 };
 
 } // namespace ns3::netsimulyzer

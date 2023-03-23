@@ -35,15 +35,17 @@
 #ifndef BUILDING_CONFIGURATION_H
 #define BUILDING_CONFIGURATION_H
 
-#include <string>
-#include <ns3/type-id.h>
-#include <ns3/object.h>
-#include <ns3/ptr.h>
-#include <ns3/event-message.h>
-#include <ns3/orchestrator.h>
 #include <ns3/color.h>
+#include <ns3/event-message.h>
+#include <ns3/object.h>
+#include <ns3/orchestrator.h>
+#include <ns3/ptr.h>
+#include <ns3/type-id.h>
 
-namespace ns3::netsimulyzer {
+#include <string>
+
+namespace ns3::netsimulyzer
+{
 
 class Orchestrator;
 
@@ -53,73 +55,73 @@ class Orchestrator;
  */
 class BuildingConfiguration : public Object
 {
-public:
-  /**
-   * Create an unbound BuildingConfiguration.
-   * This constructor is meant for use by the helper.
-   *
-   * If this constructor is used, then an orchestrator
-   * must be set later.
-   */
-  BuildingConfiguration (void) = default;
+  public:
+    /**
+     * Create an unbound BuildingConfiguration.
+     * This constructor is meant for use by the helper.
+     *
+     * If this constructor is used, then an orchestrator
+     * must be set later.
+     */
+    BuildingConfiguration(void) = default;
 
-  /**
-   * Creates a managed BuildingConfiguration.
-   *
-   * This constructor should be used by users
-   *
-   * \param orchestrator
-   * The Orchestrator to register this Building with
-   */
-  explicit BuildingConfiguration (Ptr<Orchestrator> orchestrator);
+    /**
+     * Creates a managed BuildingConfiguration.
+     *
+     * This constructor should be used by users
+     *
+     * \param orchestrator
+     * The Orchestrator to register this Building with
+     */
+    explicit BuildingConfiguration(Ptr<Orchestrator> orchestrator);
 
-  /**
-   * \brief Get the class TypeId
-   *
-   * \return the TypeId
-   */
-  static TypeId GetTypeId (void);
+    /**
+     * \brief Get the class TypeId
+     *
+     * \return the TypeId
+     */
+    static TypeId GetTypeId(void);
 
-  /**
-   * Sets the Orchestrator managing this Building &
-   * register this Building with that Orchestrator.
-   *
-   * Prefer using the Orchestrator constructor as opposed to setting the
-   * Orchestrator later
-   *
-   * \param orchestrator
-   * The Orchestrator to register this BuildingConfiguration with
-   */
-  void SetOrchestrator (Ptr<Orchestrator> orchestrator);
+    /**
+     * Sets the Orchestrator managing this Building &
+     * register this Building with that Orchestrator.
+     *
+     * Prefer using the Orchestrator constructor as opposed to setting the
+     * Orchestrator later
+     *
+     * \param orchestrator
+     * The Orchestrator to register this BuildingConfiguration with
+     */
+    void SetOrchestrator(Ptr<Orchestrator> orchestrator);
 
-  /**
-   * \return
-   * The Orchestrator managing this Building.
-   * nullptr if it is not managed
-   */
-  Ptr<Orchestrator> GetOrchestrator (void) const;
+    /**
+     * \return
+     * The Orchestrator managing this Building.
+     * nullptr if it is not managed
+     */
+    Ptr<Orchestrator> GetOrchestrator(void) const;
 
-protected:
-  /**
-   * \brief Disconnects the referenced Orchestrator
-   */
-  void DoDispose (void) override;
+  protected:
+    /**
+     * \brief Disconnects the referenced Orchestrator
+     */
+    void DoDispose(void) override;
 
-private:
-  /**
-   * Pointer to the Orchestrator managing this building
-   */
-  ns3::Ptr<Orchestrator> m_orchestrator;
+  private:
+    /**
+     * Pointer to the Orchestrator managing this building
+     */
+    ns3::Ptr<Orchestrator> m_orchestrator;
 
-  /**
-   * The color used to shade the walls of the building
-   */
-  Color3 m_color;
+    /**
+     * The color used to shade the walls of the building
+     */
+    Color3 m_color;
 
-  /**
-   * Flag to show the model in the visualizer or not
-   */
-  bool m_visible;
+    /**
+     * Flag to show the model in the visualizer or not
+     */
+    bool m_visible;
 };
 
 } // namespace ns3::netsimulyzer

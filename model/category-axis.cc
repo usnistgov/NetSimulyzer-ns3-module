@@ -33,98 +33,106 @@
  */
 
 #include "category-axis.h"
-#include <algorithm>
-#include <ns3/log.h>
-#include <ns3/string.h>
-#include <ns3/pointer.h>
+
 #include <ns3/abort.h>
+#include <ns3/log.h>
+#include <ns3/pointer.h>
+#include <ns3/string.h>
 
-namespace ns3 {
-NS_LOG_COMPONENT_DEFINE ("CategoryAxis");
-namespace netsimulyzer {
+#include <algorithm>
 
-NS_OBJECT_ENSURE_REGISTERED (CategoryAxis);
+namespace ns3
+{
+NS_LOG_COMPONENT_DEFINE("CategoryAxis");
+
+namespace netsimulyzer
+{
+
+NS_OBJECT_ENSURE_REGISTERED(CategoryAxis);
 
 TypeId
-CategoryAxis::GetTypeId (void)
+CategoryAxis::GetTypeId(void)
 {
-  static TypeId tid =
-      TypeId ("ns3::netsimulyzer::CategoryAxis")
-          .SetParent<ns3::Object> ()
-          .SetGroupName ("netsimulyzer")
-          .AddAttribute ("Name", "Unique name to represent this axis in visualizer elements",
-                         StringValue (), MakeStringAccessor (&CategoryAxis::m_name),
-                         MakeStringChecker ());
+    static TypeId tid =
+        TypeId("ns3::netsimulyzer::CategoryAxis")
+            .SetParent<ns3::Object>()
+            .SetGroupName("netsimulyzer")
+            .AddAttribute("Name",
+                          "Unique name to represent this axis in visualizer elements",
+                          StringValue(),
+                          MakeStringAccessor(&CategoryAxis::m_name),
+                          MakeStringChecker());
 
-  return tid;
+    return tid;
 }
 
-CategoryAxis::CategoryAxis (const std::vector<std::string> &values)
+CategoryAxis::CategoryAxis(const std::vector<std::string>& values)
 {
-  NS_LOG_FUNCTION (this);
-  for (const auto &value : values)
-    AddValue (value);
+    NS_LOG_FUNCTION(this);
+    for (const auto& value : values)
+        AddValue(value);
 }
 
-CategoryAxis::CategoryAxis (const std::vector<ValuePair> &values)
+CategoryAxis::CategoryAxis(const std::vector<ValuePair>& values)
 {
-  NS_LOG_FUNCTION (this);
-  for (const auto &value : values)
-    AddValue (value);
-}
-
-void
-CategoryAxis::AddValue (const std::string &value)
-{
-  NS_LOG_FUNCTION (this << value);
-  AddValue ({m_nextId++, value});
+    NS_LOG_FUNCTION(this);
+    for (const auto& value : values)
+        AddValue(value);
 }
 
 void
-CategoryAxis::AddValue (const CategoryAxis::ValuePair &value)
+CategoryAxis::AddValue(const std::string& value)
 {
-  NS_LOG_FUNCTION (this << value.key << value.value);
-  m_values.emplace (value.key, value.value);
-
-  // We have no guarantee that the user won't still add
-  // keys with no values, so keep our next key ahead of
-  // the largest
-  if (value.key > m_nextId)
-    m_nextId = value.key + 1;
+    NS_LOG_FUNCTION(this << value);
+    AddValue({m_nextId++, value});
 }
 
-const std::unordered_map<int, std::string> &
-CategoryAxis::GetValues (void) const
+void
+CategoryAxis::AddValue(const CategoryAxis::ValuePair& value)
 {
-  NS_LOG_FUNCTION (this);
-  return m_values;
+    NS_LOG_FUNCTION(this << value.key << value.value);
+    m_values.emplace(value.key, value.value);
+
+    // We have no guarantee that the user won't still add
+    // keys with no values, so keep our next key ahead of
+    // the largest
+    if (value.key > m_nextId)
+        m_nextId = value.key + 1;
+}
+
+const std::unordered_map<int, std::string>&
+CategoryAxis::GetValues(void) const
+{
+    NS_LOG_FUNCTION(this);
+    return m_values;
 }
 
 int
-CategoryAxis::GetId (const std::string &name) const
+CategoryAxis::GetId(const std::string& name) const
 {
-  NS_LOG_FUNCTION (this << name);
-  const auto iter = std::find_if (m_values.begin (), m_values.end (),
-                                  [&name] (const auto &value) { return value.second == name; });
+    NS_LOG_FUNCTION(this << name);
+    const auto iter = std::find_if(m_values.begin(), m_values.end(), [&name](const auto& value) {
+        return value.second == name;
+    });
 
-  if (iter == m_values.end ())
-    NS_ABORT_MSG ("Name: " << name << " not registered with CategoryAxis");
+    if (iter == m_values.end())
+        NS_ABORT_MSG("Name: " << name << " not registered with CategoryAxis");
 
-  return iter->first;
+    return iter->first;
 }
 
 CategoryAxis::ValuePair
-CategoryAxis::Get (int id)
+CategoryAxis::Get(int id)
 {
-  NS_LOG_FUNCTION (this << id);
-  return {id, m_values.at (id)};
+    NS_LOG_FUNCTION(this << id);
+    return {id, m_values.at(id)};
 }
 
 CategoryAxis::ValuePair
-CategoryAxis::Get (const std::string &name)
+CategoryAxis::Get(const std::string& name)
 {
-  NS_LOG_FUNCTION (this << name);
-  return {GetId (name), name};
+    NS_LOG_FUNCTION(this << name);
+    return {GetId(name), name};
 }
 
 } // namespace netsimulyzer

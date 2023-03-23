@@ -33,99 +33,103 @@
  */
 
 #include "node-configuration-container.h"
-#include <ns3/log.h>
+
 #include <ns3/assert.h>
+#include <ns3/log.h>
 
-namespace ns3 {
-
-NS_LOG_COMPONENT_DEFINE ("NodeConfigurationContainer");
-
-namespace netsimulyzer {
-
-NodeConfigurationContainer::NodeConfigurationContainer (void)
+namespace ns3
 {
-  NS_LOG_FUNCTION (this);
+
+NS_LOG_COMPONENT_DEFINE("NodeConfigurationContainer");
+
+namespace netsimulyzer
+{
+
+NodeConfigurationContainer::NodeConfigurationContainer(void)
+{
+    NS_LOG_FUNCTION(this);
 }
 
-NodeConfigurationContainer::NodeConfigurationContainer (Ptr<NodeConfiguration> configuration)
+NodeConfigurationContainer::NodeConfigurationContainer(Ptr<NodeConfiguration> configuration)
 {
-  NS_LOG_FUNCTION (this << configuration);
-  NS_ASSERT (configuration != nullptr);
-  m_configurationObjects.push_back (configuration);
+    NS_LOG_FUNCTION(this << configuration);
+    NS_ASSERT(configuration != nullptr);
+    m_configurationObjects.push_back(configuration);
 }
 
-NodeConfigurationContainer::NodeConfigurationContainer (const NodeConfigurationContainer &first,
-                                                        const NodeConfigurationContainer &second)
+NodeConfigurationContainer::NodeConfigurationContainer(const NodeConfigurationContainer& first,
+                                                       const NodeConfigurationContainer& second)
 {
-  NS_LOG_FUNCTION (this << &first << &second);
-  m_configurationObjects = first.m_configurationObjects;
+    NS_LOG_FUNCTION(this << &first << &second);
+    m_configurationObjects = first.m_configurationObjects;
 
-  m_configurationObjects.insert (m_configurationObjects.end (),
-                                 second.m_configurationObjects.begin (),
-                                 second.m_configurationObjects.end ());
-}
-
-NodeConfigurationContainer::Iterator
-NodeConfigurationContainer::Begin (void)
-{
-  NS_LOG_FUNCTION (this);
-  return m_configurationObjects.begin ();
+    m_configurationObjects.insert(m_configurationObjects.end(),
+                                  second.m_configurationObjects.begin(),
+                                  second.m_configurationObjects.end());
 }
 
 NodeConfigurationContainer::Iterator
-NodeConfigurationContainer::End (void)
+NodeConfigurationContainer::Begin(void)
 {
-  NS_LOG_FUNCTION (this);
-  return m_configurationObjects.end ();
+    NS_LOG_FUNCTION(this);
+    return m_configurationObjects.begin();
+}
+
+NodeConfigurationContainer::Iterator
+NodeConfigurationContainer::End(void)
+{
+    NS_LOG_FUNCTION(this);
+    return m_configurationObjects.end();
 }
 
 uint32_t
-NodeConfigurationContainer::GetN (void)
+NodeConfigurationContainer::GetN(void)
 {
-  NS_LOG_FUNCTION (this);
-  return m_configurationObjects.size ();
+    NS_LOG_FUNCTION(this);
+    return m_configurationObjects.size();
 }
 
 Ptr<NodeConfiguration>
-NodeConfigurationContainer::Get (uint32_t i)
+NodeConfigurationContainer::Get(uint32_t i)
 {
-  NS_LOG_FUNCTION (this << i);
-  return m_configurationObjects[i];
+    NS_LOG_FUNCTION(this << i);
+    return m_configurationObjects[i];
 }
 
 void
-NodeConfigurationContainer::Add (const NodeConfigurationContainer &c)
+NodeConfigurationContainer::Add(const NodeConfigurationContainer& c)
 {
-  NS_LOG_FUNCTION (this << &c);
-  m_configurationObjects.insert (m_configurationObjects.end (), c.m_configurationObjects.begin (),
-                                 c.m_configurationObjects.end ());
+    NS_LOG_FUNCTION(this << &c);
+    m_configurationObjects.insert(m_configurationObjects.end(),
+                                  c.m_configurationObjects.begin(),
+                                  c.m_configurationObjects.end());
 }
 
 void
-NodeConfigurationContainer::Add (Ptr<NodeConfiguration> configuration)
+NodeConfigurationContainer::Add(Ptr<NodeConfiguration> configuration)
 {
-  NS_LOG_FUNCTION (this << &configuration);
-  NS_ASSERT (configuration != nullptr);
-  m_configurationObjects.push_back (configuration);
+    NS_LOG_FUNCTION(this << &configuration);
+    NS_ASSERT(configuration != nullptr);
+    m_configurationObjects.push_back(configuration);
 }
 
 void
-NodeConfigurationContainer::Clear (void)
+NodeConfigurationContainer::Clear(void)
 {
-  NS_LOG_FUNCTION (this);
-  m_configurationObjects.clear ();
+    NS_LOG_FUNCTION(this);
+    m_configurationObjects.clear();
 }
 
 NodeConfigurationContainer::Iterator
-begin (NodeConfigurationContainer &c)
+begin(NodeConfigurationContainer& c)
 {
-  return c.Begin ();
+    return c.Begin();
 }
 
 NodeConfigurationContainer::Iterator
-end (NodeConfigurationContainer &c)
+end(NodeConfigurationContainer& c)
 {
-  return c.End ();
+    return c.End();
 }
 
 } // namespace netsimulyzer

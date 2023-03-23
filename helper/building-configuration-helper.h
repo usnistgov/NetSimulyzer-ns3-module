@@ -36,16 +36,16 @@
 #define BUILDING_CONFIGURATION_HELPER_H
 
 #include <ns3/attribute.h>
-#include <ns3/building.h>
+#include <ns3/building-configuration-container.h>
 #include <ns3/building-configuration.h>
 #include <ns3/building-container.h>
-#include <ns3/building-configuration-container.h>
+#include <ns3/building.h>
 #include <ns3/object-factory.h>
 #include <ns3/orchestrator.h>
 #include <ns3/ptr.h>
 
-namespace ns3 {
-namespace netsimulyzer {
+namespace ns3::netsimulyzer
+{
 
 /**
  * \ingroup netsimulyzer
@@ -53,94 +53,94 @@ namespace netsimulyzer {
  */
 class BuildingConfigurationHelper
 {
-public:
-  /**
-   * Sets the required orchestrator for this helper
-   *
-   * \param orchestrator The Orchestrator that manages the Buildings
-   * configured by this helper. May not be NULL
-   */
-  explicit BuildingConfigurationHelper (Ptr<Orchestrator> orchestrator);
+  public:
+    /**
+     * Sets the required orchestrator for this helper
+     *
+     * \param orchestrator The Orchestrator that manages the Buildings
+     * configured by this helper. May not be NULL
+     */
+    explicit BuildingConfigurationHelper(Ptr<Orchestrator> orchestrator);
 
-  /**
-   * Sets one of the attributes of underlying model
-   *
-   * \param name Name of attribute to set.
-   * \param v Value of the attribute.
-   */
-  void Set (const std::string &name, const AttributeValue &v);
+    /**
+     * Sets one of the attributes of underlying model
+     *
+     * \param name Name of attribute to set.
+     * \param v Value of the attribute.
+     */
+    void Set(const std::string& name, const AttributeValue& v);
 
-  /**
-   * Aggregates the configured BuildingConfiguration object onto a single Building
-   *
-   * \param building The Building to install the BuildingConfiguration onto
-   *
-   * \return A container containing the newly installed configuration object
-   */
-  BuildingConfigurationContainer Install (Ptr<Building> building) const;
+    /**
+     * Aggregates the configured BuildingConfiguration object onto a single Building
+     *
+     * \param building The Building to install the BuildingConfiguration onto
+     *
+     * \return A container containing the newly installed configuration object
+     */
+    BuildingConfigurationContainer Install(Ptr<Building> building) const;
 
-  /**
-   * Aggregates a pre-defined BuildingConfiguration onto a single Building
-   * No new BuildingConfiguration objects are created
-   *
-   * \param building The Building to install 'configuration' onto
-   *
-   * \param configuration The BuildingConfiguration to install onto 'building'
-   *
-   * \return A container containing only 'configuration'
-   */
-  BuildingConfigurationContainer Install (Ptr<Building> building,
-                                          Ptr<BuildingConfiguration> configuration) const;
+    /**
+     * Aggregates a pre-defined BuildingConfiguration onto a single Building
+     * No new BuildingConfiguration objects are created
+     *
+     * \param building The Building to install 'configuration' onto
+     *
+     * \param configuration The BuildingConfiguration to install onto 'building'
+     *
+     * \return A container containing only 'configuration'
+     */
+    BuildingConfigurationContainer Install(Ptr<Building> building,
+                                           Ptr<BuildingConfiguration> configuration) const;
 
-  /**
-   * Creates and Aggregates a BuildingConfiguration object for each Building in 'buildings'
-   *
-   * \param buildings The collection to iterate over, aggregating configuration objects on each Building
-   *
-   * \return A collection containing all of the created BuildingConfiguration objects
-   */
-  BuildingConfigurationContainer Install (BuildingContainer &buildings) const;
+    /**
+     * Creates and Aggregates a BuildingConfiguration object for each Building in 'buildings'
+     *
+     * \param buildings The collection to iterate over, aggregating configuration objects on each
+     * Building
+     *
+     * \return A collection containing all of the created BuildingConfiguration objects
+     */
+    BuildingConfigurationContainer Install(BuildingContainer& buildings) const;
 
-  /**
-   * \brief Aggregates pre-defined BuildingConfiguration objects onto the Buildings in 'buildings'
-   *
-   * Aggregates pre-defined BuildingConfiguration objects onto the Buildings in 'buildings'
-   *
-   * 'buildings' and 'configurations' should be the same size.
-   * No new BuildingConfiguration objects will be created by this method
-   *
-   * If the number of Buildings in 'buildings' exceeds the number of BuildingConfiguration objects
-   * in 'configurations', this method wil abort
-   *
-   * If the number of BuildingConfiguration objects in 'configurations' exceeds
-   * the number of Buildings in 'buildings', then the extra BuildingConfiguration objects
-   * will be ignored, and a warning will be logged
-   *
-   * \param buildings The collection to iterate over, aggregating configuration objects on each Building.
-   * May not be larger then the size of 'configurations'
-   *
-   * \param configurations The collection of BuildingConfiguration objects to aggregate onto 'buildings'.
-   * Should not exceed the size of 'buildings'
-   *
-   * \return A collection containing each of the BuildingConfiguration objects that
-   * were aggregated onto a Building
-   */
-  BuildingConfigurationContainer Install (BuildingContainer &buildings,
-                                          BuildingConfigurationContainer &configurations) const;
+    /**
+     * \brief Aggregates pre-defined BuildingConfiguration objects onto the Buildings in 'buildings'
+     *
+     * Aggregates pre-defined BuildingConfiguration objects onto the Buildings in 'buildings'
+     *
+     * 'buildings' and 'configurations' should be the same size.
+     * No new BuildingConfiguration objects will be created by this method
+     *
+     * If the number of Buildings in 'buildings' exceeds the number of BuildingConfiguration objects
+     * in 'configurations', this method wil abort
+     *
+     * If the number of BuildingConfiguration objects in 'configurations' exceeds
+     * the number of Buildings in 'buildings', then the extra BuildingConfiguration objects
+     * will be ignored, and a warning will be logged
+     *
+     * \param buildings The collection to iterate over, aggregating configuration objects on each
+     * Building. May not be larger then the size of 'configurations'
+     *
+     * \param configurations The collection of BuildingConfiguration objects to aggregate onto
+     * 'buildings'. Should not exceed the size of 'buildings'
+     *
+     * \return A collection containing each of the BuildingConfiguration objects that
+     * were aggregated onto a Building
+     */
+    BuildingConfigurationContainer Install(BuildingContainer& buildings,
+                                           BuildingConfigurationContainer& configurations) const;
 
-private:
-  /**
-   * Factory for producing BuildingConfiguration objects
-   */
-  ObjectFactory m_buildingConfiguration{"ns3::netsimulyzer::BuildingConfiguration"};
+  private:
+    /**
+     * Factory for producing BuildingConfiguration objects
+     */
+    ObjectFactory m_buildingConfiguration{"ns3::netsimulyzer::BuildingConfiguration"};
 
-  /**
-   * Orchestrator that manages the Buildings produced by this helper
-   */
-  Ptr<Orchestrator> m_orchestrator;
+    /**
+     * Orchestrator that manages the Buildings produced by this helper
+     */
+    Ptr<Orchestrator> m_orchestrator;
 };
 
-} // namespace netsimulyzer
-} // namespace ns3
+} // namespace ns3::netsimulyzer
 
 #endif /* BUILDING_CONFIGURATION_HELPER_H */

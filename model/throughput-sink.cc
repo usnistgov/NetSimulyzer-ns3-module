@@ -33,288 +33,306 @@
  */
 
 #include "throughput-sink.h"
-#include <ns3/log.h>
-#include <ns3/enum.h>
-#include <ns3/string.h>
+
 #include <ns3/double.h>
+#include <ns3/enum.h>
+#include <ns3/log.h>
 #include <ns3/pointer.h>
+#include <ns3/string.h>
 
-namespace ns3 {
-
-NS_LOG_COMPONENT_DEFINE ("ThroughputSink");
-
-namespace netsimulyzer {
-
-NS_OBJECT_ENSURE_REGISTERED (ThroughputSink);
-
-ThroughputSink::ThroughputSink (Ptr<Orchestrator> orchestrator, const std::string &name)
-    : m_orchestrator (orchestrator)
+namespace ns3
 {
-  NS_LOG_FUNCTION (this << orchestrator << name);
-  //Create the series and assign known information
-  m_series = CreateObject<XYSeries> (orchestrator);
-  m_series->SetAttribute ("Name", StringValue (name));
 
-  PointerValue xAxis;
-  m_series->GetAttribute ("XAxis", xAxis);
-  xAxis.Get<ValueAxis> ()->SetAttribute ("Name", StringValue ("Time (s)"));
+NS_LOG_COMPONENT_DEFINE("ThroughputSink");
 
-  //Set callback for data dump
-  m_timer.SetFunction (&ThroughputSink::WriteThroughput, this);
+namespace netsimulyzer
+{
+
+NS_OBJECT_ENSURE_REGISTERED(ThroughputSink);
+
+ThroughputSink::ThroughputSink(Ptr<Orchestrator> orchestrator, const std::string& name)
+    : m_orchestrator(orchestrator)
+{
+    NS_LOG_FUNCTION(this << orchestrator << name);
+    // Create the series and assign known information
+    m_series = CreateObject<XYSeries>(orchestrator);
+    m_series->SetAttribute("Name", StringValue(name));
+
+    PointerValue xAxis;
+    m_series->GetAttribute("XAxis", xAxis);
+    xAxis.Get<ValueAxis>()->SetAttribute("Name", StringValue("Time (s)"));
+
+    // Set callback for data dump
+    m_timer.SetFunction(&ThroughputSink::WriteThroughput, this);
 }
 
 TypeId
-ThroughputSink::GetTypeId (void)
+ThroughputSink::GetTypeId(void)
 {
-  // clang-format off
-  static TypeId tid =
-    TypeId ("ns3::netsimulyzer::ThroughputSink")
-    .SetParent<ns3::Object> ()
-    .SetGroupName ("netsimulyzer")
-    .AddAttribute ("XYSeries", "The XY Series", TypeId::ATTR_GET, PointerValue (),
-                   MakePointerAccessor (&ThroughputSink::GetSeries), MakePointerChecker<XYSeries> ())
-    .AddAttribute ("Interval", "Time between updates", TimeValue (Seconds (1)),
-                   MakeTimeAccessor (&ThroughputSink::SetInterval), MakeTimeChecker ())
-    .AddAttribute (
-      "Unit", "The unit for the throughput plot",
-      EnumValue (ThroughputSink::Unit::KBit), MakeEnumAccessor (&ThroughputSink::SetUnit),
-      MakeEnumChecker (ThroughputSink::Bit, "b/s", ThroughputSink::KBit, "kb/s",
-                       ThroughputSink::MBit, "Mb/s", ThroughputSink::GBit, "Gb/s",
-                       ThroughputSink::Byte, "B/s", ThroughputSink::KByte, "KB/s",
-                       ThroughputSink::MByte, "MB/s", ThroughputSink::GByte, "GB/s"))
-    .AddAttribute (
-      "TimeUnit", "The unit of time to use for the X axis",
-      EnumValue (Time::S),
-      MakeEnumAccessor (&ThroughputSink::SetTimeUnit,
-        &ThroughputSink::GetTimeUnit),
-      MakeEnumChecker (Time::Unit::Y, "Year",
-                       Time::Unit::D, "Day",
-                       Time::Unit::H, "Hour",
-                       Time::Unit::MIN, "Minute",
-                       Time::Unit::S, "Second",
-                       Time::Unit::MS, "Millisecond",
-                       Time::Unit::US, "Microsecond",
-                       Time::Unit::NS, "Nanosecond",
-                       Time::Unit::PS, "Picosecond",
-                       Time::Unit::FS, "Femtosecond"));
-  // clang-format on
-  return tid;
+    static TypeId tid = TypeId("ns3::netsimulyzer::ThroughputSink")
+                            .SetParent<ns3::Object>()
+                            .SetGroupName("netsimulyzer")
+                            .AddAttribute("XYSeries",
+                                          "The XY Series",
+                                          TypeId::ATTR_GET,
+                                          PointerValue(),
+                                          MakePointerAccessor(&ThroughputSink::GetSeries),
+                                          MakePointerChecker<XYSeries>())
+                            .AddAttribute("Interval",
+                                          "Time between updates",
+                                          TimeValue(Seconds(1)),
+                                          MakeTimeAccessor(&ThroughputSink::SetInterval),
+                                          MakeTimeChecker())
+                            // clang-format off
+                            .AddAttribute("Unit",
+                                          "The unit for the throughput plot",
+                                          EnumValue(ThroughputSink::Unit::KBit),
+                                          MakeEnumAccessor(&ThroughputSink::SetUnit),
+                                          MakeEnumChecker(
+                                              ThroughputSink::Bit, "b/s",
+                                              ThroughputSink::KBit, "kb/s",
+                                              ThroughputSink::MBit, "Mb/s",
+                                              ThroughputSink::GBit, "Gb/s",
+                                              ThroughputSink::Byte, "B/s",
+                                              ThroughputSink::KByte, "KB/s",
+                                              ThroughputSink::MByte, "MB/s",
+                                              ThroughputSink::GByte, "GB/s"))
+                            .AddAttribute("TimeUnit",
+                                          "The unit of time to use for the X axis",
+                                          EnumValue(Time::S),
+                                          MakeEnumAccessor(&ThroughputSink::SetTimeUnit,
+                                                           &ThroughputSink::GetTimeUnit),
+                                          MakeEnumChecker(
+                                              Time::Unit::Y, "Year",
+                                              Time::Unit::D, "Day",
+                                              Time::Unit::H, "Hour",
+                                              Time::Unit::MIN, "Minute",
+                                              Time::Unit::S, "Second",
+                                              Time::Unit::MS, "Millisecond",
+                                              Time::Unit::US, "Microsecond",
+                                              Time::Unit::NS, "Nanosecond",
+                                              Time::Unit::PS, "Picosecond",
+                                              Time::Unit::FS, "Femtosecond"));
+
+    // clang-format on
+    return tid;
 }
 
 void
-ThroughputSink::SetUnit (ThroughputSink::Unit unit)
+ThroughputSink::SetUnit(ThroughputSink::Unit unit)
 {
-  NS_LOG_FUNCTION (this << unit);
-  m_unit = unit;
+    NS_LOG_FUNCTION(this << unit);
+    m_unit = unit;
 
-  switch (m_unit)
+    switch (m_unit)
     {
     case ThroughputSink::Bit:
-      m_unitScale = 8.0;
-      break;
+        m_unitScale = 8.0;
+        break;
     case ThroughputSink::KBit:
-      m_unitScale = 8 / 1e3;
-      break;
+        m_unitScale = 8 / 1e3;
+        break;
     case ThroughputSink::MBit:
-      m_unitScale = 8 / 1e6;
-      break;
+        m_unitScale = 8 / 1e6;
+        break;
     case ThroughputSink::GBit:
-      m_unitScale = 8 / 1e9;
-      break;
+        m_unitScale = 8 / 1e9;
+        break;
     case ThroughputSink::Byte:
-      m_unitScale = 1;
-      break;
+        m_unitScale = 1;
+        break;
     case ThroughputSink::KByte:
-      m_unitScale = 1 / 1e3;
-      break;
+        m_unitScale = 1 / 1e3;
+        break;
     case ThroughputSink::MByte:
-      m_unitScale = 1 / 1e6;
-      break;
+        m_unitScale = 1 / 1e6;
+        break;
     case ThroughputSink::GByte:
-      m_unitScale = 1 / 1e9;
-      break;
+        m_unitScale = 1 / 1e9;
+        break;
     default:
-      NS_ABORT_MSG ("Invalid unit");
+        NS_ABORT_MSG("Invalid unit");
     }
 
-  UpdateAxisLabels ();
+    UpdateAxisLabels();
 }
 
 void
-ThroughputSink::SetInterval (Time interval)
+ThroughputSink::SetInterval(Time interval)
 {
-  NS_LOG_FUNCTION (this << interval);
-  NS_ASSERT_MSG (interval.GetSeconds () > 0, "Needs interval greater than 0");
-  if (m_timer.IsRunning ())
+    NS_LOG_FUNCTION(this << interval);
+    NS_ASSERT_MSG(interval.GetSeconds() > 0, "Needs interval greater than 0");
+    if (m_timer.IsRunning())
     {
-      m_timer.Cancel ();
+        m_timer.Cancel();
     }
-  m_packetsInterval = interval;
-  m_timer.SetDelay (m_packetsInterval);
-  m_timer.Schedule ();
+    m_packetsInterval = interval;
+    m_timer.SetDelay(m_packetsInterval);
+    m_timer.Schedule();
 }
 
 void
-ThroughputSink::AddPacket (Ptr<const Packet> packet)
+ThroughputSink::AddPacket(Ptr<const Packet> packet)
 {
-  NS_LOG_FUNCTION (this << packet);
-  AddPacketSize (packet->GetSize ());
+    NS_LOG_FUNCTION(this << packet);
+    AddPacketSize(packet->GetSize());
 }
 
 void
-ThroughputSink::AddPacketSize (uint32_t size)
+ThroughputSink::AddPacketSize(uint32_t size)
 {
-  NS_LOG_FUNCTION (this << size);
-  m_total += size;
+    NS_LOG_FUNCTION(this << size);
+    m_total += size;
 }
 
 void
-ThroughputSink::WriteThroughput ()
+ThroughputSink::WriteThroughput()
 {
-  NS_LOG_FUNCTION (this);
+    NS_LOG_FUNCTION(this);
 
-  double y = (m_total * m_unitScale) / m_packetsInterval.GetSeconds ();
-  m_series->Append (Simulator::Now ().GetSeconds (), y);
-  m_total = 0;
-  m_timer.Schedule ();
+    double y = (m_total * m_unitScale) / m_packetsInterval.GetSeconds();
+    m_series->Append(Simulator::Now().GetSeconds(), y);
+    m_total = 0;
+    m_timer.Schedule();
 }
 
 void
-ThroughputSink::SetTimeUnit (Time::Unit unit)
+ThroughputSink::SetTimeUnit(Time::Unit unit)
 {
-  NS_LOG_FUNCTION (this << unit);
-  m_timeUnit = unit;
-  UpdateAxisLabels ();
+    NS_LOG_FUNCTION(this << unit);
+    m_timeUnit = unit;
+    UpdateAxisLabels();
 }
 
 Time::Unit
-ThroughputSink::GetTimeUnit (void) const
+ThroughputSink::GetTimeUnit(void) const
 {
-  NS_LOG_FUNCTION (this);
-  return m_timeUnit;
+    NS_LOG_FUNCTION(this);
+    return m_timeUnit;
 }
 
 Ptr<XYSeries>
-ThroughputSink::GetSeries (void) const
+ThroughputSink::GetSeries(void) const
 {
-  NS_LOG_FUNCTION (this);
-  return m_series;
+    NS_LOG_FUNCTION(this);
+    return m_series;
 }
 
 Ptr<ValueAxis>
-ThroughputSink::GetXAxis (void) const
+ThroughputSink::GetXAxis(void) const
 {
-  return m_series->GetXAxis();
+    return m_series->GetXAxis();
 }
 
 Ptr<ValueAxis>
-ThroughputSink::GetYAxis (void) const
+ThroughputSink::GetYAxis(void) const
 {
-  return m_series->GetYAxis();
+    return m_series->GetYAxis();
 }
 
 void
-ThroughputSink::SetThroughputRangeFixed (double min, double max)
+ThroughputSink::SetThroughputRangeFixed(double min, double max)
 {
-  m_series->GetYAxis()->FixedRange (min, max);
+    m_series->GetYAxis()->FixedRange(min, max);
 }
 
 void
-ThroughputSink::SetThroughputRangeScaling (double min, double max)
+ThroughputSink::SetThroughputRangeScaling(double min, double max)
 {
-  m_series->GetYAxis()->ScalingRange(min, max);
+    m_series->GetYAxis()->ScalingRange(min, max);
 }
 
 void
-ThroughputSink::DoDispose (void)
+ThroughputSink::DoDispose(void)
 {
-  NS_LOG_FUNCTION (this);
-  m_orchestrator = nullptr;
-  m_series = nullptr;
-  m_timer.Cancel ();
-  Object::DoDispose ();
+    NS_LOG_FUNCTION(this);
+    m_orchestrator = nullptr;
+    m_series = nullptr;
+    m_timer.Cancel();
+    Object::DoDispose();
 }
 
 void
-ThroughputSink::UpdateAxisLabels (void)
+ThroughputSink::UpdateAxisLabels(void)
 {
-  NS_LOG_FUNCTION (this);
-  std::string timeUnitLabel;
-  switch (m_timeUnit)
+    NS_LOG_FUNCTION(this);
+    std::string timeUnitLabel;
+    switch (m_timeUnit)
     {
     case Time::Y:
-      timeUnitLabel = "y";
-      break;
+        timeUnitLabel = "y";
+        break;
     case Time::D:
-      timeUnitLabel = "d";
-      break;
+        timeUnitLabel = "d";
+        break;
     case Time::H:
-      timeUnitLabel = "h";
-      break;
+        timeUnitLabel = "h";
+        break;
     case Time::MIN:
-      timeUnitLabel = "min";
-      break;
+        timeUnitLabel = "min";
+        break;
     case Time::S:
-      timeUnitLabel = "s";
-      break;
+        timeUnitLabel = "s";
+        break;
     case Time::MS:
-      timeUnitLabel = "ms";
-      break;
+        timeUnitLabel = "ms";
+        break;
     case Time::US:
-      timeUnitLabel = "us";
-      break;
+        timeUnitLabel = "us";
+        break;
     case Time::NS:
-      timeUnitLabel = "ns";
-      break;
+        timeUnitLabel = "ns";
+        break;
     case Time::PS:
-      timeUnitLabel = "ps";
-      break;
+        timeUnitLabel = "ps";
+        break;
     case Time::FS:
-      timeUnitLabel = "fs";
-      break;
+        timeUnitLabel = "fs";
+        break;
     default:
-      NS_ABORT_MSG ("Unrecognised time unit: " << timeUnitLabel);
+        NS_ABORT_MSG("Unrecognised time unit: " << timeUnitLabel);
     }
 
-  PointerValue xAxis;
-  m_series->GetAttribute ("XAxis", xAxis);
-  xAxis.Get<ValueAxis> ()->SetAttribute ("Name", StringValue ("Time (" + timeUnitLabel + ')'));
+    PointerValue xAxis;
+    m_series->GetAttribute("XAxis", xAxis);
+    xAxis.Get<ValueAxis>()->SetAttribute("Name", StringValue("Time (" + timeUnitLabel + ')'));
 
-  std::string dataUnitLabel;
-  switch (m_unit)
+    std::string dataUnitLabel;
+    switch (m_unit)
     {
     case ThroughputSink::Bit:
-      dataUnitLabel = "b";
-      break;
+        dataUnitLabel = "b";
+        break;
     case ThroughputSink::KBit:
-      dataUnitLabel = "Kb";
-      break;
+        dataUnitLabel = "Kb";
+        break;
     case ThroughputSink::MBit:
-      dataUnitLabel = "Mb";
-      break;
+        dataUnitLabel = "Mb";
+        break;
     case ThroughputSink::GBit:
-      dataUnitLabel = "Gb";
-      break;
+        dataUnitLabel = "Gb";
+        break;
     case ThroughputSink::Byte:
-      dataUnitLabel = "B";
-      break;
+        dataUnitLabel = "B";
+        break;
     case ThroughputSink::KByte:
-      dataUnitLabel = "KB";
-      break;
+        dataUnitLabel = "KB";
+        break;
     case ThroughputSink::MByte:
-      dataUnitLabel = "MB";
-      break;
+        dataUnitLabel = "MB";
+        break;
     case ThroughputSink::GByte:
-      dataUnitLabel = "GB";
-      break;
+        dataUnitLabel = "GB";
+        break;
     default:
-      NS_ABORT_MSG ("Unrecognised data unit: " << m_unit);
+        NS_ABORT_MSG("Unrecognised data unit: " << m_unit);
     }
 
-  PointerValue yAxis;
-  m_series->GetAttribute ("YAxis", yAxis);
-  yAxis.Get<ValueAxis> ()->SetAttribute (
-      "Name", StringValue ("Throughput (" + dataUnitLabel + '/' + timeUnitLabel + ')'));
+    PointerValue yAxis;
+    m_series->GetAttribute("YAxis", yAxis);
+    yAxis.Get<ValueAxis>()->SetAttribute(
+        "Name",
+        StringValue("Throughput (" + dataUnitLabel + '/' + timeUnitLabel + ')'));
 }
 
 } // namespace netsimulyzer

@@ -32,92 +32,95 @@
  * Author: Evan Black <evan.black@nist.gov>
  */
 
+#include "node-configuration-helper.h"
+
 #include <ns3/abort.h>
 #include <ns3/log.h>
 #include <ns3/pointer.h>
-#include "node-configuration-helper.h"
 
-namespace ns3 {
-
-NS_LOG_COMPONENT_DEFINE ("NodeConfigurationHelper");
-
-namespace netsimulyzer {
-
-NodeConfigurationHelper::NodeConfigurationHelper (Ptr<Orchestrator> orchestrator)
-    : m_orchestrator (orchestrator)
+namespace ns3
 {
-  Set ("Orchestrator", PointerValue (orchestrator));
+
+NS_LOG_COMPONENT_DEFINE("NodeConfigurationHelper");
+
+namespace netsimulyzer
+{
+
+NodeConfigurationHelper::NodeConfigurationHelper(Ptr<Orchestrator> orchestrator)
+    : m_orchestrator(orchestrator)
+{
+    Set("Orchestrator", PointerValue(orchestrator));
 }
 
 void
-NodeConfigurationHelper::Set (const std::string &name, const AttributeValue &v)
+NodeConfigurationHelper::Set(const std::string& name, const AttributeValue& v)
 {
-  NS_LOG_FUNCTION (this);
-  m_nodeConfiguration.Set (name, v);
+    NS_LOG_FUNCTION(this);
+    m_nodeConfiguration.Set(name, v);
 }
 
 NodeConfigurationContainer
-NodeConfigurationHelper::Install (Ptr<Node> node) const
+NodeConfigurationHelper::Install(Ptr<Node> node) const
 {
-  NS_LOG_FUNCTION (this << node);
-  auto config = m_nodeConfiguration.Create ()->GetObject<NodeConfiguration> ();
-  node->AggregateObject (config);
-  return {config};
+    NS_LOG_FUNCTION(this << node);
+    auto config = m_nodeConfiguration.Create()->GetObject<NodeConfiguration>();
+    node->AggregateObject(config);
+    return {config};
 }
 
 NodeConfigurationContainer
-NodeConfigurationHelper::Install (Ptr<Node> node, Ptr<NodeConfiguration> configuration) const
+NodeConfigurationHelper::Install(Ptr<Node> node, Ptr<NodeConfiguration> configuration) const
 {
-  NS_LOG_FUNCTION (this << node << &configuration);
-  node->AggregateObject (configuration);
-  return {configuration};
+    NS_LOG_FUNCTION(this << node << &configuration);
+    node->AggregateObject(configuration);
+    return {configuration};
 }
 
 NodeConfigurationContainer
-NodeConfigurationHelper::Install (NodeContainer &nodes) const
+NodeConfigurationHelper::Install(NodeContainer& nodes) const
 {
-  NS_LOG_FUNCTION (this << &nodes);
-  NodeConfigurationContainer container;
+    NS_LOG_FUNCTION(this << &nodes);
+    NodeConfigurationContainer container;
 
-  for (auto node = nodes.Begin (); node != nodes.End (); node++)
+    for (auto node = nodes.Begin(); node != nodes.End(); node++)
     {
-      auto config = m_nodeConfiguration.Create ()->GetObject<NodeConfiguration> ();
+        auto config = m_nodeConfiguration.Create()->GetObject<NodeConfiguration>();
 
-      (*node)->AggregateObject (config);
+        (*node)->AggregateObject(config);
 
-      container.Add (config);
+        container.Add(config);
     }
 
-  return container;
+    return container;
 }
 
 NodeConfigurationContainer
-NodeConfigurationHelper::Install (NodeContainer &nodes,
-                                  NodeConfigurationContainer &configurations) const
+NodeConfigurationHelper::Install(NodeContainer& nodes,
+                                 NodeConfigurationContainer& configurations) const
 {
-  NS_LOG_FUNCTION (this << &nodes << &configurations);
+    NS_LOG_FUNCTION(this << &nodes << &configurations);
 
-  NS_ABORT_MSG_IF (nodes.GetN () > configurations.GetN (),
-                   "Number of Nodes greater than number of NodeConfiguration objects");
+    NS_ABORT_MSG_IF(nodes.GetN() > configurations.GetN(),
+                    "Number of Nodes greater than number of NodeConfiguration objects");
 
-  if (configurations.GetN () > nodes.GetN ())
+    if (configurations.GetN() > nodes.GetN())
     {
-      NS_LOG_WARN ("Number of NodeConfiguration objects exceeds that of nodes "
-                   "Only "
-                   << nodes.GetN () << " Configurations will be used.");
+        NS_LOG_WARN("Number of NodeConfiguration objects exceeds that of nodes "
+                    "Only "
+                    << nodes.GetN() << " Configurations will be used.");
     }
 
-  NodeConfigurationContainer results;
+    NodeConfigurationContainer results;
 
-  auto node = nodes.Begin ();
-  auto config = configurations.Begin ();
-  for (; node != nodes.End (); node++, config++)
+    auto node = nodes.Begin();
+    auto config = configurations.Begin();
+    for (; node != nodes.End(); node++, config++)
     {
-      (*node)->AggregateObject (*config);
-      results.Add (*config);
+        (*node)->AggregateObject(*config);
+        results.Add(*config);
     }
 
-  return results;
+    return results;
 }
 
 } // namespace netsimulyzer

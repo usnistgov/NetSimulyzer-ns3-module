@@ -32,14 +32,15 @@
  * Author: Evan Black <evan.black@nist.gov>
  */
 
-#include <string>
-#include <ns3/core-module.h>
-#include <ns3/mobility-module.h>
 #include <ns3/applications-module.h>
-#include <ns3/network-module.h>
+#include <ns3/core-module.h>
 #include <ns3/internet-module.h>
-#include <ns3/point-to-point-module.h>
+#include <ns3/mobility-module.h>
 #include <ns3/netsimulyzer-module.h>
+#include <ns3/network-module.h>
+#include <ns3/point-to-point-module.h>
+
+#include <string>
 
 // Example demonstrating how to plot an
 // Empirical Cumulative Distribution Function (ECDF)
@@ -55,102 +56,102 @@
 using namespace ns3;
 
 void
-macTxTrace (Ptr<netsimulyzer::EcdfSink> ecdf, Ptr<const Packet> packet)
+macTxTrace(Ptr<netsimulyzer::EcdfSink> ecdf, Ptr<const Packet> packet)
 {
-  ecdf->Append (packet->GetSize ());
+    ecdf->Append(packet->GetSize());
 }
 
 int
-main (int argc, char *argv[])
+main(int argc, char* argv[])
 {
-  double duration = 20.0;
-  std::string connectionTypeUser = "Line";
-  CommandLine cmd{__FILE__};
+    double duration = 20.0;
+    std::string connectionTypeUser = "Line";
+    CommandLine cmd{__FILE__};
 
-  cmd.AddValue ("duration", "Duration (in Seconds) of the simulation", duration);
-  cmd.AddValue ("ConnectionType",
-                R"(Type of connection to use for the plot. Possible values: ["Line", "None"])",
-                connectionTypeUser);
+    cmd.AddValue("duration", "Duration (in Seconds) of the simulation", duration);
+    cmd.AddValue("ConnectionType",
+                 R"(Type of connection to use for the plot. Possible values: ["Line", "None"])",
+                 connectionTypeUser);
 
-  cmd.Parse (argc, argv);
+    cmd.Parse(argc, argv);
 
-  auto connectionType = netsimulyzer::XYSeries::ConnectionType::Line;
-  if (connectionTypeUser == "Line")
-    connectionType = netsimulyzer::XYSeries::ConnectionType::Line;
-  else if (connectionTypeUser == "None")
-    connectionType = netsimulyzer::XYSeries::ConnectionType::None;
-  else
+    auto connectionType = netsimulyzer::XYSeries::ConnectionType::Line;
+    if (connectionTypeUser == "Line")
+        connectionType = netsimulyzer::XYSeries::ConnectionType::Line;
+    else if (connectionTypeUser == "None")
+        connectionType = netsimulyzer::XYSeries::ConnectionType::None;
+    else
     {
-      NS_ABORT_MSG ("Unrecognised 'ConnectionType': " + connectionTypeUser);
+        NS_ABORT_MSG("Unrecognised 'ConnectionType': " + connectionTypeUser);
     }
 
-  NS_ABORT_MSG_IF (duration < 1.0, "Scenario must be at least one second long");
+    NS_ABORT_MSG_IF(duration < 1.0, "Scenario must be at least one second long");
 
-  // ----- Nodes -----
-  NodeContainer nodes{2u};
+    // ----- Nodes -----
+    NodeContainer nodes{2u};
 
-  // ----- Mobility (Optional) -----
-  // Slightly separate the two nodes
-  // The positions here are arbitrary
-  auto positions = CreateObject<ListPositionAllocator> ();
-  positions->Add (Vector3D{-1.0, 5.0, 0.0});
-  positions->Add (Vector3D{1.0, 5.0, 0.0});
+    // ----- Mobility (Optional) -----
+    // Slightly separate the two nodes
+    // The positions here are arbitrary
+    auto positions = CreateObject<ListPositionAllocator>();
+    positions->Add(Vector3D{-1.0, 5.0, 0.0});
+    positions->Add(Vector3D{1.0, 5.0, 0.0});
 
-  MobilityHelper mobility;
-  mobility.SetMobilityModel ("ns3::ConstantPositionMobilityModel");
-  mobility.SetPositionAllocator (positions);
+    MobilityHelper mobility;
+    mobility.SetMobilityModel("ns3::ConstantPositionMobilityModel");
+    mobility.SetPositionAllocator(positions);
 
-  mobility.Install (nodes);
+    mobility.Install(nodes);
 
-  // ----- Network -----
-  PointToPointHelper pointToPoint;
-  pointToPoint.SetDeviceAttribute ("DataRate", StringValue ("100Mbps"));
-  pointToPoint.SetChannelAttribute ("Delay", StringValue ("0ms"));
+    // ----- Network -----
+    PointToPointHelper pointToPoint;
+    pointToPoint.SetDeviceAttribute("DataRate", StringValue("100Mbps"));
+    pointToPoint.SetChannelAttribute("Delay", StringValue("0ms"));
 
-  auto netDevices = pointToPoint.Install (nodes);
+    auto netDevices = pointToPoint.Install(nodes);
 
-  InternetStackHelper stack;
-  stack.Install (nodes);
+    InternetStackHelper stack;
+    stack.Install(nodes);
 
-  Ipv4AddressHelper address;
-  address.SetBase ("10.1.1.0", "255.255.255.0");
+    Ipv4AddressHelper address;
+    address.SetBase("10.1.1.0", "255.255.255.0");
 
-  auto interfaces = address.Assign (netDevices);
+    auto interfaces = address.Assign(netDevices);
 
-  // ----- Application -----
+    // ----- Application -----
 
-  // Client
-  auto u = CreateObject<UdpTraceClient> ();
-  u->SetStartTime (Seconds (0.5));
-  u->SetStopTime (Seconds (duration - 1.0));
+    // Client
+    auto u = CreateObject<UdpTraceClient>();
+    u->SetStartTime(Seconds(0.5));
+    u->SetStopTime(Seconds(duration - 1.0));
 
-  // The destination does not particularly matter,
-  // as we don't set up anything to receive these packets
-  u->SetRemote (interfaces.GetAddress (1u));
+    // The destination does not particularly matter,
+    // as we don't set up anything to receive these packets
+    u->SetRemote(interfaces.GetAddress(1u));
 
-  // Load the default trace
-  u->SetTraceFile ("");
+    // Load the default trace
+    u->SetTraceFile("");
 
-  nodes.Get (0u)->AddApplication (u);
+    nodes.Get(0u)->AddApplication(u);
 
-  // ---- NetSimulyzer ----
-  auto orchestrator = CreateObject<netsimulyzer::Orchestrator> ("ecdf-sink-example.json");
+    // ---- NetSimulyzer ----
+    auto orchestrator = CreateObject<netsimulyzer::Orchestrator>("ecdf-sink-example.json");
 
-  // Show the two Nodes using the server model
-  netsimulyzer::NodeConfigurationHelper nodeHelper{orchestrator};
-  nodeHelper.Set ("Model", netsimulyzer::models::SERVER_VALUE);
-  nodeHelper.Install (nodes);
+    // Show the two Nodes using the server model
+    netsimulyzer::NodeConfigurationHelper nodeHelper{orchestrator};
+    nodeHelper.Set("Model", netsimulyzer::models::SERVER_VALUE);
+    nodeHelper.Install(nodes);
 
-  auto ecdf = CreateObject<netsimulyzer::EcdfSink> (orchestrator, "UdpTraceClient Packet Size");
-  ecdf->SetAttribute ("Connection", EnumValue (connectionType));
-  ecdf->GetXAxis ()->SetAttribute ("Name", StringValue ("Packet Size (Bytes)"));
+    auto ecdf = CreateObject<netsimulyzer::EcdfSink>(orchestrator, "UdpTraceClient Packet Size");
+    ecdf->SetAttribute("Connection", EnumValue(connectionType));
+    ecdf->GetXAxis()->SetAttribute("Name", StringValue("Packet Size (Bytes)"));
 
-  // ---- Callback ----
-  // The `UdpTraceClient` doesn't offer a 'Tx' trace,
-  // so we get the size from the 'MacTx' one.
-  netDevices.Get (0u)->TraceConnectWithoutContext ("MacTx", MakeBoundCallback (&macTxTrace, ecdf));
+    // ---- Callback ----
+    // The `UdpTraceClient` doesn't offer a 'Tx' trace,
+    // so we get the size from the 'MacTx' one.
+    netDevices.Get(0u)->TraceConnectWithoutContext("MacTx", MakeBoundCallback(&macTxTrace, ecdf));
 
-  Simulator::Stop (Seconds (duration));
-  Simulator::Run ();
-  Simulator::Destroy ();
+    Simulator::Stop(Seconds(duration));
+    Simulator::Run();
+    Simulator::Destroy();
 }

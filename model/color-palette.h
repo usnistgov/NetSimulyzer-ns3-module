@@ -42,42 +42,43 @@
 #include "color.h"
 #include "optional.h"
 
-namespace ns3::netsimulyzer {
+namespace ns3::netsimulyzer
+{
 
-const Color3 RED{245u, 61u, 0u};
-const Color3 DARK_RED{204u, 51u, 0u};
+const Color3 RED{245U, 61U, 0U};
+const Color3 DARK_RED{204U, 51U, 0U};
 
-const Color3 GREEN{9u, 232u, 94u};
-const Color3 DARK_GREEN{6u, 177u, 72u};
+const Color3 GREEN{9U, 232U, 94U};
+const Color3 DARK_GREEN{6U, 177U, 72U};
 
-const Color3 BLUE{37u, 137u, 189u};
-const Color3 DARK_BLUE{27u, 98u, 136u};
+const Color3 BLUE{37U, 137U, 189U};
+const Color3 DARK_BLUE{27U, 98U, 136U};
 
-const Color3 ORANGE{255u, 167u, 51u};
-const Color3 DARK_ORANGE{245u, 139u, 0u};
+const Color3 ORANGE{255U, 167U, 51U};
+const Color3 DARK_ORANGE{245U, 139U, 0U};
 
-const Color3 YELLOW{255U, 227u, 71u};
-const Color3 DARK_YELLOW{255U, 218u, 10u};
+const Color3 YELLOW{255U, 227U, 71U};
+const Color3 DARK_YELLOW{255U, 218U, 10U};
 
-const Color3 PURPLE{120u, 41u, 163u};
-const Color3 DARK_PURPLE{84u, 29u, 114u};
+const Color3 PURPLE{120U, 41U, 163U};
+const Color3 DARK_PURPLE{84U, 29U, 114U};
 
-const Color3 PINK{255u, 92u, 176u};
-const Color3 DARK_PINK{255u, 51u, 156u};
+const Color3 PINK{255U, 92U, 176U};
+const Color3 DARK_PINK{255U, 51U, 156U};
 
-const Color3 BLACK{7u, 6u, 0u};
+const Color3 BLACK{7U, 6U, 0U};
 
-const Color3 WHITE{255u, 255u, 255u};
+const Color3 WHITE{255U, 255U, 255U};
 
-const Color3 GRAY_90{26u};
-const Color3 GRAY_80{51u};
-const Color3 GRAY_70{77u};
-const Color3 GRAY_60{102u};
-const Color3 GRAY_50{128u};
-const Color3 GRAY_40{153u};
-const Color3 GRAY_30{179u};
-const Color3 GRAY_20{204u};
-const Color3 GRAY_10{230u};
+const Color3 GRAY_90{26U};
+const Color3 GRAY_80{51U};
+const Color3 GRAY_70{77U};
+const Color3 GRAY_60{102U};
+const Color3 GRAY_50{128U};
+const Color3 GRAY_40{153U};
+const Color3 GRAY_30{179U};
+const Color3 GRAY_20{204U};
+const Color3 GRAY_10{230U};
 
 // ----- Values -----
 
@@ -153,11 +154,21 @@ const OptionalValue<Color3> GRAY_30_OPTIONAL_VALUE{GRAY_30};
 const OptionalValue<Color3> GRAY_20_OPTIONAL_VALUE{GRAY_20};
 const OptionalValue<Color3> GRAY_10_OPTIONAL_VALUE{GRAY_10};
 
-const std::vector<Color3Value> COLOR_PALETTE{
-    BLUE_VALUE,        RED_VALUE,         GREEN_VALUE,       ORANGE_VALUE,   YELLOW_VALUE,
-    PURPLE_VALUE,      PINK_VALUE,        DARK_BLUE_VALUE,   DARK_RED_VALUE, DARK_GREEN_VALUE,
-    DARK_ORANGE_VALUE, DARK_YELLOW_VALUE, DARK_PURPLE_VALUE, DARK_PINK_VALUE};
+const std::vector<Color3Value> COLOR_PALETTE{BLUE_VALUE,
+                                             RED_VALUE,
+                                             GREEN_VALUE,
+                                             ORANGE_VALUE,
+                                             YELLOW_VALUE,
+                                             PURPLE_VALUE,
+                                             PINK_VALUE,
+                                             DARK_BLUE_VALUE,
+                                             DARK_RED_VALUE,
+                                             DARK_GREEN_VALUE,
+                                             DARK_ORANGE_VALUE,
+                                             DARK_YELLOW_VALUE,
+                                             DARK_PURPLE_VALUE,
+                                             DARK_PINK_VALUE};
 
 } // namespace ns3::netsimulyzer
 
-#endif //COLOR_PALETTE_H
+#endif // COLOR_PALETTE_H

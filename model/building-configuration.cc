@@ -33,70 +33,81 @@
  */
 
 #include "building-configuration.h"
+
 #include "color-palette.h"
+
 #include <ns3/boolean.h>
+#include <ns3/color.h>
 #include <ns3/double.h>
 #include <ns3/object-base.h>
 #include <ns3/pointer.h>
 #include <ns3/string.h>
-#include <ns3/color.h>
 
-namespace ns3 {
-NS_LOG_COMPONENT_DEFINE ("BuildingConfiguration");
-namespace netsimulyzer {
-
-NS_OBJECT_ENSURE_REGISTERED (BuildingConfiguration);
-
-BuildingConfiguration::BuildingConfiguration (Ptr<Orchestrator> orchestrator)
-    : m_orchestrator (orchestrator)
+namespace ns3
 {
-  NS_LOG_FUNCTION (this << orchestrator);
-  m_orchestrator->Register ({this, true});
+NS_LOG_COMPONENT_DEFINE("BuildingConfiguration");
+
+namespace netsimulyzer
+{
+
+NS_OBJECT_ENSURE_REGISTERED(BuildingConfiguration);
+
+BuildingConfiguration::BuildingConfiguration(Ptr<Orchestrator> orchestrator)
+    : m_orchestrator(orchestrator)
+{
+    NS_LOG_FUNCTION(this << orchestrator);
+    m_orchestrator->Register({this, true});
 }
 
 TypeId
-BuildingConfiguration::GetTypeId (void)
+BuildingConfiguration::GetTypeId(void)
 {
-  static TypeId tid =
-      TypeId ("ns3::netsimulyzer::BuildingConfiguration")
-          .SetParent<Object> ()
-          .SetGroupName ("netsimulyzer")
-          .AddConstructor<BuildingConfiguration> ()
-          .SetGroupName ("netsimulyzer")
-          .AddAttribute ("Color", "Color to tint the rendered building",
-                         Color3Value (GRAY_20) /* light gray */,
-                         MakeColor3Accessor (&BuildingConfiguration::m_color), MakeColor3Checker ())
-          .AddAttribute ("Visible", "Defines if the Building is rendered in the visualizer",
-                         BooleanValue (true),
-                         MakeBooleanAccessor (&BuildingConfiguration::m_visible),
-                         MakeBooleanChecker ())
-          .AddAttribute ("Orchestrator", "Orchestrator that manages this Building", PointerValue (),
-                         MakePointerAccessor (&BuildingConfiguration::GetOrchestrator,
+    static TypeId tid =
+        TypeId("ns3::netsimulyzer::BuildingConfiguration")
+            .SetParent<Object>()
+            .SetGroupName("netsimulyzer")
+            .AddConstructor<BuildingConfiguration>()
+            .SetGroupName("netsimulyzer")
+            .AddAttribute("Color",
+                          "Color to tint the rendered building",
+                          Color3Value(GRAY_20) /* light gray */,
+                          MakeColor3Accessor(&BuildingConfiguration::m_color),
+                          MakeColor3Checker())
+            .AddAttribute("Visible",
+                          "Defines if the Building is rendered in the visualizer",
+                          BooleanValue(true),
+                          MakeBooleanAccessor(&BuildingConfiguration::m_visible),
+                          MakeBooleanChecker())
+            .AddAttribute("Orchestrator",
+                          "Orchestrator that manages this Building",
+                          PointerValue(),
+                          MakePointerAccessor(&BuildingConfiguration::GetOrchestrator,
                                               &BuildingConfiguration::SetOrchestrator),
-                         MakePointerChecker<Orchestrator> ());
-  return tid;
-}
-void
-BuildingConfiguration::DoDispose (void)
-{
-  NS_LOG_FUNCTION (this);
-  m_orchestrator = nullptr;
-  Object::DoDispose ();
+                          MakePointerChecker<Orchestrator>());
+    return tid;
 }
 
 void
-BuildingConfiguration::SetOrchestrator (Ptr<Orchestrator> orchestrator)
+BuildingConfiguration::DoDispose(void)
 {
-  NS_LOG_FUNCTION (this << orchestrator);
-  m_orchestrator = orchestrator;
-  m_orchestrator->Register ({this, true});
+    NS_LOG_FUNCTION(this);
+    m_orchestrator = nullptr;
+    Object::DoDispose();
+}
+
+void
+BuildingConfiguration::SetOrchestrator(Ptr<Orchestrator> orchestrator)
+{
+    NS_LOG_FUNCTION(this << orchestrator);
+    m_orchestrator = orchestrator;
+    m_orchestrator->Register({this, true});
 }
 
 Ptr<Orchestrator>
-BuildingConfiguration::GetOrchestrator (void) const
+BuildingConfiguration::GetOrchestrator(void) const
 {
-  NS_LOG_FUNCTION (this);
-  return m_orchestrator;
+    NS_LOG_FUNCTION(this);
+    return m_orchestrator;
 }
 
 } // namespace netsimulyzer
