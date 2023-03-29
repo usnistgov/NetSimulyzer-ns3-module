@@ -30,30 +30,36 @@
  * employees is not subject to copyright protection within the United States.
  */
 
-#include <ns3/uinteger.h>
-#include <ns3/log.h>
-#include <ns3/string.h>
-#include <ns3/pointer.h>
-#include <ns3/boolean.h>
 #include "series-collection.h"
+
+#include <ns3/boolean.h>
+#include <ns3/log.h>
+#include <ns3/pointer.h>
+#include <ns3/string.h>
+#include <ns3/uinteger.h>
+
 #include <utility>
 
-namespace ns3 {
-NS_LOG_COMPONENT_DEFINE ("SeriesCollection");
-namespace netsimulyzer {
-
-NS_OBJECT_ENSURE_REGISTERED (SeriesCollection);
-
-SeriesCollection::SeriesCollection (Ptr<Orchestrator> orchestrator) : m_orchestrator (orchestrator)
+namespace ns3
 {
-  NS_LOG_FUNCTION (this << orchestrator);
-  m_id = m_orchestrator->Register ({this, true});
+NS_LOG_COMPONENT_DEFINE("SeriesCollection");
+
+namespace netsimulyzer
+{
+
+NS_OBJECT_ENSURE_REGISTERED(SeriesCollection);
+
+SeriesCollection::SeriesCollection(Ptr<Orchestrator> orchestrator)
+    : m_orchestrator(orchestrator)
+{
+    NS_LOG_FUNCTION(this << orchestrator);
+    m_id = m_orchestrator->Register({this, true});
 }
 
 TypeId
-SeriesCollection::GetTypeId (void)
+SeriesCollection::GetTypeId(void)
 {
-  // clang-format off
+    // clang-format off
   static TypeId tid =
       TypeId ("ns3::netsimulyzer::SeriesCollection")
           .SetParent<ns3::Object> ()
@@ -88,110 +94,111 @@ SeriesCollection::GetTypeId (void)
                          MakePointerAccessor (&SeriesCollection::m_orchestrator),
                          MakePointerChecker<Orchestrator> ());
   return tid;
-  // clang-format on
+    // clang-format on
 }
 
 void
-SeriesCollection::Add (Ptr<XYSeries> series)
+SeriesCollection::Add(Ptr<XYSeries> series)
 {
-  NS_LOG_FUNCTION (this << series);
-  UintegerValue id;
-  series->GetAttribute ("Id", id);
-  Add (id.Get ());
+    NS_LOG_FUNCTION(this << series);
+    UintegerValue id;
+    series->GetAttribute("Id", id);
+    Add(id.Get());
 
-  if (m_hideAddedSeries)
-    series->SetAttribute ("Visible", BooleanValue (false));
+    if (m_hideAddedSeries)
+        series->SetAttribute("Visible", BooleanValue(false));
 
-  if (m_autoColor && !m_autoColorPalette.empty ())
+    if (m_autoColor && !m_autoColorPalette.empty())
     {
-      series->SetAttribute ("Color", m_autoColorPalette[m_autoColorIndex]);
-      m_autoColorIndex++;
+        series->SetAttribute("Color", m_autoColorPalette[m_autoColorIndex]);
+        m_autoColorIndex++;
 
-      if (m_autoColorIndex >= m_autoColorPalette.size ())
-        m_autoColorIndex = 0u;
+        if (m_autoColorIndex >= m_autoColorPalette.size())
+            m_autoColorIndex = 0u;
     }
 }
 
 std::vector<uint32_t>
-SeriesCollection::GetSeriesIds (void)
+SeriesCollection::GetSeriesIds(void)
 {
-  NS_LOG_FUNCTION (this);
-  return m_seriesIds;
+    NS_LOG_FUNCTION(this);
+    return m_seriesIds;
 }
 
-const std::vector<Color3Value> &
-SeriesCollection::GetAutoColorPalette (void) const
+const std::vector<Color3Value>&
+SeriesCollection::GetAutoColorPalette(void) const
 {
-  NS_LOG_FUNCTION (this);
-  return m_autoColorPalette;
-}
-
-void
-SeriesCollection::SetAutoColorPalette (std::vector<Color3Value> values)
-{
-  NS_LOG_FUNCTION (this);
-  m_autoColorPalette = std::move (values);
-
-  // Reset the index since we have a new collection
-  m_autoColorIndex = 0u;
+    NS_LOG_FUNCTION(this);
+    return m_autoColorPalette;
 }
 
 void
-SeriesCollection::Commit (void)
+SeriesCollection::SetAutoColorPalette(std::vector<Color3Value> values)
 {
-  NS_LOG_FUNCTION (this);
-  if (m_committed)
+    NS_LOG_FUNCTION(this);
+    m_autoColorPalette = std::move(values);
+
+    // Reset the index since we have a new collection
+    m_autoColorIndex = 0u;
+}
+
+void
+SeriesCollection::Commit(void)
+{
+    NS_LOG_FUNCTION(this);
+    if (m_committed)
     {
-      NS_LOG_DEBUG ("Ignoring Commit () on already committed model");
-      return;
+        NS_LOG_DEBUG("Ignoring Commit () on already committed model");
+        return;
     }
 
-  m_orchestrator->Commit (*this);
-  m_committed = true;
+    m_orchestrator->Commit(*this);
+    m_committed = true;
 }
 
 Ptr<ValueAxis>
-SeriesCollection::GetXAxis (void) const
+SeriesCollection::GetXAxis(void) const
 {
-  NS_LOG_FUNCTION (this);
-  return m_xAxis;
+    NS_LOG_FUNCTION(this);
+    return m_xAxis;
 }
 
 void
-SeriesCollection::SetXAxis (Ptr<ValueAxis> value)
+SeriesCollection::SetXAxis(Ptr<ValueAxis> value)
 {
-  NS_LOG_FUNCTION (this);
-  m_xAxis = value;
+    NS_LOG_FUNCTION(this);
+    m_xAxis = value;
 }
 
 Ptr<ValueAxis>
-SeriesCollection::GetYAxis (void) const
+SeriesCollection::GetYAxis(void) const
 {
-  NS_LOG_FUNCTION (this);
-  return m_yAxis;
+    NS_LOG_FUNCTION(this);
+    return m_yAxis;
 }
 
 void
-SeriesCollection::SetYAxis (Ptr<ValueAxis> value)
+SeriesCollection::SetYAxis(Ptr<ValueAxis> value)
 {
-  NS_LOG_FUNCTION (this);
-  m_yAxis = value;
+    NS_LOG_FUNCTION(this);
+    m_yAxis = value;
 }
 
 void
-SeriesCollection::DoDispose (void)
+SeriesCollection::DoDispose(void)
 {
-  NS_LOG_FUNCTION (this);
-  m_orchestrator = nullptr;
-  m_xAxis = nullptr;
-  m_yAxis = nullptr;
-  Object::DoDispose ();
+    NS_LOG_FUNCTION(this);
+    m_orchestrator = nullptr;
+    m_xAxis = nullptr;
+    m_yAxis = nullptr;
+    Object::DoDispose();
 }
+
 void
-SeriesCollection::Add (uint32_t id)
+SeriesCollection::Add(uint32_t id)
 {
-  NS_LOG_FUNCTION (this << id);
-  m_seriesIds.emplace_back (id);
+    NS_LOG_FUNCTION(this << id);
+    m_seriesIds.emplace_back(id);
 }
 
 } // namespace netsimulyzer

@@ -33,95 +33,113 @@
  */
 
 #include "log-stream.h"
-#include <ns3/orchestrator.h>
-#include <ns3/uinteger.h>
+
 #include <ns3/boolean.h>
-#include <ns3/string.h>
-#include <ns3/pointer.h>
-#include <ns3/event-message.h>
-#include <ns3/simulator.h>
-#include <ns3/log.h>
 #include <ns3/color.h>
+#include <ns3/event-message.h>
+#include <ns3/log.h>
 #include <ns3/optional.h>
+#include <ns3/orchestrator.h>
+#include <ns3/pointer.h>
+#include <ns3/simulator.h>
+#include <ns3/string.h>
+#include <ns3/uinteger.h>
 
-namespace ns3 {
-
-NS_LOG_COMPONENT_DEFINE ("LogStream");
-
-namespace netsimulyzer {
-
-NS_OBJECT_ENSURE_REGISTERED (LogStream);
-
-LogStream::LogStream (Ptr<Orchestrator> orchestrator) : m_orchestrator (orchestrator)
+namespace ns3
 {
-  NS_LOG_FUNCTION (this << orchestrator);
-  m_id = orchestrator->Register ({this, true});
+
+NS_LOG_COMPONENT_DEFINE("LogStream");
+
+namespace netsimulyzer
+{
+
+NS_OBJECT_ENSURE_REGISTERED(LogStream);
+
+LogStream::LogStream(Ptr<Orchestrator> orchestrator)
+    : m_orchestrator(orchestrator)
+{
+    NS_LOG_FUNCTION(this << orchestrator);
+    m_id = orchestrator->Register({this, true});
 }
 
 TypeId
-LogStream::GetTypeId (void)
+LogStream::GetTypeId(void)
 {
-  // clang-format off
-  static TypeId tid = TypeId ("ns3::netsimulyzer::LogStream")
-    .SetParent<ns3::Object> ()
-    .SetGroupName ("netsimulyzer")
-    .AddAttribute("Id", "The unique ID of the LogStream", TypeId::ATTR_GET, UintegerValue(0u),
-      MakeUintegerAccessor(&LogStream::m_id), MakeUintegerChecker<uint32_t>())
-    .AddAttribute ("Orchestrator", "Orchestrator that manages this series", PointerValue (),
-      MakePointerAccessor (&LogStream::m_orchestrator), MakePointerChecker<Orchestrator>())
-    .AddAttribute ("Name", "Name to represent this stream in visualizer elements",
-      StringValue (), MakeStringAccessor (&LogStream::m_name), MakeStringChecker ())
-    .AddAttribute ("Color", "The font color", OptionalValue<Color3> (),
-                   MakeOptionalAccessor<Color3> (&LogStream::m_color),
-                   MakeOptionalChecker<Color3>())
-    .AddAttribute("Visible", "Flag indicating this item should appear in Visualizer elements",
-                  BooleanValue(true), MakeBooleanAccessor(&LogStream::m_visible),
-                  MakeBooleanChecker())
-    ;
-  // clang-format on
-  return tid;
+    // clang-format off
+    static TypeId tid =
+        TypeId("ns3::netsimulyzer::LogStream")
+            .SetParent<ns3::Object>()
+            .SetGroupName("netsimulyzer")
+            .AddAttribute("Id",
+                          "The unique ID of the LogStream",
+                          TypeId::ATTR_GET,
+                          UintegerValue(0u),
+                          MakeUintegerAccessor(&LogStream::m_id),
+                          MakeUintegerChecker<uint32_t>())
+            .AddAttribute("Orchestrator",
+                          "Orchestrator that manages this series",
+                          PointerValue(),
+                          MakePointerAccessor(&LogStream::m_orchestrator),
+                          MakePointerChecker<Orchestrator>())
+            .AddAttribute("Name",
+                          "Name to represent this stream in visualizer elements",
+                          StringValue(),
+                          MakeStringAccessor(&LogStream::m_name),
+                          MakeStringChecker())
+            .AddAttribute("Color",
+                          "The font color",
+                          OptionalValue<Color3>(),
+                          MakeOptionalAccessor<Color3>(&LogStream::m_color),
+                          MakeOptionalChecker<Color3>())
+            .AddAttribute("Visible",
+                          "Flag indicating this item should appear in Visualizer elements",
+                          BooleanValue(true),
+                          MakeBooleanAccessor(&LogStream::m_visible),
+                          MakeBooleanChecker());
+    // clang-format on
+    return tid;
 }
 
 void
-LogStream::Write (const std::string &message) const
+LogStream::Write(const std::string& message) const
 {
-  NS_LOG_FUNCTION (this << message);
+    NS_LOG_FUNCTION(this << message);
 
-  LogMessageEvent event;
-  event.id = m_id;
-  event.time = Simulator::Now ();
-  event.message = message;
+    LogMessageEvent event;
+    event.id = m_id;
+    event.time = Simulator::Now();
+    event.message = message;
 
-  m_orchestrator->WriteLogMessage (event);
+    m_orchestrator->WriteLogMessage(event);
 }
 
 void
-LogStream::Commit (void)
+LogStream::Commit(void)
 {
-  NS_LOG_FUNCTION (this);
+    NS_LOG_FUNCTION(this);
 
-  if (m_committed)
+    if (m_committed)
     {
-      NS_LOG_DEBUG ("Ignoring Commit () on already committed model");
-      return;
+        NS_LOG_DEBUG("Ignoring Commit () on already committed model");
+        return;
     }
 
-  m_orchestrator->Commit (*this);
-  m_committed = true;
+    m_orchestrator->Commit(*this);
+    m_committed = true;
 }
 
 void
-LogStream::DoDispose ()
+LogStream::DoDispose()
 {
-  NS_LOG_FUNCTION (this);
-  m_orchestrator = nullptr;
+    NS_LOG_FUNCTION(this);
+    m_orchestrator = nullptr;
 }
 
-LogStream &
-operator<< (LogStream &stream, const char *value)
+LogStream&
+operator<<(LogStream& stream, const char* value)
 {
-  stream.Write (std::string{value});
-  return stream;
+    stream.Write(std::string{value});
+    return stream;
 }
 
 } // namespace netsimulyzer

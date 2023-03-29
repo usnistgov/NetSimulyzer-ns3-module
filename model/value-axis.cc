@@ -33,66 +33,84 @@
  */
 
 #include "value-axis.h"
-#include <algorithm>
-#include <ns3/log.h>
-#include <ns3/enum.h>
-#include <ns3/string.h>
+
 #include <ns3/double.h>
+#include <ns3/enum.h>
+#include <ns3/log.h>
 #include <ns3/pointer.h>
+#include <ns3/string.h>
 
-namespace ns3::netsimulyzer {
+#include <algorithm>
 
-NS_OBJECT_ENSURE_REGISTERED (ValueAxis);
+namespace ns3::netsimulyzer
+{
+
+NS_OBJECT_ENSURE_REGISTERED(ValueAxis);
 
 TypeId
-ValueAxis::GetTypeId (void)
+ValueAxis::GetTypeId(void)
 {
-  static TypeId tid =
-      TypeId ("ns3::netsimulyzer::ValueAxis")
-          .SetParent<ns3::Object> ()
-          .SetGroupName ("netsimulyzer")
-          .AddAttribute ("Name", "Unique name to represent this axis in visualizer elements",
-                         StringValue (), MakeStringAccessor (&ValueAxis::m_name),
-                         MakeStringChecker ())
-          .AddAttribute ("Minimum", "The minimum value on the axis", DoubleValue (),
-                         MakeDoubleAccessor (&ValueAxis::m_min), MakeDoubleChecker<double> ())
-          .AddAttribute ("Maximum", "The maximum value on the axis", DoubleValue (),
-                         MakeDoubleAccessor (&ValueAxis::m_max), MakeDoubleChecker<double> ())
-          .AddAttribute (
-              "BoundMode", "How the boundaries of the axis may move given a new value",
-              EnumValue (ValueAxis::BoundMode::HighestValue),
-              MakeEnumAccessor (&ValueAxis::m_boundMode),
-              MakeEnumChecker (BoundMode::Fixed, "Fixed", BoundMode::HighestValue, "HighestValue"))
-          .AddAttribute (
-              "Scale", "The method to scale between tick marks on the axis",
-              EnumValue (ValueAxis::Scale::Linear), MakeEnumAccessor (&ValueAxis::m_scale),
-              MakeEnumChecker (ValueAxis::Linear, "Linear", ValueAxis::Logarithmic, "Logarithmic"));
+    static TypeId tid =
+        TypeId("ns3::netsimulyzer::ValueAxis")
+            .SetParent<ns3::Object>()
+            .SetGroupName("netsimulyzer")
+            .AddAttribute("Name",
+                          "Unique name to represent this axis in visualizer elements",
+                          StringValue(),
+                          MakeStringAccessor(&ValueAxis::m_name),
+                          MakeStringChecker())
+            .AddAttribute("Minimum",
+                          "The minimum value on the axis",
+                          DoubleValue(),
+                          MakeDoubleAccessor(&ValueAxis::m_min),
+                          MakeDoubleChecker<double>())
+            .AddAttribute("Maximum",
+                          "The maximum value on the axis",
+                          DoubleValue(),
+                          MakeDoubleAccessor(&ValueAxis::m_max),
+                          MakeDoubleChecker<double>())
+            .AddAttribute("BoundMode",
+                          "How the boundaries of the axis may move given a new value",
+                          EnumValue(ValueAxis::BoundMode::HighestValue),
+                          MakeEnumAccessor(&ValueAxis::m_boundMode),
+                          // clang-format off
+                          MakeEnumChecker(
+                              BoundMode::Fixed, "Fixed",
+                              BoundMode::HighestValue, "HighestValue"))
+            .AddAttribute("Scale",
+                          "The method to scale between tick marks on the axis",
+                          EnumValue(ValueAxis::Scale::Linear),
+                          MakeEnumAccessor(&ValueAxis::m_scale),
+                          MakeEnumChecker(
+                              ValueAxis::Linear, "Linear",
+                              ValueAxis::Logarithmic, "Logarithmic"));
+// clang-format on
 
-  return tid;
+    return tid;
 }
 
 void
-ValueAxis::FixedRange (double min, double max)
+ValueAxis::FixedRange(double min, double max)
 {
-  m_boundMode = BoundMode::Fixed;
-  m_min = std::min (min, max);
-  m_max = std::max (min, max);
+    m_boundMode = BoundMode::Fixed;
+    m_min = std::min(min, max);
+    m_max = std::max(min, max);
 }
 
 void
-ValueAxis::ScalingRange ()
+ValueAxis::ScalingRange()
 {
-  m_boundMode = BoundMode::HighestValue;
-  m_min = 0.0;
-  m_max = 1.0;
+    m_boundMode = BoundMode::HighestValue;
+    m_min = 0.0;
+    m_max = 1.0;
 }
 
 void
-ValueAxis::ScalingRange (double min, double max)
+ValueAxis::ScalingRange(double min, double max)
 {
-  m_boundMode = BoundMode::HighestValue;
-  m_min = std::min (min, max);
-  m_max = std::max (min, max);
+    m_boundMode = BoundMode::HighestValue;
+    m_min = std::min(min, max);
+    m_max = std::max(min, max);
 }
 
 } // namespace ns3::netsimulyzer

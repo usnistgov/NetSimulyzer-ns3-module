@@ -36,6 +36,7 @@
  */
 
 #include "color.h"
+
 #include <string>
 
 /**
@@ -47,88 +48,97 @@
  * The input stream to read from
  */
 static void
-CheckSeparator (std::istream &stream)
+CheckSeparator(std::istream& stream)
 {
-  char in;
-  stream >> in;
+    char in;
+    stream >> in;
 
-  if (in != '|')
-    stream.setstate (std::ios::failbit);
+    if (in != '|')
+        stream.setstate(std::ios::failbit);
 }
 
-namespace ns3::netsimulyzer {
+namespace ns3::netsimulyzer
+{
 
-Color3::Color3 (uint8_t component) : red (component), green (component), blue (component)
+Color3::Color3(uint8_t component)
+    : red(component),
+      green(component),
+      blue(component)
 {
 }
 
-Color3::Color3 (uint8_t red, uint8_t green, uint8_t blue) : red (red), green (green), blue (blue)
+Color3::Color3(uint8_t red, uint8_t green, uint8_t blue)
+    : red(red),
+      green(green),
+      blue(blue)
 {
 }
 
-std::ostream &
-operator<< (std::ostream &os, const Color3 &color)
+std::ostream&
+operator<<(std::ostream& os, const Color3& color)
 {
-  // use `std::to_string` to avoid converting the uint8's straight to characters
-  os << "Color3{red: " << std::to_string (color.red) << " green: " << std::to_string (color.green)
-     << " blue: " << std::to_string (color.blue) << '}';
-  return os;
+    // use `std::to_string` to avoid converting the uint8's straight to characters
+    os << "Color3{red: " << std::to_string(color.red) << " green: " << std::to_string(color.green)
+       << " blue: " << std::to_string(color.blue) << '}';
+    return os;
 }
 
-Color3Value::Color3Value (const Color3 &value) : m_value (value)
+Color3Value::Color3Value(const Color3& value)
+    : m_value(value)
 {
 }
 
 void
-Color3Value::Set (const Color3 &v)
+Color3Value::Set(const Color3& v)
 {
-  m_value = v;
+    m_value = v;
 }
 
 Color3
-Color3Value::Get (void) const
+Color3Value::Get(void) const
 {
-  return m_value;
+    return m_value;
 }
 
 Ptr<AttributeValue>
-Color3Value::Copy (void) const
+Color3Value::Copy(void) const
 {
-  return Ptr<AttributeValue>{new Color3Value{m_value}, false};
+    return Ptr<AttributeValue>{new Color3Value{m_value}, false};
 }
 
-std::string Color3Value::SerializeToString (Ptr<const AttributeChecker>) const
+std::string
+Color3Value::SerializeToString(Ptr<const AttributeChecker>) const
 {
-  std::ostringstream oss;
-  oss << m_value.red << '|' << m_value.green << '|' << m_value.blue;
-  return oss.str ();
+    std::ostringstream oss;
+    oss << m_value.red << '|' << m_value.green << '|' << m_value.blue;
+    return oss.str();
 }
 
 bool
-Color3Value::DeserializeFromString (std::string value, Ptr<const AttributeChecker>)
+Color3Value::DeserializeFromString(std::string value, Ptr<const AttributeChecker>)
 {
-  std::istringstream iss;
-  iss.str (value);
+    std::istringstream iss;
+    iss.str(value);
 
-  iss >> m_value.red;
-  CheckSeparator (iss);
+    iss >> m_value.red;
+    CheckSeparator(iss);
 
-  iss >> m_value.green;
-  CheckSeparator (iss);
+    iss >> m_value.green;
+    CheckSeparator(iss);
 
-  iss >> m_value.blue;
-  CheckSeparator (iss);
+    iss >> m_value.blue;
+    CheckSeparator(iss);
 
-  NS_ABORT_MSG_UNLESS (iss.eof (), "Attribute value\"" << value << "\" is not properly formatted");
-  return !iss.bad () && !iss.fail ();
+    NS_ABORT_MSG_UNLESS(iss.eof(), "Attribute value\"" << value << "\" is not properly formatted");
+    return !iss.bad() && !iss.fail();
 }
 
 Ptr<const AttributeChecker>
-MakeColor3Checker (void)
+MakeColor3Checker(void)
 {
-  return MakeSimpleAttributeChecker<Color3Value, AttributeChecker> ("Color3"
-                                                                    "Value",
-                                                                    "Color3");
+    return MakeSimpleAttributeChecker<Color3Value, AttributeChecker>("Color3"
+                                                                     "Value",
+                                                                     "Color3");
 };
 
 } // namespace ns3::netsimulyzer

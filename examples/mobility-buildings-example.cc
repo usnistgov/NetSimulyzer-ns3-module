@@ -35,11 +35,12 @@
  * Author: Evan Black <evan.black@nist.gov>
  */
 
-#include <string>
 #include <ns3/core-module.h>
-#include <ns3/network-module.h>
 #include <ns3/mobility-module.h>
 #include <ns3/netsimulyzer-module.h>
+#include <ns3/network-module.h>
+
+#include <string>
 
 // Example demonstrating mobility output to the NetSimulyzer
 // * Creates 2 buildings one the top right and the other in bottom left corner
@@ -66,140 +67,148 @@ using namespace ns3;
 Ptr<netsimulyzer::LogStream> eventLog;
 
 void
-CourseChanged (Ptr<const MobilityModel> model)
+CourseChanged(Ptr<const MobilityModel> model)
 {
-  const auto nodeId = model->GetObject<Node> ()->GetId ();
-  const auto position = model->GetPosition ();
-  const auto velocity = model->GetVelocity ();
+    const auto nodeId = model->GetObject<Node>()->GetId();
+    const auto position = model->GetPosition();
+    const auto velocity = model->GetVelocity();
 
-  *eventLog << Simulator::Now ().GetMilliSeconds () << ": Node [" << nodeId
-            << "] Course Change Position: [" << position.x << ", " << position.y << ", "
-            << position.z << "] "
-            << "Velocity [" << velocity.x << ", " << velocity.y << ", " << velocity.z << "]\n";
+    *eventLog << Simulator::Now().GetMilliSeconds() << ": Node [" << nodeId
+              << "] Course Change Position: [" << position.x << ", " << position.y << ", "
+              << position.z << "] "
+              << "Velocity [" << velocity.x << ", " << velocity.y << ", " << velocity.z << "]\n";
 }
 
 int
-main (int argc, char *argv[])
+main(int argc, char* argv[])
 {
-  double minNodePosition = -100;
-  double maxNodePosition = 100;
-  // These must remain positive (since the RandomDirection2dMobilityModel only accepts positive values)
-  double minSpeed = .1;
-  double maxSpeed = 5;
-  double duration = 100;
-  std::string outputFileName = "netsimulyzer-mobility-buildings-example.json";
-  std::string phoneModelPath = netsimulyzer::models::SMARTPHONE;
-  std::string droneModelPath = netsimulyzer::models::LAND_DRONE;
+    double minNodePosition = -100;
+    double maxNodePosition = 100;
+    // These must remain positive (since the RandomDirection2dMobilityModel only accepts positive
+    // values)
+    double minSpeed = .1;
+    double maxSpeed = 5;
+    double duration = 100;
+    std::string outputFileName = "netsimulyzer-mobility-buildings-example.json";
+    std::string phoneModelPath = netsimulyzer::models::SMARTPHONE;
+    std::string droneModelPath = netsimulyzer::models::LAND_DRONE;
 
-  CommandLine cmd;
-  cmd.AddValue ("minNodePosition", "Minimum X/Y position a Node may move to", minNodePosition);
-  cmd.AddValue ("maxNodePosition", "Maximum X/Y position a Node may move to", maxNodePosition);
-  cmd.AddValue ("minSpeed", "Minimum X/Y speed a Node may move", minSpeed);
-  cmd.AddValue ("maxSpeed", "Maximum X/Y speed a Node may move", maxSpeed);
-  cmd.AddValue ("outputFileName", "The name of the file to write the NetSimulyzer trace info",
-                outputFileName);
-  cmd.AddValue ("phoneModelPath", "The path to the model file to represent the Phone Nodes",
-                phoneModelPath);
-  cmd.AddValue ("droneModelPath", "The path to the model file to represent the Drone Nodes",
-                droneModelPath);
-  cmd.AddValue ("duration", "Duration (in Seconds) of the simulation", duration);
-  cmd.Parse (argc, argv);
+    CommandLine cmd;
+    cmd.AddValue("minNodePosition", "Minimum X/Y position a Node may move to", minNodePosition);
+    cmd.AddValue("maxNodePosition", "Maximum X/Y position a Node may move to", maxNodePosition);
+    cmd.AddValue("minSpeed", "Minimum X/Y speed a Node may move", minSpeed);
+    cmd.AddValue("maxSpeed", "Maximum X/Y speed a Node may move", maxSpeed);
+    cmd.AddValue("outputFileName",
+                 "The name of the file to write the NetSimulyzer trace info",
+                 outputFileName);
+    cmd.AddValue("phoneModelPath",
+                 "The path to the model file to represent the Phone Nodes",
+                 phoneModelPath);
+    cmd.AddValue("droneModelPath",
+                 "The path to the model file to represent the Drone Nodes",
+                 droneModelPath);
+    cmd.AddValue("duration", "Duration (in Seconds) of the simulation", duration);
+    cmd.Parse(argc, argv);
 
-  NS_ABORT_MSG_IF (duration < 1.0, "Scenario must be at least one second long");
+    NS_ABORT_MSG_IF(duration < 1.0, "Scenario must be at least one second long");
 
-  // ---- Nodes ----
-  NodeContainer phones;
-  phones.Create (2);
+    // ---- Nodes ----
+    NodeContainer phones;
+    phones.Create(2);
 
-  NodeContainer drones;
-  drones.Create (2);
+    NodeContainer drones;
+    drones.Create(2);
 
-  auto positionAllocator = CreateObject<RandomBoxPositionAllocator> ();
-  auto positionStream = CreateObject<UniformRandomVariable> ();
-  positionStream->SetAttribute ("Min", DoubleValue (minNodePosition));
-  positionStream->SetAttribute ("Max", DoubleValue (maxNodePosition));
+    auto positionAllocator = CreateObject<RandomBoxPositionAllocator>();
+    auto positionStream = CreateObject<UniformRandomVariable>();
+    positionStream->SetAttribute("Min", DoubleValue(minNodePosition));
+    positionStream->SetAttribute("Max", DoubleValue(maxNodePosition));
 
-  // (Hopefully) start the Nodes at different positions
-  positionAllocator->SetX (positionStream);
-  positionAllocator->SetY (positionStream);
-  positionAllocator->SetAttribute ("Z", StringValue ("ns3::ConstantRandomVariable[Constant=0.0])"));
+    // (Hopefully) start the Nodes at different positions
+    positionAllocator->SetX(positionStream);
+    positionAllocator->SetY(positionStream);
+    positionAllocator->SetAttribute("Z", StringValue("ns3::ConstantRandomVariable[Constant=0.0])"));
 
-  // Show the Nodes moving at different speeds
-  auto velocityStream = CreateObject<UniformRandomVariable> ();
-  velocityStream->SetAttribute ("Min", DoubleValue (minSpeed));
-  velocityStream->SetAttribute ("Max", DoubleValue (maxSpeed));
+    // Show the Nodes moving at different speeds
+    auto velocityStream = CreateObject<UniformRandomVariable>();
+    velocityStream->SetAttribute("Min", DoubleValue(minSpeed));
+    velocityStream->SetAttribute("Max", DoubleValue(maxSpeed));
 
-  MobilityHelper mobility;
-  mobility.SetMobilityModel (
-      "ns3::RandomDirection2dMobilityModel", "Bounds",
-      RectangleValue ({minNodePosition, maxNodePosition, minNodePosition, maxNodePosition}),
-      "Speed", PointerValue (velocityStream), "Pause",
-      StringValue ("ns3::ConstantRandomVariable[Constant=1.0]"));
-  mobility.SetPositionAllocator (positionAllocator);
-  mobility.Install (phones);
-  mobility.Install (drones);
+    MobilityHelper mobility;
+    mobility.SetMobilityModel(
+        "ns3::RandomDirection2dMobilityModel",
+        "Bounds",
+        RectangleValue({minNodePosition, maxNodePosition, minNodePosition, maxNodePosition}),
+        "Speed",
+        PointerValue(velocityStream),
+        "Pause",
+        StringValue("ns3::ConstantRandomVariable[Constant=1.0]"));
+    mobility.SetPositionAllocator(positionAllocator);
+    mobility.Install(phones);
+    mobility.Install(drones);
 
-  for (auto iter = NodeList::Begin (); iter != NodeList::End (); iter++)
+    for (auto iter = NodeList::Begin(); iter != NodeList::End(); iter++)
     {
-      auto m = (*iter)->GetObject<MobilityModel> ();
-      if (!m)
-        continue;
-      m->TraceConnectWithoutContext ("CourseChange", MakeCallback (&CourseChanged));
+        auto m = (*iter)->GetObject<MobilityModel>();
+        if (!m)
+            continue;
+        m->TraceConnectWithoutContext("CourseChange", MakeCallback(&CourseChanged));
     }
 
-  // ---- Buildings ----
-  BuildingContainer buildings;
+    // ---- Buildings ----
+    BuildingContainer buildings;
 
-  Ptr<Building> simpleBuilding = CreateObject<Building> ();
-  simpleBuilding->SetBoundaries ({-150.0, -130.0, -150.0, -130.0, 0.0, 20.0});
-  buildings.Add (simpleBuilding);
+    Ptr<Building> simpleBuilding = CreateObject<Building>();
+    simpleBuilding->SetBoundaries({-150.0, -130.0, -150.0, -130.0, 0.0, 20.0});
+    buildings.Add(simpleBuilding);
 
-  Ptr<Building> twoFloorBuilding = CreateObject<Building> ();
-  twoFloorBuilding->SetBoundaries ({150.0, 130.0, 150.0, 130.0, 0.0, 40.0});
-  twoFloorBuilding->SetNFloors (2);
-  buildings.Add (twoFloorBuilding);
+    Ptr<Building> twoFloorBuilding = CreateObject<Building>();
+    twoFloorBuilding->SetBoundaries({150.0, 130.0, 150.0, 130.0, 0.0, 40.0});
+    twoFloorBuilding->SetNFloors(2);
+    buildings.Add(twoFloorBuilding);
 
-  // ---- NetSimulyzer ----
-  auto orchestrator = CreateObject<netsimulyzer::Orchestrator> (outputFileName);
+    // ---- NetSimulyzer ----
+    auto orchestrator = CreateObject<netsimulyzer::Orchestrator>(outputFileName);
 
-  // Mark possible Node locations
-  auto possibleNodeLocations = CreateObject<netsimulyzer::RectangularArea> (
-      orchestrator, Rectangle{minNodePosition, maxNodePosition, minNodePosition, maxNodePosition});
+    // Mark possible Node locations
+    auto possibleNodeLocations = CreateObject<netsimulyzer::RectangularArea>(
+        orchestrator,
+        Rectangle{minNodePosition, maxNodePosition, minNodePosition, maxNodePosition});
 
-  // Identify the area
-  possibleNodeLocations->SetAttribute ("Name", StringValue ("Possible Node Locations"));
+    // Identify the area
+    possibleNodeLocations->SetAttribute("Name", StringValue("Possible Node Locations"));
 
-  // Mark with a light green color
-  possibleNodeLocations->SetAttribute ("FillColor", netsimulyzer::Color3Value{204u, 255u, 204u});
+    // Mark with a light green color
+    possibleNodeLocations->SetAttribute("FillColor", netsimulyzer::Color3Value{204u, 255u, 204u});
 
-  auto infoLog = CreateObject<netsimulyzer::LogStream> (orchestrator);
-  eventLog = CreateObject<netsimulyzer::LogStream> (orchestrator);
+    auto infoLog = CreateObject<netsimulyzer::LogStream>(orchestrator);
+    eventLog = CreateObject<netsimulyzer::LogStream>(orchestrator);
 
-  // Log the base configuration for the scenario
-  *infoLog << "----- Scenario Settings -----\n";
-  *infoLog << "Node Position Range: [" << minNodePosition << ',' << maxNodePosition << "]\n";
-  *infoLog << "Node Speed Range: [" << minSpeed << ',' << maxSpeed << "]\n";
-  *infoLog << "Models: Phone [" << phoneModelPath << "], Drone [" << droneModelPath << "]\n";
-  *infoLog << "Scenario Duration (Seconds): " << duration << '\n';
+    // Log the base configuration for the scenario
+    *infoLog << "----- Scenario Settings -----\n";
+    *infoLog << "Node Position Range: [" << minNodePosition << ',' << maxNodePosition << "]\n";
+    *infoLog << "Node Speed Range: [" << minSpeed << ',' << maxSpeed << "]\n";
+    *infoLog << "Models: Phone [" << phoneModelPath << "], Drone [" << droneModelPath << "]\n";
+    *infoLog << "Scenario Duration (Seconds): " << duration << '\n';
 
-  netsimulyzer::NodeConfigurationHelper nodeConfigHelper (orchestrator);
-  nodeConfigHelper.Set("EnableMotionTrail", BooleanValue(true));
+    netsimulyzer::NodeConfigurationHelper nodeConfigHelper(orchestrator);
+    nodeConfigHelper.Set("EnableMotionTrail", BooleanValue(true));
 
-  nodeConfigHelper.Set ("Model", StringValue (phoneModelPath));
-  nodeConfigHelper.Install (phones);
+    nodeConfigHelper.Set("Model", StringValue(phoneModelPath));
+    nodeConfigHelper.Install(phones);
 
-  nodeConfigHelper.Set ("Model", StringValue (droneModelPath));
-  nodeConfigHelper.Install (drones);
+    nodeConfigHelper.Set("Model", StringValue(droneModelPath));
+    nodeConfigHelper.Install(drones);
 
-  // Only explicitly configured items will be shown
-  // so, even if we don't have options to set
-  // the buildings bust be configured
-  netsimulyzer::BuildingConfigurationHelper buildingConfigHelper (orchestrator);
-  buildingConfigHelper.Install (buildings);
+    // Only explicitly configured items will be shown
+    // so, even if we don't have options to set
+    // the buildings bust be configured
+    netsimulyzer::BuildingConfigurationHelper buildingConfigHelper(orchestrator);
+    buildingConfigHelper.Install(buildings);
 
-  Simulator::Stop (Seconds (duration));
-  Simulator::Run ();
+    Simulator::Stop(Seconds(duration));
+    Simulator::Run();
 
-  *infoLog << "Scenario Finished\n";
-  Simulator::Destroy ();
+    *infoLog << "Scenario Finished\n";
+    Simulator::Destroy();
 }

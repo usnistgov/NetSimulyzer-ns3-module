@@ -33,157 +33,183 @@
  */
 
 #include "decoration.h"
+
 #include "optional.h"
-#include <ns3/string.h>
+
 #include <ns3/boolean.h>
 #include <ns3/double.h>
 #include <ns3/pointer.h>
+#include <ns3/string.h>
 #include <ns3/uinteger.h>
-namespace ns3 {
-NS_LOG_COMPONENT_DEFINE ("Decoration");
-namespace netsimulyzer {
 
-NS_OBJECT_ENSURE_REGISTERED (Decoration);
-
-Decoration::Decoration (Ptr<Orchestrator> orchestrator) : m_orchestrator (orchestrator)
+namespace ns3
 {
-  NS_LOG_FUNCTION (this << orchestrator);
-  m_id = orchestrator->Register ({this, true});
+NS_LOG_COMPONENT_DEFINE("Decoration");
+
+namespace netsimulyzer
+{
+
+NS_OBJECT_ENSURE_REGISTERED(Decoration);
+
+Decoration::Decoration(Ptr<Orchestrator> orchestrator)
+    : m_orchestrator(orchestrator)
+{
+    NS_LOG_FUNCTION(this << orchestrator);
+    m_id = orchestrator->Register({this, true});
 }
 
 TypeId
-Decoration::GetTypeId (void)
+Decoration::GetTypeId(void)
 {
-  static TypeId tid =
-      TypeId ("ns3::netsimulyzer::Decoration")
-          .SetParent<Object> ()
-          .SetGroupName ("netsimulyzer")
-          .AddAttribute ("Id", "The unique ID of the Decoration", TypeId::ATTR_GET,
-                         UintegerValue (0u), MakeUintegerAccessor (&Decoration::m_id),
-                         MakeUintegerChecker<uint32_t> ())
-          .AddAttribute ("Model", "Filename of the model to represent this Decoration",
-                         StringValue (), MakeStringAccessor (&Decoration::m_model),
-                         MakeStringChecker ())
-          .AddAttribute (
-              "Orientation", "Orientation of the Decoration on each axis in degrees",
-              Vector3DValue (),
-              MakeVector3DAccessor (&Decoration::GetOrientation, &Decoration::SetOrientation),
-              MakeVector3DChecker ())
-          .AddAttribute ("KeepRatio",
-                         "When scaling with the `Height`, `Width`, and `Depth` attributes, "
-                         "use only the value that produces the largest model. "
-                         "Keeping the scale uniform",
-                         BooleanValue (true), MakeBooleanAccessor (&Decoration::m_keepRatio),
-                         MakeBooleanChecker ())
-          .AddAttribute ("Height", "Desired height of the rendered model. Applied before `Scale`",
-                         OptionalValue<double> (),
-                         MakeOptionalAccessor<double> (&Decoration::m_height),
-                         MakeOptionalChecker<double> ())
-          .AddAttribute ("Width",
-                         "Desired width of the rendered model in ns-3 units. "
-                         "Applied before `Scale`",
-                         OptionalValue<double> (),
-                         MakeOptionalAccessor<double> (&Decoration::m_width),
-                         MakeOptionalChecker<double> ())
-          .AddAttribute ("Depth",
-                         "Desired depth of the rendered model in ns-3 units. "
-                         "Applied before `Scale`",
-                         OptionalValue<double> (),
-                         MakeOptionalAccessor<double> (&Decoration::m_depth),
-                         MakeOptionalChecker<double> ())
-          .AddAttribute ("Position", "The position of the Decoration", Vector3DValue (),
-                         MakeVector3DAccessor (&Decoration::GetPosition, &Decoration::SetPosition),
-                         MakeVector3DChecker ())
-          .AddAttribute ("Scale", "The scale to apply to the rendered model", DoubleValue (1.0),
-                         MakeDoubleAccessor (&Decoration::m_scale), MakeDoubleChecker<double> (0))
-          .AddAttribute ("ScaleAxes",
-                         "The scale to apply each axis in the order [x, y, z]. "
-                         "similar to `Scale`, but allows for non-uniform scales",
-                         Vector3DValue (Vector3D{1.0, 1.0, 1.0}),
-                         MakeVector3DAccessor (&Decoration::m_scaleAxes), MakeVector3DChecker ())
-          .AddAttribute ("Orchestrator", "Orchestrator that manages this Decoration",
-                         PointerValue (), MakePointerAccessor (&Decoration::m_orchestrator),
-                         MakePointerChecker<Orchestrator> ());
-  return tid;
+    static TypeId tid =
+        TypeId("ns3::netsimulyzer::Decoration")
+            .SetParent<Object>()
+            .SetGroupName("netsimulyzer")
+            .AddAttribute("Id",
+                          "The unique ID of the Decoration",
+                          TypeId::ATTR_GET,
+                          UintegerValue(0u),
+                          MakeUintegerAccessor(&Decoration::m_id),
+                          MakeUintegerChecker<uint32_t>())
+            .AddAttribute("Model",
+                          "Filename of the model to represent this Decoration",
+                          StringValue(),
+                          MakeStringAccessor(&Decoration::m_model),
+                          MakeStringChecker())
+            // clang-format off
+            .AddAttribute("Orientation",
+                          "Orientation of the Decoration on each axis in degrees",
+                          Vector3DValue(),
+                          MakeVector3DAccessor(&Decoration::GetOrientation,
+                                               &Decoration::SetOrientation),
+                          MakeVector3DChecker())
+            // clang-format on
+            .AddAttribute("KeepRatio",
+                          "When scaling with the `Height`, `Width`, and `Depth` attributes, "
+                          "use only the value that produces the largest model. "
+                          "Keeping the scale uniform",
+                          BooleanValue(true),
+                          MakeBooleanAccessor(&Decoration::m_keepRatio),
+                          MakeBooleanChecker())
+            .AddAttribute("Height",
+                          "Desired height of the rendered model. Applied before `Scale`",
+                          OptionalValue<double>(),
+                          MakeOptionalAccessor<double>(&Decoration::m_height),
+                          MakeOptionalChecker<double>())
+            .AddAttribute("Width",
+                          "Desired width of the rendered model in ns-3 units. "
+                          "Applied before `Scale`",
+                          OptionalValue<double>(),
+                          MakeOptionalAccessor<double>(&Decoration::m_width),
+                          MakeOptionalChecker<double>())
+            .AddAttribute("Depth",
+                          "Desired depth of the rendered model in ns-3 units. "
+                          "Applied before `Scale`",
+                          OptionalValue<double>(),
+                          MakeOptionalAccessor<double>(&Decoration::m_depth),
+                          MakeOptionalChecker<double>())
+            .AddAttribute("Position",
+                          "The position of the Decoration",
+                          Vector3DValue(),
+                          MakeVector3DAccessor(&Decoration::GetPosition, &Decoration::SetPosition),
+                          MakeVector3DChecker())
+            .AddAttribute("Scale",
+                          "The scale to apply to the rendered model",
+                          DoubleValue(1.0),
+                          MakeDoubleAccessor(&Decoration::m_scale),
+                          MakeDoubleChecker<double>(0))
+            .AddAttribute("ScaleAxes",
+                          "The scale to apply each axis in the order [x, y, z]. "
+                          "similar to `Scale`, but allows for non-uniform scales",
+                          Vector3DValue(Vector3D{1.0, 1.0, 1.0}),
+                          MakeVector3DAccessor(&Decoration::m_scaleAxes),
+                          MakeVector3DChecker())
+            .AddAttribute("Orchestrator",
+                          "Orchestrator that manages this Decoration",
+                          PointerValue(),
+                          MakePointerAccessor(&Decoration::m_orchestrator),
+                          MakePointerChecker<Orchestrator>());
+    return tid;
 }
 
-const Vector3D &
-Decoration::GetPosition () const
+const Vector3D&
+Decoration::GetPosition() const
 {
-  NS_LOG_FUNCTION (this);
-  return m_position;
-}
-
-void
-Decoration::SetPosition (const Vector3D &position)
-{
-  NS_LOG_FUNCTION (this << position);
-  m_position = position;
-
-  DecorationMoveEvent event;
-  event.time = Simulator::Now ();
-  event.id = m_id;
-  event.position = m_position;
-
-  m_orchestrator->HandlePositionChange (event);
-}
-
-const Vector3D &
-Decoration::GetOrientation () const
-{
-  NS_LOG_FUNCTION (this);
-  return m_orientation;
+    NS_LOG_FUNCTION(this);
+    return m_position;
 }
 
 void
-Decoration::SetOrientation (const Vector3D &orientation)
+Decoration::SetPosition(const Vector3D& position)
 {
-  NS_LOG_FUNCTION (this << orientation);
-  m_orientation = orientation;
+    NS_LOG_FUNCTION(this << position);
+    m_position = position;
 
-  DecorationOrientationChangeEvent event;
-  event.time = Simulator::Now ();
-  event.id = m_id;
-  event.orientation = m_orientation;
+    DecorationMoveEvent event;
+    event.time = Simulator::Now();
+    event.id = m_id;
+    event.position = m_position;
 
-  m_orchestrator->HandleOrientationChange (event);
+    m_orchestrator->HandlePositionChange(event);
+}
+
+const Vector3D&
+Decoration::GetOrientation() const
+{
+    NS_LOG_FUNCTION(this);
+    return m_orientation;
 }
 
 void
-Decoration::SetScale (double scale)
+Decoration::SetOrientation(const Vector3D& orientation)
 {
-  m_scale = scale;
-}
-void
-Decoration::SetScale (const Vector3D &scale)
-{
-  SetScaleAxes (scale);
+    NS_LOG_FUNCTION(this << orientation);
+    m_orientation = orientation;
+
+    DecorationOrientationChangeEvent event;
+    event.time = Simulator::Now();
+    event.id = m_id;
+    event.orientation = m_orientation;
+
+    m_orchestrator->HandleOrientationChange(event);
 }
 
 void
-Decoration::SetScaleAxes (const Vector3D &scale)
+Decoration::SetScale(double scale)
 {
-  m_scaleAxes = scale;
+    m_scale = scale;
+}
+
+void
+Decoration::SetScale(const Vector3D& scale)
+{
+    SetScaleAxes(scale);
+}
+
+void
+Decoration::SetScaleAxes(const Vector3D& scale)
+{
+    m_scaleAxes = scale;
 }
 
 double
-Decoration::GetScale (void) const
+Decoration::GetScale(void) const
 {
-  return m_scale;
+    return m_scale;
 }
 
-const Vector3D &
-Decoration::GetScaleAxes (void) const
+const Vector3D&
+Decoration::GetScaleAxes(void) const
 {
-  return m_scaleAxes;
+    return m_scaleAxes;
 }
 
 void
-Decoration::DoDispose (void)
+Decoration::DoDispose(void)
 {
-  NS_LOG_FUNCTION (this);
-  m_orchestrator = nullptr;
-  Object::DoDispose ();
+    NS_LOG_FUNCTION(this);
+    m_orchestrator = nullptr;
+    Object::DoDispose();
 }
 
 } // namespace netsimulyzer

@@ -33,16 +33,18 @@
 #ifndef APPLICATION_STATE_SINK_H
 #define APPLICATION_STATE_SINK_H
 
-#include <string>
-#include <ns3/object.h>
-#include <ns3/ptr.h>
-#include <ns3/orchestrator.h>
 #include <ns3/category-value-series.h>
 #include <ns3/log-stream.h>
-#include <ns3/timer.h>
 #include <ns3/nstime.h>
+#include <ns3/object.h>
+#include <ns3/orchestrator.h>
+#include <ns3/ptr.h>
+#include <ns3/timer.h>
 
-namespace ns3::netsimulyzer {
+#include <string>
+
+namespace ns3::netsimulyzer
+{
 
 /**
  * Sink class for use with an `ns3::Application`.
@@ -57,300 +59,303 @@ namespace ns3::netsimulyzer {
  */
 class StateTransitionSink : public Object
 {
-public:
-  /**
-   * Behaviors for writing to the `LogStream`
-   */
-  enum LoggingMode : int {
+  public:
     /**
-     * Only write a message when the application
-     * changes to a new state
+     * Behaviors for writing to the `LogStream`
      */
-    StateChanges,
+    enum LoggingMode : int
+    {
+        /**
+         * Only write a message when the application
+         * changes to a new state
+         */
+        StateChanges,
+
+        /**
+         * Write all possible log messages
+         */
+        All,
+
+        /**
+         * Write no log messages
+         */
+        None
+    };
 
     /**
-     * Write all possible log messages
+     * Get the class TypeId
+     *
+     * \return the TypeId
      */
-    All,
+    static TypeId GetTypeId(void);
 
     /**
-     * Write no log messages
+     * Sets up the sink with a list of the possible application states.
+     * Automatically generates IDs for each state in `states`.
+     *
+     * \warning Do not duplicate state names,
+     * if two states share the same name, IDs
+     * must be used to interact with the conflicting names.
+     *
+     * \warning State IDs must be unique
+     *
+     * \param orchestrator
+     * The `Orchestrator` that will manage the sub-elements
+     *
+     * \param states
+     * List of unique state names with IDs
+     *
+     * \param initialState
+     * The initial state of the model to be connected
+     * to one of the StateChanged callbacks.
      */
-    None
-  };
+    StateTransitionSink(Ptr<Orchestrator> orchestrator,
+                        const std::vector<std::string>& states,
+                        const std::string& initialState);
 
-  /**
-   * Get the class TypeId
-   *
-   * \return the TypeId
-   */
-  static TypeId GetTypeId (void);
+    /**
+     * Sets up the sink with a list of the possible application states
+     * with IDs
+     *
+     * \warning Do not duplicate state names,
+     * if two states share the same name, IDs
+     * must be used to interact with the conflicting names.
+     *
+     * \param orchestrator
+     * The `Orchestrator` that will manage the sub-elements
+     *
+     * \param states
+     * List of unique state names with IDs
+     *
+     * \param initialState
+     * The initial state of the model to be connected
+     * to one of the StateChanged callbacks.
+     */
+    StateTransitionSink(Ptr<Orchestrator> orchestrator,
+                        const std::vector<CategoryAxis::ValuePair>& states,
+                        int initialState);
 
-  /**
-   * Sets up the sink with a list of the possible application states.
-   * Automatically generates IDs for each state in `states`.
-   *
-   * \warning Do not duplicate state names,
-   * if two states share the same name, IDs
-   * must be used to interact with the conflicting names.
-   *
-   * \warning State IDs must be unique
-   *
-   * \param orchestrator
-   * The `Orchestrator` that will manage the sub-elements
-   *
-   * \param states
-   * List of unique state names with IDs
-   *
-   * \param initialState
-   * The initial state of the model to be connected
-   * to one of the StateChanged callbacks.
-   */
-  StateTransitionSink (Ptr<Orchestrator> orchestrator, const std::vector<std::string> &states,
-                       const std::string &initialState);
+    /**
+     * Sets the starting state of the application.
+     * Does not write a state change.
+     *
+     * If state is not a provided state, this method will abort
+     *
+     * \param state
+     * The starting state of the attached model
+     */
+    void SetInitialState(const std::string& state);
 
-  /**
-   * Sets up the sink with a list of the possible application states
-   * with IDs
-   *
-   * \warning Do not duplicate state names,
-   * if two states share the same name, IDs
-   * must be used to interact with the conflicting names.
-   *
-   * \param orchestrator
-   * The `Orchestrator` that will manage the sub-elements
-   *
-   * \param states
-   * List of unique state names with IDs
-   *
-   * \param initialState
-   * The initial state of the model to be connected
-   * to one of the StateChanged callbacks.
-   */
-  StateTransitionSink (Ptr<Orchestrator> orchestrator,
-                       const std::vector<CategoryAxis::ValuePair> &states, int initialState);
+    /**
+     * Sets the starting state of the application.
+     * Does not write a state change.
+     *
+     * If state is not a provided state, this method will abort
+     *
+     * \param state
+     * The starting state of the attached model
+     */
+    void SetInitialState(int state);
 
-  /**
-   * Sets the starting state of the application.
-   * Does not write a state change.
-   *
-   * If state is not a provided state, this method will abort
-   *
-   * \param state
-   * The starting state of the attached model
-   */
-  void SetInitialState (const std::string &state);
+    /**
+     * Callback to connect to a given subclass of `ns3::Application`.
+     * Use this one if you track your application state with a string
+     *
+     * Call this when your application's state changes, or
+     * connect your own StateChanged callback to this.
+     *
+     * \param newState
+     * The state the application is changing to.
+     */
+    void StateChangedName(const std::string& newState);
 
-  /**
-   * Sets the starting state of the application.
-   * Does not write a state change.
-   *
-   * If state is not a provided state, this method will abort
-   *
-   * \param state
-   * The starting state of the attached model
-   */
-  void SetInitialState (int state);
+    /**
+     * Callback to connect to a given subclass of `ns3::Application`.
+     * Use this one if you track your application state with an enum/int
+     *
+     * Call this when your application's state changes, or
+     * connect your own StateChanged callback to this.
+     *
+     * \param newState
+     * The state the application is changing to.
+     */
+    void StateChangedId(int newState);
 
-  /**
-   * Callback to connect to a given subclass of `ns3::Application`.
-   * Use this one if you track your application state with a string
-   *
-   * Call this when your application's state changes, or
-   * connect your own StateChanged callback to this.
-   *
-   * \param newState
-   * The state the application is changing to.
-   */
-  void StateChangedName (const std::string &newState);
+    /**
+     * Sets the names of the attached series & log
+     *
+     * \param name
+     * The name to use
+     */
+    void SetNames(const std::string& name);
 
-  /**
-   * Callback to connect to a given subclass of `ns3::Application`.
-   * Use this one if you track your application state with an enum/int
-   *
-   * Call this when your application's state changes, or
-   * connect your own StateChanged callback to this.
-   *
-   * \param newState
-   * The state the application is changing to.
-   */
-  void StateChangedId (int newState);
+    /**
+     * Sets the unit of time for the X axis.
+     * Also sets the label for the axis
+     *
+     * \param unit
+     * The unit of time to use.
+     */
+    void SetTimeUnit(Time::Unit unit);
 
-  /**
-   * Sets the names of the attached series & log
-   *
-   * \param name
-   * The name to use
-   */
-  void SetNames (const std::string &name);
+    /**
+     * Get the current time unit for the X Axis
+     *
+     * \return
+     * The current time unit
+     */
+    Time::Unit GetTimeUnit(void) const;
 
-  /**
-   * Sets the unit of time for the X axis.
-   * Also sets the label for the axis
-   *
-   * \param unit
-   * The unit of time to use.
-   */
-  void SetTimeUnit (Time::Unit unit);
+    /**
+     * Sets what messages are printed to the log.
+     * If set to `LoggingMode::None` also hides the log
+     * If set to anything other than `LoggingMode::None` show the log
+     *
+     * \param mode
+     * What messages to print to the log
+     */
+    void SetLoggingMode(LoggingMode mode);
 
-  /**
-   * Get the current time unit for the X Axis
-   *
-   * \return
-   * The current time unit
-   */
-  Time::Unit GetTimeUnit (void) const;
+    /**
+     * Gets the current logging mode
+     *
+     * \return
+     * The logging mode
+     */
+    LoggingMode GetLoggingMode(void) const;
 
-  /**
-   * Sets what messages are printed to the log.
-   * If set to `LoggingMode::None` also hides the log
-   * If set to anything other than `LoggingMode::None` show the log
-   *
-   * \param mode
-   * What messages to print to the log
-   */
-  void SetLoggingMode (LoggingMode mode);
+    /**
+     * Convenience method to access the contained series
+     *
+     * \return
+     * A pointer to the contained `CategoryValueSeries`
+     */
+    Ptr<CategoryValueSeries> GetSeries(void) const;
 
-  /**
-   * Gets the current logging mode
-   *
-   * \return
-   * The logging mode
-   */
-  LoggingMode GetLoggingMode (void) const;
+    /**
+     * Convenience method to access the X axis of the
+     * contained series
+     *
+     * \return
+     * A pointer to the `ValueAxis` used for the X axis
+     * of the contained series
+     */
+    Ptr<ValueAxis> GetXAxis(void) const;
 
-  /**
-   * Convenience method to access the contained series
-   *
-   * \return
-   * A pointer to the contained `CategoryValueSeries`
-   */
-  Ptr<CategoryValueSeries> GetSeries (void) const;
+    /**
+     * Convenience method to access the Y axis of the
+     * contained series
+     *
+     * \return
+     * A pointer to the `CategoryAxis` used for the Y axis
+     * of the contained series
+     */
+    Ptr<CategoryAxis> GetYAxis(void) const;
 
-  /**
-   * Convenience method to access the X axis of the
-   * contained series
-   *
-   * \return
-   * A pointer to the `ValueAxis` used for the X axis
-   * of the contained series
-   */
-  Ptr<ValueAxis> GetXAxis (void) const;
+    /**
+     * Convenience method to set up the time (X) axis with a
+     * fixed range.
+     *
+     * This is the equivalent of calling:
+     * `sink->GetXAxis ()->FixedRange (min, max)`
+     *
+     * \param min
+     * The minimum expected value passed to `Append()`.
+     * Should be less than, but not equal to `max`.
+     *
+     * \param max
+     * The maximum expected value passed to `Append()`.
+     * Should be greater than, but not equal to `min`
+     */
+    void SetTimeRangeFixed(double min, double max);
 
-  /**
-   * Convenience method to access the Y axis of the
-   * contained series
-   *
-   * \return
-   * A pointer to the `CategoryAxis` used for the Y axis
-   * of the contained series
-   */
-  Ptr<CategoryAxis> GetYAxis (void) const;
+    /**
+     * Convenience method to set up the time (X) axis with a
+     * scaling range (the default).
+     *
+     * This is the equivalent of calling:
+     * `sink->GetXAxis ()->ScalingRange (min, max)`
+     *
+     * \param min
+     * The starting minimum value of the X axis,
+     * Should be less than, but not equal to `max`.
+     *
+     * \param max
+     * The starting maximum value of the X axis,
+     * Should be greater than, but not equal to `min`
+     */
+    void SetTimeRangeScaling(double min, double max);
 
-  /**
-   * Convenience method to set up the time (X) axis with a
-   * fixed range.
-   *
-   * This is the equivalent of calling:
-   * `sink->GetXAxis ()->FixedRange (min, max)`
-   *
-   * \param min
-   * The minimum expected value passed to `Append()`.
-   * Should be less than, but not equal to `max`.
-   *
-   * \param max
-   * The maximum expected value passed to `Append()`.
-   * Should be greater than, but not equal to `min`
-   */
-  void SetTimeRangeFixed (double min, double max);
+    /**
+     * Write the current application state to the series
+     */
+    void Write(void);
 
-  /**
-   * Convenience method to set up the time (X) axis with a
-   * scaling range (the default).
-   *
-   * This is the equivalent of calling:
-   * `sink->GetXAxis ()->ScalingRange (min, max)`
-   *
-   * \param min
-   * The starting minimum value of the X axis,
-   * Should be less than, but not equal to `max`.
-   *
-   * \param max
-   * The starting maximum value of the X axis,
-   * Should be greater than, but not equal to `min`
-   */
-  void SetTimeRangeScaling (double min, double max);
+  protected:
+    void DoDispose(void) override;
 
-  /**
-   * Write the current application state to the series
-   */
-  void Write (void);
+  private:
+    /**
+     * Initialize common members between the constructors
+     * should not be called by the user
+     */
+    void Init(void);
 
-protected:
-  void DoDispose (void) override;
+    /**
+     * The `Orchestrator` that manages the visualizer elements
+     */
+    Ptr<Orchestrator> m_orchestrator;
 
-private:
-  /**
-   * Initialize common members between the constructors
-   * should not be called by the user
-   */
-  void Init (void);
+    /**
+     * The series that tracks the application state vs time
+     */
+    Ptr<CategoryValueSeries> m_series;
 
-  /**
-   * The `Orchestrator` that manages the visualizer elements
-   */
-  Ptr<Orchestrator> m_orchestrator;
+    /**
+     * The axis that contains the application state
+     */
+    Ptr<CategoryAxis> m_categoryAxis;
 
-  /**
-   * The series that tracks the application state vs time
-   */
-  Ptr<CategoryValueSeries> m_series;
+    /**
+     * The log for application events,
+     * controlled by the `LoggingMode`
+     */
+    Ptr<LogStream> m_log;
 
-  /**
-   * The axis that contains the application state
-   */
-  Ptr<CategoryAxis> m_categoryAxis;
+    /**
+     * Flag that determines what log messages are
+     * emitted on `m_log`
+     */
+    LoggingMode m_loggingMode;
 
-  /**
-   * The log for application events,
-   * controlled by the `LoggingMode`
-   */
-  Ptr<LogStream> m_log;
+    /**
+     * The ID of the current state,
+     *
+     * should be set by the user, but
+     * 0 is the closest to a reasonable
+     * default we have
+     */
+    int m_currentState{0};
 
-  /**
-   * Flag that determines what log messages are
-   * emitted on `m_log`
-   */
-  LoggingMode m_loggingMode;
+    /**
+     * The string representation of the current state.
+     *
+     * Should be set by the user
+     */
+    std::string m_currentStateLabel{"Unset Initial State"};
 
-  /**
-   * The ID of the current state,
-   *
-   * should be set by the user, but
-   * 0 is the closest to a reasonable
-   * default we have
-   */
-  int m_currentState{0};
+    /**
+     * Unit of time to use for the X Axis
+     */
+    Time::Unit m_timeUnit;
 
-  /**
-   * The string representation of the current state.
-   *
-   * Should be set by the user
-   */
-  std::string m_currentStateLabel{"Unset Initial State"};
-
-  /**
-   * Unit of time to use for the X Axis
-   */
-  Time::Unit m_timeUnit;
-
-  /**
-   * Change the current state & write to series & logs
-   *
-   * \param pair
-   * The name/ID of the new state
-   */
-  void ApplyStateChange (const CategoryAxis::ValuePair &pair);
+    /**
+     * Change the current state & write to series & logs
+     *
+     * \param pair
+     * The name/ID of the new state
+     */
+    void ApplyStateChange(const CategoryAxis::ValuePair& pair);
 };
 
 } // namespace ns3::netsimulyzer

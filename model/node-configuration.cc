@@ -33,20 +33,23 @@
  */
 
 #include "node-configuration.h"
-#include <sstream>
+
 #include <ns3/boolean.h>
 #include <ns3/double.h>
+#include <ns3/log.h>
 #include <ns3/mobility-model.h>
 #include <ns3/node.h>
 #include <ns3/object-base.h>
+#include <ns3/optional.h>
 #include <ns3/pointer.h>
 #include <ns3/string.h>
-#include <ns3/log.h>
-#include <ns3/optional.h>
+
 #include <cmath>
 #include <optional>
+#include <sstream>
 
-namespace {
+namespace
+{
 
 /**
  * Compare each component in two vectors. If their difference of each component
@@ -68,10 +71,10 @@ namespace {
  * False otherwise
  */
 bool
-compareWithTolerance (const ns3::Vector3D &left, const ns3::Vector3D &right, double tolerance)
+compareWithTolerance(const ns3::Vector3D& left, const ns3::Vector3D& right, double tolerance)
 {
-  return (std::abs (left.x - right.x) <= tolerance) && (std::abs (left.y - right.y) <= tolerance) &&
-         (std::abs (left.z - right.z) <= tolerance);
+    return (std::abs(left.x - right.x) <= tolerance) && (std::abs(left.y - right.y) <= tolerance) &&
+           (std::abs(left.z - right.z) <= tolerance);
 }
 
 /**
@@ -88,411 +91,429 @@ compareWithTolerance (const ns3::Vector3D &left, const ns3::Vector3D &right, dou
  * The Z orientation (in degrees) to rotate the model to
  */
 double
-faceForwardAngle (const ns3::Vector3D &last, const ns3::Vector3D &next)
+faceForwardAngle(const ns3::Vector3D& last, const ns3::Vector3D& next)
 {
-  // clang-format off
+    // clang-format off
   return std::atan2((next.y - last.y), (next.x - last.x))
              * 180/3.14 // Convert Radians to Degrees
              + 90.0; // Offset for default NetSimulyzer model orientation TODO: Adjust models to remove this
-  // clang-format on
+    // clang-format on
 }
 
 } // namespace
 
-namespace ns3 {
-NS_LOG_COMPONENT_DEFINE ("NodeConfiguration");
-namespace netsimulyzer {
-
-NS_OBJECT_ENSURE_REGISTERED (NodeConfiguration);
-
-NodeConfiguration::NodeConfiguration (Ptr<Orchestrator> orchestrator)
-    : m_orchestrator (orchestrator)
+namespace ns3
 {
-  NS_LOG_FUNCTION (this << orchestrator);
-  m_orchestrator->Register ({this, true});
+NS_LOG_COMPONENT_DEFINE("NodeConfiguration");
+
+namespace netsimulyzer
+{
+
+NS_OBJECT_ENSURE_REGISTERED(NodeConfiguration);
+
+NodeConfiguration::NodeConfiguration(Ptr<Orchestrator> orchestrator)
+    : m_orchestrator(orchestrator)
+{
+    NS_LOG_FUNCTION(this << orchestrator);
+    m_orchestrator->Register({this, true});
 }
 
 TypeId
-NodeConfiguration::GetTypeId (void)
+NodeConfiguration::GetTypeId(void)
 {
-  // clang-format off
-  // clang-format on
-  static TypeId tid =
-      TypeId ("ns3::netsimulyzer::NodeConfiguration")
-          .SetParent<Object> ()
-          .SetGroupName ("netsimulyzer")
-          .AddConstructor<NodeConfiguration> ()
-          .AddAttribute ("Name", "Name for this Node",
-                         StringValue ("Node"),
-                         MakeStringAccessor (&NodeConfiguration::m_name),
-                         MakeStringChecker ())
-          .AddAttribute ("EnableLabel",
-                         "Flag to show/hide the label above the Node "
-                         "if the application is set to "
-                         "the 'Enabled Only' label mode",
-                         BooleanValue(true),
-                         MakeBooleanAccessor(&NodeConfiguration::m_enableLabel),
-                         MakeBooleanChecker())
-          .AddAttribute ("Model", "Filename of the model to represent this Node", StringValue (),
-                         MakeStringAccessor (&NodeConfiguration::m_model), MakeStringChecker ())
-          .AddAttribute ("Orientation", "Orientation of the Node on each axis in degrees",
-                         Vector3DValue (),
-                         MakeVector3DAccessor (&NodeConfiguration::GetOrientation,
+    static TypeId tid =
+        TypeId("ns3::netsimulyzer::NodeConfiguration")
+            .SetParent<Object>()
+            .SetGroupName("netsimulyzer")
+            .AddConstructor<NodeConfiguration>()
+            .AddAttribute("Name",
+                          "Name for this Node",
+                          StringValue("Node"),
+                          MakeStringAccessor(&NodeConfiguration::m_name),
+                          MakeStringChecker())
+            .AddAttribute("EnableLabel",
+                          "Flag to show/hide the label above the Node "
+                          "if the application is set to "
+                          "the 'Enabled Only' label mode",
+                          BooleanValue(true),
+                          MakeBooleanAccessor(&NodeConfiguration::m_enableLabel),
+                          MakeBooleanChecker())
+            .AddAttribute("Model",
+                          "Filename of the model to represent this Node",
+                          StringValue(),
+                          MakeStringAccessor(&NodeConfiguration::m_model),
+                          MakeStringChecker())
+            .AddAttribute("Orientation",
+                          "Orientation of the Node on each axis in degrees",
+                          Vector3DValue(),
+                          MakeVector3DAccessor(&NodeConfiguration::GetOrientation,
                                                &NodeConfiguration::SetOrientation),
-                         MakeVector3DChecker ())
-          .AddAttribute ("Scale",
-                         "The percentage to scale the model in all directions (uniform scale)",
-                         DoubleValue (1.0), MakeDoubleAccessor (&NodeConfiguration::m_scale),
-                         MakeDoubleChecker<double> (0))
-          .AddAttribute ("ScaleAxes",
-                         "The scale to apply each axis in the order [x, y, z]. "
-                         "similar to `Scale`, but allows for non-uniform scales. "
-                         "Ignores `KeepRatio`",
-                         Vector3DValue (Vector3D{1.0, 1.0, 1.0}),
-                         MakeVector3DAccessor (&NodeConfiguration::m_scaleAxes),
-                         MakeVector3DChecker ())
-          .AddAttribute ("Offset", "Offset from the Node to apply to the model", Vector3DValue (),
-                         MakeVector3DAccessor (&NodeConfiguration::m_positionOffset),
-                         MakeVector3DChecker ())
-          .AddAttribute ("FaceForward",
-                         "Automatically change the 2D orientation of "
-                         "the Node to face the directions pointed to "
-                         "by the ray drawn from the last position to "
-                         "the current one",
-                         BooleanValue (false),
-                         MakeBooleanAccessor (&NodeConfiguration::m_faceForward),
-                         MakeBooleanChecker ())
-          .AddAttribute ("KeepRatio",
-                         "When scaling with the `Height`, `Width`, and `Depth` attributes, "
-                         "use only the value that produces the largest model. "
-                         "Keeping the scale uniform",
-                         BooleanValue (true), MakeBooleanAccessor (&NodeConfiguration::m_keepRatio),
-                         MakeBooleanChecker ())
-          .AddAttribute ("Height",
-                         "Desired height of the rendered model in ns-3 units. "
-                         "Applied before `Scale`",
-                         OptionalValue<double> (),
-                         MakeOptionalAccessor<double> (&NodeConfiguration::m_height),
-                         MakeOptionalChecker<double> ())
-          .AddAttribute ("Width",
-                         "Desired width of the rendered model in ns-3 units. "
-                         "Applied before `Scale`",
-                         OptionalValue<double> (),
-                         MakeOptionalAccessor<double> (&NodeConfiguration::m_width),
-                         MakeOptionalChecker<double> ())
-          .AddAttribute ("Depth",
-                         "Desired depth of the rendered model in ns-3 units. "
-                         "Applied before `Scale`",
-                         OptionalValue<double> (),
-                         MakeOptionalAccessor<double> (&NodeConfiguration::m_depth),
-                         MakeOptionalChecker<double> ())
-          .AddAttribute ("BaseColor",
-                         "The color to use as the primary color in models with configurable colors",
-                         OptionalValue<Color3> (),
-                         MakeOptionalAccessor<Color3> (&NodeConfiguration::GetBaseColor,
+                          MakeVector3DChecker())
+            .AddAttribute("Scale",
+                          "The percentage to scale the model in all directions (uniform scale)",
+                          DoubleValue(1.0),
+                          MakeDoubleAccessor(&NodeConfiguration::m_scale),
+                          MakeDoubleChecker<double>(0))
+            .AddAttribute("ScaleAxes",
+                          "The scale to apply each axis in the order [x, y, z]. "
+                          "similar to `Scale`, but allows for non-uniform scales. "
+                          "Ignores `KeepRatio`",
+                          Vector3DValue(Vector3D{1.0, 1.0, 1.0}),
+                          MakeVector3DAccessor(&NodeConfiguration::m_scaleAxes),
+                          MakeVector3DChecker())
+            .AddAttribute("Offset",
+                          "Offset from the Node to apply to the model",
+                          Vector3DValue(),
+                          MakeVector3DAccessor(&NodeConfiguration::m_positionOffset),
+                          MakeVector3DChecker())
+            .AddAttribute("FaceForward",
+                          "Automatically change the 2D orientation of "
+                          "the Node to face the directions pointed to "
+                          "by the ray drawn from the last position to "
+                          "the current one",
+                          BooleanValue(false),
+                          MakeBooleanAccessor(&NodeConfiguration::m_faceForward),
+                          MakeBooleanChecker())
+            .AddAttribute("KeepRatio",
+                          "When scaling with the `Height`, `Width`, and `Depth` attributes, "
+                          "use only the value that produces the largest model. "
+                          "Keeping the scale uniform",
+                          BooleanValue(true),
+                          MakeBooleanAccessor(&NodeConfiguration::m_keepRatio),
+                          MakeBooleanChecker())
+            .AddAttribute("Height",
+                          "Desired height of the rendered model in ns-3 units. "
+                          "Applied before `Scale`",
+                          OptionalValue<double>(),
+                          MakeOptionalAccessor<double>(&NodeConfiguration::m_height),
+                          MakeOptionalChecker<double>())
+            .AddAttribute("Width",
+                          "Desired width of the rendered model in ns-3 units. "
+                          "Applied before `Scale`",
+                          OptionalValue<double>(),
+                          MakeOptionalAccessor<double>(&NodeConfiguration::m_width),
+                          MakeOptionalChecker<double>())
+            .AddAttribute("Depth",
+                          "Desired depth of the rendered model in ns-3 units. "
+                          "Applied before `Scale`",
+                          OptionalValue<double>(),
+                          MakeOptionalAccessor<double>(&NodeConfiguration::m_depth),
+                          MakeOptionalChecker<double>())
+            // clang-format off
+            .AddAttribute("BaseColor",
+                          "The color to use as the primary color "
+                          "in models with configurable colors",
+                          OptionalValue<Color3>(),
+                          MakeOptionalAccessor<Color3>(&NodeConfiguration::GetBaseColor,
                                                        &NodeConfiguration::SetBaseColor),
-                         MakeOptionalChecker<Color3> ())
-          .AddAttribute ("HighlightColor",
-                         "The color to use as the secondary color"
-                         "in models with configurable colors",
-                         OptionalValue<Color3> (),
-                         MakeOptionalAccessor<Color3> (&NodeConfiguration::GetHighlightColor,
+                          MakeOptionalChecker<Color3>())
+            // clang-format on
+            .AddAttribute("HighlightColor",
+                          "The color to use as the secondary color"
+                          "in models with configurable colors",
+                          OptionalValue<Color3>(),
+                          MakeOptionalAccessor<Color3>(&NodeConfiguration::GetHighlightColor,
                                                        &NodeConfiguration::SetHighlightColor),
-                         MakeOptionalChecker<Color3> ())
-          .AddAttribute ("EnableMotionTrail",
-                         "Flag to show/hide the motion trail "
-                         "if the application is set to "
-                         "the 'Enabled Only' motion trail mode",
-                         BooleanValue(false),
-                         MakeBooleanAccessor(&NodeConfiguration::m_enableMotionTrail),
-                         MakeBooleanChecker())
-          .AddAttribute ("MotionTrailColor",
-                         "The color of the optional motion trail"
-                         "if unset, uses either the `BaseColor`, `HighlightColor`, or"
-                         "the next color in the palette, in that order.",
-                         OptionalValue<Color3> (),
-                         MakeOptionalAccessor<Color3> (&NodeConfiguration::m_trailColor),
-                         MakeOptionalChecker<Color3> ())
-          .AddAttribute ("PositionTolerance",
-                         "The amount a Node must move to have it's position written again",
-                         DoubleValue (0.05),
-                         MakeDoubleAccessor (&NodeConfiguration::m_positionTolerance),
-                         MakeDoubleChecker<double> (0))
-          .AddAttribute ("UsePositionTolerance",
-                         "Only write positions when the Node has "
-                         "moved beyond the 'PositionTolerance'.",
-                         BooleanValue (true),
-                         MakeBooleanAccessor (&NodeConfiguration::m_usePositionTolerance),
-                         MakeBooleanChecker ())
-          .AddAttribute ("Visible", "Defines if the Node is rendered in the visualizer",
-                         BooleanValue (true), MakeBooleanAccessor (&NodeConfiguration::m_visible),
-                         MakeBooleanChecker ())
-          .AddAttribute ("Orchestrator", "Orchestrator that manages this Node", PointerValue (),
-                         MakePointerAccessor (&NodeConfiguration::GetOrchestrator,
+                          MakeOptionalChecker<Color3>())
+            .AddAttribute("EnableMotionTrail",
+                          "Flag to show/hide the motion trail "
+                          "if the application is set to "
+                          "the 'Enabled Only' motion trail mode",
+                          BooleanValue(false),
+                          MakeBooleanAccessor(&NodeConfiguration::m_enableMotionTrail),
+                          MakeBooleanChecker())
+            .AddAttribute("MotionTrailColor",
+                          "The color of the optional motion trail"
+                          "if unset, uses either the `BaseColor`, `HighlightColor`, or"
+                          "the next color in the palette, in that order.",
+                          OptionalValue<Color3>(),
+                          MakeOptionalAccessor<Color3>(&NodeConfiguration::m_trailColor),
+                          MakeOptionalChecker<Color3>())
+            .AddAttribute("PositionTolerance",
+                          "The amount a Node must move to have it's position written again",
+                          DoubleValue(0.05),
+                          MakeDoubleAccessor(&NodeConfiguration::m_positionTolerance),
+                          MakeDoubleChecker<double>(0))
+            .AddAttribute("UsePositionTolerance",
+                          "Only write positions when the Node has "
+                          "moved beyond the 'PositionTolerance'.",
+                          BooleanValue(true),
+                          MakeBooleanAccessor(&NodeConfiguration::m_usePositionTolerance),
+                          MakeBooleanChecker())
+            .AddAttribute("Visible",
+                          "Defines if the Node is rendered in the visualizer",
+                          BooleanValue(true),
+                          MakeBooleanAccessor(&NodeConfiguration::m_visible),
+                          MakeBooleanChecker())
+            .AddAttribute("Orchestrator",
+                          "Orchestrator that manages this Node",
+                          PointerValue(),
+                          MakePointerAccessor(&NodeConfiguration::GetOrchestrator,
                                               &NodeConfiguration::SetOrchestrator),
-                         MakePointerChecker<Orchestrator> ());
-  return tid;
+                          MakePointerChecker<Orchestrator>());
+    return tid;
 }
 
 void
-NodeConfiguration::DoDispose (void)
+NodeConfiguration::DoDispose(void)
 {
-  NS_LOG_FUNCTION (this);
-  m_orchestrator = nullptr;
-  Object::DoDispose ();
+    NS_LOG_FUNCTION(this);
+    m_orchestrator = nullptr;
+    Object::DoDispose();
 }
 
 void
-NodeConfiguration::CourseChange (ns3::Ptr<const MobilityModel> model)
+NodeConfiguration::CourseChange(ns3::Ptr<const MobilityModel> model)
 {
-  NS_LOG_FUNCTION (this << model);
-  CourseChangeEvent event;
-  event.time = Simulator::Now ();
-  event.nodeId = model->GetObject<Node> ()->GetId ();
-  event.position = model->GetPosition ();
+    NS_LOG_FUNCTION(this << model);
+    CourseChangeEvent event;
+    event.time = Simulator::Now();
+    event.nodeId = model->GetObject<Node>()->GetId();
+    event.position = model->GetPosition();
 
-  m_orchestrator->HandleCourseChange (event);
+    m_orchestrator->HandleCourseChange(event);
 
-  if (m_faceForward)
-    SetOrientation (
-        {m_orientation.x, m_orientation.y, faceForwardAngle (m_lastPosition, event.position)});
+    if (m_faceForward)
+        SetOrientation(
+            {m_orientation.x, m_orientation.y, faceForwardAngle(m_lastPosition, event.position)});
 
-  m_lastPosition = event.position;
+    m_lastPosition = event.position;
 }
 
 void
-NodeConfiguration::Transmit (Time duration, double targetSize, Color3 color)
+NodeConfiguration::Transmit(Time duration, double targetSize, Color3 color)
 {
-  NS_LOG_FUNCTION (this << duration << targetSize);
+    NS_LOG_FUNCTION(this << duration << targetSize);
 
-  // If we haven't been aggregated with a Node yet.
-  // Assume we're still setting up
-  const auto node = GetObject<const Node> ();
-  if (!node)
+    // If we haven't been aggregated with a Node yet.
+    // Assume we're still setting up
+    const auto node = GetObject<const Node>();
+    if (!node)
     {
-      NS_LOG_DEBUG ("Not triggering NodeTransmit event. No Node aggregated");
-      return;
+        NS_LOG_DEBUG("Not triggering NodeTransmit event. No Node aggregated");
+        return;
     }
 
-  TransmitEvent event;
-  event.time = Simulator::Now ();
-  event.nodeId = node->GetId ();
-  event.duration = duration;
-  event.targetSize = targetSize;
-  event.color = color;
+    TransmitEvent event;
+    event.time = Simulator::Now();
+    event.nodeId = node->GetId();
+    event.duration = duration;
+    event.targetSize = targetSize;
+    event.color = color;
 
-  if (lastTransmissionEnd > event.time + event.duration)
+    if (lastTransmissionEnd > event.time + event.duration)
     {
-      std::stringstream ss;
-      ss << "Node ID: " << event.nodeId
-         << " transmission event interrupted. Expected end: " << lastTransmissionEnd
-         << " Current time: " << event.time;
+        std::stringstream ss;
+        ss << "Node ID: " << event.nodeId
+           << " transmission event interrupted. Expected end: " << lastTransmissionEnd
+           << " Current time: " << event.time;
 
-      NS_LOG_WARN (ss.str ());
+        NS_LOG_WARN(ss.str());
     }
 
-  m_orchestrator->HandleTransmit (event);
+    m_orchestrator->HandleTransmit(event);
 }
 
 std::optional<Vector3D>
-NodeConfiguration::MobilityPoll (void)
+NodeConfiguration::MobilityPoll(void)
 {
-  NS_LOG_FUNCTION (this);
-  auto node = GetObject<Node> ();
-  NS_ABORT_MSG_IF (!node, "Mobility poll activated on NodeConfiguration with no associated Node");
+    NS_LOG_FUNCTION(this);
+    auto node = GetObject<Node>();
+    NS_ABORT_MSG_IF(!node, "Mobility poll activated on NodeConfiguration with no associated Node");
 
-  auto mobility = node->GetObject<MobilityModel> ();
-  if (!mobility)
+    auto mobility = node->GetObject<MobilityModel>();
+    if (!mobility)
     {
-      NS_LOG_DEBUG ("Mobility poll activated on Node with no Mobility Model, ignoring");
-      return {};
+        NS_LOG_DEBUG("Mobility poll activated on Node with no Mobility Model, ignoring");
+        return {};
     }
 
-  const auto position = mobility->GetPosition ();
+    const auto position = mobility->GetPosition();
 
-  if (m_usePositionTolerance &&
-      compareWithTolerance (position, m_lastPosition, m_positionTolerance))
+    if (m_usePositionTolerance &&
+        compareWithTolerance(position, m_lastPosition, m_positionTolerance))
     {
-      NS_LOG_DEBUG ("Node [ID: " << node->GetId () << "] Within tolerance");
-      return {};
+        NS_LOG_DEBUG("Node [ID: " << node->GetId() << "] Within tolerance");
+        return {};
     }
 
-  if (m_faceForward)
-    SetOrientation (
-        {m_orientation.x, m_orientation.y, faceForwardAngle (m_lastPosition, position)});
-  m_lastPosition = position;
+    if (m_faceForward)
+        SetOrientation(
+            {m_orientation.x, m_orientation.y, faceForwardAngle(m_lastPosition, position)});
+    m_lastPosition = position;
 
-  return {position};
+    return {position};
 }
 
-const Vector3D &
-NodeConfiguration::GetOrientation () const
+const Vector3D&
+NodeConfiguration::GetOrientation() const
 {
-  NS_LOG_FUNCTION (this);
-  return m_orientation;
-}
-
-void
-NodeConfiguration::SetOrientation (const Vector3D &orientation)
-{
-  NS_LOG_FUNCTION (this << orientation);
-  m_orientation = orientation;
-  // If we haven't been aggregated with a Node yet.
-  // Assume we're still setting up
-  auto node = GetObject<Node> ();
-  if (!node)
-    {
-      NS_LOG_DEBUG ("Not triggering NodeOrientationChanged event. No Node aggregated");
-      return;
-    }
-
-  NodeOrientationChangeEvent event;
-  event.time = Simulator::Now ();
-  event.nodeId = node->GetId ();
-  event.orientation = m_orientation;
-
-  m_orchestrator->HandleOrientationChange (event);
+    NS_LOG_FUNCTION(this);
+    return m_orientation;
 }
 
 void
-NodeConfiguration::SetOrchestrator (Ptr<Orchestrator> orchestrator)
+NodeConfiguration::SetOrientation(const Vector3D& orientation)
 {
-  NS_LOG_FUNCTION (this << orchestrator);
-  m_orchestrator = orchestrator;
-  m_orchestrator->Register ({this, true});
+    NS_LOG_FUNCTION(this << orientation);
+    m_orientation = orientation;
+    // If we haven't been aggregated with a Node yet.
+    // Assume we're still setting up
+    auto node = GetObject<Node>();
+    if (!node)
+    {
+        NS_LOG_DEBUG("Not triggering NodeOrientationChanged event. No Node aggregated");
+        return;
+    }
+
+    NodeOrientationChangeEvent event;
+    event.time = Simulator::Now();
+    event.nodeId = node->GetId();
+    event.orientation = m_orientation;
+
+    m_orchestrator->HandleOrientationChange(event);
+}
+
+void
+NodeConfiguration::SetOrchestrator(Ptr<Orchestrator> orchestrator)
+{
+    NS_LOG_FUNCTION(this << orchestrator);
+    m_orchestrator = orchestrator;
+    m_orchestrator->Register({this, true});
 }
 
 Ptr<Orchestrator>
-NodeConfiguration::GetOrchestrator (void) const
+NodeConfiguration::GetOrchestrator(void) const
 {
-  NS_LOG_FUNCTION (this);
-  return m_orchestrator;
+    NS_LOG_FUNCTION(this);
+    return m_orchestrator;
 }
 
-const std::optional<Color3> &
-NodeConfiguration::GetBaseColor (void) const
+const std::optional<Color3>&
+NodeConfiguration::GetBaseColor(void) const
 {
-  NS_LOG_FUNCTION (this);
-  return m_baseColor;
+    NS_LOG_FUNCTION(this);
+    return m_baseColor;
 }
 
 void
-NodeConfiguration::SetBaseColor (const std::optional<Color3> &value)
+NodeConfiguration::SetBaseColor(const std::optional<Color3>& value)
 {
-  NS_LOG_FUNCTION (this);
-  if (m_baseColor == value)
-    return;
+    NS_LOG_FUNCTION(this);
+    if (m_baseColor == value)
+        return;
 
-  m_baseColor = value;
+    m_baseColor = value;
 
-  auto node = GetObject<Node> ();
-  if (!node)
+    auto node = GetObject<Node>();
+    if (!node)
     {
-      NS_LOG_DEBUG ("Not triggering NodeColorChangeEvent event. No Node aggregated");
-      return;
+        NS_LOG_DEBUG("Not triggering NodeColorChangeEvent event. No Node aggregated");
+        return;
     }
 
-  NodeColorChangeEvent event;
-  event.time = Simulator::Now ();
-  event.id = node->GetId ();
-  event.type = NodeColorChangeEvent::ColorType::Base;
-  event.color = value;
+    NodeColorChangeEvent event;
+    event.time = Simulator::Now();
+    event.id = node->GetId();
+    event.type = NodeColorChangeEvent::ColorType::Base;
+    event.color = value;
 
-  m_orchestrator->HandleColorChange (event);
+    m_orchestrator->HandleColorChange(event);
 }
 
-const std::optional<Color3> &
-NodeConfiguration::GetHighlightColor (void) const
+const std::optional<Color3>&
+NodeConfiguration::GetHighlightColor(void) const
 {
-  NS_LOG_FUNCTION (this);
-  return m_highlightColor;
+    NS_LOG_FUNCTION(this);
+    return m_highlightColor;
 }
 
 void
-NodeConfiguration::SetHighlightColor (const std::optional<Color3> &value)
+NodeConfiguration::SetHighlightColor(const std::optional<Color3>& value)
 {
-  NS_LOG_FUNCTION (this);
-  if (m_highlightColor == value)
-    return;
+    NS_LOG_FUNCTION(this);
+    if (m_highlightColor == value)
+        return;
 
-  m_highlightColor = value;
+    m_highlightColor = value;
 
-  auto node = GetObject<Node> ();
-  if (!node)
+    auto node = GetObject<Node>();
+    if (!node)
     {
-      NS_LOG_DEBUG ("Not triggering NodeColorChangeEvent event. No Node aggregated");
-      return;
+        NS_LOG_DEBUG("Not triggering NodeColorChangeEvent event. No Node aggregated");
+        return;
     }
 
-  NodeColorChangeEvent event;
-  event.time = Simulator::Now ();
-  event.id = node->GetId ();
-  event.type = NodeColorChangeEvent::ColorType::Highlight;
-  event.color = value;
+    NodeColorChangeEvent event;
+    event.time = Simulator::Now();
+    event.id = node->GetId();
+    event.type = NodeColorChangeEvent::ColorType::Highlight;
+    event.color = value;
 
-  m_orchestrator->HandleColorChange (event);
+    m_orchestrator->HandleColorChange(event);
 }
 
 void
-NodeConfiguration::SetScale (double scale)
+NodeConfiguration::SetScale(double scale)
 {
-  m_scale = scale;
+    m_scale = scale;
 }
 
 void
-NodeConfiguration::SetScale (const Vector3D &scale)
+NodeConfiguration::SetScale(const Vector3D& scale)
 {
-  SetScaleAxes (scale);
+    SetScaleAxes(scale);
 }
 
 void
-NodeConfiguration::SetScaleAxes (const Vector3D &scale)
+NodeConfiguration::SetScaleAxes(const Vector3D& scale)
 {
-  m_scaleAxes = scale;
+    m_scaleAxes = scale;
 }
 
 double
-NodeConfiguration::GetScale (void) const
+NodeConfiguration::GetScale(void) const
 {
-  return m_scale;
+    return m_scale;
 }
 
-const Vector3D &
-NodeConfiguration::GetScaleAxes (void) const
+const Vector3D&
+NodeConfiguration::GetScaleAxes(void) const
 {
-  return m_scaleAxes;
+    return m_scaleAxes;
 }
 
 void
-NodeConfiguration::NotifyNewAggregate (void)
+NodeConfiguration::NotifyNewAggregate(void)
 {
-  NS_LOG_FUNCTION (this);
-  // Make sure we don't attach the trace more than once
-  if (m_attachedMobilityTrace)
+    NS_LOG_FUNCTION(this);
+    // Make sure we don't attach the trace more than once
+    if (m_attachedMobilityTrace)
     {
-      Object::NotifyNewAggregate ();
-      return;
+        Object::NotifyNewAggregate();
+        return;
     }
 
-  // Just in case we don't have a Node
-  auto node = GetObject<Node> ();
-  if (!node)
+    // Just in case we don't have a Node
+    auto node = GetObject<Node>();
+    if (!node)
     {
-      Object::NotifyNewAggregate ();
-      return;
+        Object::NotifyNewAggregate();
+        return;
     }
 
-  auto mobility = node->GetObject<MobilityModel> ();
-  if (!mobility)
+    auto mobility = node->GetObject<MobilityModel>();
+    if (!mobility)
     {
-      Object::NotifyNewAggregate ();
-      return;
+        Object::NotifyNewAggregate();
+        return;
     }
 
-  mobility->TraceConnectWithoutContext (
-      "CourseChange", MakeCallback (&netsimulyzer::NodeConfiguration::CourseChange, this));
-  m_attachedMobilityTrace = true;
-  Object::NotifyNewAggregate ();
+    mobility->TraceConnectWithoutContext(
+        "CourseChange",
+        MakeCallback(&netsimulyzer::NodeConfiguration::CourseChange, this));
+    m_attachedMobilityTrace = true;
+    Object::NotifyNewAggregate();
 }
 
 } // namespace netsimulyzer

@@ -37,7 +37,8 @@
 
 #include <string>
 
-namespace ns3::netsimulyzer {
+namespace ns3::netsimulyzer
+{
 
 /**
  * The Major version number for the module
@@ -52,7 +53,7 @@ const long VERSION_MINOR = 0L;
 /**
  * The Patch version number for the module
  */
-const long VERSION_PATCH = 6L;
+const long VERSION_PATCH = 7L;
 
 /**
  * Any additional version qualifiers ("pre" or "release")
@@ -66,7 +67,7 @@ const std::string VERSION_SUFFIX = "release";
  * @return
  * A string in the form M_MAJOR.M_MINOR.M_PATCH-M_SUFFIX
  */
-std::string versionString (void);
+std::string versionString(void);
 
 } // namespace ns3::netsimulyzer
 

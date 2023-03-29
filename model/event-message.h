@@ -35,67 +35,73 @@
 #ifndef EVENT_MESSAGE_H
 #define EVENT_MESSAGE_H
 
-#include <cstdint>
-#include <ns3/vector.h>
-#include <ns3/nstime.h>
-#include <ns3/color.h>
 #include <ns3/color-palette.h>
+#include <ns3/color.h>
+#include <ns3/nstime.h>
+#include <ns3/vector.h>
+
+#include <cstdint>
 #include <optional>
 
-namespace ns3::netsimulyzer {
+namespace ns3::netsimulyzer
+{
 
 struct CourseChangeEvent
 {
-  Time time;
-  uint32_t nodeId;
-  Vector position;
+    Time time;
+    uint32_t nodeId;
+    Vector position;
 };
 
 struct TransmitEvent
 {
-  Time time;
-  uint32_t nodeId;
-  Time duration;
-  double targetSize;
-  Color3 color;
+    Time time;
+    uint32_t nodeId;
+    Time duration;
+    double targetSize;
+    Color3 color;
 };
 
 struct NodeOrientationChangeEvent
 {
-  Time time;
-  uint32_t nodeId;
-  Vector3D orientation;
+    Time time;
+    uint32_t nodeId;
+    Vector3D orientation;
 };
 
 struct NodeColorChangeEvent
 {
-  enum class ColorType { Base, Highlight };
+    enum class ColorType
+    {
+        Base,
+        Highlight
+    };
 
-  Time time;
-  uint32_t id;
-  ColorType type;
-  std::optional<Color3> color;
+    Time time;
+    uint32_t id;
+    ColorType type;
+    std::optional<Color3> color;
 };
 
 struct DecorationMoveEvent
 {
-  Time time;
-  uint32_t id;
-  Vector3D position;
+    Time time;
+    uint32_t id;
+    Vector3D position;
 };
 
 struct DecorationOrientationChangeEvent
 {
-  Time time;
-  uint32_t id;
-  Vector3D orientation;
+    Time time;
+    uint32_t id;
+    Vector3D orientation;
 };
 
 struct LogMessageEvent
 {
-  Time time;
-  uint32_t id;
-  std::string message;
+    Time time;
+    uint32_t id;
+    std::string message;
 };
 
 } // namespace ns3::netsimulyzer

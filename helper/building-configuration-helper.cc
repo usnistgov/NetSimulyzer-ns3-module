@@ -32,93 +32,96 @@
  * Author: Evan Black <evan.black@nist.gov>
  */
 
+#include "building-configuration-helper.h"
+
 #include <ns3/abort.h>
 #include <ns3/log.h>
 #include <ns3/pointer.h>
-#include "building-configuration-helper.h"
 
-namespace ns3 {
-
-NS_LOG_COMPONENT_DEFINE ("BuildingConfigurationHelper");
-
-namespace netsimulyzer {
-
-BuildingConfigurationHelper::BuildingConfigurationHelper (Ptr<Orchestrator> orchestrator)
-    : m_orchestrator (orchestrator)
+namespace ns3
 {
-  Set ("Orchestrator", PointerValue (orchestrator));
+
+NS_LOG_COMPONENT_DEFINE("BuildingConfigurationHelper");
+
+namespace netsimulyzer
+{
+
+BuildingConfigurationHelper::BuildingConfigurationHelper(Ptr<Orchestrator> orchestrator)
+    : m_orchestrator(orchestrator)
+{
+    Set("Orchestrator", PointerValue(orchestrator));
 }
 
 void
-BuildingConfigurationHelper::Set (const std::string &name, const AttributeValue &v)
+BuildingConfigurationHelper::Set(const std::string& name, const AttributeValue& v)
 {
-  NS_LOG_FUNCTION (this);
-  m_buildingConfiguration.Set (name, v);
+    NS_LOG_FUNCTION(this);
+    m_buildingConfiguration.Set(name, v);
 }
 
 BuildingConfigurationContainer
-BuildingConfigurationHelper::Install (Ptr<Building> building) const
+BuildingConfigurationHelper::Install(Ptr<Building> building) const
 {
-  NS_LOG_FUNCTION (this << building);
-  auto config = m_buildingConfiguration.Create ()->GetObject<BuildingConfiguration> ();
-  building->AggregateObject (config);
-  return {config};
+    NS_LOG_FUNCTION(this << building);
+    auto config = m_buildingConfiguration.Create()->GetObject<BuildingConfiguration>();
+    building->AggregateObject(config);
+    return {config};
 }
 
 BuildingConfigurationContainer
-BuildingConfigurationHelper::Install (Ptr<Building> building,
-                                      Ptr<BuildingConfiguration> configuration) const
+BuildingConfigurationHelper::Install(Ptr<Building> building,
+                                     Ptr<BuildingConfiguration> configuration) const
 {
-  NS_LOG_FUNCTION (this << building << &configuration);
-  building->AggregateObject (configuration);
-  return {configuration};
+    NS_LOG_FUNCTION(this << building << &configuration);
+    building->AggregateObject(configuration);
+    return {configuration};
 }
 
 BuildingConfigurationContainer
-BuildingConfigurationHelper::Install (BuildingContainer &buildings) const
+BuildingConfigurationHelper::Install(BuildingContainer& buildings) const
 {
-  NS_LOG_FUNCTION (this << &buildings);
-  BuildingConfigurationContainer container;
+    NS_LOG_FUNCTION(this << &buildings);
+    BuildingConfigurationContainer container;
 
-  for (auto building = buildings.Begin (); building != buildings.End (); building++)
+    for (auto building = buildings.Begin(); building != buildings.End(); building++)
     {
-      auto config = m_buildingConfiguration.Create ()->GetObject<BuildingConfiguration> ();
+        auto config = m_buildingConfiguration.Create()->GetObject<BuildingConfiguration>();
 
-      (*building)->AggregateObject (config);
+        (*building)->AggregateObject(config);
 
-      container.Add (config);
+        container.Add(config);
     }
 
-  return container;
+    return container;
 }
 
 BuildingConfigurationContainer
-BuildingConfigurationHelper::Install (BuildingContainer &buildings,
-                                      BuildingConfigurationContainer &configurations) const
+BuildingConfigurationHelper::Install(BuildingContainer& buildings,
+                                     BuildingConfigurationContainer& configurations) const
 {
-  NS_LOG_FUNCTION (this << &buildings << &configurations);
+    NS_LOG_FUNCTION(this << &buildings << &configurations);
 
-  NS_ABORT_MSG_IF (buildings.GetN () > configurations.GetN (),
-                   "Number of Buildings greater than number of BuildingConfiguration objects");
+    NS_ABORT_MSG_IF(buildings.GetN() > configurations.GetN(),
+                    "Number of Buildings greater than number of BuildingConfiguration objects");
 
-  if (configurations.GetN () > buildings.GetN ())
+    if (configurations.GetN() > buildings.GetN())
     {
-      NS_LOG_WARN ("Number of BuildingConfiguration objects exceeds that of buildings "
-                   "Only "
-                   << buildings.GetN () << " Configurations will be used.");
+        NS_LOG_WARN("Number of BuildingConfiguration objects exceeds that of buildings "
+                    "Only "
+                    << buildings.GetN() << " Configurations will be used.");
     }
 
-  BuildingConfigurationContainer results;
+    BuildingConfigurationContainer results;
 
-  auto building = buildings.Begin ();
-  auto config = configurations.Begin ();
-  for (; building != buildings.End (); building++, config++)
+    auto building = buildings.Begin();
+    auto config = configurations.Begin();
+    for (; building != buildings.End(); building++, config++)
     {
-      (*building)->AggregateObject (*config);
-      results.Add (*config);
+        (*building)->AggregateObject(*config);
+        results.Add(*config);
     }
 
-  return results;
+    return results;
 }
 
 } // namespace netsimulyzer

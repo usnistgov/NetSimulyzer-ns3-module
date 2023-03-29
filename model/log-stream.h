@@ -35,19 +35,20 @@
 #ifndef LOG_STREAM_H
 #define LOG_STREAM_H
 
-#include <type_traits>
-#include <iostream>
-#include <string>
-#include <sstream>
-#include <cstdint>
-#include <ns3/ptr.h>
-#include <ns3/object.h>
-#include <ns3/object.h>
 #include <ns3/color.h>
+#include <ns3/object.h>
 #include <ns3/optional.h>
-#include <optional>
+#include <ns3/ptr.h>
 
-namespace ns3::netsimulyzer {
+#include <cstdint>
+#include <iostream>
+#include <optional>
+#include <sstream>
+#include <string>
+#include <type_traits>
+
+namespace ns3::netsimulyzer
+{
 
 class Orchestrator;
 
@@ -57,74 +58,74 @@ class Orchestrator;
  */
 class LogStream : public Object
 {
-public:
-  /**
-   * Sets up the LogStream and assigns the ID
-   *
-   * \param orchestrator
-   * The orchestrator to tie this LogStream to
-   */
-  explicit LogStream (Ptr<Orchestrator> orchestrator);
+  public:
+    /**
+     * Sets up the LogStream and assigns the ID
+     *
+     * \param orchestrator
+     * The orchestrator to tie this LogStream to
+     */
+    explicit LogStream(Ptr<Orchestrator> orchestrator);
 
-  /**
-   * \brief Get the class TypeId
-   *
-   * \return the TypeId
-   */
-  static TypeId GetTypeId (void);
+    /**
+     * \brief Get the class TypeId
+     *
+     * \return the TypeId
+     */
+    static TypeId GetTypeId(void);
 
-  /**
-   * Writes`message` out on this log stream at the current time.
-   *
-   * \param message
-   * The message to write on the stream.
-   */
-  void Write (const std::string &message) const;
+    /**
+     * Writes`message` out on this log stream at the current time.
+     *
+     * \param message
+     * The message to write on the stream.
+     */
+    void Write(const std::string& message) const;
 
-  /**
-   * Finalizes configuration of the LogStream.
-   *
-   * Only necessary to call manually if a LogStream is created
-   * after the simulation starts.
-   *
-   * A LogStream may only be committed once. Additional commit calls have no effect.
-   */
-  void Commit (void);
+    /**
+     * Finalizes configuration of the LogStream.
+     *
+     * Only necessary to call manually if a LogStream is created
+     * after the simulation starts.
+     *
+     * A LogStream may only be committed once. Additional commit calls have no effect.
+     */
+    void Commit(void);
 
-protected:
-  void DoDispose (void) override;
+  protected:
+    void DoDispose(void) override;
 
-private:
-  /**
-   * The Orchestrator that manages this stream.
-   */
-  Ptr<Orchestrator> m_orchestrator;
+  private:
+    /**
+     * The Orchestrator that manages this stream.
+     */
+    Ptr<Orchestrator> m_orchestrator;
 
-  /**
-   * Unique ID of the stream. Assigned from the Orchestrator
-   */
-  uint32_t m_id;
+    /**
+     * Unique ID of the stream. Assigned from the Orchestrator
+     */
+    uint32_t m_id;
 
-  /**
-   * The name of the stream. To show on visualizer dropdown and unified log
-   */
-  std::string m_name;
+    /**
+     * The name of the stream. To show on visualizer dropdown and unified log
+     */
+    std::string m_name;
 
-  /**
-   * Flag indicating this item should appear in visualizer elements
-   */
-  bool m_visible;
+    /**
+     * Flag indicating this item should appear in visualizer elements
+     */
+    bool m_visible;
 
-  /**
-   * The font color
-   */
-  std::optional<Color3> m_color;
+    /**
+     * The font color
+     */
+    std::optional<Color3> m_color;
 
-  /**
-   * Flag indicating the configuration of this model was finalized and written,
-   * and should not be written again
-   */
-  bool m_committed{false};
+    /**
+     * Flag indicating the configuration of this model was finalized and written,
+     * and should not be written again
+     */
+    bool m_committed{false};
 };
 
 /**
@@ -144,11 +145,11 @@ private:
  * The stream `stream` to chain additional calls
  */
 template <class T>
-inline LogStream &
-operator<< (LogStream &stream, const T &value)
+inline LogStream&
+operator<<(LogStream& stream, const T& value)
 {
-  stream.Write (std::to_string (value));
-  return stream;
+    stream.Write(std::to_string(value));
+    return stream;
 }
 
 /**
@@ -164,12 +165,13 @@ operator<< (LogStream &stream, const T &value)
  * The stream `stream` to chain additional calls
  */
 template <>
-inline LogStream &
-operator<< (LogStream &stream, const std::string &value)
+inline LogStream&
+operator<<(LogStream& stream, const std::string& value)
 {
-  stream.Write (value);
-  return stream;
+    stream.Write(value);
+    return stream;
 }
+
 /**
  * Writes a string out on `stream` with no conversion to `value`.
  *
@@ -183,11 +185,11 @@ operator<< (LogStream &stream, const std::string &value)
  * The stream `stream` to chain additional calls
  */
 template <>
-inline LogStream &
-operator<< (LogStream &stream, const char &value)
+inline LogStream&
+operator<<(LogStream& stream, const char& value)
 {
-  stream.Write (std::string{value});
-  return stream;
+    stream.Write(std::string{value});
+    return stream;
 }
 
 /**
@@ -203,7 +205,7 @@ operator<< (LogStream &stream, const char &value)
  * \return
  * The stream `stream` to chain additional calls
  */
-LogStream &operator<< (LogStream &stream, const char *value);
+LogStream& operator<<(LogStream& stream, const char* value);
 
 } // namespace ns3::netsimulyzer
 

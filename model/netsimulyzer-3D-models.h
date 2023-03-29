@@ -35,10 +35,12 @@
 #ifndef NETSIMULYZER_3D_MODELS_H
 #define NETSIMULYZER_3D_MODELS_H
 
-#include <string>
 #include <ns3/string.h>
 
-namespace ns3::netsimulyzer::models {
+#include <string>
+
+namespace ns3::netsimulyzer::models
+{
 
 const std::string SMARTPHONE{"models/smartphone.obj"};
 const StringValue SMARTPHONE_VALUE{SMARTPHONE};
@@ -86,4 +88,4 @@ const StringValue SQUARE_PYRAMID_VALUE{SQUARE_PYRAMID};
 
 } // namespace ns3::netsimulyzer::models
 
-#endif //NETSIMULYZER_3D_MODELS_H
+#endif // NETSIMULYZER_3D_MODELS_H

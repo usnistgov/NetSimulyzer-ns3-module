@@ -37,101 +37,102 @@
 
 #include <ns3/building-configuration.h>
 #include <ns3/ptr.h>
-#include <vector>
-#include <cstdint>
 
-namespace ns3 {
-namespace netsimulyzer {
+#include <cstdint>
+#include <vector>
+
+namespace ns3::netsimulyzer
+{
 
 class BuildingConfigurationContainer
 {
-public:
-  using Iterator = std::vector<Ptr<BuildingConfiguration>>::const_iterator;
+  public:
+    using Iterator = std::vector<Ptr<BuildingConfiguration>>::const_iterator;
 
-  /**
-   * Creates an empty BuildingConfigurationContainer
-   */
-  BuildingConfigurationContainer (void);
+    /**
+     * Creates an empty BuildingConfigurationContainer
+     */
+    BuildingConfigurationContainer(void);
 
-  /**
-   * Construct a BuildingConfigurationContainer containing configuration
-   *
-   * Allows implicit conversion from a Ptr to a BuildingConfiguration
-   *
-   * \param configuration A BuildingConfiguration object to store in the resulting container
-   */
-  BuildingConfigurationContainer (Ptr<BuildingConfiguration> configuration);
+    /**
+     * Construct a BuildingConfigurationContainer containing configuration
+     *
+     * Allows implicit conversion from a Ptr to a BuildingConfiguration
+     *
+     * \param configuration A BuildingConfiguration object to store in the resulting container
+     */
+    BuildingConfigurationContainer(Ptr<BuildingConfiguration> configuration);
 
-  /**
-   * Creates a new BuildingConfigurationContainer by concatenating first and second
-   *
-   * \param first The container whose elements will appear first
-   *
-   * \param second The container whose elements will appear after
-   * all the elements in 'first'
-   */
-  BuildingConfigurationContainer (const BuildingConfigurationContainer &first,
-                                  const BuildingConfigurationContainer &second);
+    /**
+     * Creates a new BuildingConfigurationContainer by concatenating first and second
+     *
+     * \param first The container whose elements will appear first
+     *
+     * \param second The container whose elements will appear after
+     * all the elements in 'first'
+     */
+    BuildingConfigurationContainer(const BuildingConfigurationContainer& first,
+                                   const BuildingConfigurationContainer& second);
 
-  /**
-   * Returns the iterator to the beginning of the contained vector
-   *
-   * See the vector rules for iterator invalidation
-   *
-   * \return A const_iterator to the beginning of the collection
-   */
-  Iterator Begin (void);
+    /**
+     * Returns the iterator to the beginning of the contained vector
+     *
+     * See the vector rules for iterator invalidation
+     *
+     * \return A const_iterator to the beginning of the collection
+     */
+    Iterator Begin(void);
 
-  /**
-   * Returns the iterator past the end of the contained vector
-   *
-   * See the vector rules for iterator invalidation
-   *
-   * \return  A past-the-end const_iterator for the contained collection
-   */
-  Iterator End (void);
+    /**
+     * Returns the iterator past the end of the contained vector
+     *
+     * See the vector rules for iterator invalidation
+     *
+     * \return  A past-the-end const_iterator for the contained collection
+     */
+    Iterator End(void);
 
-  /**
-   * Returns the size of the collection
-   *
-   * \return The number of elements in the contained collection
-   */
-  uint32_t GetN (void);
+    /**
+     * Returns the size of the collection
+     *
+     * \return The number of elements in the contained collection
+     */
+    uint32_t GetN(void);
 
-  /**
-   * Returns the element at index i
-   *
-   * If index i is not within the contained vector,
-   * then the behavior is undefined
-   *
-   * \param i The index of the item to return
-   *
-   * \return The Ptr at index i
-   */
-  Ptr<BuildingConfiguration> Get (uint32_t i);
+    /**
+     * Returns the element at index i
+     *
+     * If index i is not within the contained vector,
+     * then the behavior is undefined
+     *
+     * \param i The index of the item to return
+     *
+     * \return The Ptr at index i
+     */
+    Ptr<BuildingConfiguration> Get(uint32_t i);
 
-  /**
-   * Appends the contents of container c to this one by copy.
-   *
-   * \param c The container to append the contents of
-   */
-  void Add (const BuildingConfigurationContainer &c);
+    /**
+     * Appends the contents of container c to this one by copy.
+     *
+     * \param c The container to append the contents of
+     */
+    void Add(const BuildingConfigurationContainer& c);
 
-  /**
-   * Appends a single BuildingConfiguration to the collection.
-   *
-   * \param configuration The BuildingConfiguration to append.
-   * May not be NULL
-   */
-  void Add (Ptr<BuildingConfiguration> configuration);
+    /**
+     * Appends a single BuildingConfiguration to the collection.
+     *
+     * \param configuration The BuildingConfiguration to append.
+     * May not be NULL
+     */
+    void Add(Ptr<BuildingConfiguration> configuration);
 
-  /**
-   * Remove all elements from the container
-   */
-  void Clear (void);
+    /**
+     * Remove all elements from the container
+     */
+    void Clear(void);
 
-private:
-  std::vector<Ptr<BuildingConfiguration>> m_configurationObjects;
+  private:
+    std::vector<Ptr<BuildingConfiguration>> m_configurationObjects;
 };
 
 // Free 'begin' and 'end' functions allow for range based for loops e.g.:
@@ -152,7 +153,7 @@ private:
  *
  * \return A const_iterator to the beginning of c
  */
-BuildingConfigurationContainer::Iterator begin (BuildingConfigurationContainer &c);
+BuildingConfigurationContainer::Iterator begin(BuildingConfigurationContainer& c);
 
 /**
  * Returns the  past-the-end iterator for the collection
@@ -161,9 +162,8 @@ BuildingConfigurationContainer::Iterator begin (BuildingConfigurationContainer &
  *
  * \return A const_iterator past-the-end of c
  */
-BuildingConfigurationContainer::Iterator end (BuildingConfigurationContainer &c);
+BuildingConfigurationContainer::Iterator end(BuildingConfigurationContainer& c);
 
-} // namespace netsimulyzer
 } // namespace ns3
 
 #endif /* BUILDING_CONFIGURATION_CONTAINER_H */

@@ -33,15 +33,17 @@
  */
 
 #include "netsimulyzer-version.h"
+
 #include <string>
 
-namespace ns3::netsimulyzer {
+namespace ns3::netsimulyzer
+{
 
 std::string
-versionString ()
+versionString()
 {
-  return std::to_string (VERSION_MAJOR) + '.' + std::to_string (VERSION_MINOR) + '.' +
-         std::to_string (VERSION_PATCH) + '-' + VERSION_SUFFIX;
+    return std::to_string(VERSION_MAJOR) + '.' + std::to_string(VERSION_MINOR) + '.' +
+           std::to_string(VERSION_PATCH) + '-' + VERSION_SUFFIX;
 }
 
 } // namespace ns3::netsimulyzer

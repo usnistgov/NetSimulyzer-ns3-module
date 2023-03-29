@@ -36,106 +36,107 @@
 #define NODE_CONFIGURATION_CONTAINER_H
 
 #include <ns3/node-configuration.h>
-#include <vector>
-#include <cstdint>
 
-namespace ns3 {
-namespace netsimulyzer {
+#include <cstdint>
+#include <vector>
+
+namespace ns3::netsimulyzer
+{
 
 /**
  * \ingroup netsimulyzer
- * 
+ *
  * Holds a vector of ns3::netsimulyzer::NodeConfiguration objects
  */
 class NodeConfigurationContainer
 {
-public:
-  using Iterator = std::vector<Ptr<NodeConfiguration>>::const_iterator;
+  public:
+    using Iterator = std::vector<Ptr<NodeConfiguration>>::const_iterator;
 
-  /**
-   * Creates an empty NodeConfigurationContainer
-   */
-  NodeConfigurationContainer (void);
+    /**
+     * Creates an empty NodeConfigurationContainer
+     */
+    NodeConfigurationContainer(void);
 
-  /**
-   * Construct a NodeConfigurationContainer containing configuration
-   *
-   * Allows implicit conversion from a Ptr to a NodeConfiguration
-   *
-   * \param configuration A NodeConfiguration object to store in the resulting container
-   */
-  NodeConfigurationContainer (Ptr<NodeConfiguration> configuration);
+    /**
+     * Construct a NodeConfigurationContainer containing configuration
+     *
+     * Allows implicit conversion from a Ptr to a NodeConfiguration
+     *
+     * \param configuration A NodeConfiguration object to store in the resulting container
+     */
+    NodeConfigurationContainer(Ptr<NodeConfiguration> configuration);
 
-  /**
-   * Creates a new NodeConfigurationContainer by concatenating first and second
-   *
-   * \param first The container whose elements will appear first
-   *
-   * \param second The container whose elements will appear after
-   * all the elements in 'first'
-   */
-  NodeConfigurationContainer (const NodeConfigurationContainer &first,
-                              const NodeConfigurationContainer &second);
+    /**
+     * Creates a new NodeConfigurationContainer by concatenating first and second
+     *
+     * \param first The container whose elements will appear first
+     *
+     * \param second The container whose elements will appear after
+     * all the elements in 'first'
+     */
+    NodeConfigurationContainer(const NodeConfigurationContainer& first,
+                               const NodeConfigurationContainer& second);
 
-  /**
-   * Returns the iterator to the beginning of the contained vector
-   *
-   * See the vector rules for iterator invalidation
-   *
-   * \return A const_iterator to the beginning of the collection
-   */
-  Iterator Begin (void);
+    /**
+     * Returns the iterator to the beginning of the contained vector
+     *
+     * See the vector rules for iterator invalidation
+     *
+     * \return A const_iterator to the beginning of the collection
+     */
+    Iterator Begin(void);
 
-  /**
-   * Returns the iterator past the end of the contained vector
-   *
-   * See the vector rules for iterator invalidation
-   *
-   * \return  A past-the-end const_iterator for the contained collection
-   */
-  Iterator End (void);
+    /**
+     * Returns the iterator past the end of the contained vector
+     *
+     * See the vector rules for iterator invalidation
+     *
+     * \return  A past-the-end const_iterator for the contained collection
+     */
+    Iterator End(void);
 
-  /**
-   * Returns the size of the collection
-   *
-   * \return The number of elements in the contained collection
-   */
-  uint32_t GetN (void);
+    /**
+     * Returns the size of the collection
+     *
+     * \return The number of elements in the contained collection
+     */
+    uint32_t GetN(void);
 
-  /**
-   * Returns the element at index i
-   *
-   * If index i is not within the contained vector,
-   * then the behavior is undefined
-   *
-   * \param i The index of the item to return
-   *
-   * \return The Ptr at index i
-   */
-  Ptr<NodeConfiguration> Get (uint32_t i);
+    /**
+     * Returns the element at index i
+     *
+     * If index i is not within the contained vector,
+     * then the behavior is undefined
+     *
+     * \param i The index of the item to return
+     *
+     * \return The Ptr at index i
+     */
+    Ptr<NodeConfiguration> Get(uint32_t i);
 
-  /**
-   * Appends the contents of container c to this one by copy.
-   *
-   * \param c The container to append the contents of
-   */
-  void Add (const NodeConfigurationContainer &c);
+    /**
+     * Appends the contents of container c to this one by copy.
+     *
+     * \param c The container to append the contents of
+     */
+    void Add(const NodeConfigurationContainer& c);
 
-  /**
-   * Appends a single NodeConfiguration to the collection.
-   *
-   * \param configuration The NodeConfiguration to append.
-   * May not be NULL
-   */
-  void Add (Ptr<NodeConfiguration> configuration);
+    /**
+     * Appends a single NodeConfiguration to the collection.
+     *
+     * \param configuration The NodeConfiguration to append.
+     * May not be NULL
+     */
+    void Add(Ptr<NodeConfiguration> configuration);
 
-  /**
-   * Remove all elements from the container
-   */
-  void Clear (void);
+    /**
+     * Remove all elements from the container
+     */
+    void Clear(void);
 
-private:
-  std::vector<Ptr<NodeConfiguration>> m_configurationObjects;
+  private:
+    std::vector<Ptr<NodeConfiguration>> m_configurationObjects;
 };
 
 // Free 'begin' and 'end' functions allow for range based for loops e.g.:
@@ -156,7 +157,7 @@ private:
  *
  * \return A const_iterator to the beginning of c
  */
-NodeConfigurationContainer::Iterator begin (NodeConfigurationContainer &c);
+NodeConfigurationContainer::Iterator begin(NodeConfigurationContainer& c);
 
 /**
  * Returns the  past-the-end iterator for the collection
@@ -165,9 +166,8 @@ NodeConfigurationContainer::Iterator begin (NodeConfigurationContainer &c);
  *
  * \return A const_iterator past-the-end of c
  */
-NodeConfigurationContainer::Iterator end (NodeConfigurationContainer &c);
+NodeConfigurationContainer::Iterator end(NodeConfigurationContainer& c);
 
-} // namespace netsimulyzer
 } // namespace ns3
 
 #endif /* NODE_CONFIGURATION_CONTAINER_H */
