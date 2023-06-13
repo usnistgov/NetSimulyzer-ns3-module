@@ -63,6 +63,15 @@ XYSeries::XYSeries(Ptr<Orchestrator> orchestrator)
 TypeId
 XYSeries::GetTypeId(void)
 {
+// Let us read the `Spline` type without a warning
+// guarded, because an unknown `pragma` is also a warning...
+#if defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#elif defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#endif
     static TypeId tid =
         TypeId("ns3::netsimulyzer::XYSeries")
             .SetParent<ns3::Object>()
@@ -125,6 +134,12 @@ XYSeries::GetTypeId(void)
                           BLUE_VALUE,
                           MakeColor3Accessor(&XYSeries::m_color),
                           MakeColor3Checker());
+
+#if defined(__GNUC__)
+#pragma GCC diagnostic pop
+#elif defined(__clang__)
+#pragma clang diagnostic pop
+#endif
     return tid;
 }
 

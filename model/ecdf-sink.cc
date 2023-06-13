@@ -62,6 +62,15 @@ EcdfSink::EcdfSink(Ptr<Orchestrator> orchestrator, const std::string& name)
 TypeId
 EcdfSink::GetTypeId(void)
 {
+// Let us read the `Spline` type without a warning
+// guarded, because an unknown `pragma` is also a warning...
+#if defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#elif defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#endif
     static TypeId tid =
         TypeId("ns3::netsimulyzer::EcdfSink")
             .SetParent<ns3::Object>()
@@ -110,7 +119,11 @@ EcdfSink::GetTypeId(void)
                           PointerValue(),
                           MakePointerAccessor(&EcdfSink::GetYAxis),
                           MakePointerChecker<ValueAxis>());
-
+#if defined(__GNUC__)
+#pragma GCC diagnostic pop
+#elif defined(__clang__)
+#pragma clang diagnostic pop
+#endif
     return tid;
 }
 

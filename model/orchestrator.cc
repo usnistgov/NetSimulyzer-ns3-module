@@ -1086,9 +1086,24 @@ Orchestrator::Commit(XYSeries& series)
     case XYSeries::ConnectionType::Line:
         element["connection"] = "line";
         break;
+
+// Let us read the `Spline` type without a warning
+// guarded, because an unknown `pragma` is also a warning...
+#if defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#elif defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#endif
     case XYSeries::ConnectionType::Spline:
         element["connection"] = "spline";
         break;
+#if defined(__GNUC__)
+#pragma GCC diagnostic pop
+#elif defined(__clang__)
+#pragma clang diagnostic pop
+#endif
     default:
         NS_ABORT_MSG("Unhandled XY Series connection type: " << connection.Get());
         break;
