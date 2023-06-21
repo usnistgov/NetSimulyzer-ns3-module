@@ -39,6 +39,7 @@ build_lib(
     model/category-axis.cc
     model/category-value-series.cc
     model/color.cc
+    model/color-palette.cc
     model/decoration.cc
     model/ecdf-sink.cc
     model/log-stream.cc
