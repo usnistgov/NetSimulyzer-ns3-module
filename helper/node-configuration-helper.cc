@@ -77,7 +77,7 @@ NodeConfigurationHelper::Install(Ptr<Node> node, Ptr<NodeConfiguration> configur
 }
 
 NodeConfigurationContainer
-NodeConfigurationHelper::Install(NodeContainer& nodes) const
+NodeConfigurationHelper::Install(const NodeContainer& nodes) const
 {
     NS_LOG_FUNCTION(this << &nodes);
     NodeConfigurationContainer container;
