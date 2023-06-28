@@ -141,7 +141,8 @@ NodeConfiguration::GetTypeId(void)
             .AddAttribute("Model",
                           "Filename of the model to represent this Node",
                           StringValue(),
-                          MakeStringAccessor(&NodeConfiguration::m_model),
+                          MakeStringAccessor(&NodeConfiguration::GetModel,
+                                             &NodeConfiguration::SetModel),
                           MakeStringChecker())
             .AddAttribute("Orientation",
                           "Orientation of the Node on each axis in degrees",
@@ -387,6 +388,35 @@ NodeConfiguration::GetOrchestrator(void) const
 {
     NS_LOG_FUNCTION(this);
     return m_orchestrator;
+}
+
+void
+NodeConfiguration::SetModel(const std::string &value)
+{
+    if (m_model == value)
+        return;
+
+    m_model = value;
+
+    const auto node = GetObject<Node>();
+    if (!node)
+    {
+        NS_LOG_DEBUG("Not triggering NodeModelChangeEvent event. No Node aggregated");
+        return;
+    }
+
+    NodeModelChangeEvent event{};
+    event.time = Simulator::Now();
+    event.id = node->GetId();
+    event.model = m_model;
+
+    m_orchestrator->HandleModelChange(event);
+}
+
+const std::string&
+NodeConfiguration::GetModel(void) const
+{
+    return m_model;
 }
 
 const std::optional<Color3>&

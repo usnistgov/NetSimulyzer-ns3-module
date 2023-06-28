@@ -860,6 +860,37 @@ Orchestrator::HandlePositionChange(const DecorationMoveEvent& event)
 }
 
 void
+Orchestrator::HandleModelChange(const NodeModelChangeEvent& event)
+{
+    NS_LOG_FUNCTION(this);
+    if (Simulator::Now() < m_startTime || Simulator::Now() > m_stopTime)
+    {
+        NS_LOG_DEBUG("HandleModelChange() Activated outside (StartTime, StopTime), Ignoring");
+        return;
+    }
+    else if (!m_simulationStarted)
+    {
+        NS_LOG_DEBUG("HandleModelChange() Activated before simulation started, Ignoring");
+        return;
+    }
+
+    if (m_currentSection != Section::Events)
+    {
+        // We'll get the final model when we write the head info
+        NS_LOG_DEBUG("NodeModelChangeEvent ignored. Not in Events section");
+        return;
+    }
+
+    nlohmann::json element;
+    element["type"] = "node-model-change";
+    element["nanoseconds"] = event.time.GetNanoSeconds();
+    element["id"] = event.id;
+    element["model"] = event.model;
+
+    m_document["events"].emplace_back(element);
+}
+
+void
 Orchestrator::HandleOrientationChange(const NodeOrientationChangeEvent& event)
 {
     NS_LOG_FUNCTION(this);

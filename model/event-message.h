@@ -83,6 +83,13 @@ struct NodeColorChangeEvent
     std::optional<Color3> color;
 };
 
+struct NodeModelChangeEvent
+{
+    Time time;
+    uint32_t id;
+    std::string model;
+};
+
 struct DecorationMoveEvent
 {
     Time time;
