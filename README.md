@@ -319,7 +319,8 @@ The built documentation will now be found in `doc/build/[type]`.
 Listed below are the commands to run the examples provided with the
 module:
 
-If you're using a version of ns-3 without CMake, replace `./ns3 run ` with `./waf --run`
+If you're using a version of ns-3 without CMake, replace `./ns3 run ` with `./waf --run`.
+Note that some of these may be disabled for older versions of ns-3.
 
 ## Application State Trace Example
 Example demonstrating tracing the state of a custom `ns3::Application` using the `StateTransitionSink`.
@@ -349,6 +350,7 @@ to the UDP Echo Client & Server applications to graph throughput.
 
 ## WiFi Bianchi
 The WiFi Bianchi example from the `wifi` module with topology, logs, and several statistics.
+Note: this example is disabled for `waf` builds (ns3-35 and prior)
 ```shell
 ./ns3 run "wifi-bianchi-netsimulyzer --trials=1 --nMinStas=10 --nMaxStas=10 --visual=true"
 ```
