@@ -53,7 +53,7 @@ const long VERSION_MINOR = 0L;
 /**
  * The Patch version number for the module
  */
-const long VERSION_PATCH = 7L;
+const long VERSION_PATCH = 8L;
 
 /**
  * Any additional version qualifiers ("pre" or "release")

@@ -172,7 +172,6 @@ There are several types of series, but the simplest is the :ref:`xy-series`:
 
   // Default is `Line` (line graph),
   // there is also `None` (scatter plot)
-  // and `Spline` (spline graph)
   xy->SetAttribute ("Connection", EnumValue (netsimulyzer::XYSeries::Line));
 
   // Points are added through `Append (x, y)` calls,

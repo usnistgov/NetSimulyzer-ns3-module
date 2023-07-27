@@ -860,6 +860,37 @@ Orchestrator::HandlePositionChange(const DecorationMoveEvent& event)
 }
 
 void
+Orchestrator::HandleModelChange(const NodeModelChangeEvent& event)
+{
+    NS_LOG_FUNCTION(this);
+    if (Simulator::Now() < m_startTime || Simulator::Now() > m_stopTime)
+    {
+        NS_LOG_DEBUG("HandleModelChange() Activated outside (StartTime, StopTime), Ignoring");
+        return;
+    }
+    else if (!m_simulationStarted)
+    {
+        NS_LOG_DEBUG("HandleModelChange() Activated before simulation started, Ignoring");
+        return;
+    }
+
+    if (m_currentSection != Section::Events)
+    {
+        // We'll get the final model when we write the head info
+        NS_LOG_DEBUG("NodeModelChangeEvent ignored. Not in Events section");
+        return;
+    }
+
+    nlohmann::json element;
+    element["type"] = "node-model-change";
+    element["nanoseconds"] = event.time.GetNanoSeconds();
+    element["id"] = event.id;
+    element["model"] = event.model;
+
+    m_document["events"].emplace_back(element);
+}
+
+void
 Orchestrator::HandleOrientationChange(const NodeOrientationChangeEvent& event)
 {
     NS_LOG_FUNCTION(this);
@@ -1086,9 +1117,24 @@ Orchestrator::Commit(XYSeries& series)
     case XYSeries::ConnectionType::Line:
         element["connection"] = "line";
         break;
+
+// Let us read the `Spline` type without a warning
+// guarded, because an unknown `pragma` is also a warning...
+#if defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#elif defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#endif
     case XYSeries::ConnectionType::Spline:
         element["connection"] = "spline";
         break;
+#if defined(__GNUC__)
+#pragma GCC diagnostic pop
+#elif defined(__clang__)
+#pragma clang diagnostic pop
+#endif
     default:
         NS_ABORT_MSG("Unhandled XY Series connection type: " << connection.Get());
         break;

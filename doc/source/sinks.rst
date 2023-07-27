@@ -180,7 +180,7 @@ Attributes
 |                      |                                  |                    |                                                                                                    |
 |                      |                                  |                    | * ``None`` Sows only a point at the given data point and frequency                                 |
 |                      |                                  |                    | * ``Line`` Show each value as a 'step' with a horizontal line between data points                  |
-|                      |                                  |                    | * ``Spline`` Unsupported for this helper type                                                      |
+|                      |                                  |                    |                                                                                                    |
 +----------------------+----------------------------------+--------------------+----------------------------------------------------------------------------------------------------+
 | FlushMode            | FlushMode                        | OnWrite            | When to regenerate the plot.                                                                       |
 |                      |                                  |                    |                                                                                                    |

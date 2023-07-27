@@ -15,7 +15,7 @@ XYSeries track data points with two numeric coordinates.
 
 The series by default connects points with a straight line,
 but it may be configured to not connect points and use larger
-dots like a scatter plot or using a curved line (spline).
+dots like a scatter plot.
 See: the ``Connection`` attribute and
 :ref:`xy-connection-types` for more info.
 
@@ -38,16 +38,6 @@ point connected with a straight line.
   :alt: Line Plot in the Application
   :width: 223px
   :height: 273px
-
-Spline
-++++++
-
-Like the ``Line`` mode, but connections curve between points.
-
-.. image:: _static/xy-spline.png
-  :alt: Spline Plot in the Application
-  :width: 217px
-  :height: 274px
 
 None
 ++++
@@ -76,7 +66,6 @@ Attributes
 |                      |                    |                    |                                                               |
 |                      |                    |                    | * ``None`` creates a scatter plot                             |
 |                      |                    |                    | * ``Line`` connects each point with a straight line           |
-|                      |                    |                    | * ``Spline`` connects each point with a curved line           |
 +----------------------+--------------------+--------------------+---------------------------------------------------------------+
 | LabelMode            | LabelMode          | Hidden             | Method to display point labels                                |
 |                      |                    |                    |                                                               |
@@ -91,6 +80,6 @@ Attributes
 | Visible              | bool               | ``true``           | Defines if Series appears in application elements             |
 +----------------------+--------------------+--------------------+---------------------------------------------------------------+
 | Color                | :ref:`color3`      | BLUE_VALUE         | The color to use for point connections                        |
-|                      |                    |                    | (``Line`` & ``Spline``) or the points (``None``)              |
+|                      |                    |                    | (``Line``) or the points (``None``)                           |
 +----------------------+--------------------+--------------------+---------------------------------------------------------------+
 

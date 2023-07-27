@@ -158,6 +158,25 @@ class NodeConfiguration : public Object
     Ptr<Orchestrator> GetOrchestrator(void) const;
 
     /**
+     * Sets the 3D model to use for the
+     * Node & notifies the Orchestrator
+     *
+     * \param value
+     * The model to use
+     *
+     * \see netsimulyzer-3D-models.h
+     */
+    void SetModel(const std::string &value);
+
+    /**
+     *
+     * \return
+     * The current model, or an empty string
+     * if one isn't set
+     */
+    [[nodiscard]] const std::string& GetModel(void) const;
+
+    /**
      * \return
      * The current orientation of the model in degrees
      */

@@ -198,6 +198,13 @@ class Orchestrator : public ns3::Object
     void HandlePositionChange(const DecorationMoveEvent& event);
 
     /**
+     * Trace sink for when a Node's model has changed.
+     *
+     * \param event The event information from the triggered 'NodeModelChangeEvent' event
+     */
+    void HandleModelChange(const NodeModelChangeEvent& event);
+
+    /**
      * Trace sink for when a Node's orientation has changed.
      *
      * \param event The event information from the triggered 'NodeOrientationChangeEvent' event

@@ -169,6 +169,21 @@ const std::vector<Color3Value> COLOR_PALETTE{BLUE_VALUE,
                                              DARK_PURPLE_VALUE,
                                              DARK_PINK_VALUE};
 
+/**
+ * Convenience method that returns a
+ * ColorValue from `COLOR_PALETTE` in order.
+ *
+ * Repeats when the end of the collection
+ * is reached.
+ *
+ * \see COLOR_PALETTE
+ *
+ * \return
+ * The next sequential color
+ * from `COLOR_PALETTE`
+ */
+Color3Value NextColor3Value();
+
 } // namespace ns3::netsimulyzer
 
 #endif // COLOR_PALETTE_H

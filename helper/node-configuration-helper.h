@@ -98,7 +98,7 @@ class NodeConfigurationHelper
      *
      * \return A collection containing all of the created NodeConfiguration objects
      */
-    NodeConfigurationContainer Install(NodeContainer& nodes) const;
+    NodeConfigurationContainer Install(const NodeContainer& nodes) const;
 
     /**
      * \brief Aggregates pre-defined NodeConfiguration objects onto the Nodes in 'nodes'
