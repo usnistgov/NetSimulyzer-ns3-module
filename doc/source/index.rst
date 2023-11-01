@@ -39,5 +39,4 @@ Below is a screenshot of a simple scenario loaded into the application.
   numeric-axis
   categorical-axis
   series-collections
-  areas
   sinks
