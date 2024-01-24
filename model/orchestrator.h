@@ -69,6 +69,7 @@ class Decoration;
 class NodeConfiguration;
 class BuildingConfiguration;
 class LogStream;
+class LogicalLink;
 class SeriesCollection;
 struct XYPoint;
 class XYSeries;
@@ -311,6 +312,20 @@ class Orchestrator : public ns3::Object
      * The new buildingConfiguration to register
      */
     void Register(Ptr<BuildingConfiguration> buildingConfiguration);
+
+    /**
+     * \brief Register a Logical Link to be tracked.
+     *
+     * Called by the LogicalLink constructor, Orchestrator setter,
+     * or helper, so users should not call this function directly
+     *
+     * \param logicaLink
+     * The new LogicalLink to register
+     *
+     * \return
+     * The ID to use for the new Logical Link
+     */
+    unsigned int Register(Ptr<LogicalLink> logicaLink);
 
     /**
      * \brief Flag a series to be tracked by this Orchestrator.
@@ -657,6 +672,11 @@ class Orchestrator : public ns3::Object
      * Collection of tracked Buildings
      */
     std::vector<Ptr<BuildingConfiguration>> m_buildings;
+
+    /**
+     * Collection of tracked LogicalLinks
+     */
+    std::vector<Ptr<LogicalLink>> m_logicalLinks;
 
     /**
      * Collection of tracked XYSeries for this Orchestrator.

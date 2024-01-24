@@ -37,6 +37,7 @@
 #include "building-configuration.h"
 #include "color.h"
 #include "log-stream.h"
+#include "logical-link.h"
 #include "netsimulyzer-version.h"
 #include "node-configuration.h"
 #include "optional.h"
@@ -245,6 +246,21 @@ makeAxisAttributes(ns3::Ptr<ns3::netsimulyzer::CategoryAxis> axis)
 
 ns3::netsimulyzer::Color3
 NextTrailColor(void)
+{
+    using namespace ns3::netsimulyzer;
+
+    static auto colorIter = COLOR_PALETTE.begin();
+    const auto& color = colorIter->Get();
+    colorIter++;
+
+    if (colorIter == COLOR_PALETTE.end())
+        colorIter = COLOR_PALETTE.begin();
+
+    return color;
+}
+
+ns3::netsimulyzer::Color3
+NextLinkColor(void)
 {
     using namespace ns3::netsimulyzer;
 
@@ -569,6 +585,30 @@ Orchestrator::SetupSimulation(void)
         links.emplace_back(element);
     }
     m_document["links"] = links;
+
+    auto logicalLinks = nlohmann::json::array();
+    for (const auto& logicalLink : m_logicalLinks)
+    {
+        nlohmann::json element;
+        element["type"] = "logical";
+
+        UintegerValue id;
+        logicalLink->GetAttribute("Id", id);
+        element["id"] = id.Get();
+
+        OptionalValue<Color3> color;
+        logicalLink->GetAttribute("Color", color);
+        if (color)
+            element["color"] = colorToObject(color.GetValue());
+        else
+            element["color"] = colorToObject(NextLinkColor());
+
+        const auto [first, second] = logicalLink->GetNodes();
+        element["node-ids"] = nlohmann::json::array({first, second});
+
+        logicalLinks.emplace_back(element);
+    }
+    m_document["logical-links"] = logicalLinks;
 
     // Buildings
     auto buildings = nlohmann::json::array();
@@ -1148,6 +1188,14 @@ Orchestrator::Register(Ptr<BuildingConfiguration> buildingConfiguration)
 {
     NS_LOG_FUNCTION(this << buildingConfiguration);
     m_buildings.emplace_back(buildingConfiguration);
+}
+
+unsigned int
+Orchestrator::Register(Ptr<LogicalLink> logicaLink)
+{
+    NS_LOG_FUNCTION(this << logicaLink);
+    m_logicalLinks.emplace_back(logicaLink);
+    return static_cast<unsigned int>(m_logicalLinks.size());
 }
 
 uint32_t
