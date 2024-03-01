@@ -85,7 +85,7 @@ EcdfSink::GetTypeId(void)
             .AddAttribute("Connection",
                           "Type of connection to form between points in the series",
                           EnumValue(XYSeries::ConnectionType::Line),
-                          MakeEnumAccessor(&EcdfSink::SetConnectionType,
+                          MakeEnumAccessor<XYSeries::ConnectionType>(&EcdfSink::SetConnectionType,
                                            &EcdfSink::GetConnectionType),
                           MakeEnumChecker(
                               XYSeries::ConnectionType::None, "None",
@@ -95,7 +95,7 @@ EcdfSink::GetTypeId(void)
             .AddAttribute("FlushMode",
                           "When to write the changes to the graph",
                           EnumValue(EcdfSink::FlushMode::OnWrite),
-                          MakeEnumAccessor(&EcdfSink::SetFlushMode, &EcdfSink::GetFlushMode),
+                          MakeEnumAccessor<EcdfSink::FlushMode>(&EcdfSink::SetFlushMode, &EcdfSink::GetFlushMode),
                           MakeEnumChecker(
                               EcdfSink::FlushMode::OnWrite, "OnWrite",
                               EcdfSink::FlushMode::Interval, "Interval",
@@ -165,10 +165,10 @@ EcdfSink::SetFlushMode(EcdfSink::FlushMode mode)
 XYSeries::ConnectionType
 EcdfSink::GetConnectionType(void) const
 {
-    EnumValue connectionType;
+    EnumValue<XYSeries::ConnectionType> connectionType;
     m_series->GetAttribute("Connection", connectionType);
 
-    return static_cast<XYSeries::ConnectionType>(connectionType.Get());
+    return connectionType.Get();
 }
 
 void
@@ -233,7 +233,7 @@ EcdfSink::Flush(void)
     m_series->Clear();
     double total = 0.0;
 
-    EnumValue connectionMode;
+    EnumValue<XYSeries::ConnectionType> connectionMode;
     m_series->GetAttribute("Connection", connectionMode);
 
     if (connectionMode.Get() == XYSeries::ConnectionType::None)

@@ -87,7 +87,7 @@ ThroughputSink::GetTypeId(void)
                             .AddAttribute("Unit",
                                           "The unit for the throughput plot",
                                           EnumValue(ThroughputSink::Unit::KBit),
-                                          MakeEnumAccessor(&ThroughputSink::SetUnit),
+                                          MakeEnumAccessor<ThroughputSink::Unit>(&ThroughputSink::SetUnit),
                                           MakeEnumChecker(
                                               ThroughputSink::Bit, "b/s",
                                               ThroughputSink::KBit, "kb/s",
@@ -100,7 +100,7 @@ ThroughputSink::GetTypeId(void)
                             .AddAttribute("TimeUnit",
                                           "The unit of time to use for the X axis",
                                           EnumValue(Time::S),
-                                          MakeEnumAccessor(&ThroughputSink::SetTimeUnit,
+                                          MakeEnumAccessor<Time::Unit>(&ThroughputSink::SetTimeUnit,
                                                            &ThroughputSink::GetTimeUnit),
                                           MakeEnumChecker(
                                               Time::Unit::Y, "Year",

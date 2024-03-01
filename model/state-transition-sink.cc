@@ -97,7 +97,7 @@ StateTransitionSink::GetTypeId(void)
                             .AddAttribute("LoggingMode",
                                           "Mode for connecting points within the series",
                                           EnumValue(LoggingMode::StateChanges),
-                                          MakeEnumAccessor(&StateTransitionSink::SetLoggingMode,
+                                          MakeEnumAccessor<LoggingMode>(&StateTransitionSink::SetLoggingMode,
                                                            &StateTransitionSink::GetLoggingMode),
                                           MakeEnumChecker(
                                               LoggingMode::StateChanges, "StateChanges",
@@ -106,7 +106,7 @@ StateTransitionSink::GetTypeId(void)
                             .AddAttribute("TimeUnit",
                                           "The unit of time to use for the X axis",
                                           EnumValue(Time::S),
-                                          MakeEnumAccessor(&StateTransitionSink::SetTimeUnit,
+                                          MakeEnumAccessor<Time::Unit>(&StateTransitionSink::SetTimeUnit,
                                                            &StateTransitionSink::GetTimeUnit),
                                           MakeEnumChecker(
                                               Time::Unit::Y, "Year",

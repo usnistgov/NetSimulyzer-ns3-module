@@ -101,7 +101,7 @@ XYSeries::GetTypeId(void)
             .AddAttribute("Connection",
                           "Type of connection to form between points in the series",
                           EnumValue(XYSeries::ConnectionType::Line),
-                          MakeEnumAccessor(&XYSeries::m_connection),
+                          MakeEnumAccessor<ConnectionType>(&XYSeries::m_connection),
                           MakeEnumChecker(
                               XYSeries::ConnectionType::None, "None",
                               XYSeries::ConnectionType::Line, "Line",
@@ -109,7 +109,7 @@ XYSeries::GetTypeId(void)
             .AddAttribute("LabelMode",
                           "How the point labels are shown",
                           EnumValue(XYSeries::LabelMode::Hidden),
-                          MakeEnumAccessor(&XYSeries::m_labelMode),
+                          MakeEnumAccessor<LabelMode>(&XYSeries::m_labelMode),
                           MakeEnumChecker(
                               XYSeries::LabelMode::Hidden,"Hidden",
                               XYSeries::LabelMode::Shown,"Shown"))

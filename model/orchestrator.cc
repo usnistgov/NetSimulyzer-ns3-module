@@ -133,11 +133,11 @@ makeAxisAttributes(ns3::Ptr<ns3::netsimulyzer::ValueAxis> axis)
     axis->GetAttribute("Maximum", max);
     element["max"] = max.Get();
 
-    ns3::EnumValue scaleMode;
+    ns3::EnumValue<ns3::netsimulyzer::ValueAxis::Scale> scaleMode;
     axis->GetAttribute("Scale", scaleMode);
     element["scale"] = ScaleToString(scaleMode.Get());
 
-    ns3::EnumValue boundMode;
+    ns3::EnumValue<ns3::netsimulyzer::ValueAxis::BoundMode> boundMode;
     axis->GetAttribute("BoundMode", boundMode);
     element["bound-mode"] = BoundModeToString(boundMode.Get());
 
@@ -656,7 +656,7 @@ Orchestrator::SetupSimulation(void)
         area->GetAttribute("Height", height);
         element["height"] = height.Get();
 
-        EnumValue fillMode;
+        EnumValue<RectangularArea::DrawMode> fillMode;
         area->GetAttribute("Fill", fillMode);
 
         switch (fillMode.Get())
@@ -672,7 +672,7 @@ Orchestrator::SetupSimulation(void)
             break;
         }
 
-        EnumValue borderMode;
+        EnumValue<RectangularArea::DrawMode> borderMode;
         area->GetAttribute("Border", borderMode);
 
         switch (borderMode.Get())
@@ -1107,7 +1107,7 @@ Orchestrator::Commit(XYSeries& series)
     series.GetAttribute("Visible", visible);
     element["visible"] = visible.Get();
 
-    EnumValue connection;
+    EnumValue<XYSeries::ConnectionType> connection;
     series.GetAttribute("Connection", connection);
     switch (connection.Get())
     {
@@ -1140,7 +1140,7 @@ Orchestrator::Commit(XYSeries& series)
         break;
     }
 
-    EnumValue labelMode;
+    EnumValue<XYSeries::LabelMode> labelMode;
     series.GetAttribute("LabelMode", labelMode);
     switch (labelMode.Get())
     {

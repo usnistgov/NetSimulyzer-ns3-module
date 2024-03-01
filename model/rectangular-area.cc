@@ -43,12 +43,12 @@ RectangularArea::GetTypeId(void)
             .AddAttribute("Border",
                           "How to draw the border of the area",
                           EnumValue(DrawMode::Solid),
-                          MakeEnumAccessor(&RectangularArea::m_borderMode),
+                          MakeEnumAccessor<DrawMode>(&RectangularArea::m_borderMode),
                           MakeEnumChecker(DrawMode::Solid, "Solid", DrawMode::Hidden, "Hidden"))
             .AddAttribute("Fill",
                           "How to draw the body of the area",
                           EnumValue(DrawMode::Hidden),
-                          MakeEnumAccessor(&RectangularArea::m_fillMode),
+                          MakeEnumAccessor<DrawMode>(&RectangularArea::m_fillMode),
                           MakeEnumChecker(DrawMode::Solid, "Solid", DrawMode::Hidden, "Hidden"))
             .AddAttribute("Name",
                           "Name to represent this area in visualizer elements",

@@ -72,7 +72,7 @@ ValueAxis::GetTypeId(void)
             .AddAttribute("BoundMode",
                           "How the boundaries of the axis may move given a new value",
                           EnumValue(ValueAxis::BoundMode::HighestValue),
-                          MakeEnumAccessor(&ValueAxis::m_boundMode),
+                          MakeEnumAccessor<BoundMode>(&ValueAxis::m_boundMode),
                           // clang-format off
                           MakeEnumChecker(
                               BoundMode::Fixed, "Fixed",
@@ -80,7 +80,7 @@ ValueAxis::GetTypeId(void)
             .AddAttribute("Scale",
                           "The method to scale between tick marks on the axis",
                           EnumValue(ValueAxis::Scale::Linear),
-                          MakeEnumAccessor(&ValueAxis::m_scale),
+                          MakeEnumAccessor<Scale>(&ValueAxis::m_scale),
                           MakeEnumChecker(
                               ValueAxis::Linear, "Linear",
                               ValueAxis::Logarithmic, "Logarithmic"));
