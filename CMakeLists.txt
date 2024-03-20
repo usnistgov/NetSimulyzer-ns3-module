@@ -83,6 +83,11 @@ build_lib(
     ${libnetwork}
     ${libmobility}
     ${libpoint-to-point}
+  TEST_SOURCES
+        test/test-buildings.cc
+        test/netsimulyzer-test-utils.h
+        test/test-node-events.cc
+        test/test-orchestrator-outputs.cc
 )
 
 target_compile_definitions(libnetsimulyzer PUBLIC HAS_NETSIMULYZER)

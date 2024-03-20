@@ -200,16 +200,12 @@ Orchestrator::Orchestrator(const std::string& output_path)
     m_file.open(output_path);
     NS_ABORT_MSG_IF(!m_file, "Failed to open output file");
 
-    // Preallocate collections since a `Commit ()` call
-    // could come at any time
-    m_document["series"] = nlohmann::json::array();
-    m_document["streams"] = nlohmann::json::array();
+    Init();
+}
 
-    // Create the Empty events array, so we can just append to that
-    // when the event happens
-    m_document["events"] = nlohmann::json::array();
-
-    Simulator::ScheduleNow(&Orchestrator::SetupSimulation, this);
+Orchestrator::Orchestrator(Orchestrator::MemoryOutputMode mode)
+{
+    Init();
 }
 
 ns3::TypeId
@@ -275,6 +271,12 @@ Orchestrator::GetTimeStep() const
         return TimeStepPair{m_timeStep.value(), m_timeStepGranularity.value()};
 
     return {};
+}
+
+const nlohmann::json&
+Orchestrator::GetJson() const
+{
+    return m_document;
 }
 
 void
@@ -1451,6 +1453,21 @@ Orchestrator::CommitAll(void)
     {
         stream->Commit();
     }
+}
+
+void
+Orchestrator::Init()
+{
+    // Preallocate collections since a `Commit ()` call
+    // could come at any time
+    m_document["series"] = nlohmann::json::array();
+    m_document["streams"] = nlohmann::json::array();
+
+    // Create the Empty events array, so we can just append to that
+    // when the event happens
+    m_document["events"] = nlohmann::json::array();
+
+    Simulator::ScheduleNow(&Orchestrator::SetupSimulation, this);
 }
 
 std::optional<int>
