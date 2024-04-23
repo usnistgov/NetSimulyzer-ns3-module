@@ -35,21 +35,21 @@
 #include "orchestrator.h"
 
 #include "building-configuration.h"
+#include "color.h"
+#include "log-stream.h"
 #include "netsimulyzer-version.h"
 #include "node-configuration.h"
+#include "optional.h"
 #include "xy-series.h"
 
 #include <ns3/abort.h>
 #include <ns3/boolean.h>
-#include <ns3/color.h>
 #include <ns3/double.h>
 #include <ns3/enum.h>
-#include <ns3/log-stream.h>
 #include <ns3/log.h>
 #include <ns3/mobility-model.h>
 #include <ns3/node.h>
 #include <ns3/object-base.h>
-#include <ns3/optional.h>
 #include <ns3/point-to-point-channel.h>
 #include <ns3/point-to-point-net-device.h>
 #include <ns3/pointer.h>
@@ -59,12 +59,80 @@
 #include <ns3/uinteger.h>
 #include <ns3/vector.h>
 
+#include <atomic>
+#include <csignal>
 #include <map>
 #include <string>
 #include <vector>
 
 namespace
 {
+
+#ifdef NETSIMULYZER_CRASH_HANDLER
+// Weak pointers to all Orchestrators for crash handling
+std::vector<ns3::netsimulyzer::Orchestrator*> orchestrators{};
+volatile std::atomic_int crashCount{0};
+
+void
+netsimulyzerCrashHandler(int signal)
+{
+    // Just incase we get a signal during this handler
+    if (crashCount > 0)
+    {
+        std::abort();
+    }
+    ++crashCount;
+
+    // Reset signal handlers to their defaults
+    // so we avoid a loop this way too
+    //
+    // It is implementation defined if this happens before
+    // the handler is invoked anyway
+    std::signal(SIGSEGV, SIG_DFL);
+    std::signal(SIGTERM, SIG_DFL);
+    std::signal(SIGINT, SIG_DFL);
+
+    // if we don't have any Orchestrators registered,
+    // don't make noise on the console, since the module
+    // wasn't used
+    if (orchestrators.empty())
+    {
+        std::abort();
+    }
+
+    switch (signal)
+    {
+    case SIGSEGV:
+        std::cout << "SIGSEGV ";
+        break;
+    case SIGTERM:
+        std::cout << "SIGTERM ";
+        break;
+    case SIGINT:
+        std::cout << "SIGINT ";
+        break;
+    default:
+        break;
+    }
+
+    // _Tecnically_ UB here, but there's no way to print from a signal handler
+    // without it
+    std::cout << "caught, attempting to write NetSimulyzer output file(s)\n";
+    for (const auto oPtr : orchestrators)
+    {
+        oPtr->Flush();
+    }
+
+    // allow default handler to complete exit
+}
+
+// Cheap trick to get these registered at program start
+auto unusedSegvHandler [[maybe_unused]] = std::signal(SIGSEGV, netsimulyzerCrashHandler);
+auto unusedTermHandler [[maybe_unused]] = std::signal(SIGTERM, netsimulyzerCrashHandler);
+auto unusedIntHandler [[maybe_unused]] = std::signal(SIGINT, netsimulyzerCrashHandler);
+
+#endif
+
 std::string
 ScaleToString(int scale)
 {
@@ -210,6 +278,9 @@ Orchestrator::Orchestrator(const std::string& output_path)
     m_document["events"] = nlohmann::json::array();
 
     Simulator::ScheduleNow(&Orchestrator::SetupSimulation, this);
+#ifdef NETSIMULYZER_CRASH_HANDLER
+    orchestrators.emplace_back(this);
+#endif
 }
 
 ns3::TypeId
