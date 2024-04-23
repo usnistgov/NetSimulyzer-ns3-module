@@ -39,6 +39,7 @@
 #include "category-value-series.h"
 #include "decoration.h"
 #include "event-message.h"
+#include "logical-link.h"
 #include "node-configuration.h"
 #include "optional.h"
 #include "rectangular-area.h"
@@ -325,7 +326,7 @@ class Orchestrator : public ns3::Object
      * \return
      * The ID to use for the new Logical Link
      */
-    unsigned int Register(Ptr<LogicalLink> logicaLink);
+    unsigned long Register(Ptr<LogicalLink> logicaLink);
 
     /**
      * \brief Flag a series to be tracked by this Orchestrator.
@@ -532,6 +533,20 @@ class Orchestrator : public ns3::Object
      * The event emitted by `LogStream`
      */
     void WriteLogMessage(const LogMessageEvent& event);
+
+    /**
+     * Writes an event to set up a new logical link
+     *
+     * Users do not need to call this method,
+     * it's called automatically when a new
+     * Logical Link is created
+     *
+     * @param link
+     * The `LogicalLink` to generate the event for
+     */
+    void CreateLink(const LogicalLink& link);
+
+    void UpdateLink(const LogicalLink& link);
 
     /**
      * Write the document and close the output file.

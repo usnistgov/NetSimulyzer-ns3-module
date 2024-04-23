@@ -315,6 +315,16 @@ NodeConfiguration::Transmit(Time duration, double targetSize, Color3 color)
     m_orchestrator->HandleTransmit(event);
 }
 
+Ptr<LogicalLink> NodeConfiguration::Link(Ptr<Node> target) {
+  NS_LOG_FUNCTION(this);
+  const auto node = GetObject<Node>();
+
+  NS_ABORT_MSG_IF(!node, "Cannot establish link if this `NodeConfiguration` "
+                         "has not been aggrigated with a `Node`");
+
+    return CreateObject<LogicalLink>(m_orchestrator, node->GetId(), target->GetId());
+}
+
 std::optional<Vector3D>
 NodeConfiguration::MobilityPoll(void)
 {

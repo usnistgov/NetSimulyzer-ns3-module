@@ -598,10 +598,9 @@ Orchestrator::SetupSimulation(void)
 
         OptionalValue<Color3> color;
         logicalLink->GetAttribute("Color", color);
-        if (color)
-            element["color"] = colorToObject(color.GetValue());
-        else
-            element["color"] = colorToObject(NextLinkColor());
+        element["color"] = colorToObject(color.Get().value_or(NextLinkColor()));
+
+        element["active"] = logicalLink->IsActive();
 
         const auto [first, second] = logicalLink->GetNodes();
         element["node-ids"] = nlohmann::json::array({first, second});
@@ -1190,12 +1189,12 @@ Orchestrator::Register(Ptr<BuildingConfiguration> buildingConfiguration)
     m_buildings.emplace_back(buildingConfiguration);
 }
 
-unsigned int
+unsigned long
 Orchestrator::Register(Ptr<LogicalLink> logicaLink)
 {
     NS_LOG_FUNCTION(this << logicaLink);
     m_logicalLinks.emplace_back(logicaLink);
-    return static_cast<unsigned int>(m_logicalLinks.size());
+    return m_logicalLinks.size();
 }
 
 uint32_t
@@ -1549,6 +1548,66 @@ Orchestrator::WriteLogMessage(const LogMessageEvent& event)
     element["type"] = "stream-append";
     element["stream-id"] = event.id;
     element["data"] = event.message;
+
+    m_document["events"].emplace_back(element);
+}
+
+void
+Orchestrator::CreateLink(const LogicalLink& link)
+{
+    NS_LOG_FUNCTION(this);
+    if (!m_simulationStarted)
+    {
+        NS_LOG_DEBUG("CreateLink() Activated before `SetupSimulation()`, ignoring ");
+        return;
+    }
+    else if (Simulator::Now() < m_startTime || Simulator::Now() > m_stopTime)
+    {
+        NS_LOG_DEBUG("CreateLink() Activated outside (StartTime, StopTime), Ignoring");
+        return;
+    }
+
+    nlohmann::json element;
+    element["nanoseconds"] = Simulator::Now().GetNanoSeconds();
+    element["type"] = "logical-link-create";
+    element["link-id"] = link.GetId();
+    element["nodes"] = link.GetNodes();
+    element["active"] = link.IsActive();
+
+    if (const auto& maybeColor = link.GetColor())
+    {
+        element["color"] = colorToObject(maybeColor.value());
+    }
+
+    m_document["events"].emplace_back(element);
+}
+
+void
+Orchestrator::UpdateLink(const LogicalLink& link)
+{
+    NS_LOG_FUNCTION(this);
+    if (!m_simulationStarted)
+    {
+        NS_LOG_DEBUG("UpdateLink() Activated before `SetupSimulation()`, ignoring ");
+        return;
+    }
+    else if (Simulator::Now() < m_startTime || Simulator::Now() > m_stopTime)
+    {
+        NS_LOG_DEBUG("UpdateLink() Activated outside (StartTime, StopTime), Ignoring");
+        return;
+    }
+
+    nlohmann::json element;
+    element["nanoseconds"] = Simulator::Now().GetNanoSeconds();
+    element["type"] = "logical-link-update";
+    element["link-id"] = link.GetId();
+    element["nodes"] = link.GetNodes();
+    element["active"] = link.IsActive();
+
+    if (const auto& maybeColor = link.GetColor())
+    {
+        element["color"] = colorToObject(maybeColor.value());
+    }
 
     m_document["events"].emplace_back(element);
 }

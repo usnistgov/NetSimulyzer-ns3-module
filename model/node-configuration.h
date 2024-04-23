@@ -41,6 +41,7 @@
 #include <ns3/object.h>
 #include <ns3/optional.h>
 #include <ns3/orchestrator.h>
+#include <ns3/logical-link.h>
 #include <ns3/ptr.h>
 #include <ns3/type-id.h>
 #include <ns3/vector.h>
@@ -52,6 +53,7 @@ namespace ns3::netsimulyzer
 {
 
 class Orchestrator;
+class LogicalLink;
 
 /**
  * Base configuration properties for an individual node
@@ -121,6 +123,8 @@ class NodeConfiguration : public Object
      * What color to draw the transmission bubble
      */
     void Transmit(Time duration, double targetSize, Color3 color = GRAY_30);
+
+    Ptr<LogicalLink> Link(Ptr<Node> target);
 
     /**
      * Called by the Orchestrator during a mobility poll.

@@ -37,6 +37,8 @@
 #include <ns3/object-factory.h>
 #include <ns3/orchestrator.h>
 #include <ns3/ptr.h>
+#include <unordered_map>
+#include <vector>
 
 namespace ns3::netsimulyzer
 {
@@ -56,19 +58,24 @@ class LogicalLinkHelper
      * \param name Name of attribute to set.
      * \param v Value of the attribute.
      */
-    void Set(const std::string& name, const AttributeValue& v);
+    void Set(const std::string &name, const AttributeValue &v);
 
-    Ptr<LogicalLink> Link(Ptr<Node> node1, Ptr<Node> node2);
-
-    Ptr<LogicalLink> Link(const NodeContainer& twoNodes);
+    Ptr<LogicalLink> Link(const NodeContainer &twoNodes) const;
+    Ptr<LogicalLink> Link(Ptr<Node> node1, Ptr<Node> node2) const;
+    Ptr<LogicalLink> Link(uint32_t node1, uint32_t node2) const;
 
   private:
-    ObjectFactory m_link{"ns3::netsimulyzer::LogicalLink"};
+    const TypeId m_linkTid{LogicalLink::GetTypeId()};
+    std::unordered_map<std::string, Ptr<AttributeValue>> m_attributes;
 
     /**
      * Orchestrator that manages the LogicalLinks produced by this helper
      */
     Ptr<Orchestrator> m_orchestrator;
+
+    [[nodiscard]] Ptr<LogicalLink> Create(Ptr<Orchestrator> orchestrator,
+                                          uint32_t nodeIdA,
+                                          uint32_t nodeIdB) const;
 };
 
 } // namespace ns3::netsimulyzer

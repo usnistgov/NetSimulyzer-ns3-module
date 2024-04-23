@@ -46,19 +46,12 @@
 
 namespace ns3::netsimulyzer
 {
+class LogicalLinkHelper;
+class Orchestrator;
 
 class LogicalLink : public Object
 {
   public:
-    /**
-     * Create an unbound LogicalLink.
-     * This constructor is meant for use by the helper.
-     *
-     * If this constructor is used, then an orchestrator
-     * must be set later.
-     */
-    LogicalLink() = default;
-
     /**
      * Creates a managed LogicalLink.
      *
@@ -66,8 +59,19 @@ class LogicalLink : public Object
      *
      * \param orchestrator
      * The Orchestrator to register this LogicalLink with
+     *
+     * \param a
+     * \param b
+     *
+     * \param
      */
-    LogicalLink(Ptr<Orchestrator> orchestrator);
+    LogicalLink(Ptr<Orchestrator> orchestrator,
+                Ptr<const Node> a,
+                Ptr<const Node> b);
+
+    LogicalLink(Ptr<Orchestrator> orchestrator,
+                uint32_t nodeIdA,
+                uint32_t nodeIdB);
 
     /**
      * Get the class TypeId
@@ -77,39 +81,40 @@ class LogicalLink : public Object
     static TypeId GetTypeId();
 
     /**
-     * Sets the Orchestrator managing this Logical Link &
-     * register this Link with that Orchestrator.
-     *
-     * Prefer using the Orchestrator constructor as opposed to setting the
-     * Orchestrator later
-     *
-     * \param orchestrator
-     * The Orchestrator to register this Logical Link with
-     */
-    void SetOrchestrator(Ptr<Orchestrator> orchestrator);
-
-    /**
      * \return
-     * The Orchestrator managing this Building.
-     * nullptr if it is not managed
+     * The Orchestrator managing this Link.
      */
     [[nodiscard]] Ptr<Orchestrator> GetOrchestrator() const;
 
     [[nodiscard]] uint32_t GetId() const;
 
-    void SetNodes(const std::pair<Ptr<Node>, Ptr<Node>>& nodes);
-
     void SetNodes(Ptr<Node> node1, Ptr<Node> node2);
     void SetNodes(uint32_t node1, uint32_t node2);
+    void SetNodes(const std::pair<Ptr<Node>, Ptr<Node>>& nodes);
     void SetNodes(const std::pair<uint32_t, uint32_t>& nodes);
 
     [[nodiscard]] const std::pair<uint32_t, uint32_t>& GetNodes() const;
 
+    void Activate();
+    void Deactivate();
+    void Toggle();
+
+    [[nodiscard]] bool IsActive() const;
+    void SetActive(bool value);
+
+    [[nodiscard]] const std::optional<Color3>& GetColor() const;
+    void SetColor(std::optional<Color3> value);
+
   private:
+    bool m_ignoreSets{false};
     Ptr<Orchestrator> m_orchestrator;
-    unsigned int m_id;
+    unsigned long m_id;
+    bool m_active{true};
     std::optional<Color3> m_color;
     std::pair<uint32_t, uint32_t> m_nodes{};
+
+    // Allow access to `m_ignoreSets`
+    friend LogicalLinkHelper;
 };
 
 } // namespace ns3::netsimulyzer
