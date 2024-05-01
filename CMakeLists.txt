@@ -41,7 +41,9 @@ execute_process(COMMAND "git" "merge-base" "--is-ancestor" "e5039092b3bb5d7942d9
 
 # Handling for if `git` is not installed
 # Hope this string is well defined...
-if (${NETSIMULYZER_USE_ENUM_COMPAT} STREQUAL "no such file or directory")
+#
+# `128` is the `git` return code for a non-git repo
+if (${NETSIMULYZER_USE_ENUM_COMPAT} STREQUAL "no such file or directory" OR ${NETSIMULYZER_USE_ENUM_COMPAT} EQUAL 128)
     # Huge hack for tar ball ns-3 installs
     # If they don't have `grep` either,
     # then I'm out of options
