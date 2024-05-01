@@ -6,6 +6,9 @@
 
 def configure(conf):
     conf.define("HAS_NETSIMULYZER", 1, True, 'Has netsimulyzer module')
+    # `waf` was only ever used pre ns-3.41,
+    # so we always flag for compatability here
+    conf.define("NETSIMULYZER_PRE_NS3_41_ENUM_VALUE", 1, True, 'Use pre ns-3.41 EnumValue compatability')
     conf.env['HAS_NETSIMULYZER'] = True
     conf.env.append_value('CXXFLAGS', '-std=c++17')
 

@@ -133,11 +133,19 @@ makeAxisAttributes(ns3::Ptr<ns3::netsimulyzer::ValueAxis> axis)
     axis->GetAttribute("Maximum", max);
     element["max"] = max.Get();
 
+#ifndef NETSIMULYZER_PRE_NS3_41_ENUM_VALUE
     ns3::EnumValue<ns3::netsimulyzer::ValueAxis::Scale> scaleMode;
+#else
+    ns3::EnumValue scaleMode;
+#endif
     axis->GetAttribute("Scale", scaleMode);
     element["scale"] = ScaleToString(scaleMode.Get());
 
+#ifndef NETSIMULYZER_PRE_NS3_41_ENUM_VALUE
     ns3::EnumValue<ns3::netsimulyzer::ValueAxis::BoundMode> boundMode;
+#else
+    ns3::EnumValue boundMode;
+#endif
     axis->GetAttribute("BoundMode", boundMode);
     element["bound-mode"] = BoundModeToString(boundMode.Get());
 
@@ -656,7 +664,11 @@ Orchestrator::SetupSimulation(void)
         area->GetAttribute("Height", height);
         element["height"] = height.Get();
 
+#ifndef NETSIMULYZER_PRE_NS3_41_ENUM_VALUE
         EnumValue<RectangularArea::DrawMode> fillMode;
+#else
+        EnumValue fillMode;
+#endif
         area->GetAttribute("Fill", fillMode);
 
         switch (fillMode.Get())
@@ -672,7 +684,11 @@ Orchestrator::SetupSimulation(void)
             break;
         }
 
+#ifndef NETSIMULYZER_PRE_NS3_41_ENUM_VALUE
         EnumValue<RectangularArea::DrawMode> borderMode;
+#else
+        EnumValue borderMode;
+#endif
         area->GetAttribute("Border", borderMode);
 
         switch (borderMode.Get())
@@ -1107,8 +1123,11 @@ Orchestrator::Commit(XYSeries& series)
     series.GetAttribute("Visible", visible);
     element["visible"] = visible.Get();
 
+#ifndef NETSIMULYZER_PRE_NS3_41_ENUM_VALUE
     EnumValue<XYSeries::ConnectionType> connection;
-    series.GetAttribute("Connection", connection);
+#else
+    EnumValue connection;
+#endif
     switch (connection.Get())
     {
     case XYSeries::ConnectionType::None:
@@ -1140,7 +1159,11 @@ Orchestrator::Commit(XYSeries& series)
         break;
     }
 
+#ifndef NETSIMULYZER_PRE_NS3_41_ENUM_VALUE
     EnumValue<XYSeries::LabelMode> labelMode;
+#else
+    EnumValue labelMode;
+#endif
     series.GetAttribute("LabelMode", labelMode);
     switch (labelMode.Get())
     {
