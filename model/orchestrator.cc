@@ -97,7 +97,7 @@ netsimulyzerCrashHandler(int signal)
     // wasn't used
     if (orchestrators.empty())
     {
-        std::abort();
+        return;
     }
 
     switch (signal)
