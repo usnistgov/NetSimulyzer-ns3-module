@@ -88,12 +88,38 @@ class Orchestrator : public ns3::Object
     };
 
     /**
+     * Indicator that we should not output to a
+     * file, but keep the JSON document in memory.
+     *
+     * Use `GetJson()` to retrieve the output
+     *
+     * \see GetJson()
+     */
+    enum class MemoryOutputMode
+    {
+        On
+    };
+
+    /**
      * \brief Constructs an Orchestrator and opens an output handle at output_path
      *
      * \param output_path
      * The file to write all output to. If the file exists it will be overwritten
      */
     explicit Orchestrator(const std::string& output_path);
+
+    /**
+     * Constructs an Orchestrator keeping output in memory,
+     * rather than a file.
+     *
+     * Use `getJson()` to get output
+     *
+     * \param mode
+     * The `MemoryOutputMode` flag, likely just `MemoryOutputMode::On`
+     *
+     * \see getJson()
+     */
+    explicit Orchestrator(MemoryOutputMode mode);
 
     /**
      * \brief Get the class TypeId
@@ -142,6 +168,15 @@ class Orchestrator : public ns3::Object
      * the current suggested time step and unit.
      */
     std::optional<TimeStepPair> GetTimeStep(void) const;
+
+    /**
+     * Gets the structured output. Requires that the
+     * `Orchestrator` be constructed
+     * with `Orchestrator::MemoryOutputMode::On`
+     *
+     * @return The JSON output
+     */
+    const nlohmann::json& GetJson() const;
 
     /**
      * \brief Collect Global & Node/Building configs, Schedule Polls
@@ -502,6 +537,12 @@ class Orchestrator : public ns3::Object
     void DoDispose(void) override;
 
   private:
+    /**
+     * Sets up the output document and schedules
+     * the setup events
+     */
+    void Init();
+
     /**
      * Gets the time step in a way that's compatible with the
      * deprecated `TimeStep` attribute
