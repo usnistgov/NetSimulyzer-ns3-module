@@ -121,5 +121,10 @@ build_lib(
 
 target_compile_definitions(libnetsimulyzer PUBLIC HAS_NETSIMULYZER)
 
+option(NETSIMULYZER_CRASH_HANDLER "Adds a crash handler that writes NetSimulyzer output on an irregular exit of the program" ON)
+if (NETSIMULYZER_CRASH_HANDLER)
+    add_compile_definitions(NETSIMULYZER_CRASH_HANDLER) # TODO: target_compile_definitions _should_ work here, but it doesn't
+endif ()
+
 # This seems to only work with core modules if it's a cached value
 set(HAS_NETSIMULYZER TRUE CACHE BOOL "NetSimulyzer ns-3 module")

@@ -35,27 +35,27 @@
 #ifndef ORCHESTRATOR_H
 #define ORCHESTRATOR_H
 
+#include "building-configuration.h"
+#include "category-value-series.h"
+#include "decoration.h"
 #include "event-message.h"
+#include "node-configuration.h"
+#include "optional.h"
+#include "rectangular-area.h"
+#include "series-collection.h"
+#include "value-axis.h"
+#include "xy-series.h"
 
-#include <ns3/building-configuration.h>
 #include <ns3/building-list.h>
 #include <ns3/building.h>
-#include <ns3/category-value-series.h>
-#include <ns3/decoration.h>
-#include <ns3/event-message.h>
 #include <ns3/json.hpp>
-#include <ns3/node-configuration.h>
 #include <ns3/node-list.h>
 #include <ns3/nstime.h>
 #include <ns3/object.h>
-#include <ns3/optional.h>
-#include <ns3/rectangular-area.h>
-#include <ns3/series-collection.h>
 #include <ns3/simulator.h>
-#include <ns3/value-axis.h>
-#include <ns3/xy-series.h>
 
 #include <fstream>
+#include <functional>
 #include <optional>
 #include <string>
 #include <unordered_map>
@@ -492,6 +492,11 @@ class Orchestrator : public ns3::Object
      * Subsequent calls will have no affect
      */
     void Flush(void);
+
+    /**
+     * Handler for
+     */
+    void FlushCrash();
 
   protected:
     void DoDispose(void) override;
