@@ -1204,6 +1204,7 @@ Orchestrator::Commit(XYSeries& series)
 #else
     EnumValue connection;
 #endif
+    series.GetAttribute("Connection", connection);
     switch (connection.Get())
     {
     case XYSeries::ConnectionType::None:
