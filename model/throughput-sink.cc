@@ -69,25 +69,29 @@ ThroughputSink::ThroughputSink(Ptr<Orchestrator> orchestrator, const std::string
 TypeId
 ThroughputSink::GetTypeId(void)
 {
-    static TypeId tid = TypeId("ns3::netsimulyzer::ThroughputSink")
-                            .SetParent<ns3::Object>()
-                            .SetGroupName("netsimulyzer")
-                            .AddAttribute("XYSeries",
-                                          "The XY Series",
-                                          TypeId::ATTR_GET,
-                                          PointerValue(),
-                                          MakePointerAccessor(&ThroughputSink::GetSeries),
-                                          MakePointerChecker<XYSeries>())
-                            .AddAttribute("Interval",
-                                          "Time between updates",
-                                          TimeValue(Seconds(1)),
-                                          MakeTimeAccessor(&ThroughputSink::SetInterval),
-                                          MakeTimeChecker())
-                            // clang-format off
+    static TypeId tid =
+        TypeId("ns3::netsimulyzer::ThroughputSink")
+            .SetParent<ns3::Object>()
+            .SetGroupName("netsimulyzer")
+            .AddAttribute("XYSeries",
+                          "The XY Series",
+                          TypeId::ATTR_GET,
+                          PointerValue(),
+                          MakePointerAccessor(&ThroughputSink::GetSeries),
+                          MakePointerChecker<XYSeries>())
+            .AddAttribute("Interval",
+                          "Time between updates",
+                          TimeValue(Seconds(1)),
+                          MakeTimeAccessor(&ThroughputSink::SetInterval),
+                          MakeTimeChecker())
                             .AddAttribute("Unit",
                                           "The unit for the throughput plot",
                                           EnumValue(ThroughputSink::Unit::KBit),
+#ifndef NETSIMULYZER_PRE_NS3_41_ENUM_VALUE
+                                          MakeEnumAccessor<ThroughputSink::Unit>(&ThroughputSink::SetUnit),
+#else
                                           MakeEnumAccessor(&ThroughputSink::SetUnit),
+#endif
                                           MakeEnumChecker(
                                               ThroughputSink::Bit, "b/s",
                                               ThroughputSink::KBit, "kb/s",
@@ -100,8 +104,14 @@ ThroughputSink::GetTypeId(void)
                             .AddAttribute("TimeUnit",
                                           "The unit of time to use for the X axis",
                                           EnumValue(Time::S),
-                                          MakeEnumAccessor(&ThroughputSink::SetTimeUnit,
+
+#ifndef NETSIMULYZER_PRE_NS3_41_ENUM_VALUE
+                                          MakeEnumAccessor<Time::Unit>(&ThroughputSink::SetTimeUnit,
                                                            &ThroughputSink::GetTimeUnit),
+#else
+                                               MakeEnumAccessor(&ThroughputSink::SetTimeUnit,
+                                                                &ThroughputSink::GetTimeUnit),
+#endif
                                           MakeEnumChecker(
                                               Time::Unit::Y, "Year",
                                               Time::Unit::D, "Day",
@@ -114,7 +124,6 @@ ThroughputSink::GetTypeId(void)
                                               Time::Unit::PS, "Picosecond",
                                               Time::Unit::FS, "Femtosecond"));
 
-    // clang-format on
     return tid;
 }
 

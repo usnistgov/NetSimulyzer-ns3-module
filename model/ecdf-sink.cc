@@ -85,22 +85,29 @@ EcdfSink::GetTypeId(void)
             .AddAttribute("Connection",
                           "Type of connection to form between points in the series",
                           EnumValue(XYSeries::ConnectionType::Line),
+#ifndef NETSIMULYZER_PRE_NS3_41_ENUM_VALUE
+                          MakeEnumAccessor<XYSeries::ConnectionType>(&EcdfSink::SetConnectionType,
+                                                                    &EcdfSink::GetConnectionType),
+#else
                           MakeEnumAccessor(&EcdfSink::SetConnectionType,
                                            &EcdfSink::GetConnectionType),
+#endif
                           MakeEnumChecker(
                               XYSeries::ConnectionType::None, "None",
                               XYSeries::ConnectionType::Line, "Line",
                               XYSeries::ConnectionType::Spline, "Spline"))
-            // Keep clang-format off
             .AddAttribute("FlushMode",
                           "When to write the changes to the graph",
                           EnumValue(EcdfSink::FlushMode::OnWrite),
+#ifndef NETSIMULYZER_PRE_NS3_41_ENUM_VALUE
+                          MakeEnumAccessor<EcdfSink::FlushMode>(&EcdfSink::SetFlushMode, &EcdfSink::GetFlushMode),
+#else
                           MakeEnumAccessor(&EcdfSink::SetFlushMode, &EcdfSink::GetFlushMode),
+#endif
                           MakeEnumChecker(
                               EcdfSink::FlushMode::OnWrite, "OnWrite",
                               EcdfSink::FlushMode::Interval, "Interval",
                               EcdfSink::FlushMode::Manual,"Manual"))
-            // clang-format on
             .AddAttribute("Interval",
                           "The interval to update the plot. "
                           "Only used when the `FlushMode` attribute is set to `Interval`",
@@ -165,10 +172,17 @@ EcdfSink::SetFlushMode(EcdfSink::FlushMode mode)
 XYSeries::ConnectionType
 EcdfSink::GetConnectionType(void) const
 {
+#ifndef NETSIMULYZER_PRE_NS3_41_ENUM_VALUE
+    EnumValue<XYSeries::ConnectionType> connectionType;
+    m_series->GetAttribute("Connection", connectionType);
+
+    return connectionType.Get();
+#else
     EnumValue connectionType;
     m_series->GetAttribute("Connection", connectionType);
 
     return static_cast<XYSeries::ConnectionType>(connectionType.Get());
+#endif
 }
 
 void
@@ -233,7 +247,11 @@ EcdfSink::Flush(void)
     m_series->Clear();
     double total = 0.0;
 
+#ifndef NETSIMULYZER_PRE_NS3_41_ENUM_VALUE
+    EnumValue<XYSeries::ConnectionType> connectionMode;
+#else
     EnumValue connectionMode;
+#endif
     m_series->GetAttribute("Connection", connectionMode);
 
     if (connectionMode.Get() == XYSeries::ConnectionType::None)

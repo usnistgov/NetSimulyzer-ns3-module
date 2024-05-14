@@ -97,11 +97,14 @@ XYSeries::GetTypeId(void)
                           PointerValue(),
                           MakePointerAccessor(&XYSeries::m_orchestrator),
                           MakePointerChecker<Orchestrator>())
-            // clang-format off
             .AddAttribute("Connection",
                           "Type of connection to form between points in the series",
                           EnumValue(XYSeries::ConnectionType::Line),
-                          MakeEnumAccessor(&XYSeries::m_connection),
+#ifndef NETSIMULYZER_PRE_NS3_41_ENUM_VALUE
+MakeEnumAccessor<XYSeries::ConnectionType>(&XYSeries::m_connection),
+#else
+MakeEnumAccessor(&XYSeries::m_connection),
+#endif
                           MakeEnumChecker(
                               XYSeries::ConnectionType::None, "None",
                               XYSeries::ConnectionType::Line, "Line",
@@ -109,11 +112,14 @@ XYSeries::GetTypeId(void)
             .AddAttribute("LabelMode",
                           "How the point labels are shown",
                           EnumValue(XYSeries::LabelMode::Hidden),
+#ifndef NETSIMULYZER_PRE_NS3_41_ENUM_VALUE
+                          MakeEnumAccessor<LabelMode>(&XYSeries::m_labelMode),
+#else
                           MakeEnumAccessor(&XYSeries::m_labelMode),
+#endif
                           MakeEnumChecker(
                               XYSeries::LabelMode::Hidden,"Hidden",
                               XYSeries::LabelMode::Shown,"Shown"))
-            // clang-format on
             .AddAttribute("Name",
                           "Name to represent this series in visualizer elements",
                           StringValue(),

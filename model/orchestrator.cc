@@ -35,21 +35,21 @@
 #include "orchestrator.h"
 
 #include "building-configuration.h"
+#include "color.h"
+#include "log-stream.h"
 #include "netsimulyzer-version.h"
 #include "node-configuration.h"
+#include "optional.h"
 #include "xy-series.h"
 
 #include <ns3/abort.h>
 #include <ns3/boolean.h>
-#include <ns3/color.h>
 #include <ns3/double.h>
 #include <ns3/enum.h>
-#include <ns3/log-stream.h>
 #include <ns3/log.h>
 #include <ns3/mobility-model.h>
 #include <ns3/node.h>
 #include <ns3/object-base.h>
-#include <ns3/optional.h>
 #include <ns3/point-to-point-channel.h>
 #include <ns3/point-to-point-net-device.h>
 #include <ns3/pointer.h>
@@ -59,12 +59,80 @@
 #include <ns3/uinteger.h>
 #include <ns3/vector.h>
 
+#include <atomic>
+#include <csignal>
 #include <map>
 #include <string>
 #include <vector>
 
 namespace
 {
+
+#ifdef NETSIMULYZER_CRASH_HANDLER
+// Weak pointers to all Orchestrators for crash handling
+std::vector<ns3::netsimulyzer::Orchestrator*> orchestrators{};
+volatile std::atomic_int crashCount{0};
+
+void
+netsimulyzerCrashHandler(int signal)
+{
+    // Just incase we get a signal during this handler
+    if (crashCount > 0)
+    {
+        std::abort();
+    }
+    ++crashCount;
+
+    // Reset signal handlers to their defaults
+    // so we avoid a loop this way too
+    //
+    // It is implementation defined if this happens before
+    // the handler is invoked anyway
+    std::signal(SIGSEGV, SIG_DFL);
+    std::signal(SIGTERM, SIG_DFL);
+    std::signal(SIGINT, SIG_DFL);
+
+    // if we don't have any Orchestrators registered,
+    // don't make noise on the console, since the module
+    // wasn't used
+    if (orchestrators.empty())
+    {
+        return;
+    }
+
+    switch (signal)
+    {
+    case SIGSEGV:
+        std::cout << "SIGSEGV ";
+        break;
+    case SIGTERM:
+        std::cout << "SIGTERM ";
+        break;
+    case SIGINT:
+        std::cout << "SIGINT ";
+        break;
+    default:
+        break;
+    }
+
+    // _Tecnically_ UB here, but there's no way to print from a signal handler
+    // without it
+    std::cout << "caught, attempting to write NetSimulyzer output file(s)\n";
+    for (const auto oPtr : orchestrators)
+    {
+        oPtr->Flush();
+    }
+
+    // allow default handler to complete exit
+}
+
+// Cheap trick to get these registered at program start
+auto unusedSegvHandler [[maybe_unused]] = std::signal(SIGSEGV, netsimulyzerCrashHandler);
+auto unusedTermHandler [[maybe_unused]] = std::signal(SIGTERM, netsimulyzerCrashHandler);
+auto unusedIntHandler [[maybe_unused]] = std::signal(SIGINT, netsimulyzerCrashHandler);
+
+#endif
+
 std::string
 ScaleToString(int scale)
 {
@@ -133,11 +201,19 @@ makeAxisAttributes(ns3::Ptr<ns3::netsimulyzer::ValueAxis> axis)
     axis->GetAttribute("Maximum", max);
     element["max"] = max.Get();
 
+#ifndef NETSIMULYZER_PRE_NS3_41_ENUM_VALUE
+    ns3::EnumValue<ns3::netsimulyzer::ValueAxis::Scale> scaleMode;
+#else
     ns3::EnumValue scaleMode;
+#endif
     axis->GetAttribute("Scale", scaleMode);
     element["scale"] = ScaleToString(scaleMode.Get());
 
+#ifndef NETSIMULYZER_PRE_NS3_41_ENUM_VALUE
+    ns3::EnumValue<ns3::netsimulyzer::ValueAxis::BoundMode> boundMode;
+#else
     ns3::EnumValue boundMode;
+#endif
     axis->GetAttribute("BoundMode", boundMode);
     element["bound-mode"] = BoundModeToString(boundMode.Get());
 
@@ -200,16 +276,18 @@ Orchestrator::Orchestrator(const std::string& output_path)
     m_file.open(output_path);
     NS_ABORT_MSG_IF(!m_file, "Failed to open output file");
 
-    // Preallocate collections since a `Commit ()` call
-    // could come at any time
-    m_document["series"] = nlohmann::json::array();
-    m_document["streams"] = nlohmann::json::array();
-
-    // Create the Empty events array, so we can just append to that
-    // when the event happens
-    m_document["events"] = nlohmann::json::array();
-
     Simulator::ScheduleNow(&Orchestrator::SetupSimulation, this);
+#ifdef NETSIMULYZER_CRASH_HANDLER
+    orchestrators.emplace_back(this);
+#endif
+
+    Init();
+}
+
+
+Orchestrator::Orchestrator(Orchestrator::MemoryOutputMode mode)
+{
+    Init();
 }
 
 ns3::TypeId
@@ -275,6 +353,12 @@ Orchestrator::GetTimeStep() const
         return TimeStepPair{m_timeStep.value(), m_timeStepGranularity.value()};
 
     return {};
+}
+
+const nlohmann::json&
+Orchestrator::GetJson() const
+{
+    return m_document;
 }
 
 void
@@ -656,7 +740,11 @@ Orchestrator::SetupSimulation(void)
         area->GetAttribute("Height", height);
         element["height"] = height.Get();
 
+#ifndef NETSIMULYZER_PRE_NS3_41_ENUM_VALUE
+        EnumValue<RectangularArea::DrawMode> fillMode;
+#else
         EnumValue fillMode;
+#endif
         area->GetAttribute("Fill", fillMode);
 
         switch (fillMode.Get())
@@ -672,7 +760,11 @@ Orchestrator::SetupSimulation(void)
             break;
         }
 
+#ifndef NETSIMULYZER_PRE_NS3_41_ENUM_VALUE
+        EnumValue<RectangularArea::DrawMode> borderMode;
+#else
         EnumValue borderMode;
+#endif
         area->GetAttribute("Border", borderMode);
 
         switch (borderMode.Get())
@@ -1107,7 +1199,11 @@ Orchestrator::Commit(XYSeries& series)
     series.GetAttribute("Visible", visible);
     element["visible"] = visible.Get();
 
+#ifndef NETSIMULYZER_PRE_NS3_41_ENUM_VALUE
+    EnumValue<XYSeries::ConnectionType> connection;
+#else
     EnumValue connection;
+#endif
     series.GetAttribute("Connection", connection);
     switch (connection.Get())
     {
@@ -1140,7 +1236,11 @@ Orchestrator::Commit(XYSeries& series)
         break;
     }
 
+#ifndef NETSIMULYZER_PRE_NS3_41_ENUM_VALUE
+    EnumValue<XYSeries::LabelMode> labelMode;
+#else
     EnumValue labelMode;
+#endif
     series.GetAttribute("LabelMode", labelMode);
     switch (labelMode.Get())
     {
@@ -1451,6 +1551,21 @@ Orchestrator::CommitAll(void)
     {
         stream->Commit();
     }
+}
+
+void
+Orchestrator::Init()
+{
+    // Preallocate collections since a `Commit ()` call
+    // could come at any time
+    m_document["series"] = nlohmann::json::array();
+    m_document["streams"] = nlohmann::json::array();
+
+    // Create the Empty events array, so we can just append to that
+    // when the event happens
+    m_document["events"] = nlohmann::json::array();
+
+    Simulator::ScheduleNow(&Orchestrator::SetupSimulation, this);
 }
 
 std::optional<int>

@@ -72,7 +72,11 @@ ValueAxis::GetTypeId(void)
             .AddAttribute("BoundMode",
                           "How the boundaries of the axis may move given a new value",
                           EnumValue(ValueAxis::BoundMode::HighestValue),
+#ifndef NETSIMULYZER_PRE_NS3_41_ENUM_VALUE
+                          MakeEnumAccessor<BoundMode>(&ValueAxis::m_boundMode),
+#else
                           MakeEnumAccessor(&ValueAxis::m_boundMode),
+#endif
                           // clang-format off
                           MakeEnumChecker(
                               BoundMode::Fixed, "Fixed",
@@ -80,11 +84,15 @@ ValueAxis::GetTypeId(void)
             .AddAttribute("Scale",
                           "The method to scale between tick marks on the axis",
                           EnumValue(ValueAxis::Scale::Linear),
+#ifndef NETSIMULYZER_PRE_NS3_41_ENUM_VALUE
+                          MakeEnumAccessor<Scale>(&ValueAxis::m_scale),
+#else
                           MakeEnumAccessor(&ValueAxis::m_scale),
+#endif
                           MakeEnumChecker(
                               ValueAxis::Linear, "Linear",
                               ValueAxis::Logarithmic, "Logarithmic"));
-// clang-format on
+    // clang-format on
 
     return tid;
 }

@@ -296,6 +296,6 @@ class EcdfSink : public Object
     double m_totalPoints{0.0};
 };
 
-} // namespace ns3
+} // namespace ns3::netsimulyzer
 
 #endif // ECDF_SINK_H

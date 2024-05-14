@@ -75,30 +75,36 @@ StateTransitionSink::StateTransitionSink(Ptr<Orchestrator> orchestrator,
 TypeId
 StateTransitionSink::GetTypeId(void)
 {
-    static TypeId tid = TypeId("ns3::netsimulyzer::StateTransitionSink")
-                            .SetParent<ns3::Object>()
-                            .SetGroupName("netsimulyzer")
-                            .AddAttribute("Name",
-                                          "Set the names for sub-elements",
-                                          StringValue(),
-                                          MakeStringAccessor(&StateTransitionSink::SetNames),
-                                          MakeStringChecker())
-                            .AddAttribute("Series",
-                                          "The series tracking the application state",
-                                          PointerValue(),
-                                          MakePointerAccessor(&StateTransitionSink::m_series),
-                                          MakePointerChecker<CategoryValueSeries>())
-                            .AddAttribute("Log",
-                                          "The Log Stream that this helper writes to",
-                                          PointerValue(),
-                                          MakePointerAccessor(&StateTransitionSink::m_log),
-                                          MakePointerChecker<LogStream>())
-                            // clang-format off
+    static TypeId tid =
+        TypeId("ns3::netsimulyzer::StateTransitionSink")
+            .SetParent<ns3::Object>()
+            .SetGroupName("netsimulyzer")
+            .AddAttribute("Name",
+                          "Set the names for sub-elements",
+                          StringValue(),
+                          MakeStringAccessor(&StateTransitionSink::SetNames),
+                          MakeStringChecker())
+            .AddAttribute("Series",
+                          "The series tracking the application state",
+                          PointerValue(),
+                          MakePointerAccessor(&StateTransitionSink::m_series),
+                          MakePointerChecker<CategoryValueSeries>())
+            .AddAttribute("Log",
+                          "The Log Stream that this helper writes to",
+                          PointerValue(),
+                          MakePointerAccessor(&StateTransitionSink::m_log),
+                          MakePointerChecker<LogStream>())
                             .AddAttribute("LoggingMode",
                                           "Mode for connecting points within the series",
                                           EnumValue(LoggingMode::StateChanges),
-                                          MakeEnumAccessor(&StateTransitionSink::SetLoggingMode,
+#ifndef NETSIMULYZER_PRE_NS3_41_ENUM_VALUE
+                                          MakeEnumAccessor<LoggingMode>(&StateTransitionSink::SetLoggingMode,
                                                            &StateTransitionSink::GetLoggingMode),
+#else
+                                           MakeEnumAccessor(&StateTransitionSink::SetLoggingMode,
+                                                            &StateTransitionSink::GetLoggingMode),
+#endif
+
                                           MakeEnumChecker(
                                               LoggingMode::StateChanges, "StateChanges",
                                               LoggingMode::All, "All",
@@ -106,8 +112,13 @@ StateTransitionSink::GetTypeId(void)
                             .AddAttribute("TimeUnit",
                                           "The unit of time to use for the X axis",
                                           EnumValue(Time::S),
-                                          MakeEnumAccessor(&StateTransitionSink::SetTimeUnit,
+#ifndef NETSIMULYZER_PRE_NS3_41_ENUM_VALUE
+                                          MakeEnumAccessor<Time::Unit>(&StateTransitionSink::SetTimeUnit,
                                                            &StateTransitionSink::GetTimeUnit),
+#else
+                                               MakeEnumAccessor(&StateTransitionSink::SetTimeUnit,
+                                                                &StateTransitionSink::GetTimeUnit),
+#endif
                                           MakeEnumChecker(
                                               Time::Unit::Y, "Year",
                                               Time::Unit::D, "Day",
@@ -120,7 +131,6 @@ StateTransitionSink::GetTypeId(void)
                                               Time::Unit::PS, "Picosecond",
                                               Time::Unit::FS,"Femtosecond"));
 
-    // clang-format on
     return tid;
 }
 

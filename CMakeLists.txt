@@ -27,6 +27,40 @@
 # cause risk of injury or damage to property. The software developed by NIST
 # employees is not subject to copyright protection within the United States.
 
+option(NETSIMULYZER_PRE_NS3_41_ENUM_VALUE "Force compatibility with ns-3 versions before ns-3.41" OFF)
+
+# ns-3.41 is tagged at e5039092b3bb5d7942d973cc1016eaa60bdce51c
+#
+# Note: This doesn't handle squash merges, or some other
+# way out there out of tree stuff
+# See: `NETSIMULYZER_PRE_NS3_41_ENUM_VALUE` option for that
+execute_process(COMMAND "git" "merge-base" "--is-ancestor" "e5039092b3bb5d7942d973cc1016eaa60bdce51c" "HEAD"
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+        RESULT_VARIABLE NETSIMULYZER_USE_ENUM_COMPAT
+)
+
+# Handling for if `git` is not installed
+# Hope this string is well defined...
+#
+# `128` is the `git` return code for a non-git repo
+if (${NETSIMULYZER_USE_ENUM_COMPAT} STREQUAL "no such file or directory" OR ${NETSIMULYZER_USE_ENUM_COMPAT} EQUAL 128)
+    # Huge hack for tar ball ns-3 installs
+    # If they don't have `grep` either,
+    # then I'm out of options
+    execute_process(COMMAND "grep" "-w" "EnumValue(int value)" "src/core/model/enum.h"
+            WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+            RESULT_VARIABLE NETSIMULYZER_USE_ENUM_COMPAT_GREP)
+    # `grep` returns `0` on match
+    if (${NETSIMULYZER_USE_ENUM_COMPAT_GREP} EQUAL 0)
+        set(NETSIMULYZER_USE_ENUM_COMPAT 1)
+    endif ()
+endif ()
+
+if (${NETSIMULYZER_PRE_NS3_41_ENUM_VALUE} OR ${NETSIMULYZER_USE_ENUM_COMPAT} EQUAL 1)
+    add_compile_definitions(NETSIMULYZER_PRE_NS3_41_ENUM_VALUE)
+endif ()
+
+
 build_lib(
   LIBNAME netsimulyzer
   SOURCE_FILES
@@ -83,9 +117,19 @@ build_lib(
     ${libnetwork}
     ${libmobility}
     ${libpoint-to-point}
+  TEST_SOURCES
+        test/test-buildings.cc
+        test/netsimulyzer-test-utils.h
+        test/test-node-events.cc
+        test/test-orchestrator-outputs.cc
 )
 
 target_compile_definitions(libnetsimulyzer PUBLIC HAS_NETSIMULYZER)
+
+option(NETSIMULYZER_CRASH_HANDLER "Adds a crash handler that writes NetSimulyzer output on an irregular exit of the program" ON)
+if (NETSIMULYZER_CRASH_HANDLER)
+    add_compile_definitions(NETSIMULYZER_CRASH_HANDLER) # TODO: target_compile_definitions _should_ work here, but it doesn't
+endif ()
 
 # This seems to only work with core modules if it's a cached value
 set(HAS_NETSIMULYZER TRUE CACHE BOOL "NetSimulyzer ns-3 module")

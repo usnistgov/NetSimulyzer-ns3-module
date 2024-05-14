@@ -54,6 +54,35 @@ class CategoryAxis : public ns3::Object
     {
         int key;
         std::string value;
+
+        /**
+         * Compatability constructor for models with states
+         * represeneted by a scoped enum (e.g. `enum class`/`enum struct`)
+         *
+         * @tparam T (deduced)
+         * The type of the scoped enum
+         *
+         * @param key
+         * The scoped enum value
+         *
+         * @param value
+         * The string repesenetation of the scoped enum value in `key`
+         */
+        template <class T>
+        ValuePair(const T key, const std::string &value): key{static_cast<int>(key)}, value{value} {}
+
+        /**
+         * Constructor for unscoped enums (e.g. `enum` without `class`/`struct`)
+         *
+         * @param key
+         * The enum value
+         *
+         * @param value
+         * The string representation of the enum value in `key`
+         */
+        ValuePair(const int key, const std::string &value): key{key}, value{value} {}
+
+        ValuePair() = default;
     };
 
     /**

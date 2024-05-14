@@ -35,27 +35,27 @@
 #ifndef ORCHESTRATOR_H
 #define ORCHESTRATOR_H
 
+#include "building-configuration.h"
+#include "category-value-series.h"
+#include "decoration.h"
 #include "event-message.h"
+#include "node-configuration.h"
+#include "optional.h"
+#include "rectangular-area.h"
+#include "series-collection.h"
+#include "value-axis.h"
+#include "xy-series.h"
 
-#include <ns3/building-configuration.h>
 #include <ns3/building-list.h>
 #include <ns3/building.h>
-#include <ns3/category-value-series.h>
-#include <ns3/decoration.h>
-#include <ns3/event-message.h>
 #include <ns3/json.hpp>
-#include <ns3/node-configuration.h>
 #include <ns3/node-list.h>
 #include <ns3/nstime.h>
 #include <ns3/object.h>
-#include <ns3/optional.h>
-#include <ns3/rectangular-area.h>
-#include <ns3/series-collection.h>
 #include <ns3/simulator.h>
-#include <ns3/value-axis.h>
-#include <ns3/xy-series.h>
 
 #include <fstream>
+#include <functional>
 #include <optional>
 #include <string>
 #include <unordered_map>
@@ -88,12 +88,38 @@ class Orchestrator : public ns3::Object
     };
 
     /**
+     * Indicator that we should not output to a
+     * file, but keep the JSON document in memory.
+     *
+     * Use `GetJson()` to retrieve the output
+     *
+     * \see GetJson()
+     */
+    enum class MemoryOutputMode
+    {
+        On
+    };
+
+    /**
      * \brief Constructs an Orchestrator and opens an output handle at output_path
      *
      * \param output_path
      * The file to write all output to. If the file exists it will be overwritten
      */
     explicit Orchestrator(const std::string& output_path);
+
+    /**
+     * Constructs an Orchestrator keeping output in memory,
+     * rather than a file.
+     *
+     * Use `getJson()` to get output
+     *
+     * \param mode
+     * The `MemoryOutputMode` flag, likely just `MemoryOutputMode::On`
+     *
+     * \see getJson()
+     */
+    explicit Orchestrator(MemoryOutputMode mode);
 
     /**
      * \brief Get the class TypeId
@@ -142,6 +168,15 @@ class Orchestrator : public ns3::Object
      * the current suggested time step and unit.
      */
     std::optional<TimeStepPair> GetTimeStep(void) const;
+
+    /**
+     * Gets the structured output. Requires that the
+     * `Orchestrator` be constructed
+     * with `Orchestrator::MemoryOutputMode::On`
+     *
+     * @return The JSON output
+     */
+    const nlohmann::json& GetJson() const;
 
     /**
      * \brief Collect Global & Node/Building configs, Schedule Polls
@@ -493,10 +528,21 @@ class Orchestrator : public ns3::Object
      */
     void Flush(void);
 
+    /**
+     * Handler for
+     */
+    void FlushCrash();
+
   protected:
     void DoDispose(void) override;
 
   private:
+    /**
+     * Sets up the output document and schedules
+     * the setup events
+     */
+    void Init();
+
     /**
      * Gets the time step in a way that's compatible with the
      * deprecated `TimeStep` attribute

@@ -33,11 +33,12 @@
 #ifndef APPLICATION_STATE_SINK_H
 #define APPLICATION_STATE_SINK_H
 
-#include <ns3/category-value-series.h>
-#include <ns3/log-stream.h>
+#include "category-value-series.h"
+#include "log-stream.h"
+#include "orchestrator.h"
+
 #include <ns3/nstime.h>
 #include <ns3/object.h>
-#include <ns3/orchestrator.h>
 #include <ns3/ptr.h>
 #include <ns3/timer.h>
 
@@ -136,6 +137,32 @@ class StateTransitionSink : public Object
                         int initialState);
 
     /**
+     * Sets up the sink with a list of the possible application states
+     * with IDs
+     *
+     * \warning Do not duplicate state names,
+     * if two states share the same name, IDs
+     * must be used to interact with the conflicting names.
+     *
+     * @tparam T (deduced)
+     * The type of the scoped enum
+     *
+     * \param orchestrator
+     * The `Orchestrator` that will manage the sub-elements
+     *
+     * \param states
+     * List of unique state names with IDs
+     *
+     * \param initialState
+     * The initial state of the model to be connected
+     * to one of the StateChanged callbacks.
+     */
+    template <class T>
+    StateTransitionSink(Ptr<Orchestrator> orchestrator,
+                        const std::vector<CategoryAxis::ValuePair>& states,
+                        T initialState);
+
+    /**
      * Sets the starting state of the application.
      * Does not write a state change.
      *
@@ -150,12 +177,27 @@ class StateTransitionSink : public Object
      * Sets the starting state of the application.
      * Does not write a state change.
      *
-     * If state is not a provided state, this method will abort
+     * If `state` is not a provided state, this method will abort
      *
      * \param state
      * The starting state of the attached model
      */
     void SetInitialState(int state);
+
+    /**
+     * Sets the starting state of the application.
+     * Does not write a state change.
+     *
+     * If `state` is not a provided state, this method will abort
+     *
+     * @tparam T (deduced)
+     * The type of the scoped enum
+     *
+     * \param state
+     * The starting state of the attached model
+     */
+    template <class T>
+    void SetInitialState(T state);
 
     /**
      * Callback to connect to a given subclass of `ns3::Application`.
@@ -171,7 +213,22 @@ class StateTransitionSink : public Object
 
     /**
      * Callback to connect to a given subclass of `ns3::Application`.
-     * Use this one if you track your application state with an enum/int
+     * Use this one if you track your application state with a scoped enum
+     *
+     * Call this when your application's state changes.
+     *
+     * @tparam T (deduced)
+     * The type of the scoped enum
+     *
+     * \param newState
+     * The state the application is changing to.
+     */
+    template <class T>
+    void StateChangedId(T newState);
+
+    /**
+     * Callback to connect to a given subclass of `ns3::Application`.
+     * Use this one if you track your application state with an unscoped enum/int
      *
      * Call this when your application's state changes, or
      * connect your own StateChanged callback to this.
@@ -357,6 +414,32 @@ class StateTransitionSink : public Object
      */
     void ApplyStateChange(const CategoryAxis::ValuePair& pair);
 };
+
+template <class T>
+StateTransitionSink::StateTransitionSink(Ptr<Orchestrator> orchestrator,
+                                         const std::vector<CategoryAxis::ValuePair>& states,
+                                         T initialState)
+    : m_orchestrator(orchestrator),
+      m_series(CreateObject<CategoryValueSeries>(orchestrator, states)),
+      m_log(CreateObject<LogStream>(orchestrator))
+{
+    Init();
+    SetInitialState(static_cast<int>(initialState));
+}
+
+template <class T>
+void
+StateTransitionSink::SetInitialState(T state)
+{
+    SetInitialState(static_cast<int>(state));
+}
+
+template <class T>
+void
+StateTransitionSink::StateChangedId(T newState)
+{
+    StateChangedId(static_cast<int>(newState));
+}
 
 } // namespace ns3::netsimulyzer
 
