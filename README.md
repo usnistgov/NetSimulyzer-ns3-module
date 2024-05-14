@@ -20,6 +20,7 @@ A flexible 3D visualizer for displaying, debugging, presenting, and understandin
     * [ZIP](#zip)
 * [Documentation](#documentation)
   * [Building the Documentation](#building-the-documentation)
+* [Configuration Options](#configuration-options)
 * [Running the Examples](#running-the-examples)
   * [Application State Trace Example](#application-state-trace-example)
   * [Lena Radio Link Failure](#lena-radio-link-failure)
@@ -314,6 +315,20 @@ make
 
 The built documentation will now be found in `doc/build/[type]`.
 
+# Configuration Options
+To configure the build, any of the below may be passed to the configuration stage of
+ns-3 (`ns3 configure`) with `-- -D[Option1]=ON -D[Option2]=OFF` in the form:
+
+```shell
+./ns3 configure -- -NETSIMULYZER_PRE_NS3_41_ENUM_VALUE=OFF
+```
+
+All of the following are optional
+
+* `NETSIMULYZER_PRE_NS3_41_ENUM_VALUE`: Default `OFF`, set to `ON` to force compatibility with
+`EnumValue` with versions of ns-3 before ns-3.41.
+* `NETSIMULYZER_CRASH_HANDLER`: Default `ON`, set to `OFF` to disable the use of NetSimulyzer crash handler
+that tries to write output in the event of some unusual exit conditions.
 
 # Running the Examples
 Listed below are the commands to run the examples provided with the
