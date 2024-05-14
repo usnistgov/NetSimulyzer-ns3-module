@@ -52,6 +52,7 @@
 #include "ns3/yans-wifi-helper.h"
 
 #include <fstream>
+#include <vector>
 
 #ifdef HAS_NETSIMULYZER
 #include "ns3/netsimulyzer-module.h"
@@ -1717,7 +1718,8 @@ main(int argc, char* argv[])
 
     Experiment experiment;
     WifiMacHelper wifiMac;
-    double averageThroughput, throughputArray[trials];
+    double averageThroughput;
+    std::vector<double> throughputArray(trials);
     for (uint32_t n = nMinStas; n <= nMaxStas; n += nStepSize)
     {
         averageThroughput = 0;
