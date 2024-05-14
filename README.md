@@ -320,7 +320,7 @@ To configure the build, any of the below may be passed to the configuration stag
 ns-3 (`ns3 configure`) with `-- -D[Option1]=ON -D[Option2]=OFF` in the form:
 
 ```shell
-./ns3 configure -- -NETSIMULYZER_PRE_NS3_41_ENUM_VALUE=OFF
+./ns3 configure -- -DNETSIMULYZER_PRE_NS3_41_ENUM_VALUE=OFF
 ```
 
 All of the following are optional
