@@ -40,6 +40,24 @@
 
 #include <cstdint>
 
+namespace
+{
+ns3::netsimulyzer::Color3
+NextLogicalLinkColor()
+{
+    using namespace ns3::netsimulyzer;
+    static auto colorIter = COLOR_PALETTE.begin();
+
+    if (colorIter == COLOR_PALETTE.end())
+        colorIter = COLOR_PALETTE.begin();
+
+    const auto& returnColor = *colorIter;
+    colorIter++;
+
+    return returnColor.Get();
+}
+} // namespace
+
 namespace ns3
 {
 NS_LOG_COMPONENT_DEFINE("LogicalLink");
@@ -48,25 +66,50 @@ namespace netsimulyzer
 {
 NS_OBJECT_ENSURE_REGISTERED(LogicalLink);
 
-LogicalLink::LogicalLink(Ptr<Orchestrator> orchestrator,
-                         Ptr<const Node> a,
-                         Ptr<const Node> b)
+LogicalLink::LogicalLink(Ptr<Orchestrator> orchestrator, Ptr<const Node> a, Ptr<const Node> b)
     : m_orchestrator{orchestrator},
       m_id{orchestrator->Register({this})},
-      m_nodes{a->GetId(), b->GetId()}
+      m_nodes{a->GetId(), b->GetId()},
+      m_constructorColor{NextLogicalLinkColor()}
 {
-    // Handles if we're generated after the simualtion starts
+    // Handles if we're generated after the simulation starts
+    m_orchestrator->CreateLink(*this);
+}
+
+LogicalLink::LogicalLink(Ptr<Orchestrator> orchestrator,
+                         Ptr<const Node> a,
+                         Ptr<const Node> b,
+                         const Color3 color)
+    : m_orchestrator{orchestrator},
+      m_id{orchestrator->Register({this})},
+      m_nodes{a->GetId(), b->GetId()},
+      m_constructorColor{color}
+
+{
+    // Handles if we're generated after the simulation starts
+    m_orchestrator->CreateLink(*this);
+}
+
+LogicalLink::LogicalLink(Ptr<Orchestrator> orchestrator, uint32_t nodeIdA, uint32_t nodeIdB)
+    : m_orchestrator{orchestrator},
+      m_id{orchestrator->Register({this})},
+      m_nodes{nodeIdA, nodeIdB},
+      m_constructorColor{NextLogicalLinkColor()}
+{
+    // Handles if we're generated after the simulation starts
     m_orchestrator->CreateLink(*this);
 }
 
 LogicalLink::LogicalLink(Ptr<Orchestrator> orchestrator,
                          uint32_t nodeIdA,
-                         uint32_t nodeIdB)
+                         uint32_t nodeIdB,
+                         const Color3 color)
     : m_orchestrator{orchestrator},
       m_id{orchestrator->Register({this})},
-      m_nodes{nodeIdA, nodeIdB}
+      m_nodes{nodeIdA, nodeIdB},
+      m_constructorColor{color}
 {
-    // Handles if we're generated after the simualtion starts
+    // Handles if we're generated after the simulation starts
     m_orchestrator->CreateLink(*this);
 }
 
@@ -86,9 +129,9 @@ LogicalLink::GetTypeId()
             .AddAttribute("Color",
                           "Color to tint the rendered link "
                           "If unset, uses the next color in the palette",
-                          OptionalValue<Color3>{},
-                          MakeOptionalAccessor<Color3>(&LogicalLink::GetColor, &LogicalLink::SetColor),
-                          MakeOptionalChecker<Color3>())
+                          Color3Value{},
+                          MakeColor3Accessor(&LogicalLink::GetColor, &LogicalLink::SetColor),
+                          MakeColor3Checker())
             .AddAttribute("Active",
                           "Flag to display this link in the application and list "
                           "it as 'Active'",
@@ -225,22 +268,36 @@ LogicalLink::SetActive(bool value)
     m_orchestrator->UpdateLink(*this);
 }
 
-const std::optional<Color3>&
+Color3
 LogicalLink::GetColor() const
 {
     NS_LOG_FUNCTION(this);
     return m_color;
 }
 
-void LogicalLink::SetColor(std::optional<Color3> value) {
-  if (m_ignoreSets)
-    return;
-  NS_LOG_FUNCTION(this);
-  if (value == m_color)
-    return;
+void
+LogicalLink::SetColor(const Color3 value)
+{
+    NS_LOG_FUNCTION(this);
+    if (m_ignoreSets)
+        return;
 
-  m_color = value;
-  m_orchestrator->UpdateLink(*this);
+    if (value == m_color)
+        return;
+
+    m_color = value;
+    m_orchestrator->UpdateLink(*this);
+}
+
+void
+LogicalLink::NotifyConstructionCompleted()
+{
+    // Annoying hack to allow the color to be set by the constructor.
+    // Since ns-3 will supply a default value and overwrite members
+    // which are tied to attributes after the constructor has
+    // returned
+    m_color = m_constructorColor;
+    Object::NotifyConstructionCompleted();
 }
 
 } // namespace netsimulyzer

@@ -1,5 +1,5 @@
 /*
-* NIST-developed software is provided by NIST as a public service. You may use,
+ * NIST-developed software is provided by NIST as a public service. You may use,
  * copy and distribute copies of the software in any medium, provided that you
  * keep intact this entire notice. You may improve,modify and create derivative
  * works of the software or any portion of the software, and you may copy and
@@ -32,6 +32,8 @@
  */
 
 #include "logical-link-helper.h"
+
+#include <ns3/color.h>
 #include <ns3/logical-link.h>
 #include <ns3/pointer.h>
 
@@ -42,7 +44,9 @@ NS_LOG_COMPONENT_DEFINE("LogicalLinkHelper");
 namespace netsimulyzer
 {
 LogicalLinkHelper::LogicalLinkHelper(Ptr<Orchestrator> orchestrator)
-    : m_orchestrator{orchestrator} {}
+    : m_orchestrator{orchestrator}
+{
+}
 
 void
 LogicalLinkHelper::Set(const std::string& name, const AttributeValue& v)
@@ -61,44 +65,110 @@ LogicalLinkHelper::Set(const std::string& name, const AttributeValue& v)
     }
     if (auto attrValue = info.checker->CreateValidValue(v); !attrValue)
     {
-        NS_FATAL_ERROR("Invalid value for attribute set (" << name << ") on " << m_linkTid.GetName());
+        NS_FATAL_ERROR("Invalid value for attribute set (" << name << ") on "
+                                                           << m_linkTid.GetName());
         return;
     }
 
     m_attributes[name] = v.Copy();
 }
 
-Ptr<LogicalLink> LogicalLinkHelper::Link(const NodeContainer &twoNodes) const{
+Ptr<LogicalLink>
+LogicalLinkHelper::Link(const NodeContainer& twoNodes) const
+{
     NS_LOG_FUNCTION(this << &twoNodes);
-    NS_ABORT_MSG_IF(twoNodes.GetN() < 2,
-                    "At least two Nodes required to make a LogicalLink");
+    NS_ABORT_MSG_IF(twoNodes.GetN() < 2, "At least two Nodes required to make a LogicalLink");
 
-    if (twoNodes.GetN() > 2) {
-        NS_LOG_WARN(
-            "Number of Nodes passed to `Link` > 2, only linking the first 2");
+    if (twoNodes.GetN() > 2)
+    {
+        NS_LOG_WARN("Number of Nodes passed to `Link` > 2, only linking the first 2");
     }
 
     return Link(twoNodes.Get(0), twoNodes.Get(1));
 }
 
-Ptr<LogicalLink> LogicalLinkHelper::Link(Ptr<Node> node1, Ptr<Node> node2) const{
-  NS_LOG_FUNCTION(this << node1 << node2);
-    return Link(node1->GetId(), node2->GetId());
+Ptr<LogicalLink>
+LogicalLinkHelper::Link(const NodeContainer& twoNodes, const Color3 color) const
+{
+    NS_LOG_FUNCTION(this << &twoNodes);
+    NS_ABORT_MSG_IF(twoNodes.GetN() < 2, "At least two Nodes required to make a LogicalLink");
 
+    if (twoNodes.GetN() > 2)
+    {
+        NS_LOG_WARN("Number of Nodes passed to `Link` > 2, only linking the first 2");
+    }
+
+    return Link(twoNodes.Get(0), twoNodes.Get(1), color);
 }
 
-Ptr<LogicalLink> LogicalLinkHelper::Link(uint32_t node1, uint32_t node2) const {
+Ptr<LogicalLink>
+LogicalLinkHelper::Link(const Ptr<Node> node1, const Ptr<Node> node2) const
+{
+    NS_LOG_FUNCTION(this << node1 << node2);
+    return Link(node1->GetId(), node2->GetId());
+}
+
+Ptr<LogicalLink>
+LogicalLinkHelper::Link(const Ptr<Node> node1, const Ptr<Node> node2, const Color3 color) const
+{
+    NS_LOG_FUNCTION(this << node1 << node2 << color);
+    return Link(node1->GetId(), node2->GetId(), color);
+}
+
+Ptr<LogicalLink>
+LogicalLinkHelper::Link(uint32_t node1, uint32_t node2) const
+{
     return Create(m_orchestrator, node1, node2);
 }
 
-Ptr<LogicalLink> LogicalLinkHelper::Create(Ptr<Orchestrator> orchestrator, uint32_t nodeIdA, uint32_t nodeIdB) const
+Ptr<LogicalLink>
+LogicalLinkHelper::Link(const uint32_t node1, const uint32_t node2, const Color3 color) const
 {
-    auto link = CreateObject<LogicalLink>(orchestrator, nodeIdA, nodeIdB);
+    return Create(m_orchestrator, node1, node2, color);
+}
 
+Ptr<LogicalLink>
+LogicalLinkHelper::Create(Ptr<Orchestrator> orchestrator,
+                          const uint32_t nodeIdA,
+                          const uint32_t nodeIdB) const
+{
+    // If we've got a color, don't advance the palette
+    // by calling the no color constructor
+    if (m_attributes.count("Color") == 1)
+    {
+        const auto color = DynamicCast<Color3Value>(m_attributes.at("Color"))->Get();
+        return Create(orchestrator, nodeIdA, nodeIdB, color);
+    }
+
+    auto link = CreateObject<LogicalLink>(orchestrator, nodeIdA, nodeIdB);
+    // Prevent up from triggering update events
     link->m_ignoreSets = true;
 
-    for (const auto &[name, value] : m_attributes)
+    for (const auto& [name, value] : m_attributes)
     {
+        link->SetAttribute(name, *value);
+    }
+
+    link->m_ignoreSets = false;
+
+    return link;
+}
+
+Ptr<LogicalLink>
+LogicalLinkHelper::Create(Ptr<Orchestrator> orchestrator,
+                          uint32_t nodeIdA,
+                          uint32_t nodeIdB,
+                          Color3 color) const
+{
+    auto link = CreateObject<LogicalLink>(orchestrator, nodeIdA, nodeIdB, color);
+    // Prevent up from triggering update events
+    link->m_ignoreSets = true;
+
+    for (const auto& [name, value] : m_attributes)
+    {
+        // Handled above
+        if (name == "Color")
+            continue;
         link->SetAttribute(name, *value);
     }
 

@@ -34,11 +34,12 @@
 #ifndef LOGICAL_LINK_H
 #define LOGICAL_LINK_H
 
-#include <ns3/color.h>
+#include "color.h"
+#include "optional.h"
+#include "orchestrator.h"
+
 #include <ns3/node.h>
 #include <ns3/object.h>
-#include <ns3/optional.h>
-#include <ns3/orchestrator.h>
 #include <ns3/ptr.h>
 #include <ns3/type-id.h>
 
@@ -53,6 +54,22 @@ class LogicalLink : public Object
 {
   public:
     /**
+     * Creates a managed LogicalLink. Using the next color in the palette
+     *
+     * This constructor should be used by users
+     *
+     * \param orchestrator
+     * The Orchestrator to register this LogicalLink with
+     *
+     * \param a
+     * The first Node in the link
+     * \param b
+     * The second Node in the link
+     *
+     */
+    LogicalLink(Ptr<Orchestrator> orchestrator, Ptr<const Node> a, Ptr<const Node> b);
+
+    /**
      * Creates a managed LogicalLink.
      *
      * This constructor should be used by users
@@ -61,17 +78,48 @@ class LogicalLink : public Object
      * The Orchestrator to register this LogicalLink with
      *
      * \param a
+     * The first Node in the link
      * \param b
+     * The second Node in the link
+     * \param color
+     * The initial color of the link
      *
-     * \param
      */
-    LogicalLink(Ptr<Orchestrator> orchestrator,
-                Ptr<const Node> a,
-                Ptr<const Node> b);
+    LogicalLink(Ptr<Orchestrator> orchestrator, Ptr<const Node> a, Ptr<const Node> b, Color3 color);
 
-    LogicalLink(Ptr<Orchestrator> orchestrator,
-                uint32_t nodeIdA,
-                uint32_t nodeIdB);
+    /**
+     * Creates a managed LogicalLink. Using the next color in the palette
+     *
+     * This constructor should be used by users
+     *
+     * \param orchestrator
+     * The Orchestrator to register this LogicalLink with
+     *
+     * \param nodeIdA
+     * The first Node in the link
+     * \param nodeIdB
+     * The second Node in the link
+     *
+     */
+    LogicalLink(Ptr<Orchestrator> orchestrator, uint32_t nodeIdA, uint32_t nodeIdB);
+
+    /**
+     * Creates a managed LogicalLink.
+     *
+     * This constructor should be used by users
+     *
+     * \param orchestrator
+     * The Orchestrator to register this LogicalLink with
+     *
+     * \param nodeIdA
+     * The first Node in the link
+     * \param nodeIdB
+     * The second Node in the link
+     * \param color
+     * The initial color of the link
+     *
+     */
+    LogicalLink(Ptr<Orchestrator> orchestrator, uint32_t nodeIdA, uint32_t nodeIdB, Color3 color);
 
     /**
      * Get the class TypeId
@@ -102,16 +150,23 @@ class LogicalLink : public Object
     [[nodiscard]] bool IsActive() const;
     void SetActive(bool value);
 
-    [[nodiscard]] const std::optional<Color3>& GetColor() const;
-    void SetColor(std::optional<Color3> value);
+    [[nodiscard]] Color3 GetColor() const;
+    void SetColor(Color3 value);
+
+  protected:
+    void NotifyConstructionCompleted() override;
 
   private:
     bool m_ignoreSets{false};
     Ptr<Orchestrator> m_orchestrator;
     unsigned long m_id;
     bool m_active{true};
-    std::optional<Color3> m_color;
+    Color3 m_color{};
     std::pair<uint32_t, uint32_t> m_nodes{};
+    /**
+     * \see LogicalLink::NotifyConstructionCompleted
+     */
+    Color3 m_constructorColor{};
 
     // Allow access to `m_ignoreSets`
     friend LogicalLinkHelper;

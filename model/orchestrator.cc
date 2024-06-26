@@ -259,21 +259,6 @@ NextTrailColor(void)
     return color;
 }
 
-ns3::netsimulyzer::Color3
-NextLinkColor(void)
-{
-    using namespace ns3::netsimulyzer;
-
-    static auto colorIter = COLOR_PALETTE.begin();
-    const auto& color = colorIter->Get();
-    colorIter++;
-
-    if (colorIter == COLOR_PALETTE.end())
-        colorIter = COLOR_PALETTE.begin();
-
-    return color;
-}
-
 } // namespace
 
 namespace ns3
@@ -596,9 +581,9 @@ Orchestrator::SetupSimulation(void)
         logicalLink->GetAttribute("Id", id);
         element["id"] = id.Get();
 
-        OptionalValue<Color3> color;
+        Color3Value color;
         logicalLink->GetAttribute("Color", color);
-        element["color"] = colorToObject(color.Get().value_or(NextLinkColor()));
+        element["color"] = colorToObject(color.Get());
 
         element["active"] = logicalLink->IsActive();
 
@@ -1573,11 +1558,7 @@ Orchestrator::CreateLink(const LogicalLink& link)
     element["link-id"] = link.GetId();
     element["nodes"] = link.GetNodes();
     element["active"] = link.IsActive();
-
-    if (const auto& maybeColor = link.GetColor())
-    {
-        element["color"] = colorToObject(maybeColor.value());
-    }
+    element["color"] = colorToObject(link.GetColor());
 
     m_document["events"].emplace_back(element);
 }
@@ -1603,11 +1584,7 @@ Orchestrator::UpdateLink(const LogicalLink& link)
     element["link-id"] = link.GetId();
     element["nodes"] = link.GetNodes();
     element["active"] = link.IsActive();
-
-    if (const auto& maybeColor = link.GetColor())
-    {
-        element["color"] = colorToObject(maybeColor.value());
-    }
+    element["color"] = colorToObject(link.GetColor());
 
     m_document["events"].emplace_back(element);
 }
