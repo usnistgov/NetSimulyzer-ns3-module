@@ -72,8 +72,7 @@ LogicalLink::LogicalLink(Ptr<Orchestrator> orchestrator, Ptr<const Node> a, Ptr<
       m_nodes{a->GetId(), b->GetId()},
       m_constructorColor{NextLogicalLinkColor()}
 {
-    // Handles if we're generated after the simulation starts
-    m_orchestrator->CreateLink(*this);
+    // `CreateLink` in `NotifyConstructionCompleted`
 }
 
 LogicalLink::LogicalLink(Ptr<Orchestrator> orchestrator,
@@ -86,8 +85,7 @@ LogicalLink::LogicalLink(Ptr<Orchestrator> orchestrator,
       m_constructorColor{color}
 
 {
-    // Handles if we're generated after the simulation starts
-    m_orchestrator->CreateLink(*this);
+    // `CreateLink` in `NotifyConstructionCompleted`
 }
 
 LogicalLink::LogicalLink(Ptr<Orchestrator> orchestrator, uint32_t nodeIdA, uint32_t nodeIdB)
@@ -96,8 +94,7 @@ LogicalLink::LogicalLink(Ptr<Orchestrator> orchestrator, uint32_t nodeIdA, uint3
       m_nodes{nodeIdA, nodeIdB},
       m_constructorColor{NextLogicalLinkColor()}
 {
-    // Handles if we're generated after the simulation starts
-    m_orchestrator->CreateLink(*this);
+    // `CreateLink` in `NotifyConstructionCompleted`
 }
 
 LogicalLink::LogicalLink(Ptr<Orchestrator> orchestrator,
@@ -298,6 +295,9 @@ LogicalLink::NotifyConstructionCompleted()
     // returned
     m_color = m_constructorColor;
     Object::NotifyConstructionCompleted();
+
+    // Handles if we're generated after the simulation starts
+    m_orchestrator->CreateLink(*this);
 }
 
 } // namespace netsimulyzer

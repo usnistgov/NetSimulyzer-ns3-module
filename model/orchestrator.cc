@@ -569,9 +569,8 @@ Orchestrator::SetupSimulation(void)
 
         links.emplace_back(element);
     }
-    m_document["links"] = links;
+    // Links appended to in the next section
 
-    auto logicalLinks = nlohmann::json::array();
     for (const auto& logicalLink : m_logicalLinks)
     {
         nlohmann::json element;
@@ -588,11 +587,11 @@ Orchestrator::SetupSimulation(void)
         element["active"] = logicalLink->IsActive();
 
         const auto [first, second] = logicalLink->GetNodes();
-        element["node-ids"] = nlohmann::json::array({first, second});
+        element["nodes"] = nlohmann::json::array({first, second});
 
-        logicalLinks.emplace_back(element);
+        links.emplace_back(element);
     }
-    m_document["logical-links"] = logicalLinks;
+    m_document["links"] = links;
 
     // Buildings
     auto buildings = nlohmann::json::array();
