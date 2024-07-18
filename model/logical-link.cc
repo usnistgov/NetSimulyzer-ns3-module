@@ -106,8 +106,35 @@ LogicalLink::LogicalLink(Ptr<Orchestrator> orchestrator,
       m_nodes{nodeIdA, nodeIdB},
       m_constructorColor{color}
 {
-    // Handles if we're generated after the simulation starts
-    m_orchestrator->CreateLink(*this);
+    // `CreateLink` in `NotifyConstructionCompleted`
+}
+
+LogicalLink::LogicalLink(const Ptr<Orchestrator>& orchestrator,
+                         const uint32_t nodeIdA,
+                         const uint32_t nodeIdB,
+                         const std::unordered_map<std::string, Ptr<AttributeValue>>& attributes)
+    : m_orchestrator{orchestrator},
+      m_id{orchestrator->Register({this})},
+      m_nodes{nodeIdA, nodeIdB},
+      m_constructorAttributes{attributes}
+{
+    // see: `NotifyConstructionCompleted()`
+    // for the attribute values
+}
+
+LogicalLink::LogicalLink(const Ptr<Orchestrator>& orchestrator,
+                         const uint32_t nodeIdA,
+                         const uint32_t nodeIdB,
+                         const Color3 color,
+                         const std::unordered_map<std::string, Ptr<AttributeValue>>& attributes)
+    : m_orchestrator{orchestrator},
+      m_id{orchestrator->Register({this})},
+      m_nodes{nodeIdA, nodeIdB},
+      m_constructorColor{color},
+      m_constructorAttributes{attributes}
+{
+    // see: `NotifyConstructionCompleted()`
+    // for the attribute values
 }
 
 TypeId
@@ -288,12 +315,23 @@ LogicalLink::SetColor(const Color3 value)
 
 void
 LogicalLink::NotifyConstructionCompleted()
-{
+{link-c
+    m_ignoreSets = true;
     // Annoying hack to allow the color to be set by the constructor.
     // Since ns-3 will supply a default value and overwrite members
     // which are tied to attributes after the constructor has
     // returned
     m_color = m_constructorColor;
+
+    for (const auto& [name, value] : m_constructorAttributes)
+    {
+        // In the helper, the color attribute is always converted to
+        // the constructor argument, so we don't want the attribute version
+        if (name == "Color")
+            continue;
+        SetAttribute(name, *value);
+    }
+    m_ignoreSets = false;
     Object::NotifyConstructionCompleted();
 
     // Handles if we're generated after the simulation starts

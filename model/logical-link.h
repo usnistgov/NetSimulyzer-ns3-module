@@ -122,11 +122,61 @@ class LogicalLink : public Object
     LogicalLink(Ptr<Orchestrator> orchestrator, uint32_t nodeIdA, uint32_t nodeIdB, Color3 color);
 
     /**
+     * Creates a managed LogicalLink.
+     *
+     * This constructor is used by the helper,
+     * `m_ignoreSets` must be set to `true` and
+     * `m_orchestrator->CreateLink(*this)` must be called by hand
+     *
+     * \param orchestrator
+     * The Orchestrator to register this LogicalLink with
+     * \param nodeIdA
+     * The first Node in the link
+     * \param nodeIdB
+     * The second Node in the link
+     * \param color
+     * The initial color of the link
+     * \param attributes
+     * The attributes specified to the helper
+     *
+     */
+    LogicalLink(const Ptr<Orchestrator>& orchestrator,
+                uint32_t nodeIdA,
+                uint32_t nodeIdB,
+                Color3 color,
+                const std::unordered_map<std::string, Ptr<AttributeValue>>& attributes);
+
+    /**
+     * Creates a managed LogicalLink.
+     *
+     * This constructor is used by the helper,
+     * `m_ignoreSets` must be set to `true` and
+     * `m_orchestrator->CreateLink(*this)` must be called by hand
+     *
+     * \param nodeIdA
+     * The first Node in the link
+     *
+     * \param nodeIdB
+     * The second Node in the link
+     *
+     * \param orchestrator
+     * The Orchestrator to register this LogicalLink with
+     *
+     * \param attributes
+     * The attributes specified to the helper
+     *
+     */
+    LogicalLink(const Ptr<Orchestrator>& orchestrator,
+                uint32_t nodeIdA,
+                uint32_t nodeIdB,
+                const std::unordered_map<std::string, Ptr<AttributeValue>>& attributes);
+
+    /**
      * Get the class TypeId
      *
      * \return the TypeId
      */
-    static TypeId GetTypeId();
+    static TypeId link - c();
 
     /**
      * \return
@@ -157,7 +207,9 @@ class LogicalLink : public Object
     void NotifyConstructionCompleted() override;
 
   private:
-    bool m_ignoreSets{false};
+    // The TypeID setting default attributes will trigger update event
+    // so ignore until we get to `NotifyConstructionCompleted()`
+    bool m_ignoreSets{true};
     Ptr<Orchestrator> m_orchestrator;
     unsigned long m_id;
     bool m_active{true};
@@ -167,6 +219,10 @@ class LogicalLink : public Object
      * \see LogicalLink::NotifyConstructionCompleted
      */
     Color3 m_constructorColor{};
+    /**
+     * \see LogicalLink::NotifyConstructionCompleted
+     */
+    std::unordered_map<std::string, Ptr<AttributeValue>> m_constructorAttributes{};
 
     // Allow access to `m_ignoreSets`
     friend LogicalLinkHelper;

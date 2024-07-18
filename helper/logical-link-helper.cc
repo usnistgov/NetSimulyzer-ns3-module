@@ -102,21 +102,21 @@ LogicalLinkHelper::Link(const NodeContainer& twoNodes, const Color3 color) const
 }
 
 Ptr<LogicalLink>
-LogicalLinkHelper::Link(const Ptr<Node> node1, const Ptr<Node> node2) const
+LogicalLinkHelper::Link(const Ptr<Node>& node1, const Ptr<Node>& node2) const
 {
     NS_LOG_FUNCTION(this << node1 << node2);
     return Link(node1->GetId(), node2->GetId());
 }
 
 Ptr<LogicalLink>
-LogicalLinkHelper::Link(const Ptr<Node> node1, const Ptr<Node> node2, const Color3 color) const
+LogicalLinkHelper::Link(const Ptr<Node>& node1, const Ptr<Node>& node2, const Color3 color) const
 {
     NS_LOG_FUNCTION(this << node1 << node2 << color);
     return Link(node1->GetId(), node2->GetId(), color);
 }
 
 Ptr<LogicalLink>
-LogicalLinkHelper::Link(uint32_t node1, uint32_t node2) const
+LogicalLinkHelper::Link(const uint32_t node1, const uint32_t node2) const
 {
     return Create(m_orchestrator, node1, node2);
 }
@@ -140,41 +140,16 @@ LogicalLinkHelper::Create(Ptr<Orchestrator> orchestrator,
         return Create(orchestrator, nodeIdA, nodeIdB, color);
     }
 
-    auto link = CreateObject<LogicalLink>(orchestrator, nodeIdA, nodeIdB);
-    // Prevent up from triggering update events
-    link->m_ignoreSets = true;
-
-    for (const auto& [name, value] : m_attributes)
-    {
-        link->SetAttribute(name, *value);
-    }
-
-    link->m_ignoreSets = false;
-
-    return link;
+    return CreateObject<LogicalLink>(orchestrator, nodeIdA, nodeIdB, m_attributes);
 }
 
 Ptr<LogicalLink>
 LogicalLinkHelper::Create(Ptr<Orchestrator> orchestrator,
-                          uint32_t nodeIdA,
-                          uint32_t nodeIdB,
-                          Color3 color) const
+                          const uint32_t nodeIdA,
+                          const uint32_t nodeIdB,
+                          const Color3 color) const
 {
-    auto link = CreateObject<LogicalLink>(orchestrator, nodeIdA, nodeIdB, color);
-    // Prevent up from triggering update events
-    link->m_ignoreSets = true;
-
-    for (const auto& [name, value] : m_attributes)
-    {
-        // Handled above
-        if (name == "Color")
-            continue;
-        link->SetAttribute(name, *value);
-    }
-
-    link->m_ignoreSets = false;
-
-    return link;
+    return CreateObject<LogicalLink>(orchestrator, nodeIdA, nodeIdB, color, m_attributes);
 }
 
 } // namespace netsimulyzer

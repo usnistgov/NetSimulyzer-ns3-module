@@ -63,8 +63,8 @@ class LogicalLinkHelper
 
     Ptr<LogicalLink> Link(const NodeContainer& twoNodes) const;
     Ptr<LogicalLink> Link(const NodeContainer& twoNodes, Color3 color) const;
-    Ptr<LogicalLink> Link(Ptr<Node> node1, Ptr<Node> node2) const;
-    Ptr<LogicalLink> Link(Ptr<Node> node1, Ptr<Node> node2, Color3 color) const;
+    Ptr<LogicalLink> Link(const Ptr<Node>& node1, const Ptr<Node>& node2) const;
+    Ptr<LogicalLink> Link(const Ptr<Node>& node1, const Ptr<Node>& node2, Color3 color) const;
     Ptr<LogicalLink> Link(uint32_t node1, uint32_t node2) const;
     Ptr<LogicalLink> Link(uint32_t node1, uint32_t node2, Color3 color) const;
 
