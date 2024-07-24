@@ -410,7 +410,15 @@ Orchestrator::SetupSimulation(void)
 
         StringValue name;
         config->GetAttribute("Name", name);
-        element["name"] = name.Get();
+        if (name.Get().empty())
+        {
+            element["name"] = "Node: " + std::to_string(nodeId);
+        }
+        else
+        {
+            element["name"] = name.Get();
+        }
+
 
         BooleanValue labelEnabled;
         config->GetAttribute("EnableLabel", labelEnabled);

@@ -128,7 +128,7 @@ NodeConfiguration::GetTypeId(void)
             .AddConstructor<NodeConfiguration>()
             .AddAttribute("Name",
                           "Name for this Node",
-                          StringValue("Node"),
+                          StringValue(""),
                           MakeStringAccessor(&NodeConfiguration::m_name),
                           MakeStringChecker())
             .AddAttribute("EnableLabel",
