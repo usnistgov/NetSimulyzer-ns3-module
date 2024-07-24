@@ -315,7 +315,7 @@ LogicalLink::SetColor(const Color3 value)
 
 void
 LogicalLink::NotifyConstructionCompleted()
-{link-c
+{
     m_ignoreSets = true;
     // Annoying hack to allow the color to be set by the constructor.
     // Since ns-3 will supply a default value and overwrite members

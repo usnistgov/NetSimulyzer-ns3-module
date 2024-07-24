@@ -176,7 +176,7 @@ class LogicalLink : public Object
      *
      * \return the TypeId
      */
-    static TypeId link - c();
+    static TypeId GetTypeId();
 
     /**
      * \return
