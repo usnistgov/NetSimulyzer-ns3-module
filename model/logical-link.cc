@@ -35,6 +35,7 @@
 #include "logical-link.h"
 
 #include <ns3/boolean.h>
+#include <ns3/double.h>
 #include <ns3/pointer.h>
 #include <ns3/uinteger.h>
 
@@ -162,6 +163,11 @@ LogicalLink::GetTypeId()
                           BooleanValue(true),
                           MakeBooleanAccessor(&LogicalLink::IsActive, &LogicalLink::SetActive),
                           MakeBooleanChecker())
+            .AddAttribute("Diameter",
+                          "Diameter of the link cylinder shown in the application",
+                          DoubleValue(0.75),
+                          MakeDoubleAccessor(&LogicalLink::GetDiameter, &LogicalLink::SetDiameter),
+                          MakeDoubleChecker<double>())
             .AddAttribute("Orchestrator",
                           "Orchestrator that manages this Logical Link",
                           TypeId::ATTR_GET,
@@ -190,25 +196,14 @@ void
 LogicalLink::SetNodes(Ptr<Node> node1, Ptr<Node> node2)
 {
     NS_LOG_FUNCTION(this);
-    const auto newNodes = std::make_pair(node1->GetId(), node2->GetId());
-    if (newNodes == m_nodes)
-        return;
-
-    m_nodes = newNodes;
-    m_orchestrator->UpdateLink(*this);
+    SetNodes(std::make_pair(node1->GetId(), node2->GetId()));
 }
 
 void
 LogicalLink::SetNodes(uint32_t node1, uint32_t node2)
 {
     NS_LOG_FUNCTION(this);
-    const auto newNodes = std::make_pair(node1, node2);
-
-    if (newNodes == m_nodes)
-        return;
-
-    m_nodes = newNodes;
-    m_orchestrator->UpdateLink(*this);
+    SetNodes(std::make_pair(node1, node2));
 }
 
 void
@@ -216,13 +211,6 @@ LogicalLink::SetNodes(const std::pair<Ptr<Node>, Ptr<Node>>& nodes)
 {
     NS_LOG_FUNCTION(this << nodes.first << nodes.second);
     SetNodes(std::make_pair(nodes.first->GetId(), nodes.second->GetId()));
-
-    const auto newNodes = std::make_pair(nodes.first->GetId(), nodes.second->GetId());
-    if (newNodes == m_nodes)
-        return;
-
-    m_nodes = newNodes;
-    m_orchestrator->UpdateLink(*this);
 }
 
 void
@@ -233,6 +221,10 @@ LogicalLink::SetNodes(const std::pair<uint32_t, uint32_t>& nodes)
         return;
 
     m_nodes = nodes;
+
+    if (m_ignoreSets)
+        return;
+
     m_orchestrator->UpdateLink(*this);
 }
 
@@ -283,12 +275,16 @@ LogicalLink::IsActive() const
 }
 
 void
-LogicalLink::SetActive(bool value)
+LogicalLink::SetActive(const bool value)
 {
+    NS_LOG_FUNCTION(this);
+    if (m_active == value)
+        return;
+
+    m_active = value;
+
     if (m_ignoreSets)
         return;
-    NS_LOG_FUNCTION(this);
-    m_active = value;
     m_orchestrator->UpdateLink(*this);
 }
 
@@ -303,13 +299,37 @@ void
 LogicalLink::SetColor(const Color3 value)
 {
     NS_LOG_FUNCTION(this);
-    if (m_ignoreSets)
-        return;
 
     if (value == m_color)
         return;
 
     m_color = value;
+
+    if (m_ignoreSets)
+        return;
+
+    m_orchestrator->UpdateLink(*this);
+}
+
+double
+LogicalLink::GetDiameter() const
+{
+    return m_diameter;
+}
+
+void
+LogicalLink::SetDiameter(const double value)
+{
+    NS_LOG_FUNCTION(this);
+
+    if (value == m_diameter)
+        return;
+
+    m_diameter = value;
+
+    if (m_ignoreSets)
+        return;
+
     m_orchestrator->UpdateLink(*this);
 }
 

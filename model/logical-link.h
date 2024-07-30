@@ -203,6 +203,9 @@ class LogicalLink : public Object
     [[nodiscard]] Color3 GetColor() const;
     void SetColor(Color3 value);
 
+    [[nodiscard]] double GetDiameter() const;
+    void SetDiameter(double value);
+
   protected:
     void NotifyConstructionCompleted() override;
 
@@ -214,6 +217,7 @@ class LogicalLink : public Object
     unsigned long m_id;
     bool m_active{true};
     Color3 m_color{};
+    double m_diameter{}; // Initialized by attribute "Diameter"
     std::pair<uint32_t, uint32_t> m_nodes{};
     /**
      * \see LogicalLink::NotifyConstructionCompleted

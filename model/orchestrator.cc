@@ -285,7 +285,6 @@ Orchestrator::Orchestrator(const std::string& output_path)
     Init();
 }
 
-
 Orchestrator::Orchestrator(Orchestrator::MemoryOutputMode mode)
 {
     Init();
@@ -418,7 +417,6 @@ Orchestrator::SetupSimulation(void)
         {
             element["name"] = name.Get();
         }
-
 
         BooleanValue labelEnabled;
         config->GetAttribute("EnableLabel", labelEnabled);
@@ -593,6 +591,8 @@ Orchestrator::SetupSimulation(void)
         element["color"] = colorToObject(color.Get());
 
         element["active"] = logicalLink->IsActive();
+
+        element["diameter"] = logicalLink->GetDiameter();
 
         const auto [first, second] = logicalLink->GetNodes();
         element["nodes"] = nlohmann::json::array({first, second});
@@ -1566,6 +1566,7 @@ Orchestrator::CreateLink(const LogicalLink& link)
     element["nodes"] = link.GetNodes();
     element["active"] = link.IsActive();
     element["color"] = colorToObject(link.GetColor());
+    element["diameter"] = link.GetDiameter();
 
     m_document["events"].emplace_back(element);
 }
@@ -1592,6 +1593,7 @@ Orchestrator::UpdateLink(const LogicalLink& link)
     element["nodes"] = link.GetNodes();
     element["active"] = link.IsActive();
     element["color"] = colorToObject(link.GetColor());
+    element["diameter"] = link.GetDiameter();
 
     m_document["events"].emplace_back(element);
 }
