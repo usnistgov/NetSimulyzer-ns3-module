@@ -150,7 +150,7 @@ LogicalLink::GetTypeId()
                           TypeId::ATTR_GET,
                           UintegerValue(0u),
                           MakeUintegerAccessor(&LogicalLink::m_id),
-                          MakeUintegerChecker<unsigned long>())
+                          MakeUintegerChecker<uint64_t>())
             .AddAttribute("Color",
                           "Color to tint the rendered link "
                           "If unset, uses the next color in the palette",

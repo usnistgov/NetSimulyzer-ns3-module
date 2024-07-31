@@ -43,6 +43,7 @@
 #include <ns3/ptr.h>
 #include <ns3/type-id.h>
 
+#include <cstdint>
 #include <optional>
 
 namespace ns3::netsimulyzer
@@ -214,7 +215,7 @@ class LogicalLink : public Object
     // so ignore until we get to `NotifyConstructionCompleted()`
     bool m_ignoreSets{true};
     Ptr<Orchestrator> m_orchestrator;
-    unsigned long m_id;
+    uint64_t m_id;
     bool m_active{true};
     Color3 m_color{};
     double m_diameter{}; // Initialized by attribute "Diameter"

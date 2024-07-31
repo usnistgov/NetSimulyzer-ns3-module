@@ -326,7 +326,7 @@ class Orchestrator : public ns3::Object
      * \return
      * The ID to use for the new Logical Link
      */
-    unsigned long Register(Ptr<LogicalLink> logicaLink);
+    uint64_t Register(Ptr<LogicalLink> logicaLink);
 
     /**
      * \brief Flag a series to be tracked by this Orchestrator.

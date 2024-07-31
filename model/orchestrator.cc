@@ -1181,7 +1181,7 @@ Orchestrator::Register(Ptr<BuildingConfiguration> buildingConfiguration)
     m_buildings.emplace_back(buildingConfiguration);
 }
 
-unsigned long
+uint64_t
 Orchestrator::Register(Ptr<LogicalLink> logicaLink)
 {
     NS_LOG_FUNCTION(this << logicaLink);
