@@ -78,5 +78,8 @@ def build(bld):
         'model/throughput-sink.h'
         ]
 
-    if bld.env.ENABLE_EXAMPLES:
-        bld.recurse('examples')
+    # Examples are not enabled for waf versions of
+    # ns-3, since the API has changed so much
+    # If you want to try them, uncomment the lines below
+    # if bld.env.ENABLE_EXAMPLES:
+    #     bld.recurse('examples')
