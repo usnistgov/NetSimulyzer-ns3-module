@@ -44,8 +44,8 @@ Link this module & run your scenario to see it in 3D.
 # Requirements
 * A C++ 17 compliant compiler
     * Minimum supported compilers:
-        * GCC 7.3.0
-        * Clang 6.0.0
+        * GCC 10.5.0
+        * Clang 12.0.0
 
 # Installation
 ## Clone (Recommended)
