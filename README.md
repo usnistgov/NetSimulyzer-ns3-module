@@ -398,6 +398,42 @@ containerNodes.Create (2);
 nodeHelper.Install (containerNodes);
 ```
 
+### Logical Links Between Nodes
+To show that two Nodes are 'linked' in some way, create a `LogicalLinkHelper`
+and pass in the two Nodes to link
+
+![Application Screenshot](doc/source/_static/logical-link-example.png)
+
+```c++
+using namespace ns3;
+
+NodeContainer containerNodes;
+containerNodes.Create (2);
+
+// Nodes should be configured by the `NodeHelper` before linking
+netsimulyzer::NodeConfigurationHelper nodeHelper{orchestrator};
+nodeHelper.Set ("Model", netsimulyzer::models::SMARTPHONE_VALUE);
+nodeHelper.Install (containerNodes);
+
+netsimulyzer::LogicalLinkHelper linkHelper{orchestrator};
+linkHelper.Set ("Color", BLUE_VALUE);
+
+// Create a visual link between the Nodes
+auto link = LogicalLinkHelper.Link (containerNodes.Get (0), containerNodes.Get (1));
+
+// Later ...
+
+Simulator::Schedule(/* ... */, [link] () {
+  // Most properties may be changed during the simulation
+  link->SetColor(RED);
+  
+  // To remove the link, call `Deactivate()`
+  link->Deactivate();
+});
+
+
+```
+
 ## Showing Buildings
 Buildings have a similar setup to Nodes, only there is no requirement for a model.
 
