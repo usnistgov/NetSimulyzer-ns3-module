@@ -165,7 +165,7 @@ LogicalLink::GetTypeId()
                           MakeBooleanChecker())
             .AddAttribute("Diameter",
                           "Diameter of the link cylinder shown in the application",
-                          DoubleValue(0.75),
+                          DoubleValue(0.50),
                           MakeDoubleAccessor(&LogicalLink::GetDiameter, &LogicalLink::SetDiameter),
                           MakeDoubleChecker<double>())
             .AddAttribute("Orchestrator",
