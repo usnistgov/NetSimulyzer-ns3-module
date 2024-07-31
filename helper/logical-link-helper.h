@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * NIST-developed software is provided by NIST as a public service. You may use,
  * copy and distribute copies of the software in any medium, provided that you
@@ -31,43 +30,62 @@
  *
  * Author: Evan Black <evan.black@nist.gov>
  */
+#ifndef LOGICAL_LINK_HELPER_H
+#define LOGICAL_LINK_HELPER_H
 
-#ifndef NETSIMULYZER_VERSION_H
-#define NETSIMULYZER_VERSION_H
+#include <ns3/node-container.h>
+#include <ns3/object-factory.h>
+#include <ns3/orchestrator.h>
+#include <ns3/ptr.h>
 
-#include <string>
+#include <unordered_map>
+#include <vector>
 
-namespace ns3::netsimulyzer {
-
-/**
- * The Major version number for the module
- */
-const long VERSION_MAJOR = 1L;
-
-/**
- * The Minor version number for the module
- */
-const long VERSION_MINOR = 0L;
+namespace ns3::netsimulyzer
+{
 
 /**
- * The Patch version number for the module
+ * \ingroup netsimulyzer
+ * \brief Creates logical links between Nodes
  */
-const long VERSION_PATCH = 11L;
+class LogicalLinkHelper
+{
+  public:
+    explicit LogicalLinkHelper(Ptr<Orchestrator> orchestrator);
 
-/**
- * Any additional version qualifiers ("pre" or "release")
- */
-const std::string VERSION_SUFFIX = "release";
+    /**
+     * Sets one of the attributes of underlying model
+     *
+     * \param name Name of attribute to set.
+     * \param v Value of the attribute.
+     */
+    void Set(const std::string& name, const AttributeValue& v);
 
-/**
- * Give the std::string representation of
- * the version with dots separating each component
- *
- * @return
- * A string in the form M_MAJOR.M_MINOR.M_PATCH-M_SUFFIX
- */
-std::string versionString(void);
+    Ptr<LogicalLink> Link(const NodeContainer& twoNodes) const;
+    Ptr<LogicalLink> Link(const NodeContainer& twoNodes, Color3 color) const;
+    Ptr<LogicalLink> Link(const Ptr<Node>& node1, const Ptr<Node>& node2) const;
+    Ptr<LogicalLink> Link(const Ptr<Node>& node1, const Ptr<Node>& node2, Color3 color) const;
+    Ptr<LogicalLink> Link(uint32_t node1, uint32_t node2) const;
+    Ptr<LogicalLink> Link(uint32_t node1, uint32_t node2, Color3 color) const;
+
+  private:
+    const TypeId m_linkTid{LogicalLink::GetTypeId()};
+    std::unordered_map<std::string, Ptr<AttributeValue>> m_attributes;
+
+    /**
+     * Orchestrator that manages the LogicalLinks produced by this helper
+     */
+    Ptr<Orchestrator> m_orchestrator;
+
+    [[nodiscard]] Ptr<LogicalLink> Create(Ptr<Orchestrator> orchestrator,
+                                          uint32_t nodeIdA,
+                                          uint32_t nodeIdB) const;
+
+    [[nodiscard]] Ptr<LogicalLink> Create(Ptr<Orchestrator> orchestrator,
+                                          uint32_t nodeIdA,
+                                          uint32_t nodeIdB,
+                                          Color3 color) const;
+};
 
 } // namespace ns3::netsimulyzer
-
-#endif
+#endif // LOGICAL_LINK_HELPER_H

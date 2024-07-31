@@ -39,6 +39,7 @@
 #include "category-value-series.h"
 #include "decoration.h"
 #include "event-message.h"
+#include "logical-link.h"
 #include "node-configuration.h"
 #include "optional.h"
 #include "rectangular-area.h"
@@ -69,6 +70,7 @@ class Decoration;
 class NodeConfiguration;
 class BuildingConfiguration;
 class LogStream;
+class LogicalLink;
 class SeriesCollection;
 struct XYPoint;
 class XYSeries;
@@ -313,6 +315,20 @@ class Orchestrator : public ns3::Object
     void Register(Ptr<BuildingConfiguration> buildingConfiguration);
 
     /**
+     * \brief Register a Logical Link to be tracked.
+     *
+     * Called by the LogicalLink constructor, Orchestrator setter,
+     * or helper, so users should not call this function directly
+     *
+     * \param logicaLink
+     * The new LogicalLink to register
+     *
+     * \return
+     * The ID to use for the new Logical Link
+     */
+    uint64_t Register(Ptr<LogicalLink> logicaLink);
+
+    /**
      * \brief Flag a series to be tracked by this Orchestrator.
      *
      * This is called by the series constructors by default, so users
@@ -519,6 +535,20 @@ class Orchestrator : public ns3::Object
     void WriteLogMessage(const LogMessageEvent& event);
 
     /**
+     * Writes an event to set up a new logical link
+     *
+     * Users do not need to call this method,
+     * it's called automatically when a new
+     * Logical Link is created
+     *
+     * @param link
+     * The `LogicalLink` to generate the event for
+     */
+    void CreateLink(const LogicalLink& link);
+
+    void UpdateLink(const LogicalLink& link);
+
+    /**
      * Write the document and close the output file.
      * Called when `Simulator::Stop()` is fired,
      * or when the Orchestrator is destroyed
@@ -657,6 +687,11 @@ class Orchestrator : public ns3::Object
      * Collection of tracked Buildings
      */
     std::vector<Ptr<BuildingConfiguration>> m_buildings;
+
+    /**
+     * Collection of tracked LogicalLinks
+     */
+    std::vector<Ptr<LogicalLink>> m_logicalLinks;
 
     /**
      * Collection of tracked XYSeries for this Orchestrator.

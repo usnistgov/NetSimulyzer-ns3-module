@@ -35,12 +35,15 @@
 #ifndef NODE_CONFIGURATION_H
 #define NODE_CONFIGURATION_H
 
-#include <ns3/color.h>
-#include <ns3/event-message.h>
+#include "color.h"
+#include "event-message.h"
+#include "logical-link.h"
+#include "optional.h"
+#include "orchestrator.h"
+
 #include <ns3/mobility-model.h>
+#include <ns3/node.h>
 #include <ns3/object.h>
-#include <ns3/optional.h>
-#include <ns3/orchestrator.h>
 #include <ns3/ptr.h>
 #include <ns3/type-id.h>
 #include <ns3/vector.h>
@@ -52,6 +55,7 @@ namespace ns3::netsimulyzer
 {
 
 class Orchestrator;
+class LogicalLink;
 
 /**
  * Base configuration properties for an individual node
@@ -123,6 +127,18 @@ class NodeConfiguration : public Object
     void Transmit(Time duration, double targetSize, Color3 color = GRAY_30);
 
     /**
+     * Creates a `LogicalLink` between this Node and
+     * `target`. Uses the `Orchestrator` from this Node
+     * to manage
+     *
+     * @param target
+     * The Node to link to
+     *
+     * @return
+     */
+    Ptr<LogicalLink> Link(Ptr<Node> target);
+
+    /**
      * Called by the Orchestrator during a mobility poll.
      *
      * If `UsePositionTolerance`, is enabled this
@@ -166,7 +182,7 @@ class NodeConfiguration : public Object
      *
      * \see netsimulyzer-3D-models.h
      */
-    void SetModel(const std::string &value);
+    void SetModel(const std::string& value);
 
     /**
      *

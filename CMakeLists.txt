@@ -66,6 +66,7 @@ build_lib(
   SOURCE_FILES
     helper/building-configuration-container.cc
     helper/building-configuration-helper.cc
+    helper/logical-link-helper.cc
     helper/node-configuration-container.cc
     helper/node-configuration-helper.cc
     model/node-configuration.cc
@@ -77,6 +78,7 @@ build_lib(
     model/decoration.cc
     model/ecdf-sink.cc
     model/log-stream.cc
+    model/logical-link.cc
     model/netsimulyzer-version.cc
     model/orchestrator.cc
     model/rectangular-area.cc
@@ -88,11 +90,13 @@ build_lib(
   HEADER_FILES
     helper/building-configuration-container.h
     helper/building-configuration-helper.h
+    helper/logical-link-helper.h
     helper/node-configuration-container.h
     helper/node-configuration-helper.h
     library/json.hpp
     model/event-message.h
     model/log-stream.h
+    model/logical-link.h
     model/netsimulyzer-3D-models.h
     model/netsimulyzer-version.h
     model/node-configuration.h

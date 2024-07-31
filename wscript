@@ -19,6 +19,7 @@ def build(bld):
     module.source = [
         'helper/building-configuration-container.cc',
         'helper/building-configuration-helper.cc',
+        'helper/logical-link-helper.cc',
         'helper/node-configuration-container.cc',
         'helper/node-configuration-helper.cc',
         'model/node-configuration.cc',
@@ -30,6 +31,7 @@ def build(bld):
         'model/decoration.cc',
         'model/ecdf-sink.cc',
         'model/log-stream.cc',
+        'model/logical-link.cc',
         'model/netsimulyzer-version.cc',
         'model/orchestrator.cc',
         'model/rectangular-area.cc',
@@ -49,11 +51,13 @@ def build(bld):
     headers.source = [
         'helper/building-configuration-container.h',
         'helper/building-configuration-helper.h',
+        'helper/logical-link-helper.h',
         'helper/node-configuration-container.h',
         'helper/node-configuration-helper.h',
         'library/json.hpp',
         'model/event-message.h',
         'model/log-stream.h',
+        'model/logical-link.h',
         'model/netsimulyzer-3D-models.h',
         'model/netsimulyzer-version.h',
         'model/node-configuration.h',
@@ -74,5 +78,8 @@ def build(bld):
         'model/throughput-sink.h'
         ]
 
-    if bld.env.ENABLE_EXAMPLES:
-        bld.recurse('examples')
+    # Examples are not enabled for waf versions of
+    # ns-3, since the API has changed so much
+    # If you want to try them, uncomment the lines below
+    # if bld.env.ENABLE_EXAMPLES:
+    #     bld.recurse('examples')

@@ -37,6 +37,7 @@
 #include "building-configuration.h"
 #include "color.h"
 #include "log-stream.h"
+#include "logical-link.h"
 #include "netsimulyzer-version.h"
 #include "node-configuration.h"
 #include "optional.h"
@@ -284,7 +285,6 @@ Orchestrator::Orchestrator(const std::string& output_path)
     Init();
 }
 
-
 Orchestrator::Orchestrator(Orchestrator::MemoryOutputMode mode)
 {
     Init();
@@ -409,7 +409,14 @@ Orchestrator::SetupSimulation(void)
 
         StringValue name;
         config->GetAttribute("Name", name);
-        element["name"] = name.Get();
+        if (name.Get().empty())
+        {
+            element["name"] = "Node: " + std::to_string(nodeId);
+        }
+        else
+        {
+            element["name"] = name.Get();
+        }
 
         BooleanValue labelEnabled;
         config->GetAttribute("EnableLabel", labelEnabled);
@@ -565,6 +572,30 @@ Orchestrator::SetupSimulation(void)
         linkNodes.emplace_back(key);
         linkNodes.emplace_back(value);
         element["node-ids"] = linkNodes;
+
+        links.emplace_back(element);
+    }
+    // Links appended to in the next section
+
+    for (const auto& logicalLink : m_logicalLinks)
+    {
+        nlohmann::json element;
+        element["type"] = "logical";
+
+        UintegerValue id;
+        logicalLink->GetAttribute("Id", id);
+        element["id"] = id.Get();
+
+        Color3Value color;
+        logicalLink->GetAttribute("Color", color);
+        element["color"] = colorToObject(color.Get());
+
+        element["active"] = logicalLink->IsActive();
+
+        element["diameter"] = logicalLink->GetDiameter();
+
+        const auto [first, second] = logicalLink->GetNodes();
+        element["nodes"] = nlohmann::json::array({first, second});
 
         links.emplace_back(element);
     }
@@ -1150,6 +1181,14 @@ Orchestrator::Register(Ptr<BuildingConfiguration> buildingConfiguration)
     m_buildings.emplace_back(buildingConfiguration);
 }
 
+uint64_t
+Orchestrator::Register(Ptr<LogicalLink> logicaLink)
+{
+    NS_LOG_FUNCTION(this << logicaLink);
+    m_logicalLinks.emplace_back(logicaLink);
+    return m_logicalLinks.size();
+}
+
 uint32_t
 Orchestrator::Register(Ptr<LogStream> stream)
 {
@@ -1501,6 +1540,60 @@ Orchestrator::WriteLogMessage(const LogMessageEvent& event)
     element["type"] = "stream-append";
     element["stream-id"] = event.id;
     element["data"] = event.message;
+
+    m_document["events"].emplace_back(element);
+}
+
+void
+Orchestrator::CreateLink(const LogicalLink& link)
+{
+    NS_LOG_FUNCTION(this);
+    if (!m_simulationStarted)
+    {
+        NS_LOG_DEBUG("CreateLink() Activated before `SetupSimulation()`, ignoring ");
+        return;
+    }
+    else if (Simulator::Now() < m_startTime || Simulator::Now() > m_stopTime)
+    {
+        NS_LOG_DEBUG("CreateLink() Activated outside (StartTime, StopTime), Ignoring");
+        return;
+    }
+
+    nlohmann::json element;
+    element["nanoseconds"] = Simulator::Now().GetNanoSeconds();
+    element["type"] = "logical-link-create";
+    element["link-id"] = link.GetId();
+    element["nodes"] = link.GetNodes();
+    element["active"] = link.IsActive();
+    element["color"] = colorToObject(link.GetColor());
+    element["diameter"] = link.GetDiameter();
+
+    m_document["events"].emplace_back(element);
+}
+
+void
+Orchestrator::UpdateLink(const LogicalLink& link)
+{
+    NS_LOG_FUNCTION(this);
+    if (!m_simulationStarted)
+    {
+        NS_LOG_DEBUG("UpdateLink() Activated before `SetupSimulation()`, ignoring ");
+        return;
+    }
+    else if (Simulator::Now() < m_startTime || Simulator::Now() > m_stopTime)
+    {
+        NS_LOG_DEBUG("UpdateLink() Activated outside (StartTime, StopTime), Ignoring");
+        return;
+    }
+
+    nlohmann::json element;
+    element["nanoseconds"] = Simulator::Now().GetNanoSeconds();
+    element["type"] = "logical-link-update";
+    element["link-id"] = link.GetId();
+    element["nodes"] = link.GetNodes();
+    element["active"] = link.IsActive();
+    element["color"] = colorToObject(link.GetColor());
+    element["diameter"] = link.GetDiameter();
 
     m_document["events"].emplace_back(element);
 }

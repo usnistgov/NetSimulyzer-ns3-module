@@ -361,7 +361,7 @@ void TestCaseNodeTransmitEvent::DoRun()
     const auto transmitColor = RED;
 
     const auto eventTime = MilliSeconds(25UL);
-    Simulator::Schedule(eventTime, [nodeConfig, transmitDuration, transmitSize, transmitColor]() {
+    Simulator::Schedule(eventTime, [nodeConfig, transmitDuration, transmitColor]() {
         nodeConfig->Transmit(transmitDuration, transmitSize, transmitColor);
     });
 
