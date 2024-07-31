@@ -402,7 +402,7 @@ nodeHelper.Install (containerNodes);
 To show that two Nodes are 'linked' in some way, create a `LogicalLinkHelper`
 and pass in the two Nodes to link
 
-![Application Screenshot](doc/source/_static/logical-link-example.png)
+![Screenshot of two Nodes with a blue line between them](doc/source/_static/logical-link-example.png)
 
 ```c++
 using namespace ns3;
