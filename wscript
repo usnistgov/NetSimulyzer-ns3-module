@@ -19,6 +19,7 @@ def build(bld):
     module.source = [
         'helper/building-configuration-container.cc',
         'helper/building-configuration-helper.cc',
+        'helper/logical-link-helper.cc',
         'helper/node-configuration-container.cc',
         'helper/node-configuration-helper.cc',
         'model/node-configuration.cc',
@@ -50,6 +51,7 @@ def build(bld):
     headers.source = [
         'helper/building-configuration-container.h',
         'helper/building-configuration-helper.h',
+        'helper/logical-link-helper.h',
         'helper/node-configuration-container.h',
         'helper/node-configuration-helper.h',
         'library/json.hpp',
