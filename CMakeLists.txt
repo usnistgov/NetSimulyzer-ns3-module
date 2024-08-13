@@ -64,6 +64,7 @@ endif ()
 build_lib(
   LIBNAME netsimulyzer
   SOURCE_FILES
+    helper/area-helper.cc
     helper/building-configuration-container.cc
     helper/building-configuration-helper.cc
     helper/logical-link-helper.cc
@@ -88,6 +89,7 @@ build_lib(
     model/xy-series.cc
     model/throughput-sink.cc
   HEADER_FILES
+    helper/area-helper.h
     helper/building-configuration-container.h
     helper/building-configuration-helper.h
     helper/logical-link-helper.h

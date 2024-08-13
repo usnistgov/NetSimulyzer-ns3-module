@@ -17,6 +17,7 @@ def build(bld):
     module = bld.create_ns3_module('netsimulyzer', ['buildings', 'core', 'network', 'mobility', 'point-to-point'])
 
     module.source = [
+        'helper/area-helper.cc',
         'helper/building-configuration-container.cc',
         'helper/building-configuration-helper.cc',
         'helper/logical-link-helper.cc',
@@ -49,6 +50,7 @@ def build(bld):
     headers = bld(features='ns3header')
     headers.module = 'netsimulyzer'
     headers.source = [
+        'helper/area-helper.h',
         'helper/building-configuration-container.h',
         'helper/building-configuration-helper.h',
         'helper/logical-link-helper.h',
