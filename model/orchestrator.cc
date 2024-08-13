@@ -1270,6 +1270,13 @@ Orchestrator::Commit(XYSeries& series)
 #elif defined(__clang__)
 #pragma clang diagnostic pop
 #endif
+
+    case XYSeries::ConnectionType::StepFloor:
+      element["connection"] = "step-floor";
+      break;
+    case XYSeries::ConnectionType::StepCeiling:
+        element["connection"] = "step-ceiling";
+        break;
     default:
         NS_ABORT_MSG("Unhandled XY Series connection type: " << connection.Get());
         break;

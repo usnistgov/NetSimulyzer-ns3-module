@@ -68,7 +68,9 @@ class XYSeries : public ns3::Object
     {
         None,
         Line,
-        Spline [[deprecated("Spline connection types are no longer supported, use `Line` instead")]]
+        Spline [[deprecated("Spline connection types are no longer supported, use `Line` instead")]],
+        StepFloor,
+        StepCeiling
     };
 
     /**

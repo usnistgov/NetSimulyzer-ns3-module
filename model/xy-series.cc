@@ -108,7 +108,9 @@ MakeEnumAccessor(&XYSeries::m_connection),
                           MakeEnumChecker(
                               XYSeries::ConnectionType::None, "None",
                               XYSeries::ConnectionType::Line, "Line",
-                              XYSeries::ConnectionType::Spline,"Spline") /* Deprecated */)
+                              XYSeries::ConnectionType::Spline, "Spline" /* Deprecated */,
+                              XYSeries::ConnectionType::StepFloor, "StepFloor",
+                              XYSeries::ConnectionType::StepCeiling, "StepCeiling"))
             .AddAttribute("LabelMode",
                           "How the point labels are shown",
                           EnumValue(XYSeries::LabelMode::Hidden),
