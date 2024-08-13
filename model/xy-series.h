@@ -68,7 +68,8 @@ class XYSeries : public ns3::Object
     {
         None,
         Line,
-        Spline [[deprecated("Spline connection types are no longer supported, use `Line` instead")]],
+        Spline
+            [[deprecated("Spline connection types are no longer supported, use `Line` instead")]],
         StepFloor,
         StepCeiling
     };
@@ -80,6 +81,31 @@ class XYSeries : public ns3::Object
     {
         Hidden,
         Shown
+    };
+
+    /**
+     * Possible icons for points
+     */
+    enum PointMode : int
+    {
+        /**
+         * No icon, named to avoid conflict with `ConnectionType::None`
+         */
+        PointNone,
+        Dot,
+        Cross,
+        Plus,
+        Circle,
+        Disk,
+        Square,
+        Diamond,
+        Star,
+        Triangle,
+        TriangleInverted,
+        CrossSquare,
+        PlusSquare,
+        CrossCircle,
+        PlusCircle
     };
 
     /**
@@ -212,6 +238,20 @@ class XYSeries : public ns3::Object
      * The current display mode for the point labels in this series
      */
     LabelMode m_labelMode;
+
+    /**
+     * The icon used to show points for this series
+     */
+    PointMode m_pointMode;
+
+    /**
+     * The color to use for the point icons.
+     * If unspecified, uses `m_color`
+     *
+     * \see m_pointMode
+     * \see m_color
+     */
+    std::optional<Color3> m_pointColor;
 
     /**
      * The name to show in visualizer elements & title of the graph

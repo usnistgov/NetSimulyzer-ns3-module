@@ -1272,8 +1272,8 @@ Orchestrator::Commit(XYSeries& series)
 #endif
 
     case XYSeries::ConnectionType::StepFloor:
-      element["connection"] = "step-floor";
-      break;
+        element["connection"] = "step-floor";
+        break;
     case XYSeries::ConnectionType::StepCeiling:
         element["connection"] = "step-ceiling";
         break;
@@ -1298,9 +1298,81 @@ Orchestrator::Commit(XYSeries& series)
         break;
     }
 
+#ifndef NETSIMULYZER_PRE_NS3_41_ENUM_VALUE
+    EnumValue<XYSeries::PointMode> pointMode;
+#else
+    EnumValue pointMode;
+#endif
+    series.GetAttribute("PointMode", pointMode);
+
+    switch (pointMode.Get())
+    {
+    case XYSeries::PointNone:
+        // Special case, Scatter plots may not
+        // hide points, since there will be nothing to see...
+        if (connection.Get() == XYSeries::ConnectionType::None)
+            element["point-mode"] = "disk";
+        else
+            element["point-mode"] = "none";
+        break;
+    case XYSeries::Dot:
+        element["point-mode"] = "dot";
+        break;
+    case XYSeries::Cross:
+        element["point-mode"] = "cross";
+        break;
+    case XYSeries::Plus:
+        element["point-mode"] = "plus";
+        break;
+    case XYSeries::Circle:
+        element["point-mode"] = "circle";
+        break;
+    default:
+        std::cerr << "Unhandled XY Series point mode: " << pointMode.Get()
+                  << " in series id: " << id.Get() << " using 'disk'\n";
+        [[fallthrough]];
+    case XYSeries::Disk:
+        element["point-mode"] = "disk";
+        break;
+    case XYSeries::Square:
+        element["point-mode"] = "square";
+        break;
+    case XYSeries::Diamond:
+        element["point-mode"] = "diamond";
+        break;
+    case XYSeries::Star:
+        element["point-mode"] = "star";
+        break;
+    case XYSeries::Triangle:
+        element["point-mode"] = "triangle";
+        break;
+    case XYSeries::TriangleInverted:
+        element["point-mode"] = "triangle-inverted";
+        break;
+    case XYSeries::CrossSquare:
+        element["point-mode"] = "cross-square";
+        break;
+    case XYSeries::PlusSquare:
+        element["point-mode"] = "plus-square";
+        break;
+    case XYSeries::CrossCircle:
+        element["point-mode"] = "cross-circle";
+        break;
+    case XYSeries::PlusCircle:
+        element["point-mode"] = "plus-circle";
+        break;
+    }
+
     Color3Value color;
     series.GetAttribute("Color", color);
     element["color"] = colorToObject(color.Get());
+
+    OptionalValue<Color3> pointColor;
+    series.GetAttribute("PointColor", pointColor);
+    if (pointColor.HasValue())
+        element["point-color"] = colorToObject(pointColor.GetValue());
+    else
+        element["point-color"] = element["color"];
 
     // X Axis
     PointerValue xAxisAttr;
