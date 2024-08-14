@@ -70,6 +70,7 @@ build_lib(
     helper/logical-link-helper.cc
     helper/node-configuration-container.cc
     helper/node-configuration-helper.cc
+    helper/netsim-throughput-charting.cc
     model/node-configuration.cc
     model/building-configuration.cc
     model/category-axis.cc
@@ -95,6 +96,7 @@ build_lib(
     helper/logical-link-helper.h
     helper/node-configuration-container.h
     helper/node-configuration-helper.h
+    helper/netsim-throughput-charting.h
     library/json.hpp
     model/event-message.h
     model/log-stream.h
