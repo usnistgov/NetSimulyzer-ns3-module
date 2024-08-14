@@ -33,6 +33,7 @@
 #include "area-helper.h"
 
 #include <ns3/color.h>
+#include <ns3/double.h>
 #include <ns3/log.h>
 #include <ns3/pointer.h>
 #include <ns3/rectangular-area.h>
@@ -130,5 +131,54 @@ AreaHelper::MakeSquare(Vector2D center, double size)
 
     return area;
 }
+
+Ptr<netsimulyzer::RectangularArea>
+AreaHelper::MakeAreaSurroundingNodes(NodeContainer nodes, double width, double vDiff)
+{
+  if ((nodes.GetN() == 0) || (width < 0) || (vDiff < 0))
+  {
+    return nullptr;
+  }
+
+  double xMin, xMax, yMin, yMax, zMin;
+  Vector pos = nodes.Get(0)->GetObject<MobilityModel>()->GetPosition();
+  xMin = xMax = pos.x;
+  yMin = yMax = pos.y;
+  zMin = pos.z;
+
+  // Calculate bounds for the area
+  for (uint32_t i = 1; i < nodes.GetN(); i++)
+  {
+    pos = nodes.Get(i)->GetObject<MobilityModel>()->GetPosition();
+    xMin = std::min(xMin, pos.x);
+    yMin = std::min(yMin, pos.y);
+    zMin = std::min(zMin, pos.z);
+
+    xMax = std::max(xMax, pos.x);
+    yMax = std::max(yMax, pos.y);
+  }
+  
+  Ptr<netsimulyzer::RectangularArea> area = CreateObject<netsimulyzer::RectangularArea>(m_orchestrator, 
+      ns3::Rectangle{._xMin = xMin-width, ._xMax = xMax+width, ._yMin=yMin-width, ._yMax=yMax+width});
+
+  if (zMin - vDiff < 0)
+  {
+    if (zMin < 0)
+    {  
+      area->SetAttribute("Height", DoubleValue(0));
+    }
+    else
+    {
+      area->SetAttribute("Height", DoubleValue(zMin));
+    }
+  }
+  else
+  {
+    area->SetAttribute("Height", DoubleValue(zMin - vDiff));  
+  }
+
+  return area;
+}
+
 
 } // namespace ns3::netsimulyzer
