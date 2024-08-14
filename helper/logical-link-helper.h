@@ -68,6 +68,22 @@ class LogicalLinkHelper
     Ptr<LogicalLink> Link(uint32_t node1, uint32_t node2) const;
     Ptr<LogicalLink> Link(uint32_t node1, uint32_t node2, Color3 color) const;
 
+    /**
+     * Creates logical links connecting all nodes in group to baseNode
+     * \return the logical links created as a vector (ith link represents link between ith node of group of baseNode)
+     *         empty vector if baseNode = nullptr | #nodes in group = 0
+     */
+    std::vector<Ptr<netsimulyzer::LogicalLink>> 
+    LinkAllToNode(Ptr<Node> baseNode, NodeContainer group);
+    
+    /**
+     * Creates logical links connecting all nodes in group to each other
+     * \return the logical links created as a vector
+     *         empty vector if #nodes in group = 0
+     */
+    std::vector<Ptr<netsimulyzer::LogicalLink>>
+    LinkGroup(NodeContainer group);
+
   private:
     const TypeId m_linkTid{LogicalLink::GetTypeId()};
     std::unordered_map<std::string, Ptr<AttributeValue>> m_attributes;

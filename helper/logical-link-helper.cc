@@ -127,6 +127,43 @@ LogicalLinkHelper::Link(const uint32_t node1, const uint32_t node2, const Color3
     return Create(m_orchestrator, node1, node2, color);
 }
 
+std::vector<Ptr<netsimulyzer::LogicalLink>> 
+LogicalLinkHelper::LinkAllToNode(Ptr<Node> baseNode, NodeContainer group)
+{
+  std::vector<Ptr<netsimulyzer::LogicalLink>> links;
+  
+  if (baseNode != nullptr)
+  {
+    for (uint32_t i = 0; i < group.GetN(); i++)
+    {
+      links.push_back(Link(baseNode, group.Get(i)));
+    }
+  }
+ 
+  return links;
+}
+
+std::vector<Ptr<netsimulyzer::LogicalLink>>
+LogicalLinkHelper::LinkGroup(NodeContainer group)
+{
+  std::vector<Ptr<netsimulyzer::LogicalLink>> links;
+  // link the i'th node with all the other nodes that come after it
+  // thus bound is till GetN() - 1
+  for (uint32_t i = 0; i < group.GetN() - 1; i++)
+  {
+    //the node to be connected to all the other nodes after it
+    Ptr<Node> baseNode = group.Get(i);
+
+    for (uint32_t j = i + 1; j < group.GetN(); j++)
+    {
+      links.push_back(Link(baseNode, group.Get(j)));
+    }
+  }
+
+  return links;
+}
+
+
 Ptr<LogicalLink>
 LogicalLinkHelper::Create(Ptr<Orchestrator> orchestrator,
                           const uint32_t nodeIdA,
