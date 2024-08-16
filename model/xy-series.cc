@@ -101,14 +101,20 @@ XYSeries::GetTypeId(void)
                           "Type of connection to form between points in the series",
                           EnumValue(XYSeries::ConnectionType::Line),
 #ifndef NETSIMULYZER_PRE_NS3_41_ENUM_VALUE
-MakeEnumAccessor<XYSeries::ConnectionType>(&XYSeries::m_connection),
+                          MakeEnumAccessor<XYSeries::ConnectionType>(&XYSeries::m_connection),
 #else
-MakeEnumAccessor(&XYSeries::m_connection),
+                          MakeEnumAccessor(&XYSeries::m_connection),
 #endif
-                          MakeEnumChecker(
-                              XYSeries::ConnectionType::None, "None",
-                              XYSeries::ConnectionType::Line, "Line",
-                              XYSeries::ConnectionType::Spline,"Spline") /* Deprecated */)
+                          MakeEnumChecker(XYSeries::ConnectionType::None,
+                                          "None",
+                                          XYSeries::ConnectionType::Line,
+                                          "Line",
+                                          XYSeries::ConnectionType::Spline,
+                                          "Spline" /* Deprecated */,
+                                          XYSeries::ConnectionType::StepFloor,
+                                          "StepFloor",
+                                          XYSeries::ConnectionType::StepCeiling,
+                                          "StepCeiling"))
             .AddAttribute("LabelMode",
                           "How the point labels are shown",
                           EnumValue(XYSeries::LabelMode::Hidden),
@@ -117,9 +123,54 @@ MakeEnumAccessor(&XYSeries::m_connection),
 #else
                           MakeEnumAccessor(&XYSeries::m_labelMode),
 #endif
-                          MakeEnumChecker(
-                              XYSeries::LabelMode::Hidden,"Hidden",
-                              XYSeries::LabelMode::Shown,"Shown"))
+                          MakeEnumChecker(XYSeries::LabelMode::Hidden,
+                                          "Hidden",
+                                          XYSeries::LabelMode::Shown,
+                                          "Shown"))
+            .AddAttribute("PointMode",
+                          "Icon used to display points in the application",
+                          EnumValue(XYSeries::PointMode::PointNone),
+#ifndef NETSIMULYZER_PRE_NS3_41_ENUM_VALUE
+                          MakeEnumAccessor<XYSeries::PointMode>(&XYSeries::m_pointMode),
+#else
+                          MakeEnumAccessor(&XYSeries::m_pointMode),
+#endif
+                          MakeEnumChecker(XYSeries::PointMode::PointNone,
+                                          "PointNone",
+                                          XYSeries::PointMode::Dot,
+                                          "Dot",
+                                          XYSeries::PointMode::Cross,
+                                          "Cross",
+                                          XYSeries::PointMode::Plus,
+                                          "Plus",
+                                          XYSeries::PointMode::Circle,
+                                          "Circle",
+                                          XYSeries::PointMode::Disk,
+                                          "Disk",
+                                          XYSeries::PointMode::Square,
+                                          "Square",
+                                          XYSeries::PointMode::Diamond,
+                                          "Diamond",
+                                          XYSeries::PointMode::Star,
+                                          "Star",
+                                          XYSeries::PointMode::Triangle,
+                                          "Triangle",
+                                          XYSeries::PointMode::TriangleInverted,
+                                          "TriangleInverted",
+                                          XYSeries::PointMode::CrossSquare,
+                                          "CrossSquare",
+                                          XYSeries::PointMode::PlusSquare,
+                                          "PlusSquare",
+                                          XYSeries::PointMode::CrossCircle,
+                                          "CrossCircle",
+                                          XYSeries::PointMode::PlusCircle,
+                                          "PlusCircle"))
+            .AddAttribute("PointColor",
+                          "The color used to fill in point icons."
+                          " If unspecified, uses `Color`",
+                          OptionalValue<Color3>(),
+                          MakeOptionalAccessor<Color3>(&XYSeries::m_pointColor),
+                          MakeOptionalChecker<Color3>())
             .AddAttribute("Name",
                           "Name to represent this series in visualizer elements",
                           StringValue(),
