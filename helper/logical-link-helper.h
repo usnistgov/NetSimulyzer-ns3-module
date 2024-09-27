@@ -69,20 +69,32 @@ class LogicalLinkHelper
     Ptr<LogicalLink> Link(uint32_t node1, uint32_t node2, Color3 color) const;
 
     /**
-     * Creates logical links connecting all nodes in group to baseNode
-     * \return the logical links created as a vector (ith link represents link between ith node of group of baseNode)
-     *         empty vector if baseNode = nullptr | #nodes in group = 0
+     * Creates logical links connecting all nodes in group to baseNode.
+     *
+     * \param baseNode
+     * The Node to link each Node in `group` to.
+     *
+     * \param group
+     * The collection of Nodes to link to `baseNode`
+     *
+     * \return The collection of `LogicalLink`s from each `group` Node to `baseNode`
+     * in order that they appear in `group`
      */
-    std::vector<Ptr<netsimulyzer::LogicalLink>> 
-    LinkAllToNode(Ptr<Node> baseNode, NodeContainer group);
-    
+    std::vector<Ptr<LogicalLink>> LinkAllToNode(Ptr<Node> baseNode,
+                                                const NodeContainer& group) const;
+
     /**
-     * Creates logical links connecting all nodes in group to each other
-     * \return the logical links created as a vector
-     *         empty vector if #nodes in group = 0
+     * Creates `LogicalLink`s linking each member of `group`
+     * with every other member of `group`
+     *
+     * \param group
+     * The collection of `Node`s to link.
+     * If empty, returns an empty `vector`
+     *
+     * \return The collection of `LogicalLinks` in order with the first `Node` in
+     * the link in order that they appear in `group`.
      */
-    std::vector<Ptr<netsimulyzer::LogicalLink>>
-    LinkGroup(NodeContainer group);
+    std::vector<Ptr<LogicalLink>> LinkGroup(const NodeContainer& group) const;
 
   private:
     const TypeId m_linkTid{LogicalLink::GetTypeId()};
