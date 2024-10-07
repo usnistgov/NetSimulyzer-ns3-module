@@ -130,7 +130,7 @@ build_lib(
         test/test-orchestrator-outputs.cc
 )
 
-target_compile_definitions(libnetsimulyzer PUBLIC HAS_NETSIMULYZER)
+target_compile_definitions(${libnetsimulyzer} PUBLIC HAS_NETSIMULYZER)
 
 option(NETSIMULYZER_CRASH_HANDLER "Adds a crash handler that writes NetSimulyzer output on an irregular exit of the program" ON)
 if (NETSIMULYZER_CRASH_HANDLER)
