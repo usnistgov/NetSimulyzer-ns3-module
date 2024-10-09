@@ -132,53 +132,49 @@ AreaHelper::MakeSquare(Vector2D center, double size)
     return area;
 }
 
-Ptr<netsimulyzer::RectangularArea>
-AreaHelper::MakeAreaSurroundingNodes(NodeContainer nodes, double width, double vDiff)
+Ptr<RectangularArea>
+AreaHelper::MakeAreaSurroundingNodes(const NodeContainer& nodes,
+                                     const double width,
+                                     const double vDiff)
 {
-  if ((nodes.GetN() == 0) || (width < 0) || (vDiff < 0))
-  {
-    return nullptr;
-  }
+    NS_ABORT_MSG_IF(nodes.GetN() == 0, "`nodes` in `MakeAreaSurroundingNodes()` may not be empty");
+    NS_ABORT_MSG_IF(width <= 0, "`width` Must be greater than 0");
+    NS_ABORT_MSG_IF(vDiff <= 0, "`vDiff` Must be greater than 0");
 
-  double xMin, xMax, yMin, yMax, zMin;
-  Vector pos = nodes.Get(0)->GetObject<MobilityModel>()->GetPosition();
-  xMin = xMax = pos.x;
-  yMin = yMax = pos.y;
-  zMin = pos.z;
+    const auto initialPosition = nodes.Get(0)->GetObject<MobilityModel>()->GetPosition();
+    double xMax, yMax;
+    double xMin = xMax = initialPosition.x;
+    double yMin = yMax = initialPosition.y;
+    double zMin = initialPosition.z;
 
-  // Calculate bounds for the area
-  for (uint32_t i = 1; i < nodes.GetN(); i++)
-  {
-    pos = nodes.Get(i)->GetObject<MobilityModel>()->GetPosition();
-    xMin = std::min(xMin, pos.x);
-    yMin = std::min(yMin, pos.y);
-    zMin = std::min(zMin, pos.z);
-
-    xMax = std::max(xMax, pos.x);
-    yMax = std::max(yMax, pos.y);
-  }
-  
-  Ptr<netsimulyzer::RectangularArea> area = CreateObject<netsimulyzer::RectangularArea>(m_orchestrator, 
-      ns3::Rectangle{._xMin = xMin-width, ._xMax = xMax+width, ._yMin=yMin-width, ._yMax=yMax+width});
-
-  if (zMin - vDiff < 0)
-  {
-    if (zMin < 0)
-    {  
-      area->SetAttribute("Height", DoubleValue(0));
-    }
-    else
+    // Calculate bounds for the area
+    for (uint32_t i = 1U; i < nodes.GetN(); i++)
     {
-      area->SetAttribute("Height", DoubleValue(zMin));
+        const auto pos = nodes.Get(i)->GetObject<MobilityModel>()->GetPosition();
+        xMin = std::min(xMin, pos.x);
+        yMin = std::min(yMin, pos.y);
+        zMin = std::min(zMin, pos.z);
+
+        xMax = std::max(xMax, pos.x);
+        yMax = std::max(yMax, pos.y);
     }
-  }
-  else
-  {
-    area->SetAttribute("Height", DoubleValue(zMin - vDiff));  
-  }
 
-  return area;
+    const Rectangle dimensions{xMin - width, xMax + width, yMin - width, yMax + width};
+    auto area = CreateObject<RectangularArea>(m_orchestrator, dimensions);
+
+    // Keep the final height at or above 0.0
+    // since the floor in the application is
+    // roughly there
+    area->SetAttribute("Height", DoubleValue{std::max({zMin - vDiff, zMin, 0.0})});
+
+    for (const auto& [name, value] : m_attributes)
+    {
+        if (name == "Bounds" || name == "Height")
+            continue;
+
+        area->SetAttribute(name, *value);
+    }
+
+    return area;
 }
-
-
 } // namespace ns3::netsimulyzer

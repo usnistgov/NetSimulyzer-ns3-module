@@ -105,18 +105,18 @@ class AreaHelper
     Ptr<RectangularArea> MakeSquare(Vector2D center, double size);
 
     /**
-     * Function to make a rectangular area surrounding the specified nodes
-     * Only to be called for stationary nodes
+     * Function to make a rectangular area surrounding the
+     * current location of the Nodes in `nodes`.
      *
-     * \param orchestrator - the orchestrator used to construct the area
-     * \param width - the minimum distance between the nodes and the area boundaries (default = 2)
-     * \param vDiff - the distance of the area from the lowest node on the zAxis (default = 2)
+     * \param nodes The Nodes to surround with a `RectangularArea`
+     * \param width Minimum distance between the nodes and the area boundaries
+     * \param vDiff Distance of the area from the lowest node on the zAxis
      *
-     * \return Ptr to the RectangularArea
-     *         nullptr if orchestrator = nullptr | #nodes = 0 | width or vDiff < 0
+     * \return A `RectangularArea` surrounding `nodes`
      */
-    Ptr<netsimulyzer::RectangularArea>
-    MakeAreaSurroundingNodes(NodeContainer nodes, double width, double vDiff);
+    Ptr<RectangularArea> MakeAreaSurroundingNodes(const NodeContainer& nodes,
+                                                  double width = 2.0,
+                                                  double vDiff = 2.0);
 
   private:
     const TypeId m_areaTypeId{RectangularArea::GetTypeId()};
