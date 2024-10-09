@@ -70,7 +70,7 @@ build_lib(
     helper/logical-link-helper.cc
     helper/node-configuration-container.cc
     helper/node-configuration-helper.cc
-    helper/netsim-throughput-charting.cc
+    helper/throughput-sink-helper.cc
     model/node-configuration.cc
     model/building-configuration.cc
     model/category-axis.cc
@@ -96,7 +96,7 @@ build_lib(
     helper/logical-link-helper.h
     helper/node-configuration-container.h
     helper/node-configuration-helper.h
-    helper/netsim-throughput-charting.h
+    helper/throughput-sink-helper.h
     library/json.hpp
     model/event-message.h
     model/log-stream.h
@@ -125,6 +125,7 @@ build_lib(
     ${libnetwork}
     ${libmobility}
     ${libpoint-to-point}
+    ${libapplications}
   TEST_SOURCES
         test/test-buildings.cc
         test/netsimulyzer-test-utils.h
