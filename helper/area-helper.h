@@ -104,6 +104,20 @@ class AreaHelper
      */
     Ptr<RectangularArea> MakeSquare(Vector2D center, double size);
 
+    /**
+     * Function to make a rectangular area surrounding the
+     * current location of the Nodes in `nodes`.
+     *
+     * \param nodes The Nodes to surround with a `RectangularArea`
+     * \param width Minimum distance between the nodes and the area boundaries
+     * \param vDiff Distance of the area from the lowest node on the zAxis
+     *
+     * \return A `RectangularArea` surrounding `nodes`
+     */
+    Ptr<RectangularArea> MakeAreaSurroundingNodes(const NodeContainer& nodes,
+                                                  double width = 2.0,
+                                                  double vDiff = 2.0);
+
   private:
     const TypeId m_areaTypeId{RectangularArea::GetTypeId()};
     Ptr<Orchestrator> m_orchestrator;

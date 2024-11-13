@@ -70,6 +70,7 @@ build_lib(
     helper/logical-link-helper.cc
     helper/node-configuration-container.cc
     helper/node-configuration-helper.cc
+    helper/throughput-sink-helper.cc
     model/node-configuration.cc
     model/building-configuration.cc
     model/category-axis.cc
@@ -95,6 +96,7 @@ build_lib(
     helper/logical-link-helper.h
     helper/node-configuration-container.h
     helper/node-configuration-helper.h
+    helper/throughput-sink-helper.h
     library/json.hpp
     model/event-message.h
     model/log-stream.h
@@ -123,6 +125,7 @@ build_lib(
     ${libnetwork}
     ${libmobility}
     ${libpoint-to-point}
+    ${libapplications}
   TEST_SOURCES
         test/test-buildings.cc
         test/netsimulyzer-test-utils.h
@@ -130,7 +133,7 @@ build_lib(
         test/test-orchestrator-outputs.cc
 )
 
-target_compile_definitions(libnetsimulyzer PUBLIC HAS_NETSIMULYZER)
+target_compile_definitions(${libnetsimulyzer} PUBLIC HAS_NETSIMULYZER)
 
 option(NETSIMULYZER_CRASH_HANDLER "Adds a crash handler that writes NetSimulyzer output on an irregular exit of the program" ON)
 if (NETSIMULYZER_CRASH_HANDLER)

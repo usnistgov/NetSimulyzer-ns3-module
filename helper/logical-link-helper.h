@@ -68,6 +68,34 @@ class LogicalLinkHelper
     Ptr<LogicalLink> Link(uint32_t node1, uint32_t node2) const;
     Ptr<LogicalLink> Link(uint32_t node1, uint32_t node2, Color3 color) const;
 
+    /**
+     * Creates logical links connecting all nodes in group to baseNode.
+     *
+     * \param baseNode
+     * The Node to link each Node in `group` to.
+     *
+     * \param group
+     * The collection of Nodes to link to `baseNode`
+     *
+     * \return The collection of `LogicalLink`s from each `group` Node to `baseNode`
+     * in order that they appear in `group`
+     */
+    std::vector<Ptr<LogicalLink>> LinkAllToNode(Ptr<Node> baseNode,
+                                                const NodeContainer& group) const;
+
+    /**
+     * Creates `LogicalLink`s linking each member of `group`
+     * with every other member of `group`
+     *
+     * \param group
+     * The collection of `Node`s to link.
+     * If empty, returns an empty `vector`
+     *
+     * \return The collection of `LogicalLinks` in order with the first `Node` in
+     * the link in order that they appear in `group`.
+     */
+    std::vector<Ptr<LogicalLink>> LinkGroup(const NodeContainer& group) const;
+
   private:
     const TypeId m_linkTid{LogicalLink::GetTypeId()};
     std::unordered_map<std::string, Ptr<AttributeValue>> m_attributes;
