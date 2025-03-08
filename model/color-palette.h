@@ -40,6 +40,7 @@
 #define COLOR_PALETTE_H
 
 #include "color.h"
+#include "optional-types.h"
 #include "optional.h"
 
 namespace ns3::netsimulyzer
@@ -119,40 +120,40 @@ const Color3Value GRAY_20_VALUE{GRAY_20};
 const Color3Value GRAY_10_VALUE{GRAY_10};
 
 // --- OptionalValue ---
-const OptionalValue<Color3> RED_OPTIONAL_VALUE{RED};
-const OptionalValue<Color3> DARK_RED_OPTIONAL_VALUE{DARK_RED};
+const OptionalColor3Value RED_OPTIONAL_VALUE{RED};
+const OptionalColor3Value DARK_RED_OPTIONAL_VALUE{DARK_RED};
 
-const OptionalValue<Color3> GREEN_OPTIONAL_VALUE{GREEN};
-const OptionalValue<Color3> DARK_GREEN_OPTIONAL_VALUE{DARK_GREEN};
+const OptionalColor3Value GREEN_OPTIONAL_VALUE{GREEN};
+const OptionalColor3Value DARK_GREEN_OPTIONAL_VALUE{DARK_GREEN};
 
-const OptionalValue<Color3> BLUE_OPTIONAL_VALUE{BLUE};
-const OptionalValue<Color3> DARK_BLUE_OPTIONAL_VALUE{DARK_BLUE};
+const OptionalColor3Value BLUE_OPTIONAL_VALUE{BLUE};
+const OptionalColor3Value DARK_BLUE_OPTIONAL_VALUE{DARK_BLUE};
 
-const OptionalValue<Color3> ORANGE_OPTIONAL_VALUE{ORANGE};
-const OptionalValue<Color3> DARK_ORANGE_OPTIONAL_VALUE{DARK_ORANGE};
+const OptionalColor3Value ORANGE_OPTIONAL_VALUE{ORANGE};
+const OptionalColor3Value DARK_ORANGE_OPTIONAL_VALUE{DARK_ORANGE};
 
-const OptionalValue<Color3> YELLOW_OPTIONAL_VALUE{YELLOW};
-const OptionalValue<Color3> DARK_YELLOW_OPTIONAL_VALUE{DARK_YELLOW};
+const OptionalColor3Value YELLOW_OPTIONAL_VALUE{YELLOW};
+const OptionalColor3Value DARK_YELLOW_OPTIONAL_VALUE{DARK_YELLOW};
 
-const OptionalValue<Color3> PURPLE_OPTIONAL_VALUE{PURPLE};
-const OptionalValue<Color3> DARK_PURPLE_OPTIONAL_VALUE{DARK_PURPLE};
+const OptionalColor3Value PURPLE_OPTIONAL_VALUE{PURPLE};
+const OptionalColor3Value DARK_PURPLE_OPTIONAL_VALUE{DARK_PURPLE};
 
-const OptionalValue<Color3> PINK_OPTIONAL_VALUE{PINK};
-const OptionalValue<Color3> DARK_PINK_OPTIONAL_VALUE{DARK_PINK};
+const OptionalColor3Value PINK_OPTIONAL_VALUE{PINK};
+const OptionalColor3Value DARK_PINK_OPTIONAL_VALUE{DARK_PINK};
 
-const OptionalValue<Color3> BLACK_OPTIONAL_VALUE{BLACK};
+const OptionalColor3Value BLACK_OPTIONAL_VALUE{BLACK};
 
-const OptionalValue<Color3> WHITE_OPTIONAL_VALUE{WHITE};
+const OptionalColor3Value WHITE_OPTIONAL_VALUE{WHITE};
 
-const OptionalValue<Color3> GRAY_90_OPTIONAL_VALUE{GRAY_90};
-const OptionalValue<Color3> GRAY_80_OPTIONAL_VALUE{GRAY_80};
-const OptionalValue<Color3> GRAY_70_OPTIONAL_VALUE{GRAY_70};
-const OptionalValue<Color3> GRAY_60_OPTIONAL_VALUE{GRAY_60};
-const OptionalValue<Color3> GRAY_50_OPTIONAL_VALUE{GRAY_50};
-const OptionalValue<Color3> GRAY_40_OPTIONAL_VALUE{GRAY_40};
-const OptionalValue<Color3> GRAY_30_OPTIONAL_VALUE{GRAY_30};
-const OptionalValue<Color3> GRAY_20_OPTIONAL_VALUE{GRAY_20};
-const OptionalValue<Color3> GRAY_10_OPTIONAL_VALUE{GRAY_10};
+const OptionalColor3Value GRAY_90_OPTIONAL_VALUE{GRAY_90};
+const OptionalColor3Value GRAY_80_OPTIONAL_VALUE{GRAY_80};
+const OptionalColor3Value GRAY_70_OPTIONAL_VALUE{GRAY_70};
+const OptionalColor3Value GRAY_60_OPTIONAL_VALUE{GRAY_60};
+const OptionalColor3Value GRAY_50_OPTIONAL_VALUE{GRAY_50};
+const OptionalColor3Value GRAY_40_OPTIONAL_VALUE{GRAY_40};
+const OptionalColor3Value GRAY_30_OPTIONAL_VALUE{GRAY_30};
+const OptionalColor3Value GRAY_20_OPTIONAL_VALUE{GRAY_20};
+const OptionalColor3Value GRAY_10_OPTIONAL_VALUE{GRAY_10};
 
 const std::vector<Color3Value> COLOR_PALETTE{BLUE_VALUE,
                                              RED_VALUE,

@@ -105,6 +105,7 @@ build_lib(
     model/netsimulyzer-version.h
     model/node-configuration.h
     model/optional.h
+    model/optional-types.h
     model/building-configuration.h
     model/category-axis.h
     model/category-value-series.h
