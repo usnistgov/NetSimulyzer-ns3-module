@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * NIST-developed software is provided by NIST as a public service. You may use,
  * copy and distribute copies of the software in any medium, provided that you
@@ -32,42 +31,18 @@
  * Author: Evan Black <evan.black@nist.gov>
  */
 
-#ifndef NETSIMULYZER_VERSION_H
-#define NETSIMULYZER_VERSION_H
+#ifndef OPTIONAL_TYPES_H
+#define OPTIONAL_TYPES_H
 
-#include <string>
+#include "color.h"
+#include "optional.h"
 
-namespace ns3::netsimulyzer {
+namespace ns3::netsimulyzer
+{
 
-/**
- * The Major version number for the module
- */
-const long VERSION_MAJOR = 1L;
-
-/**
- * The Minor version number for the module
- */
-const long VERSION_MINOR = 0L;
-
-/**
- * The Patch version number for the module
- */
-const long VERSION_PATCH = 14L;
-
-/**
- * Any additional version qualifiers ("pre" or "release")
- */
-const std::string VERSION_SUFFIX = "release";
-
-/**
- * Give the std::string representation of
- * the version with dots separating each component
- *
- * @return
- * A string in the form M_MAJOR.M_MINOR.M_PATCH-M_SUFFIX
- */
-std::string versionString(void);
+using OptionalColor3 = std::optional<Color3>;
+using OptionalColor3Value = OptionalValue<Color3>;
 
 } // namespace ns3::netsimulyzer
 
-#endif
+#endif // OPTIONAL_TYPES_H
