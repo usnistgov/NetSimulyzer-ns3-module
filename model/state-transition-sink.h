@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * NIST-developed software is provided by NIST as a public service. You may use,
  * copy and distribute copies of the software in any medium, provided that you
@@ -37,10 +36,10 @@
 #include "log-stream.h"
 #include "orchestrator.h"
 
-#include <ns3/nstime.h>
-#include <ns3/object.h>
-#include <ns3/ptr.h>
-#include <ns3/timer.h>
+#include "ns3/nstime.h"
+#include "ns3/object.h"
+#include "ns3/ptr.h"
+#include "ns3/timer.h"
 
 #include <string>
 
@@ -86,7 +85,7 @@ class StateTransitionSink : public Object
     /**
      * Get the class TypeId
      *
-     * \return the TypeId
+     * @return the TypeId
      */
     static TypeId GetTypeId(void);
 
@@ -94,19 +93,19 @@ class StateTransitionSink : public Object
      * Sets up the sink with a list of the possible application states.
      * Automatically generates IDs for each state in `states`.
      *
-     * \warning Do not duplicate state names,
+     * @warning Do not duplicate state names,
      * if two states share the same name, IDs
      * must be used to interact with the conflicting names.
      *
-     * \warning State IDs must be unique
+     * @warning State IDs must be unique
      *
-     * \param orchestrator
+     * @param orchestrator
      * The `Orchestrator` that will manage the sub-elements
      *
-     * \param states
+     * @param states
      * List of unique state names with IDs
      *
-     * \param initialState
+     * @param initialState
      * The initial state of the model to be connected
      * to one of the StateChanged callbacks.
      */
@@ -118,17 +117,17 @@ class StateTransitionSink : public Object
      * Sets up the sink with a list of the possible application states
      * with IDs
      *
-     * \warning Do not duplicate state names,
+     * @warning Do not duplicate state names,
      * if two states share the same name, IDs
      * must be used to interact with the conflicting names.
      *
-     * \param orchestrator
+     * @param orchestrator
      * The `Orchestrator` that will manage the sub-elements
      *
-     * \param states
+     * @param states
      * List of unique state names with IDs
      *
-     * \param initialState
+     * @param initialState
      * The initial state of the model to be connected
      * to one of the StateChanged callbacks.
      */
@@ -140,20 +139,20 @@ class StateTransitionSink : public Object
      * Sets up the sink with a list of the possible application states
      * with IDs
      *
-     * \warning Do not duplicate state names,
+     * @warning Do not duplicate state names,
      * if two states share the same name, IDs
      * must be used to interact with the conflicting names.
      *
      * @tparam T (deduced)
      * The type of the scoped enum
      *
-     * \param orchestrator
+     * @param orchestrator
      * The `Orchestrator` that will manage the sub-elements
      *
-     * \param states
+     * @param states
      * List of unique state names with IDs
      *
-     * \param initialState
+     * @param initialState
      * The initial state of the model to be connected
      * to one of the StateChanged callbacks.
      */
@@ -168,7 +167,7 @@ class StateTransitionSink : public Object
      *
      * If state is not a provided state, this method will abort
      *
-     * \param state
+     * @param state
      * The starting state of the attached model
      */
     void SetInitialState(const std::string& state);
@@ -179,7 +178,7 @@ class StateTransitionSink : public Object
      *
      * If `state` is not a provided state, this method will abort
      *
-     * \param state
+     * @param state
      * The starting state of the attached model
      */
     void SetInitialState(int state);
@@ -193,7 +192,7 @@ class StateTransitionSink : public Object
      * @tparam T (deduced)
      * The type of the scoped enum
      *
-     * \param state
+     * @param state
      * The starting state of the attached model
      */
     template <class T>
@@ -206,7 +205,7 @@ class StateTransitionSink : public Object
      * Call this when your application's state changes, or
      * connect your own StateChanged callback to this.
      *
-     * \param newState
+     * @param newState
      * The state the application is changing to.
      */
     void StateChangedName(const std::string& newState);
@@ -220,7 +219,7 @@ class StateTransitionSink : public Object
      * @tparam T (deduced)
      * The type of the scoped enum
      *
-     * \param newState
+     * @param newState
      * The state the application is changing to.
      */
     template <class T>
@@ -233,7 +232,7 @@ class StateTransitionSink : public Object
      * Call this when your application's state changes, or
      * connect your own StateChanged callback to this.
      *
-     * \param newState
+     * @param newState
      * The state the application is changing to.
      */
     void StateChangedId(int newState);
@@ -241,7 +240,7 @@ class StateTransitionSink : public Object
     /**
      * Sets the names of the attached series & log
      *
-     * \param name
+     * @param name
      * The name to use
      */
     void SetNames(const std::string& name);
@@ -250,7 +249,7 @@ class StateTransitionSink : public Object
      * Sets the unit of time for the X axis.
      * Also sets the label for the axis
      *
-     * \param unit
+     * @param unit
      * The unit of time to use.
      */
     void SetTimeUnit(Time::Unit unit);
@@ -258,7 +257,7 @@ class StateTransitionSink : public Object
     /**
      * Get the current time unit for the X Axis
      *
-     * \return
+     * @return
      * The current time unit
      */
     Time::Unit GetTimeUnit(void) const;
@@ -268,7 +267,7 @@ class StateTransitionSink : public Object
      * If set to `LoggingMode::None` also hides the log
      * If set to anything other than `LoggingMode::None` show the log
      *
-     * \param mode
+     * @param mode
      * What messages to print to the log
      */
     void SetLoggingMode(LoggingMode mode);
@@ -276,7 +275,7 @@ class StateTransitionSink : public Object
     /**
      * Gets the current logging mode
      *
-     * \return
+     * @return
      * The logging mode
      */
     LoggingMode GetLoggingMode(void) const;
@@ -284,7 +283,7 @@ class StateTransitionSink : public Object
     /**
      * Convenience method to access the contained series
      *
-     * \return
+     * @return
      * A pointer to the contained `CategoryValueSeries`
      */
     Ptr<CategoryValueSeries> GetSeries(void) const;
@@ -293,7 +292,7 @@ class StateTransitionSink : public Object
      * Convenience method to access the X axis of the
      * contained series
      *
-     * \return
+     * @return
      * A pointer to the `ValueAxis` used for the X axis
      * of the contained series
      */
@@ -303,7 +302,7 @@ class StateTransitionSink : public Object
      * Convenience method to access the Y axis of the
      * contained series
      *
-     * \return
+     * @return
      * A pointer to the `CategoryAxis` used for the Y axis
      * of the contained series
      */
@@ -316,11 +315,11 @@ class StateTransitionSink : public Object
      * This is the equivalent of calling:
      * `sink->GetXAxis ()->FixedRange (min, max)`
      *
-     * \param min
+     * @param min
      * The minimum expected value passed to `Append()`.
      * Should be less than, but not equal to `max`.
      *
-     * \param max
+     * @param max
      * The maximum expected value passed to `Append()`.
      * Should be greater than, but not equal to `min`
      */
@@ -333,11 +332,11 @@ class StateTransitionSink : public Object
      * This is the equivalent of calling:
      * `sink->GetXAxis ()->ScalingRange (min, max)`
      *
-     * \param min
+     * @param min
      * The starting minimum value of the X axis,
      * Should be less than, but not equal to `max`.
      *
-     * \param max
+     * @param max
      * The starting maximum value of the X axis,
      * Should be greater than, but not equal to `min`
      */
@@ -409,7 +408,7 @@ class StateTransitionSink : public Object
     /**
      * Change the current state & write to series & logs
      *
-     * \param pair
+     * @param pair
      * The name/ID of the new state
      */
     void ApplyStateChange(const CategoryAxis::ValuePair& pair);

@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * NIST-developed software is provided by NIST as a public service. You may use,
  * copy and distribute copies of the software in any medium, provided that you
@@ -35,8 +34,8 @@
 #ifndef OPTIONAL_H
 #define OPTIONAL_H
 
-#include <ns3/attribute-helper.h>
-#include <ns3/attribute.h>
+#include "ns3/attribute-helper.h"
+#include "ns3/attribute.h"
 
 #include <iostream>
 #include <memory>
@@ -52,10 +51,10 @@ namespace ns3::netsimulyzer
  * Attribute wrapper for std::optional,
  * a type to represent a value which may or may not be present.
  *
- * \tparam T
+ * @tparam T
  * The type of value to store within the attribute
  *
- * \see https://en.cppreference.com/w/cpp/utility/optional
+ * @see https://en.cppreference.com/w/cpp/utility/optional
  */
 template <typename T>
 class OptionalValue : public AttributeValue
@@ -69,7 +68,7 @@ class OptionalValue : public AttributeValue
     /**
      * Make a copy of `other`
      *
-     * \param other
+     * @param other
      * The attribute to copy, will also copy the stored value
      */
     OptionalValue(const OptionalValue<T>& other) = default;
@@ -79,7 +78,7 @@ class OptionalValue : public AttributeValue
      * Allows for implicit conversion from a std::optional of
      * the same type.
      *
-     * \param value
+     * @param value
      * The value to copy into the new attribute.
      */
     OptionalValue(const std::optional<T>& value);
@@ -92,12 +91,12 @@ class OptionalValue : public AttributeValue
      * // Calls Color3::Color3(uint8_t, uint8_t, uint8_t)
      * // Never copies the color
      * OptionalValue<Color3> optional{255u, 0u, 0u};
-     * \endcode
+     * @endcode
      *
-     * \tparam Args (Deduced)
+     * @tparam Args (Deduced)
      * The type of each argument passed
      *
-     * \param args
+     * @param args
      * The arguments normally passed to the enclosing type's constructor.
      */
     template <typename... Args>
@@ -108,7 +107,7 @@ class OptionalValue : public AttributeValue
      * by copying `value`. Will overwrite
      * the previously contained value.
      *
-     * \param value
+     * @param value
      * The value to copy into this attribute.
      */
     void Set(const std::optional<T>& value);
@@ -117,10 +116,10 @@ class OptionalValue : public AttributeValue
      * Constructs the value of the std::optional in-place, avoiding copies.
      * See the emplace constructor for more info
      *
-     * \tparam Args (Deduced)
+     * @tparam Args (Deduced)
      * The type of each argument passed
      *
-     * \param args
+     * @param args
      * The arguments normally passed to the enclosing type's constructor.
      */
     template <typename... Args>
@@ -130,23 +129,23 @@ class OptionalValue : public AttributeValue
      * Retrieves a reference to the contained std::optional,
      * not the actual contained value.
      *
-     * \return
+     * @return
      * A reference to the contained `std::optional`
      *
-     * \see OptionalValue::GetValue
+     * @see OptionalValue::GetValue
      */
     const std::optional<T>& Get(void) const;
 
     /**
      * Returns a reference to actual contained value.
      *
-     * \warning Will abort if no value has been set
+     * @warning Will abort if no value has been set
      *
-     * \return
+     * @return
      * A reference to the contained value
      *
-     * \see OptionalValue::operator bool()
-     * \see OptionalValue::HasValue()
+     * @see OptionalValue::operator bool()
+     * @see OptionalValue::HasValue()
      */
     const T& GetValue(void) const;
 
@@ -157,11 +156,11 @@ class OptionalValue : public AttributeValue
      *
      * The method counterpart to the bool operator.
      *
-     * \return
+     * @return
      * True if the contained std::optional has a value,
      * false otherwise.
      *
-     * \see OptionalValue<T>::operator bool (void)
+     * @see OptionalValue<T>::operator bool (void)
      */
     bool HasValue(void) const;
 
@@ -171,7 +170,7 @@ class OptionalValue : public AttributeValue
      * Checks if the contained std::optional holds a value.
      *
      * Allows for usage like the below:
-     * \code
+     * @code
      * OptionalValue<int> hasValue{42};
      * if (hasValue)
      *   std::cout << "Will Print\n";
@@ -179,13 +178,13 @@ class OptionalValue : public AttributeValue
      * OptionalValue<int> hasNoValue;
      * if (hasNoValue)
      *   std::cout << "Will Not Print\n";
-     * \endcode
+     * @endcode
      *
-     * \return
+     * @return
      * True if the contained `std::optional` has a value,
      * false otherwise.
      *
-     * \see OptionalValue::HasValue()
+     * @see OptionalValue::HasValue()
      */
     explicit operator bool(void) const;
 
@@ -196,7 +195,7 @@ class OptionalValue : public AttributeValue
      * Copies the attribute with the enclosed value.
      * Does not detect if the enclosed value is reference type.
      *
-     * \return
+     * @return
      * A copy of this attribute
      */
     Ptr<AttributeValue> Copy(void) const override;
@@ -206,12 +205,12 @@ class OptionalValue : public AttributeValue
      *
      * Required by `AttributeValue`.
      *
-     * \warning Will abort if called
+     * @warning Will abort if called
      *
-     * \param checker
+     * @param checker
      * Unused
      *
-     * \return
+     * @return
      * Empty String
      */
     std::string SerializeToString(Ptr<const AttributeChecker> checker) const override;
@@ -221,15 +220,15 @@ class OptionalValue : public AttributeValue
      *
      * Required by `AttributeValue`.
      *
-     * \warning Will abort if called
+     * @warning Will abort if called
      *
-     * \param value
+     * @param value
      * Unused
      *
-     * \param checker
+     * @param checker
      * Unused
      *
-     * \return
+     * @return
      * False
      */
     bool DeserializeFromString(std::string value, Ptr<const AttributeChecker> checker) override;
@@ -350,7 +349,7 @@ MakeOptionalAccessor(T1 setter, T2 getter)
  * Checks if an Attribute is both an OptionalAttribute
  * and encloses the same value.
  *
- * \tparam T
+ * @tparam T
  * The enclosed type of the attribute to check for. It should
  * match the template parameter of the OptionalAttribute
  */
@@ -362,17 +361,17 @@ class OptionalChecker : public AttributeChecker
      * Checks if `value` is an OptionalAttribute enclosing the
      * correct type.
      *
-     * \param value
+     * @param value
      * The attribute to check
      *
-     * \return
+     * @return
      * True if the attribute is an OptionalAttribute enclosing
      * type `T` , false otherwise
      */
     bool Check(const AttributeValue& value) const override;
 
     /**
-     * \return
+     * @return
      * "ns3::netsimulyzer::OptionalValue"
      */
     std::string GetValueTypeName(void) const override;
@@ -380,7 +379,7 @@ class OptionalChecker : public AttributeChecker
     /**
      * Notifies ns-3 that we do not have human readable type info
      *
-     * \return
+     * @return
      * False
      */
     bool HasUnderlyingTypeInformation(void) const override;
@@ -389,7 +388,7 @@ class OptionalChecker : public AttributeChecker
      * Pulls the name of `T` from `typeid`.
      * Will produce a name, but will probably not be human readable
      *
-     * \return
+     * @return
      * The type name from the implementation
      *
      */
@@ -398,7 +397,7 @@ class OptionalChecker : public AttributeChecker
     /**
      * Create an uninitialized `OptionalChecker`
      *
-     * \return
+     * @return
      * A new `OptionalChecker`
      */
     Ptr<AttributeValue> Create(void) const override;
@@ -458,7 +457,9 @@ OptionalChecker<T>::Copy(const AttributeValue& source, AttributeValue& destinati
     auto* dst = dynamic_cast<OptionalValue<T>*>(&destination);
 
     if (src == nullptr || dst == nullptr)
+    {
         return false;
+    }
 
     *dst = *src;
     return true;

@@ -38,10 +38,10 @@
 #include "optional.h"
 #include "orchestrator.h"
 
-#include <ns3/node.h>
-#include <ns3/object.h>
-#include <ns3/ptr.h>
-#include <ns3/type-id.h>
+#include "ns3/node.h"
+#include "ns3/object.h"
+#include "ns3/ptr.h"
+#include "ns3/type-id.h"
 
 #include <cstdint>
 #include <optional>
@@ -64,12 +64,12 @@ class LogicalLink : public Object
      *
      * This constructor should be used by users
      *
-     * \param orchestrator
+     * @param orchestrator
      * The Orchestrator to register this LogicalLink with
      *
-     * \param a
+     * @param a
      * The first Node in the link
-     * \param b
+     * @param b
      * The second Node in the link
      *
      */
@@ -80,14 +80,14 @@ class LogicalLink : public Object
      *
      * This constructor should be used by users
      *
-     * \param orchestrator
+     * @param orchestrator
      * The Orchestrator to register this LogicalLink with
      *
-     * \param a
+     * @param a
      * The first Node in the link
-     * \param b
+     * @param b
      * The second Node in the link
-     * \param color
+     * @param color
      * The initial color of the link
      *
      */
@@ -98,12 +98,12 @@ class LogicalLink : public Object
      *
      * This constructor should be used by users
      *
-     * \param orchestrator
+     * @param orchestrator
      * The Orchestrator to register this LogicalLink with
      *
-     * \param nodeIdA
+     * @param nodeIdA
      * The first Node in the link
-     * \param nodeIdB
+     * @param nodeIdB
      * The second Node in the link
      *
      */
@@ -114,14 +114,14 @@ class LogicalLink : public Object
      *
      * This constructor should be used by users
      *
-     * \param orchestrator
+     * @param orchestrator
      * The Orchestrator to register this LogicalLink with
      *
-     * \param nodeIdA
+     * @param nodeIdA
      * The first Node in the link
-     * \param nodeIdB
+     * @param nodeIdB
      * The second Node in the link
-     * \param color
+     * @param color
      * The initial color of the link
      *
      */
@@ -134,15 +134,15 @@ class LogicalLink : public Object
      * `m_ignoreSets` must be set to `true` and
      * `m_orchestrator->CreateLink(*this)` must be called by hand
      *
-     * \param orchestrator
+     * @param orchestrator
      * The Orchestrator to register this LogicalLink with
-     * \param nodeIdA
+     * @param nodeIdA
      * The first Node in the link
-     * \param nodeIdB
+     * @param nodeIdB
      * The second Node in the link
-     * \param color
+     * @param color
      * The initial color of the link
-     * \param attributes
+     * @param attributes
      * The attributes specified to the helper
      *
      */
@@ -159,16 +159,16 @@ class LogicalLink : public Object
      * `m_ignoreSets` must be set to `true` and
      * `m_orchestrator->CreateLink(*this)` must be called by hand
      *
-     * \param nodeIdA
+     * @param nodeIdA
      * The first Node in the link
      *
-     * \param nodeIdB
+     * @param nodeIdB
      * The second Node in the link
      *
-     * \param orchestrator
+     * @param orchestrator
      * The Orchestrator to register this LogicalLink with
      *
-     * \param attributes
+     * @param attributes
      * The attributes specified to the helper
      *
      */
@@ -180,12 +180,12 @@ class LogicalLink : public Object
     /**
      * Get the class TypeId
      *
-     * \return the TypeId
+     * @return the TypeId
      */
     static TypeId GetTypeId();
 
     /**
-     * \return
+     * @return
      * The Orchestrator managing this Link.
      */
     [[nodiscard]] Ptr<Orchestrator> GetOrchestrator() const;
@@ -244,11 +244,11 @@ class LogicalLink : public Object
     double m_diameter{}; // Initialized by attribute "Diameter"
     std::pair<uint32_t, uint32_t> m_nodes{};
     /**
-     * \see LogicalLink::NotifyConstructionCompleted
+     * @see LogicalLink::NotifyConstructionCompleted
      */
     Color3 m_constructorColor{};
     /**
-     * \see LogicalLink::NotifyConstructionCompleted
+     * @see LogicalLink::NotifyConstructionCompleted
      */
     std::unordered_map<std::string, Ptr<AttributeValue>> m_constructorAttributes{};
 

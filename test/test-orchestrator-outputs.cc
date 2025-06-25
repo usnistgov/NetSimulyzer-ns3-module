@@ -31,13 +31,14 @@
  * Author: Evan Black <evan.black@nist.gov>
  */
 
-#include <ns3/core-module.h>
-#include <ns3/netsimulyzer-module.h>
-#include <ns3/network-module.h>
-#include <ns3/mobility-module.h>
-#include <ns3/nstime.h>
-#include <ns3/test.h>
 #include "netsimulyzer-test-utils.h"
+
+#include "ns3/core-module.h"
+#include "ns3/mobility-module.h"
+#include "ns3/netsimulyzer-module.h"
+#include "ns3/network-module.h"
+#include "ns3/nstime.h"
+#include "ns3/test.h"
 
 #include <string>
 #include <string_view>
@@ -149,12 +150,20 @@ TestCaseNodeInOutput::DoRun()
 
     const auto& node = *nodes.begin();
 
-    RequiredFields({"id", "name","label-enabled", "model", "scale",
-                    "trail-enabled", "orientation", "offset", "visible", "position"},
-                   node, "node");
+    RequiredFields({"id",
+                    "name",
+                    "label-enabled",
+                    "model",
+                    "scale",
+                    "trail-enabled",
+                    "orientation",
+                    "offset",
+                    "visible",
+                    "position"},
+                   node,
+                   "node");
 
     NS_TEST_ASSERT_MSG_EQ(node["type"], "node", "Node type field must be 'node'");
-
 
     Simulator::Destroy();
 }
@@ -196,16 +205,14 @@ TestCaseNodeMobility::DoRun()
     NS_TEST_ASSERT_MSG_EQ(nodes.empty(), false, "'nodes' section should not be empty");
 
     const auto& node = *nodes.begin();
-    const auto &position = node["position"];
+    const auto& position = node["position"];
     RequiredFields({"x", "y", "z"}, position, "position");
     NS_TEST_ASSERT_MSG_EQ(position["x"].get<double>(), 1.0, "'x' Position should be 1.0");
     NS_TEST_ASSERT_MSG_EQ(position["y"].get<double>(), 2.0, "'y' Position should be 2.0");
     NS_TEST_ASSERT_MSG_EQ(position["z"].get<double>(), 3.0, "'z' Position should be 3.0");
 
-
     Simulator::Destroy();
 }
-
 
 class OrchestratorBasicOutputTestSuite : public TestSuite
 {

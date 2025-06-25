@@ -35,11 +35,11 @@
 
 #include "netsimulyzer-ns3-compatibility.h"
 
-#include <ns3/double.h>
-#include <ns3/enum.h>
-#include <ns3/log.h>
-#include <ns3/pointer.h>
-#include <ns3/string.h>
+#include "ns3/double.h"
+#include "ns3/enum.h"
+#include "ns3/log.h"
+#include "ns3/pointer.h"
+#include "ns3/string.h"
 
 #include <algorithm>
 

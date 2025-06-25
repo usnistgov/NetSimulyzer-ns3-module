@@ -1,5 +1,4 @@
 
-/* -*-  Mode: C++; c-file-style: "gnu"; indent-tabs-mode:nil; -*- */
 /*
  * NIST-developed software is provided by NIST as a public
  * service. You may use, copy and distribute copies of the software in
@@ -177,9 +176,9 @@ const std::vector<Color3Value> COLOR_PALETTE{BLUE_VALUE,
  * Repeats when the end of the collection
  * is reached.
  *
- * \see COLOR_PALETTE
+ * @see COLOR_PALETTE
  *
- * \return
+ * @return
  * The next sequential color
  * from `COLOR_PALETTE`
  */

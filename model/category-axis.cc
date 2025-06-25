@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * NIST-developed software is provided by NIST as a public service. You may use,
  * copy and distribute copies of the software in any medium, provided that you
@@ -34,10 +33,10 @@
 
 #include "category-axis.h"
 
-#include <ns3/abort.h>
-#include <ns3/log.h>
-#include <ns3/pointer.h>
-#include <ns3/string.h>
+#include "ns3/abort.h"
+#include "ns3/log.h"
+#include "ns3/pointer.h"
+#include "ns3/string.h"
 
 #include <algorithm>
 
@@ -70,14 +69,18 @@ CategoryAxis::CategoryAxis(const std::vector<std::string>& values)
 {
     NS_LOG_FUNCTION(this);
     for (const auto& value : values)
+    {
         AddValue(value);
+    }
 }
 
 CategoryAxis::CategoryAxis(const std::vector<ValuePair>& values)
 {
     NS_LOG_FUNCTION(this);
     for (const auto& value : values)
+    {
         AddValue(value);
+    }
 }
 
 void
@@ -97,7 +100,9 @@ CategoryAxis::AddValue(const CategoryAxis::ValuePair& value)
     // keys with no values, so keep our next key ahead of
     // the largest
     if (value.key > m_nextId)
+    {
         m_nextId = value.key + 1;
+    }
 }
 
 const std::unordered_map<int, std::string>&
@@ -116,7 +121,9 @@ CategoryAxis::GetId(const std::string& name) const
     });
 
     if (iter == m_values.end())
+    {
         NS_ABORT_MSG("Name: " << name << " not registered with CategoryAxis");
+    }
 
     return iter->first;
 }

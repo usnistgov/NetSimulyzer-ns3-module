@@ -33,12 +33,12 @@
 
 #include "netsimulyzer-ns3-compatibility.h"
 
-#include <ns3/boolean.h>
-#include <ns3/double.h>
-#include <ns3/enum.h>
-#include <ns3/nstime.h>
-#include <ns3/pointer.h>
-#include <ns3/string.h>
+#include "ns3/boolean.h"
+#include "ns3/double.h"
+#include "ns3/enum.h"
+#include "ns3/nstime.h"
+#include "ns3/pointer.h"
+#include "ns3/string.h"
 
 namespace ns3
 {
@@ -254,7 +254,9 @@ StateTransitionSink::ApplyStateChange(const CategoryAxis::ValuePair& pair)
     Write();
 
     if (m_loggingMode == LoggingMode::All || m_loggingMode == LoggingMode::StateChanges)
+    {
         *m_log << "Changing from: " << m_currentStateLabel << " to: " << pair.value << '\n';
+    }
 
     m_currentState = pair.key;
     m_currentStateLabel = pair.value;

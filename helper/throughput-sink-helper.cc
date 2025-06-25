@@ -1,4 +1,3 @@
-/* -*-  Mode: C++; c-file-style: "gnu"; indent-tabs-mode:nil; -*- */
 /*
  * NIST-developed software is provided by NIST as a public
  * service. You may use, copy and distribute copies of the software in
@@ -37,18 +36,18 @@
 
 #include "throughput-sink-helper.h"
 
-#include <ns3/enum.h>
-#include <ns3/ipv4-l3-protocol.h>
-#include <ns3/nstime.h>
-#include <ns3/onoff-application.h>
-#include <ns3/packet-sink.h>
-#include <ns3/udp-client.h>
+#include "ns3/enum.h"
+#include "ns3/ipv4-l3-protocol.h"
+#include "ns3/nstime.h"
+#include "ns3/onoff-application.h"
+#include "ns3/packet-sink.h"
+#include "ns3/udp-client.h"
 
 #include <sstream>
 #include <utility>
 
 #ifdef HAS_PSC
-#include <ns3/mcptt-ptt-app.h>
+#include "ns3/mcptt-ptt-app.h"
 #endif
 
 namespace ns3
@@ -99,9 +98,13 @@ ThroughputSinkHelper::MakeSinks(const ApplicationContainer& apps, const TraceTyp
         // The 5 is to remove the ns3:: at the start of name
         ss << appTypeId.GetName().substr(5) << ' ';
         if (type == TraceType::Tx)
+        {
             ss << "Throughput(TX) ";
+        }
         else
+        {
             ss << "Throughput(RX) ";
+        }
         ss << "vs Time - Node ";
         ss << localNode->GetId() << ' ';
         ss << '(' << localIpAddr << ')';

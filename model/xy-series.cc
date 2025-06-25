@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * NIST-developed software is provided by NIST as a public service. You may use,
  * copy and distribute copies of the software in any medium, provided that you
@@ -37,12 +36,12 @@
 #include "color-palette.h"
 #include "netsimulyzer-ns3-compatibility.h"
 
-#include <ns3/boolean.h>
-#include <ns3/enum.h>
-#include <ns3/log.h>
-#include <ns3/pointer.h>
-#include <ns3/string.h>
-#include <ns3/uinteger.h>
+#include "ns3/boolean.h"
+#include "ns3/enum.h"
+#include "ns3/log.h"
+#include "ns3/pointer.h"
+#include "ns3/string.h"
+#include "ns3/uinteger.h"
 
 namespace ns3
 {

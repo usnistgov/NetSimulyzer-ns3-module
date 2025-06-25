@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * NIST-developed software is provided by NIST as a public service. You may use,
  * copy and distribute copies of the software in any medium, provided that you
@@ -35,9 +34,10 @@
 #ifndef VALUE_AXIS_H
 #define VALUE_AXIS_H
 
-#include <ns3/object.h>
-#include <ns3/orchestrator.h>
-#include <ns3/ptr.h>
+#include "orchestrator.h"
+
+#include "ns3/object.h"
+#include "ns3/ptr.h"
 
 #include <cstdint>
 #include <string>
@@ -70,9 +70,9 @@ class ValueAxis : public ns3::Object
     };
 
     /**
-     * \brief Get the class TypeId
+     * @brief Get the class TypeId
      *
-     * \return the TypeId
+     * @return the TypeId
      */
     static TypeId GetTypeId(void);
 
@@ -81,11 +81,11 @@ class ValueAxis : public ns3::Object
      * fixed range. In the application, this axis
      * will *not* grow to accommodate new items
      *
-     * \param min
+     * @param min
      * The minimum value for the range, should be greater than `max`,
      * but not equal to
      *
-     * \param max
+     * @param max
      * The maximum value for the range, should be less than `min`,
      * but not equal to.
      */
@@ -102,7 +102,7 @@ class ValueAxis : public ns3::Object
      * use the overload with `min` and `max`
      * parameters
      *
-     * \see ::ScalingRange (double min, double max)
+     * @see ::ScalingRange (double min, double max)
      */
     void ScalingRange();
 
@@ -112,11 +112,11 @@ class ValueAxis : public ns3::Object
      * In the application, this axis will grow
      * to accommodate new items.
      *
-     * \param min
+     * @param min
      * The minimum value for the range, should be greater than `max`,
      * but not equal to
      *
-     * \param max
+     * @param max
      * The maximum value for the range, should be less than `min`,
      * but not equal to.
      */

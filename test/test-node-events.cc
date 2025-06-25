@@ -31,13 +31,14 @@
  * Author: Evan Black <evan.black@nist.gov>
  */
 
-#include <ns3/core-module.h>
-#include <ns3/netsimulyzer-module.h>
-#include <ns3/network-module.h>
-#include <ns3/mobility-module.h>
-#include <ns3/nstime.h>
-#include <ns3/test.h>
 #include "netsimulyzer-test-utils.h"
+
+#include "ns3/core-module.h"
+#include "ns3/mobility-module.h"
+#include "ns3/netsimulyzer-module.h"
+#include "ns3/network-module.h"
+#include "ns3/nstime.h"
+#include "ns3/test.h"
 
 #include <string>
 #include <string_view>
@@ -47,20 +48,22 @@ namespace ns3::test
 {
 using namespace netsimulyzer;
 
-
 class TestCaseNodePositionEvent : public NetSimulyzerTestCase
 {
-public:
+  public:
     TestCaseNodePositionEvent();
 
-private:
+  private:
     void DoRun() override;
 };
 
 TestCaseNodePositionEvent::TestCaseNodePositionEvent()
-    : NetSimulyzerTestCase("NetSimulyzer - Node Position Event") {}
+    : NetSimulyzerTestCase("NetSimulyzer - Node Position Event")
+{
+}
 
-void TestCaseNodePositionEvent::DoRun()
+void
+TestCaseNodePositionEvent::DoRun()
 {
     auto o = CreateObject<Orchestrator>(Orchestrator::MemoryOutputMode::On);
 
@@ -79,9 +82,7 @@ void TestCaseNodePositionEvent::DoRun()
 
     const Vector3D target{10.0, 0.0, 0.0};
     const auto eventTime = MilliSeconds(25UL);
-    Simulator::Schedule(eventTime, [mobility, target]() {
-        mobility->SetPosition(target);
-    });
+    Simulator::Schedule(eventTime, [mobility, target]() { mobility->SetPosition(target); });
 
     Simulator::Run();
 
@@ -92,7 +93,7 @@ void TestCaseNodePositionEvent::DoRun()
     NS_TEST_ASSERT_MSG_EQ(nodes.empty(), false, "'nodes' section should not be empty");
 
     const auto& node = *nodes.begin();
-    const auto &position = node["position"];
+    const auto& position = node["position"];
     RequiredFields({"x", "y", "z"}, position, "position");
     NS_TEST_ASSERT_MSG_EQ(position["x"].get<double>(), 0.0, "Initial 'x' position should be 0.0");
     NS_TEST_ASSERT_MSG_EQ(position["y"].get<double>(), 0.0, "Initial 'y' position should be 0.0");
@@ -101,41 +102,50 @@ void TestCaseNodePositionEvent::DoRun()
     const auto& events = output["events"];
     NS_TEST_ASSERT_MSG_EQ(events.empty(), false, "'events' section should not be empty");
 
-    const auto &event = *events.begin();
+    const auto& event = *events.begin();
     RequiredFields({"type", "nanoseconds"}, event, "basic event");
 
-    const auto &eventType = event["type"].get<std::string>();
+    const auto& eventType = event["type"].get<std::string>();
     NS_TEST_ASSERT_MSG_EQ(eventType, "node-position", "Event should be type 'node-position'");
     RequiredFields({"id", "x", "y", "z"}, event, "node-position");
 
+    NS_TEST_ASSERT_MSG_EQ(event["id"].get<uint32_t>(),
+                          ns3Node->GetId(),
+                          "Event should be tagged with the ID of the Node that made it");
 
-    NS_TEST_ASSERT_MSG_EQ(event["id"].get<uint32_t>(), ns3Node->GetId(),
-        "Event should be tagged with the ID of the Node that made it");
+    NS_TEST_ASSERT_MSG_EQ(event["x"].get<double>(),
+                          target.x,
+                          "Event 'x' position should match target");
+    NS_TEST_ASSERT_MSG_EQ(event["y"].get<double>(),
+                          target.y,
+                          "Event 'y' position should match target");
+    NS_TEST_ASSERT_MSG_EQ(event["z"].get<double>(),
+                          target.z,
+                          "Event 'z' position should match target");
 
-    NS_TEST_ASSERT_MSG_EQ(event["x"].get<double>(), target.x, "Event 'x' position should match target");
-    NS_TEST_ASSERT_MSG_EQ(event["y"].get<double>(), target.y, "Event 'y' position should match target");
-    NS_TEST_ASSERT_MSG_EQ(event["z"].get<double>(), target.z, "Event 'z' position should match target");
-
-    NS_TEST_ASSERT_MSG_EQ(event["nanoseconds"].get<int64_t>(), eventTime.GetNanoSeconds(),
-        "Event 'nanoseconds' should match scheduled time");
+    NS_TEST_ASSERT_MSG_EQ(event["nanoseconds"].get<int64_t>(),
+                          eventTime.GetNanoSeconds(),
+                          "Event 'nanoseconds' should match scheduled time");
 
     Simulator::Destroy();
 }
 
 class TestCaseNodeOrientationEvent : public NetSimulyzerTestCase
 {
-public:
+  public:
     TestCaseNodeOrientationEvent();
 
-private:
+  private:
     void DoRun() override;
 };
 
-
 TestCaseNodeOrientationEvent::TestCaseNodeOrientationEvent()
-    : NetSimulyzerTestCase("NetSimulyzer - Node Orientation Event") {}
+    : NetSimulyzerTestCase("NetSimulyzer - Node Orientation Event")
+{
+}
 
-void TestCaseNodeOrientationEvent::DoRun()
+void
+TestCaseNodeOrientationEvent::DoRun()
 {
     auto o = CreateObject<Orchestrator>(Orchestrator::MemoryOutputMode::On);
 
@@ -145,9 +155,9 @@ void TestCaseNodeOrientationEvent::DoRun()
 
     Vector3DValue initialOrientation;
     nodeConfig->GetAttribute("Orientation", initialOrientation);
-    NS_TEST_ASSERT_MSG_EQ(initialOrientation.Get(), Vector3D(0.0, 0.0, 0.0),
-        "Initial orientation should be 0.0, 0.0, 0.0");
-
+    NS_TEST_ASSERT_MSG_EQ(initialOrientation.Get(),
+                          Vector3D(0.0, 0.0, 0.0),
+                          "Initial orientation should be 0.0, 0.0, 0.0");
 
     nodeConfig->SetAttribute("Orientation", Vector3DValue({30.0, 60.0, 90.0}));
 
@@ -168,49 +178,65 @@ void TestCaseNodeOrientationEvent::DoRun()
     NS_TEST_ASSERT_MSG_EQ(nodes.empty(), false, "'nodes' section should not be empty");
 
     const auto& node = *nodes.begin();
-    const auto &outputInitalOrientation = node["orientation"];
+    const auto& outputInitalOrientation = node["orientation"];
     RequiredFields({"x", "y", "z"}, outputInitalOrientation, "orientation");
-    NS_TEST_ASSERT_MSG_EQ(outputInitalOrientation["x"].get<double>(), 30.0, "Initial 'x' orientation should be 30.0");
-    NS_TEST_ASSERT_MSG_EQ(outputInitalOrientation["y"].get<double>(), 60.0, "Initial 'y' orientation should be 60.0");
-    NS_TEST_ASSERT_MSG_EQ(outputInitalOrientation["z"].get<double>(), 90.0, "Initial 'z' orientation should be 90.0");
+    NS_TEST_ASSERT_MSG_EQ(outputInitalOrientation["x"].get<double>(),
+                          30.0,
+                          "Initial 'x' orientation should be 30.0");
+    NS_TEST_ASSERT_MSG_EQ(outputInitalOrientation["y"].get<double>(),
+                          60.0,
+                          "Initial 'y' orientation should be 60.0");
+    NS_TEST_ASSERT_MSG_EQ(outputInitalOrientation["z"].get<double>(),
+                          90.0,
+                          "Initial 'z' orientation should be 90.0");
 
     const auto& events = output["events"];
     NS_TEST_ASSERT_MSG_EQ(events.empty(), false, "'events' section should not be empty");
 
-    const auto &event = *events.begin();
+    const auto& event = *events.begin();
     RequiredFields({"type", "nanoseconds"}, event, "basic event");
 
-    const auto &eventType = event["type"].get<std::string>();
+    const auto& eventType = event["type"].get<std::string>();
     NS_TEST_ASSERT_MSG_EQ(eventType, "node-orientation", "Event should be type 'node-orientation'");
     RequiredFields({"id", "x", "y", "z"}, event, "node-orientation");
 
+    NS_TEST_ASSERT_MSG_EQ(event["id"].get<uint32_t>(),
+                          ns3Node->GetId(),
+                          "Event should be tagged with the ID of the Node that made it");
 
-    NS_TEST_ASSERT_MSG_EQ(event["id"].get<uint32_t>(), ns3Node->GetId(),
-        "Event should be tagged with the ID of the Node that made it");
+    NS_TEST_ASSERT_MSG_EQ(event["x"].get<double>(),
+                          target.x,
+                          "Event 'x' orientation should match target");
+    NS_TEST_ASSERT_MSG_EQ(event["y"].get<double>(),
+                          target.y,
+                          "Event 'y' orientation should match target");
+    NS_TEST_ASSERT_MSG_EQ(event["z"].get<double>(),
+                          target.z,
+                          "Event 'z' orientation should match target");
 
-    NS_TEST_ASSERT_MSG_EQ(event["x"].get<double>(), target.x, "Event 'x' orientation should match target");
-    NS_TEST_ASSERT_MSG_EQ(event["y"].get<double>(), target.y, "Event 'y' orientation should match target");
-    NS_TEST_ASSERT_MSG_EQ(event["z"].get<double>(), target.z, "Event 'z' orientation should match target");
-
-    NS_TEST_ASSERT_MSG_EQ(event["nanoseconds"].get<int64_t>(), eventTime.GetNanoSeconds(),
-        "Event 'nanoseconds' should match scheduled time");
+    NS_TEST_ASSERT_MSG_EQ(event["nanoseconds"].get<int64_t>(),
+                          eventTime.GetNanoSeconds(),
+                          "Event 'nanoseconds' should match scheduled time");
 
     Simulator::Destroy();
 }
 
-class TestCaseNodeColorChangeEvent : public NetSimulyzerTestCase {
-public:
+class TestCaseNodeColorChangeEvent : public NetSimulyzerTestCase
+{
+  public:
     TestCaseNodeColorChangeEvent();
 
-private:
+  private:
     void DoRun() override;
 };
 
 TestCaseNodeColorChangeEvent::TestCaseNodeColorChangeEvent()
     : NetSimulyzerTestCase("NetSimulyzer - Node Color Change Event")
-{}
+{
+}
 
-void TestCaseNodeColorChangeEvent::DoRun()
+void
+TestCaseNodeColorChangeEvent::DoRun()
 {
     auto o = CreateObject<Orchestrator>(Orchestrator::MemoryOutputMode::On);
 
@@ -222,12 +248,10 @@ void TestCaseNodeColorChangeEvent::DoRun()
 
     const auto target{RED_OPTIONAL_VALUE};
     const auto eventTime = MilliSeconds(25UL);
-    Simulator::Schedule(eventTime, [nodeConfig, target]() {
-        nodeConfig->SetAttribute("BaseColor", target);
-    });
+    Simulator::Schedule(eventTime,
+                        [nodeConfig, target]() { nodeConfig->SetAttribute("BaseColor", target); });
 
     Simulator::Run();
-
 
     const auto& output = o->GetJson();
     const auto& nodes = output["nodes"];
@@ -237,24 +261,27 @@ void TestCaseNodeColorChangeEvent::DoRun()
 
     const auto& node = *nodes.begin();
     NS_TEST_ASSERT_MSG_EQ(node.contains("base-color"), false, "Node should not have base color");
-    NS_TEST_ASSERT_MSG_EQ(node.contains("highlight-color"), false, "Node should not have highlight color");
+    NS_TEST_ASSERT_MSG_EQ(node.contains("highlight-color"),
+                          false,
+                          "Node should not have highlight color");
 
     const auto& events = output["events"];
     NS_TEST_ASSERT_MSG_EQ(events.empty(), false, "'events' section should not be empty");
 
-    const auto &event = *events.begin();
+    const auto& event = *events.begin();
     RequiredFields({"type", "nanoseconds"}, event, "basic event");
 
-    const auto &eventType = event["type"].get<std::string>();
+    const auto& eventType = event["type"].get<std::string>();
     NS_TEST_ASSERT_MSG_EQ(eventType, "node-color", "Event should be type 'node-color'");
     RequiredFields({"id", "color-type", "color"}, event, "node-color");
 
+    NS_TEST_ASSERT_MSG_EQ(event["id"].get<uint32_t>(),
+                          ns3Node->GetId(),
+                          "Event should be tagged with the ID of the Node that made it");
 
-    NS_TEST_ASSERT_MSG_EQ(event["id"].get<uint32_t>(), ns3Node->GetId(),
-        "Event should be tagged with the ID of the Node that made it");
-
-    NS_TEST_ASSERT_MSG_EQ(event["color-type"].get<std::string>(), "base",
-        "Color change event should change 'base' color");
+    NS_TEST_ASSERT_MSG_EQ(event["color-type"].get<std::string>(),
+                          "base",
+                          "Color change event should change 'base' color");
 
     CheckColor(event["color"], target.GetValue());
 
@@ -265,20 +292,22 @@ void TestCaseNodeColorChangeEvent::DoRun()
     Simulator::Destroy();
 }
 
-class TestCaseNodeModelChangeEvent : public NetSimulyzerTestCase {
-public:
-  TestCaseNodeModelChangeEvent();
+class TestCaseNodeModelChangeEvent : public NetSimulyzerTestCase
+{
+  public:
+    TestCaseNodeModelChangeEvent();
 
-private:
-  void DoRun() override;
+  private:
+    void DoRun() override;
 };
-
 
 TestCaseNodeModelChangeEvent::TestCaseNodeModelChangeEvent()
     : NetSimulyzerTestCase("NetSimulyzer - Node Model Change Event")
-{}
+{
+}
 
-void TestCaseNodeModelChangeEvent::DoRun()
+void
+TestCaseNodeModelChangeEvent::DoRun()
 {
     auto o = CreateObject<Orchestrator>(Orchestrator::MemoryOutputMode::On);
 
@@ -293,12 +322,10 @@ void TestCaseNodeModelChangeEvent::DoRun()
 
     const StringValue target{models::LAND_DRONE_VALUE};
     const auto eventTime = MilliSeconds(25UL);
-    Simulator::Schedule(eventTime, [nodeConfig, target]() {
-        nodeConfig->SetAttribute("Model", target);
-    });
+    Simulator::Schedule(eventTime,
+                        [nodeConfig, target]() { nodeConfig->SetAttribute("Model", target); });
 
     Simulator::Run();
-
 
     const auto& output = o->GetJson();
     const auto& nodes = output["nodes"];
@@ -307,43 +334,53 @@ void TestCaseNodeModelChangeEvent::DoRun()
     NS_TEST_ASSERT_MSG_EQ(nodes.empty(), false, "'nodes' section should not be empty");
 
     const auto& node = *nodes.begin();
-    NS_TEST_ASSERT_MSG_EQ(node["model"].get<std::string>(), inital.Get(), "Initial model should be `CUBE_VALUE`");
+    NS_TEST_ASSERT_MSG_EQ(node["model"].get<std::string>(),
+                          inital.Get(),
+                          "Initial model should be `CUBE_VALUE`");
 
     const auto& events = output["events"];
     NS_TEST_ASSERT_MSG_EQ(events.empty(), false, "'events' section should not be empty");
 
-    const auto &event = *events.begin();
+    const auto& event = *events.begin();
     RequiredFields({"type", "nanoseconds"}, event, "basic event");
 
-    const auto &eventType = event["type"].get<std::string>();
-    NS_TEST_ASSERT_MSG_EQ(eventType, "node-model-change", "Event should be type 'node-model-change'");
+    const auto& eventType = event["type"].get<std::string>();
+    NS_TEST_ASSERT_MSG_EQ(eventType,
+                          "node-model-change",
+                          "Event should be type 'node-model-change'");
     RequiredFields({"id", "model"}, event, "node-model-change");
 
+    NS_TEST_ASSERT_MSG_EQ(event["id"].get<uint32_t>(),
+                          ns3Node->GetId(),
+                          "Event should be tagged with the ID of the Node that made it");
 
-    NS_TEST_ASSERT_MSG_EQ(event["id"].get<uint32_t>(), ns3Node->GetId(),
-        "Event should be tagged with the ID of the Node that made it");
+    NS_TEST_ASSERT_MSG_EQ(event["model"].get<std::string>(),
+                          target.Get(),
+                          "Event 'model' should match target");
 
-    NS_TEST_ASSERT_MSG_EQ(event["model"].get<std::string>(), target.Get(), "Event 'model' should match target");
-
-    NS_TEST_ASSERT_MSG_EQ(event["nanoseconds"].get<int64_t>(), eventTime.GetNanoSeconds(),
-        "Event 'nanoseconds' should match scheduled time");
+    NS_TEST_ASSERT_MSG_EQ(event["nanoseconds"].get<int64_t>(),
+                          eventTime.GetNanoSeconds(),
+                          "Event 'nanoseconds' should match scheduled time");
 
     Simulator::Destroy();
 }
 
-class TestCaseNodeTransmitEvent : public NetSimulyzerTestCase {
-public:
+class TestCaseNodeTransmitEvent : public NetSimulyzerTestCase
+{
+  public:
     TestCaseNodeTransmitEvent();
 
-private:
+  private:
     void DoRun() override;
 };
 
 TestCaseNodeTransmitEvent::TestCaseNodeTransmitEvent()
-    : NetSimulyzerTestCase("NetSimulyzer - Node Transmit Event") {}
+    : NetSimulyzerTestCase("NetSimulyzer - Node Transmit Event")
+{
+}
 
-
-void TestCaseNodeTransmitEvent::DoRun()
+void
+TestCaseNodeTransmitEvent::DoRun()
 {
     auto o = CreateObject<Orchestrator>(Orchestrator::MemoryOutputMode::On);
 
@@ -367,38 +404,43 @@ void TestCaseNodeTransmitEvent::DoRun()
 
     Simulator::Run();
 
-
     const auto& output = o->GetJson();
 
     const auto& events = output["events"];
     NS_TEST_ASSERT_MSG_EQ(events.empty(), false, "'events' section should not be empty");
 
-    const auto &event = *events.begin();
+    const auto& event = *events.begin();
     RequiredFields({"type", "nanoseconds"}, event, "basic event");
 
-    const auto &eventType = event["type"].get<std::string>();
+    const auto& eventType = event["type"].get<std::string>();
     NS_TEST_ASSERT_MSG_EQ(eventType, "node-transmit", "Event should be type 'node-transmit'");
     RequiredFields({"id", "duration", "target-size", "color"}, event, "node-transmit");
 
+    NS_TEST_ASSERT_MSG_EQ(event["id"].get<uint32_t>(),
+                          ns3Node->GetId(),
+                          "Event should be tagged with the ID of the Node that made it");
 
-    NS_TEST_ASSERT_MSG_EQ(event["id"].get<uint32_t>(), ns3Node->GetId(),
-        "Event should be tagged with the ID of the Node that made it");
-
-    NS_TEST_ASSERT_MSG_EQ(event["duration"].get<int64_t>(), transmitDuration.GetNanoSeconds(), "Event duration should matct");
-    NS_TEST_ASSERT_MSG_EQ(event["target-size"].get<double>(), transmitSize, "Event size should match");
-    const auto &eventColor = event["color"];
+    NS_TEST_ASSERT_MSG_EQ(event["duration"].get<int64_t>(),
+                          transmitDuration.GetNanoSeconds(),
+                          "Event duration should matct");
+    NS_TEST_ASSERT_MSG_EQ(event["target-size"].get<double>(),
+                          transmitSize,
+                          "Event size should match");
+    const auto& eventColor = event["color"];
 
     CheckColor(eventColor, transmitColor);
 
-    NS_TEST_ASSERT_MSG_EQ(event["nanoseconds"].get<int64_t>(), eventTime.GetNanoSeconds(),
-        "Event 'nanoseconds' should match scheduled time");
+    NS_TEST_ASSERT_MSG_EQ(event["nanoseconds"].get<int64_t>(),
+                          eventTime.GetNanoSeconds(),
+                          "Event 'nanoseconds' should match scheduled time");
 
     Simulator::Destroy();
 }
 
-class NodeEventsTestSuite : public TestSuite {
-public:
-  NodeEventsTestSuite();
+class NodeEventsTestSuite : public TestSuite
+{
+  public:
+    NodeEventsTestSuite();
 };
 
 NodeEventsTestSuite::NodeEventsTestSuite()
@@ -412,6 +454,5 @@ NodeEventsTestSuite::NodeEventsTestSuite()
 }
 
 static NodeEventsTestSuite g_nodeEventsTestSuite{};
-
 
 } // namespace ns3::test

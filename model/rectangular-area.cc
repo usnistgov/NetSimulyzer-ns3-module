@@ -3,11 +3,11 @@
 #include "color-palette.h"
 #include "netsimulyzer-ns3-compatibility.h"
 
-#include <ns3/double.h>
-#include <ns3/enum.h>
-#include <ns3/rectangle.h>
-#include <ns3/string.h>
-#include <ns3/uinteger.h>
+#include "ns3/double.h"
+#include "ns3/enum.h"
+#include "ns3/rectangle.h"
+#include "ns3/string.h"
+#include "ns3/uinteger.h"
 
 namespace ns3
 {
@@ -106,7 +106,9 @@ RectangularArea::NotifyConstructionCompleted(void)
     // which are tied to attributes after the constructor has
     // returned
     if (m_useConstructorBounds)
+    {
         m_bounds = m_constructorBounds;
+    }
 
     Object::NotifyConstructionCompleted();
 }

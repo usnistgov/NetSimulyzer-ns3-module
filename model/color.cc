@@ -1,4 +1,3 @@
-/* -*-  Mode: C++; c-file-style: "gnu"; indent-tabs-mode:nil; -*- */
 /*
  * NIST-developed software is provided by NIST as a public
  * service. You may use, copy and distribute copies of the software in
@@ -44,7 +43,7 @@
  * otherwise sets `stream`'s failbit.
  * Also consumes the character.
  *
- * \param stream
+ * @param stream
  * The input stream to read from
  */
 static void
@@ -54,7 +53,9 @@ CheckSeparator(std::istream& stream)
     stream >> in;
 
     if (in != '|')
+    {
         stream.setstate(std::ios::failbit);
+    }
 }
 
 namespace ns3::netsimulyzer

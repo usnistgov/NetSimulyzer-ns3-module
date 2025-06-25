@@ -32,11 +32,11 @@
  */
 #include "area-helper.h"
 
-#include <ns3/color.h>
-#include <ns3/double.h>
-#include <ns3/log.h>
-#include <ns3/pointer.h>
-#include <ns3/rectangular-area.h>
+#include "ns3/color.h"
+#include "ns3/double.h"
+#include "ns3/log.h"
+#include "ns3/pointer.h"
+#include "ns3/rectangular-area.h"
 
 namespace ns3::netsimulyzer
 {
@@ -98,7 +98,9 @@ AreaHelper::Make(const Rectangle& bounds)
         // Parameter bounds overrides
         // whatever may have been specified before
         if (name == "Bounds")
+        {
             continue;
+        }
 
         area->SetAttribute(name, *value);
     }
@@ -124,7 +126,9 @@ AreaHelper::MakeSquare(Vector2D center, double size)
         // We have a manually specified position/size
         // so ignore whatever has been set before
         if (name == "Bounds")
+        {
             continue;
+        }
 
         area->SetAttribute(name, *value);
     }
@@ -170,7 +174,9 @@ AreaHelper::MakeAreaSurroundingNodes(const NodeContainer& nodes,
     for (const auto& [name, value] : m_attributes)
     {
         if (name == "Bounds" || name == "Height")
+        {
             continue;
+        }
 
         area->SetAttribute(name, *value);
     }

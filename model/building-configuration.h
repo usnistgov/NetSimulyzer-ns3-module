@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * NIST-developed software is provided by NIST as a public service. You may use,
  * copy and distribute copies of the software in any medium, provided that you
@@ -35,12 +34,13 @@
 #ifndef BUILDING_CONFIGURATION_H
 #define BUILDING_CONFIGURATION_H
 
-#include <ns3/color.h>
-#include <ns3/event-message.h>
-#include <ns3/object.h>
-#include <ns3/orchestrator.h>
-#include <ns3/ptr.h>
-#include <ns3/type-id.h>
+#include "color.h"
+#include "event-message.h"
+#include "orchestrator.h"
+
+#include "ns3/object.h"
+#include "ns3/ptr.h"
+#include "ns3/type-id.h"
 
 #include <string>
 
@@ -70,15 +70,15 @@ class BuildingConfiguration : public Object
      *
      * This constructor should be used by users
      *
-     * \param orchestrator
+     * @param orchestrator
      * The Orchestrator to register this Building with
      */
     explicit BuildingConfiguration(Ptr<Orchestrator> orchestrator);
 
     /**
-     * \brief Get the class TypeId
+     * @brief Get the class TypeId
      *
-     * \return the TypeId
+     * @return the TypeId
      */
     static TypeId GetTypeId(void);
 
@@ -89,13 +89,13 @@ class BuildingConfiguration : public Object
      * Prefer using the Orchestrator constructor as opposed to setting the
      * Orchestrator later
      *
-     * \param orchestrator
+     * @param orchestrator
      * The Orchestrator to register this BuildingConfiguration with
      */
     void SetOrchestrator(Ptr<Orchestrator> orchestrator);
 
     /**
-     * \return
+     * @return
      * The Orchestrator managing this Building.
      * nullptr if it is not managed
      */
@@ -103,7 +103,7 @@ class BuildingConfiguration : public Object
 
   protected:
     /**
-     * \brief Disconnects the referenced Orchestrator
+     * @brief Disconnects the referenced Orchestrator
      */
     void DoDispose(void) override;
 

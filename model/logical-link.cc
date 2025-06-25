@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * NIST-developed software is provided by NIST as a public service. You may use,
  * copy and distribute copies of the software in any medium, provided that you
@@ -34,10 +33,10 @@
 
 #include "logical-link.h"
 
-#include <ns3/boolean.h>
-#include <ns3/double.h>
-#include <ns3/pointer.h>
-#include <ns3/uinteger.h>
+#include "ns3/boolean.h"
+#include "ns3/double.h"
+#include "ns3/pointer.h"
+#include "ns3/uinteger.h"
 
 #include <cstdint>
 
@@ -50,7 +49,9 @@ NextLogicalLinkColor()
     static auto colorIter = COLOR_PALETTE.begin();
 
     if (colorIter == COLOR_PALETTE.end())
+    {
         colorIter = COLOR_PALETTE.begin();
+    }
 
     const auto& returnColor = *colorIter;
     colorIter++;
@@ -218,12 +219,16 @@ LogicalLink::SetNodes(const std::pair<uint32_t, uint32_t>& nodes)
 {
     NS_LOG_FUNCTION(this);
     if (nodes == m_nodes)
+    {
         return;
+    }
 
     m_nodes = nodes;
 
     if (m_ignoreSets)
+    {
         return;
+    }
 
     m_orchestrator->UpdateLink(*this);
 }
@@ -241,7 +246,9 @@ LogicalLink::Activate()
     NS_LOG_FUNCTION(this);
     // Already active, no need to signal a change
     if (m_active)
+    {
         return;
+    }
 
     m_active = true;
     m_orchestrator->UpdateLink(*this);
@@ -253,7 +260,9 @@ LogicalLink::Deactivate()
     NS_LOG_FUNCTION(this);
     // Already not active, no need to signal a change
     if (!m_active)
+    {
         return;
+    }
 
     m_active = false;
     m_orchestrator->UpdateLink(*this);
@@ -279,12 +288,16 @@ LogicalLink::SetActive(const bool value)
 {
     NS_LOG_FUNCTION(this);
     if (m_active == value)
+    {
         return;
+    }
 
     m_active = value;
 
     if (m_ignoreSets)
+    {
         return;
+    }
     m_orchestrator->UpdateLink(*this);
 }
 
@@ -301,12 +314,16 @@ LogicalLink::SetColor(const Color3 value)
     NS_LOG_FUNCTION(this);
 
     if (value == m_color)
+    {
         return;
+    }
 
     m_color = value;
 
     if (m_ignoreSets)
+    {
         return;
+    }
 
     m_orchestrator->UpdateLink(*this);
 }
@@ -323,12 +340,16 @@ LogicalLink::SetDiameter(const double value)
     NS_LOG_FUNCTION(this);
 
     if (value == m_diameter)
+    {
         return;
+    }
 
     m_diameter = value;
 
     if (m_ignoreSets)
+    {
         return;
+    }
 
     m_orchestrator->UpdateLink(*this);
 }
@@ -348,7 +369,9 @@ LogicalLink::NotifyConstructionCompleted()
         // In the helper, the color attribute is always converted to
         // the constructor argument, so we don't want the attribute version
         if (name == "Color")
+        {
             continue;
+        }
         SetAttribute(name, *value);
     }
     m_ignoreSets = false;

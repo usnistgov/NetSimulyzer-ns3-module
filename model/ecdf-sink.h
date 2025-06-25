@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * NIST-developed software is provided by NIST as a public service. You may use,
  * copy and distribute copies of the software in any medium, provided that you
@@ -35,13 +34,14 @@
 #ifndef ECDF_SINK_H
 #define ECDF_SINK_H
 
-#include <ns3/object.h>
-#include <ns3/pointer.h>
-#include <ns3/ptr.h>
-#include <ns3/string.h>
-#include <ns3/timer.h>
-#include <ns3/value-axis.h>
-#include <ns3/xy-series.h>
+#include "value-axis.h"
+#include "xy-series.h"
+
+#include "ns3/object.h"
+#include "ns3/pointer.h"
+#include "ns3/ptr.h"
+#include "ns3/string.h"
+#include "ns3/timer.h"
 
 #include <vector>
 
@@ -85,25 +85,25 @@ class EcdfSink : public Object
      * having a Y axis with the label "Percent",
      * and fixed range from 0 to 1 (inclusive)
      *
-     * \param orchestrator
+     * @param orchestrator
      * The Orchestrator to manage the series
      *
-     * \param name
+     * @param name
      * The name to use for the generated XYSeries
      */
     EcdfSink(Ptr<Orchestrator> orchestrator, const std::string& name);
 
     /**
-     * \brief Get the class TypeId
+     * @brief Get the class TypeId
      *
-     * \return the TypeId
+     * @return the TypeId
      */
     static TypeId GetTypeId(void);
 
     /**
      * Convenience method to access the contained series
      *
-     * \return
+     * @return
      * A pointer to the contained `XYSeries`
      */
     Ptr<XYSeries> GetSeries(void) const;
@@ -112,7 +112,7 @@ class EcdfSink : public Object
      * Convenience method to access the X axis of the
      * contained series
      *
-     * \return
+     * @return
      * A pointer to the `ValueAxis` used for the X axis
      * of the contained series
      */
@@ -122,7 +122,7 @@ class EcdfSink : public Object
      * Convenience method to access the Y axis of the
      * contained series
      *
-     * \return
+     * @return
      * A pointer to the `ValueAxis` used for the Y axis
      * of the contained series
      */
@@ -131,9 +131,9 @@ class EcdfSink : public Object
     /**
      * Gets the current flush mode.
      *
-     * \see EcdfSink::FlushMode
+     * @see EcdfSink::FlushMode
      *
-     * \return
+     * @return
      * The mode for updating the contained graph
      */
     FlushMode GetFlushMode(void) const;
@@ -141,9 +141,9 @@ class EcdfSink : public Object
     /**
      * Sets the current flush mode
      *
-     * \see EcdfSink::FlushMode
+     * @see EcdfSink::FlushMode
      *
-     * \param mode
+     * @param mode
      * Which mode to use to update the graph
      */
     void SetFlushMode(FlushMode mode);
@@ -151,7 +151,7 @@ class EcdfSink : public Object
     /**
      * Convenience method to get the connection type of the internal graph
      *
-     * \return
+     * @return
      * The connection type used by the contained series
      */
     XYSeries::ConnectionType GetConnectionType(void) const;
@@ -159,9 +159,9 @@ class EcdfSink : public Object
     /**
      * Convenience method to set the connection type of the internal graph
      *
-     * \warning XYSeries::ConnectionType::Spline is unsupported for this helper type
+     * @warning XYSeries::ConnectionType::Spline is unsupported for this helper type
      *
-     * \param value
+     * @param value
      * The connection type to use for the generated graph
      */
     void SetConnectionType(XYSeries::ConnectionType value);
@@ -171,9 +171,9 @@ class EcdfSink : public Object
      *
      * Only used when `FlushMode::Interval` is used
      *
-     * \see FlushMode
+     * @see FlushMode
      *
-     * \param interval
+     * @param interval
      * The interval to update the graph, should be positive
      */
     void SetInterval(Time interval);
@@ -183,9 +183,9 @@ class EcdfSink : public Object
      *
      * Only used when `FlushMode::Interval` is used
      *
-     * \see FlushMode
+     * @see FlushMode
      *
-     * \return
+     * @return
      * The interval of the contained timer.
      */
     Time GetInterval(void) const;
@@ -197,11 +197,11 @@ class EcdfSink : public Object
      * This is the equivalent of calling:
      * `ecdf->GetXAxis ()->FixedRange (min, max)`
      *
-     * \param min
+     * @param min
      * The minimum expected value passed to `Append()`.
      * Should be less than, but not equal to `max`.
      *
-     * \param max
+     * @param max
      * The maximum expected value passed to `Append()`.
      * Should be greater than, but not equal to `min`
      */
@@ -214,11 +214,11 @@ class EcdfSink : public Object
      * This is the equivalent of calling:
      * `ecdf->GetXAxis ()->ScalingRange (min, max)`
      *
-     * \param min
+     * @param min
      * The starting minimum value of the X axis,
      * Should be less than, but not equal to `max`.
      *
-     * \param max
+     * @param max
      * The starting maximum value of the X axis,
      * Should be greater than, but not equal to `min`
      */
@@ -233,7 +233,7 @@ class EcdfSink : public Object
      * An individual value may appear at most approximately `4.29 · 10^9` times,
      * although this value may be higher on some platforms
      *
-     * \param value
+     * @param value
      * The measured value to plot
      */
     void Append(double value);
@@ -245,7 +245,7 @@ class EcdfSink : public Object
      * May be called when using any flush mode, but must be
      * called at some point if using `FlushMode::Manual`
      *
-     * \see FlushMode
+     * @see FlushMode
      */
     void Flush(void);
 
@@ -279,7 +279,7 @@ class EcdfSink : public Object
     /**
      * The timer used when the flush mode is set to `Interval`
      *
-     * \see FlushMode
+     * @see FlushMode
      */
     Timer m_timer;
 

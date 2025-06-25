@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * NIST-developed software is provided by NIST as a public service. You may use,
  * copy and distribute copies of the software in any medium, provided that you
@@ -35,11 +34,12 @@
 #ifndef RECTANGULAR_AREA_H
 #define RECTANGULAR_AREA_H
 
-#include <ns3/color.h>
-#include <ns3/object.h>
-#include <ns3/orchestrator.h>
-#include <ns3/ptr.h>
-#include <ns3/rectangle.h>
+#include "color.h"
+#include "orchestrator.h"
+
+#include "ns3/object.h"
+#include "ns3/ptr.h"
+#include "ns3/rectangle.h"
 
 #include <cstdint>
 #include <string>
@@ -65,17 +65,17 @@ class RectangularArea : public Object
     /**
      * Get the class TypeId
      *
-     * \return the TypeId
+     * @return the TypeId
      */
     static TypeId GetTypeId(void);
 
     /**
      * Set up an area with boundaries
      *
-     * \param orchestrator
+     * @param orchestrator
      * The Orchestrator that will manage this area
      *
-     * \param bounds
+     * @param bounds
      * The area for this object to cover
      */
     RectangularArea(Ptr<Orchestrator> orchestrator, Rectangle bounds);
@@ -85,7 +85,7 @@ class RectangularArea : public Object
      *
      * If this constructor is used, the "Bounds" attribute should be set
      *
-     * \param orchestrator
+     * @param orchestrator
      * The Orchestrator that will manage this area
      */
     explicit RectangularArea(Ptr<Orchestrator> orchestrator);
