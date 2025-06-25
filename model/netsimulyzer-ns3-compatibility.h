@@ -35,6 +35,7 @@
 #define NETSIMULYZER_NS3_COMPATIBILITY_H
 
 #include "ns3/core-module.h"
+#include "ns3/test.h"
 
 #ifndef NETSIMULYZER_NS3_VERSION
 static_assert(
@@ -46,10 +47,25 @@ static_assert(
 namespace ns3::netsimulyzer
 {
 constexpr auto DEPRECATED_SUPPORT =
-#if NETSIMULYZER_NS3_VERSION < 46
+#if NETSIMULYZER_NS3_VERSION > 44
     TypeId::SupportLevel::DEPRECATED;
 #else
     TypeId::DEPRECATED;
+#endif
+
+constexpr auto TEST_DURATION_QUICK =
+#if NETSIMULYZER_NS3_VERSION > 42
+    TestCase::Duration::QUICK;
+#else
+    ns3::TestCase::QUICK;
+#endif
+
+
+constexpr auto TEST_TYPE_SYSTEM =
+#if NETSIMULYZER_NS3_VERSION > 42
+    TestSuite::Type::SYSTEM;
+#else
+    TestSuite::SYSTEM;
 #endif
 
 template <typename T, typename SetT, typename GetT>

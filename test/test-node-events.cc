@@ -31,6 +31,7 @@
  * Author: Evan Black <evan.black@nist.gov>
  */
 
+#include "ns3/netsimulyzer-ns3-compatibility.h"
 #include "netsimulyzer-test-utils.h"
 
 #include "ns3/core-module.h"
@@ -444,13 +445,13 @@ class NodeEventsTestSuite : public TestSuite
 };
 
 NodeEventsTestSuite::NodeEventsTestSuite()
-    : TestSuite("netsimulyzer-node-events", TestSuite::SYSTEM)
+    : TestSuite("netsimulyzer-node-events", TEST_TYPE_SYSTEM)
 {
-    AddTestCase(new TestCaseNodePositionEvent(), QUICK);
-    AddTestCase(new TestCaseNodeOrientationEvent{}, QUICK);
-    AddTestCase(new TestCaseNodeColorChangeEvent{}, QUICK);
-    AddTestCase(new TestCaseNodeModelChangeEvent{}, QUICK);
-    AddTestCase(new TestCaseNodeTransmitEvent{}, QUICK);
+    AddTestCase(new TestCaseNodePositionEvent(), TEST_DURATION_QUICK);
+    AddTestCase(new TestCaseNodeOrientationEvent{}, TEST_DURATION_QUICK);
+    AddTestCase(new TestCaseNodeColorChangeEvent{}, TEST_DURATION_QUICK);
+    AddTestCase(new TestCaseNodeModelChangeEvent{}, TEST_DURATION_QUICK);
+    AddTestCase(new TestCaseNodeTransmitEvent{}, TEST_DURATION_QUICK);
 }
 
 static NodeEventsTestSuite g_nodeEventsTestSuite{};

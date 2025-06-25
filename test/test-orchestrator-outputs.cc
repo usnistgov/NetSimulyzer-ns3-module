@@ -36,6 +36,7 @@
 #include "ns3/core-module.h"
 #include "ns3/mobility-module.h"
 #include "ns3/netsimulyzer-module.h"
+#include "ns3/netsimulyzer-ns3-compatibility.h"
 #include "ns3/network-module.h"
 #include "ns3/nstime.h"
 #include "ns3/test.h"
@@ -221,12 +222,11 @@ class OrchestratorBasicOutputTestSuite : public TestSuite
 };
 
 OrchestratorBasicOutputTestSuite::OrchestratorBasicOutputTestSuite()
-    : TestSuite("netsimulyzer-orchestrator-outputs", TestSuite::SYSTEM)
+    : TestSuite("netsimulyzer-orchestrator-outputs", TEST_TYPE_SYSTEM)
 {
-    using TestDuration = TestCase::TestDuration;
-    AddTestCase(new TestCaseOutputStructure(), TestDuration::QUICK);
-    AddTestCase(new TestCaseNodeInOutput(), TestDuration::QUICK);
-    AddTestCase(new TestCaseNodeMobility(), TestDuration::QUICK);
+    AddTestCase(new TestCaseOutputStructure(), TEST_DURATION_QUICK);
+    AddTestCase(new TestCaseNodeInOutput(), TEST_DURATION_QUICK);
+    AddTestCase(new TestCaseNodeMobility(), TEST_DURATION_QUICK);
 }
 
 static OrchestratorBasicOutputTestSuite g_orchestratorBasicOutputTestSuite{};

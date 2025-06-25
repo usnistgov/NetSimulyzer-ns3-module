@@ -31,6 +31,7 @@
  * Author: Evan Black <evan.black@nist.gov>
  */
 
+#include "ns3/netsimulyzer-ns3-compatibility.h"
 #include "netsimulyzer-test-utils.h"
 
 #include "ns3/core-module.h"
@@ -250,10 +251,8 @@ class NetsimulyzerBuildingSuite : public TestSuite
 NetsimulyzerBuildingSuite::NetsimulyzerBuildingSuite()
     : TestSuite{"netsimulyzer-buildings"}
 {
-    using TestDuration = TestCase::TestDuration;
-
-    AddTestCase(new TestCaseDefaultBuilding{}, TestDuration::QUICK);
-    AddTestCase(new TestCaseBuildingBoundsRooms{}, TestDuration::QUICK);
+    AddTestCase(new TestCaseDefaultBuilding{}, TEST_DURATION_QUICK);
+    AddTestCase(new TestCaseBuildingBoundsRooms{}, TEST_DURATION_QUICK);
 };
 
 static NetsimulyzerBuildingSuite g_getsimulyzerBuildingSuite{};
