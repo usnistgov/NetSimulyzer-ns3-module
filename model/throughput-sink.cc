@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * NIST-developed software is provided by NIST as a public service. You may use,
  * copy and distribute copies of the software in any medium, provided that you
@@ -33,6 +32,7 @@
  */
 
 #include "throughput-sink.h"
+#include "netsimulyzer-ns3-compatibility.h"
 
 #include <ns3/double.h>
 #include <ns3/enum.h>
@@ -84,45 +84,51 @@ ThroughputSink::GetTypeId(void)
                           TimeValue(Seconds(1)),
                           MakeTimeAccessor(&ThroughputSink::SetInterval),
                           MakeTimeChecker())
-                            .AddAttribute("Unit",
-                                          "The unit for the throughput plot",
-                                          EnumValue(ThroughputSink::Unit::KBit),
-#ifndef NETSIMULYZER_PRE_NS3_41_ENUM_VALUE
-                                          MakeEnumAccessor<ThroughputSink::Unit>(&ThroughputSink::SetUnit),
-#else
-                                          MakeEnumAccessor(&ThroughputSink::SetUnit),
-#endif
-                                          MakeEnumChecker(
-                                              ThroughputSink::Bit, "b/s",
-                                              ThroughputSink::KBit, "kb/s",
-                                              ThroughputSink::MBit, "Mb/s",
-                                              ThroughputSink::GBit, "Gb/s",
-                                              ThroughputSink::Byte, "B/s",
-                                              ThroughputSink::KByte, "KB/s",
-                                              ThroughputSink::MByte, "MB/s",
-                                              ThroughputSink::GByte, "GB/s"))
-                            .AddAttribute("TimeUnit",
-                                          "The unit of time to use for the X axis",
-                                          EnumValue(Time::S),
-
-#ifndef NETSIMULYZER_PRE_NS3_41_ENUM_VALUE
-                                          MakeEnumAccessor<Time::Unit>(&ThroughputSink::SetTimeUnit,
-                                                           &ThroughputSink::GetTimeUnit),
-#else
-                                               MakeEnumAccessor(&ThroughputSink::SetTimeUnit,
-                                                                &ThroughputSink::GetTimeUnit),
-#endif
-                                          MakeEnumChecker(
-                                              Time::Unit::Y, "Year",
-                                              Time::Unit::D, "Day",
-                                              Time::Unit::H, "Hour",
-                                              Time::Unit::MIN, "Minute",
-                                              Time::Unit::S, "Second",
-                                              Time::Unit::MS, "Millisecond",
-                                              Time::Unit::US, "Microsecond",
-                                              Time::Unit::NS, "Nanosecond",
-                                              Time::Unit::PS, "Picosecond",
-                                              Time::Unit::FS, "Femtosecond"));
+            .AddAttribute("Unit",
+                          "The unit for the throughput plot",
+                          EnumValue(ThroughputSink::Unit::KBit),
+                          MakeEnumAccessorCompat<ThroughputSink::Unit>(&ThroughputSink::SetUnit),
+                          MakeEnumChecker(ThroughputSink::Bit,
+                                          "b/s",
+                                          ThroughputSink::KBit,
+                                          "kb/s",
+                                          ThroughputSink::MBit,
+                                          "Mb/s",
+                                          ThroughputSink::GBit,
+                                          "Gb/s",
+                                          ThroughputSink::Byte,
+                                          "B/s",
+                                          ThroughputSink::KByte,
+                                          "KB/s",
+                                          ThroughputSink::MByte,
+                                          "MB/s",
+                                          ThroughputSink::GByte,
+                                          "GB/s"))
+            .AddAttribute("TimeUnit",
+                          "The unit of time to use for the X axis",
+                          EnumValue(Time::S),
+                          MakeEnumAccessorCompat<Time::Unit>(&ThroughputSink::SetTimeUnit,
+                                                             &ThroughputSink::GetTimeUnit),
+                          MakeEnumChecker(Time::Unit::Y,
+                                          "Year",
+                                          Time::Unit::D,
+                                          "Day",
+                                          Time::Unit::H,
+                                          "Hour",
+                                          Time::Unit::MIN,
+                                          "Minute",
+                                          Time::Unit::S,
+                                          "Second",
+                                          Time::Unit::MS,
+                                          "Millisecond",
+                                          Time::Unit::US,
+                                          "Microsecond",
+                                          Time::Unit::NS,
+                                          "Nanosecond",
+                                          Time::Unit::PS,
+                                          "Picosecond",
+                                          Time::Unit::FS,
+                                          "Femtosecond"));
 
     return tid;
 }

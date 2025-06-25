@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * NIST-developed software is provided by NIST as a public service. You may use,
  * copy and distribute copies of the software in any medium, provided that you
@@ -31,6 +30,8 @@
  */
 
 #include "state-transition-sink.h"
+
+#include "netsimulyzer-ns3-compatibility.h"
 
 #include <ns3/boolean.h>
 #include <ns3/double.h>
@@ -94,42 +95,42 @@ StateTransitionSink::GetTypeId(void)
                           PointerValue(),
                           MakePointerAccessor(&StateTransitionSink::m_log),
                           MakePointerChecker<LogStream>())
-                            .AddAttribute("LoggingMode",
-                                          "Mode for connecting points within the series",
-                                          EnumValue(LoggingMode::StateChanges),
-#ifndef NETSIMULYZER_PRE_NS3_41_ENUM_VALUE
-                                          MakeEnumAccessor<LoggingMode>(&StateTransitionSink::SetLoggingMode,
-                                                           &StateTransitionSink::GetLoggingMode),
-#else
-                                           MakeEnumAccessor(&StateTransitionSink::SetLoggingMode,
-                                                            &StateTransitionSink::GetLoggingMode),
-#endif
-
-                                          MakeEnumChecker(
-                                              LoggingMode::StateChanges, "StateChanges",
-                                              LoggingMode::All, "All",
-                                              LoggingMode::None, "None"))
-                            .AddAttribute("TimeUnit",
-                                          "The unit of time to use for the X axis",
-                                          EnumValue(Time::S),
-#ifndef NETSIMULYZER_PRE_NS3_41_ENUM_VALUE
-                                          MakeEnumAccessor<Time::Unit>(&StateTransitionSink::SetTimeUnit,
-                                                           &StateTransitionSink::GetTimeUnit),
-#else
-                                               MakeEnumAccessor(&StateTransitionSink::SetTimeUnit,
-                                                                &StateTransitionSink::GetTimeUnit),
-#endif
-                                          MakeEnumChecker(
-                                              Time::Unit::Y, "Year",
-                                              Time::Unit::D, "Day",
-                                              Time::Unit::H, "Hour",
-                                              Time::Unit::MIN, "Minute",
-                                              Time::Unit::S, "Second",
-                                              Time::Unit::MS, "Millisecond",
-                                              Time::Unit::US, "Microsecond",
-                                              Time::Unit::NS, "Nanosecond",
-                                              Time::Unit::PS, "Picosecond",
-                                              Time::Unit::FS,"Femtosecond"));
+            .AddAttribute("LoggingMode",
+                          "Mode for connecting points within the series",
+                          EnumValue(LoggingMode::StateChanges),
+                          MakeEnumAccessorCompat<LoggingMode>(&StateTransitionSink::SetLoggingMode,
+                                                              &StateTransitionSink::GetLoggingMode),
+                          MakeEnumChecker(LoggingMode::StateChanges,
+                                          "StateChanges",
+                                          LoggingMode::All,
+                                          "All",
+                                          LoggingMode::None,
+                                          "None"))
+            .AddAttribute("TimeUnit",
+                          "The unit of time to use for the X axis",
+                          EnumValue(Time::S),
+                          MakeEnumAccessorCompat<Time::Unit>(&StateTransitionSink::SetTimeUnit,
+                                                             &StateTransitionSink::GetTimeUnit),
+                          MakeEnumChecker(Time::Unit::Y,
+                                          "Year",
+                                          Time::Unit::D,
+                                          "Day",
+                                          Time::Unit::H,
+                                          "Hour",
+                                          Time::Unit::MIN,
+                                          "Minute",
+                                          Time::Unit::S,
+                                          "Second",
+                                          Time::Unit::MS,
+                                          "Millisecond",
+                                          Time::Unit::US,
+                                          "Microsecond",
+                                          Time::Unit::NS,
+                                          "Nanosecond",
+                                          Time::Unit::PS,
+                                          "Picosecond",
+                                          Time::Unit::FS,
+                                          "Femtosecond"));
 
     return tid;
 }

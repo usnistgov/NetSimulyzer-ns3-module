@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * NIST-developed software is provided by NIST as a public service. You may use,
  * copy and distribute copies of the software in any medium, provided that you
@@ -38,6 +37,7 @@
 #include "color.h"
 #include "log-stream.h"
 #include "logical-link.h"
+#include "netsimulyzer-ns3-compatibility.h"
 #include "netsimulyzer-version.h"
 #include "node-configuration.h"
 #include "optional.h"
@@ -188,33 +188,28 @@ pointToObject(double x, double y)
 nlohmann::json
 makeAxisAttributes(ns3::Ptr<ns3::netsimulyzer::ValueAxis> axis)
 {
+    using namespace ns3;
+    using namespace netsimulyzer;
+
     nlohmann::json element;
 
-    ns3::StringValue name;
+    StringValue name;
     axis->GetAttribute("Name", name);
     element["name"] = name.Get();
 
-    ns3::DoubleValue min;
+    DoubleValue min;
     axis->GetAttribute("Minimum", min);
     element["min"] = min.Get();
 
-    ns3::DoubleValue max;
+    DoubleValue max;
     axis->GetAttribute("Maximum", max);
     element["max"] = max.Get();
 
-#ifndef NETSIMULYZER_PRE_NS3_41_ENUM_VALUE
-    ns3::EnumValue<ns3::netsimulyzer::ValueAxis::Scale> scaleMode;
-#else
-    ns3::EnumValue scaleMode;
-#endif
+    auto scaleMode = MakeEnumValueCompat<ValueAxis::Scale>();
     axis->GetAttribute("Scale", scaleMode);
     element["scale"] = ScaleToString(scaleMode.Get());
 
-#ifndef NETSIMULYZER_PRE_NS3_41_ENUM_VALUE
-    ns3::EnumValue<ns3::netsimulyzer::ValueAxis::BoundMode> boundMode;
-#else
-    ns3::EnumValue boundMode;
-#endif
+    auto boundMode = MakeEnumValueCompat<ValueAxis::BoundMode>();
     axis->GetAttribute("BoundMode", boundMode);
     element["bound-mode"] = BoundModeToString(boundMode.Get());
 
@@ -304,7 +299,7 @@ Orchestrator::GetTypeId(void)
                          MakeOptionalAccessor<int> (&Orchestrator::GetTimeStepCompat,
                                                     &Orchestrator::SetTimeStepCompat),
                          MakeOptionalChecker<int> (),
-                         TypeId::DEPRECATED,
+                         DEPRECATED_SUPPORT,
                           "Please use `SetTimeStep()` instead")
           .AddAttribute ("MobilityPollInterval", "How often to poll Nodes for their position",
                          TimeValue (MilliSeconds (100)),
@@ -771,11 +766,7 @@ Orchestrator::SetupSimulation(void)
         area->GetAttribute("Height", height);
         element["height"] = height.Get();
 
-#ifndef NETSIMULYZER_PRE_NS3_41_ENUM_VALUE
-        EnumValue<RectangularArea::DrawMode> fillMode;
-#else
-        EnumValue fillMode;
-#endif
+        auto fillMode = MakeEnumValueCompat<RectangularArea::DrawMode>();
         area->GetAttribute("Fill", fillMode);
 
         switch (fillMode.Get())
@@ -791,11 +782,7 @@ Orchestrator::SetupSimulation(void)
             break;
         }
 
-#ifndef NETSIMULYZER_PRE_NS3_41_ENUM_VALUE
-        EnumValue<RectangularArea::DrawMode> borderMode;
-#else
-        EnumValue borderMode;
-#endif
+        auto borderMode = MakeEnumValueCompat<RectangularArea::DrawMode>();
         area->GetAttribute("Border", borderMode);
 
         switch (borderMode.Get())
@@ -1238,11 +1225,7 @@ Orchestrator::Commit(XYSeries& series)
     series.GetAttribute("Visible", visible);
     element["visible"] = visible.Get();
 
-#ifndef NETSIMULYZER_PRE_NS3_41_ENUM_VALUE
-    EnumValue<XYSeries::ConnectionType> connection;
-#else
-    EnumValue connection;
-#endif
+    auto connection = MakeEnumValueCompat<XYSeries::ConnectionType>();
     series.GetAttribute("Connection", connection);
     switch (connection.Get())
     {
@@ -1282,11 +1265,7 @@ Orchestrator::Commit(XYSeries& series)
         break;
     }
 
-#ifndef NETSIMULYZER_PRE_NS3_41_ENUM_VALUE
-    EnumValue<XYSeries::LabelMode> labelMode;
-#else
-    EnumValue labelMode;
-#endif
+    auto labelMode = MakeEnumValueCompat<XYSeries::LabelMode>();
     series.GetAttribute("LabelMode", labelMode);
     switch (labelMode.Get())
     {
@@ -1298,11 +1277,7 @@ Orchestrator::Commit(XYSeries& series)
         break;
     }
 
-#ifndef NETSIMULYZER_PRE_NS3_41_ENUM_VALUE
-    EnumValue<XYSeries::PointMode> pointMode;
-#else
-    EnumValue pointMode;
-#endif
+    auto pointMode = MakeEnumValueCompat<XYSeries::PointMode>();
     series.GetAttribute("PointMode", pointMode);
 
     switch (pointMode.Get())

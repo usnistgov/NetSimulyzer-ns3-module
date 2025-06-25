@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * NIST-developed software is provided by NIST as a public service. You may use,
  * copy and distribute copies of the software in any medium, provided that you
@@ -33,13 +32,13 @@
 #ifndef CATEGORY_VALUE_SERIES_H
 #define CATEGORY_VALUE_SERIES_H
 
-#include <ns3/category-axis.h>
-#include <ns3/color.h>
-#include <ns3/deprecated.h>
-#include <ns3/object.h>
-#include <ns3/orchestrator.h>
-#include <ns3/ptr.h>
-#include <ns3/value-axis.h>
+#include "category-axis.h"
+#include "color.h"
+#include "orchestrator.h"
+#include "value-axis.h"
+
+#include "ns3/object.h"
+#include "ns3/ptr.h"
 
 #include <cstdint>
 #include <string>

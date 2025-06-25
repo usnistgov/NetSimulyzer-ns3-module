@@ -34,9 +34,11 @@
 
 #include "ecdf-sink.h"
 
-#include <ns3/double.h>
-#include <ns3/enum.h>
-#include <ns3/nstime.h>
+#include "netsimulyzer-ns3-compatibility.h"
+
+#include "ns3/double.h"
+#include "ns3/enum.h"
+#include "ns3/nstime.h"
 
 #include <algorithm>
 
@@ -85,13 +87,8 @@ EcdfSink::GetTypeId(void)
             .AddAttribute("Connection",
                           "Type of connection to form between points in the series",
                           EnumValue(XYSeries::ConnectionType::Line),
-#ifndef NETSIMULYZER_PRE_NS3_41_ENUM_VALUE
-                          MakeEnumAccessor<XYSeries::ConnectionType>(&EcdfSink::SetConnectionType,
+                          MakeEnumAccessorCompat<XYSeries::ConnectionType>(&EcdfSink::SetConnectionType,
                                                                     &EcdfSink::GetConnectionType),
-#else
-                          MakeEnumAccessor(&EcdfSink::SetConnectionType,
-                                           &EcdfSink::GetConnectionType),
-#endif
                           MakeEnumChecker(
                               XYSeries::ConnectionType::None, "None",
                               XYSeries::ConnectionType::Line, "Line",
@@ -99,11 +96,7 @@ EcdfSink::GetTypeId(void)
             .AddAttribute("FlushMode",
                           "When to write the changes to the graph",
                           EnumValue(EcdfSink::FlushMode::OnWrite),
-#ifndef NETSIMULYZER_PRE_NS3_41_ENUM_VALUE
-                          MakeEnumAccessor<EcdfSink::FlushMode>(&EcdfSink::SetFlushMode, &EcdfSink::GetFlushMode),
-#else
-                          MakeEnumAccessor(&EcdfSink::SetFlushMode, &EcdfSink::GetFlushMode),
-#endif
+                          MakeEnumAccessorCompat<EcdfSink::FlushMode>(&EcdfSink::SetFlushMode, &EcdfSink::GetFlushMode),
                           MakeEnumChecker(
                               EcdfSink::FlushMode::OnWrite, "OnWrite",
                               EcdfSink::FlushMode::Interval, "Interval",
@@ -172,15 +165,12 @@ EcdfSink::SetFlushMode(EcdfSink::FlushMode mode)
 XYSeries::ConnectionType
 EcdfSink::GetConnectionType(void) const
 {
-#ifndef NETSIMULYZER_PRE_NS3_41_ENUM_VALUE
-    EnumValue<XYSeries::ConnectionType> connectionType;
+    auto connectionType = MakeEnumValueCompat<XYSeries::ConnectionType>();
     m_series->GetAttribute("Connection", connectionType);
 
+#if NETSIMULYZER_NS3_VERSION >= 41
     return connectionType.Get();
 #else
-    EnumValue connectionType;
-    m_series->GetAttribute("Connection", connectionType);
-
     return static_cast<XYSeries::ConnectionType>(connectionType.Get());
 #endif
 }
@@ -247,11 +237,7 @@ EcdfSink::Flush(void)
     m_series->Clear();
     double total = 0.0;
 
-#ifndef NETSIMULYZER_PRE_NS3_41_ENUM_VALUE
-    EnumValue<XYSeries::ConnectionType> connectionMode;
-#else
-    EnumValue connectionMode;
-#endif
+    auto connectionMode = MakeEnumValueCompat<XYSeries::ConnectionType>();
     m_series->GetAttribute("Connection", connectionMode);
 
     if (connectionMode.Get() == XYSeries::ConnectionType::None)

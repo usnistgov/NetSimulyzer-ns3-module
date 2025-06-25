@@ -9,6 +9,10 @@ def configure(conf):
     # `waf` was only ever used pre ns-3.41,
     # so we always flag for compatability here
     conf.define("NETSIMULYZER_PRE_NS3_41_ENUM_VALUE", 1, True, 'Use pre ns-3.41 EnumValue compatability')
+
+    # Waf is not used post ns-3.36
+    # and we only have compatibility checks for < ns-3.40
+    conf.define("NETSIMULYZER_NS3_VERSION", 36, True, 'Version of ns-3 the NetSimulyzer is build for')
     conf.env['HAS_NETSIMULYZER'] = True
     conf.env.append_value('CXXFLAGS', '-std=c++17')
 
@@ -61,6 +65,7 @@ def build(bld):
         'model/log-stream.h',
         'model/logical-link.h',
         'model/netsimulyzer-3D-models.h',
+        'model/netsimulyzer-ns3-compatibility.h',
         'model/netsimulyzer-version.h',
         'model/node-configuration.h',
         'model/optional.h',

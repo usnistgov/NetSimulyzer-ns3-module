@@ -27,39 +27,87 @@
 # cause risk of injury or damage to property. The software developed by NIST
 # employees is not subject to copyright protection within the United States.
 
+# ----- User options -----
 option(NETSIMULYZER_PRE_NS3_41_ENUM_VALUE "Force compatibility with ns-3 versions before ns-3.41" OFF)
+option(NETSIMULYZER_CRASH_HANDLER "Adds a crash handler that writes NetSimulyzer output on an irregular exit of the program" ON)
 
-# ns-3.41 is tagged at e5039092b3bb5d7942d973cc1016eaa60bdce51c
-#
-# Note: This doesn't handle squash merges, or some other
-# way out there out of tree stuff
-# See: `NETSIMULYZER_PRE_NS3_41_ENUM_VALUE` option for that
-execute_process(COMMAND "git" "merge-base" "--is-ancestor" "e5039092b3bb5d7942d973cc1016eaa60bdce51c" "HEAD"
-        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-        RESULT_VARIABLE NETSIMULYZER_USE_ENUM_COMPAT
-)
+find_package (Git)
+# Find grep, just in case we need it for version detection later
+find_program(NETSIMULYZER_GREP "grep")
 
-# Handling for if `git` is not installed
-# Hope this string is well defined...
-#
-# `128` is the `git` return code for a non-git repo
-if (${NETSIMULYZER_USE_ENUM_COMPAT} STREQUAL "no such file or directory" OR ${NETSIMULYZER_USE_ENUM_COMPAT} EQUAL 128)
+# ----- ns-3 version detection -----
+
+# Manually specified ns-3 version, no need to autodetect
+if (DEFINED ENV{NETSIMULYZER_NS3_VERSION})
+    set(NETSIMULYZER_NS3_VERSION "$ENV{NETSIMULYZER_NS3_VERSION}" CACHE STRING "Detected ns-3 version")
+
+    # Strip the "ns-3." off of the version number
+    string(REPLACE "ns-3." "" NETSIMULYZER_NS3_VERSION "${NETSIMULYZER_NS3_VERSION}")
+
+    if (NOT NETSIMULYZER_NS3_VERSION MATCHES "^[0-9]+$")
+        message(FATAL_ERROR "Environment variable `NETSIMULYZER_NS3_VERSION` in incorrect format, got `$ENV{NETSIMULYZER_NS3_VERSION}` expected: `ns-3.xx` e.g. `ns-3.45` or just `45`")
+    endif ()
+
+# We're on a fixed ns-3 release
+elseif (DEFINED NS3_VER AND NOT "${NS3_VER}" STREQUAL "3-dev")
+    set(NETSIMULYZER_NS3_VERSION "${NS3_VER}" CACHE STRING "Detected ns-3 version")
+    string(REPLACE "3." "" NETSIMULYZER_NS3_VERSION "${NETSIMULYZER_NS3_VERSION}")
+
+# Not manually specified ns-3 version, try and detect from git tags
+elseif (GIT_FOUND)
+    # Get ns-3 version tags
+    # Hopefully not muddied by other project versions
+    execute_process(COMMAND "git" "tag" "--list" "ns-3.*" "--sort" "-version:refname"
+            WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+            OUTPUT_VARIABLE NETSIMULYZER_DETECTED_NS3_VERSIONS
+            COMMAND_ECHO STDERR
+    )
+
+    string(REPLACE "ns-3." "" NETSIMULYZER_DETECTED_NS3_VERSIONS "${NETSIMULYZER_DETECTED_NS3_VERSIONS}")
+    # Convert to CMake list & sort
+    # so the highest number is first
+    # Use `NATURAL` sorting to handle double digit numbers and decimals
+    string(REPLACE "\n" ";" NETSIMULYZER_DETECTED_NS3_VERSIONS "${NETSIMULYZER_DETECTED_NS3_VERSIONS}")
+    list(SORT NETSIMULYZER_DETECTED_NS3_VERSIONS COMPARE NATURAL ORDER DESCENDING)
+    list(GET NETSIMULYZER_DETECTED_NS3_VERSIONS 0 NETSIMULYZER_DETECTED_NS3_VERSION)
+
+    set(NETSIMULYZER_NS3_VERSION "${NETSIMULYZER_DETECTED_NS3_VERSION}" CACHE STRING "Detected ns-3 version")
+elseif (NETSIMULYZER_GREP)
+    # Last resort version detection
     # Huge hack for tar ball ns-3 installs
     # If they don't have `grep` either,
     # then I'm out of options
-    execute_process(COMMAND "grep" "-w" "EnumValue(int value)" "src/core/model/enum.h"
+    #
+    # grep 'deprecated.h' for the highest number we can get
+    execute_process(COMMAND "grep" "--only-matching" "--extended-regexp" "NS_DEPRECATED_3_[0-9]+" "src/core/model/deprecated.h"
             WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-            RESULT_VARIABLE NETSIMULYZER_USE_ENUM_COMPAT_GREP)
-    # `grep` returns `0` on match
-    if (${NETSIMULYZER_USE_ENUM_COMPAT_GREP} EQUAL 0)
-        set(NETSIMULYZER_USE_ENUM_COMPAT 1)
-    endif ()
+            OUTPUT_VARIABLE NETSIMULYZER_DEPRECATED_GREP)
+
+    # Strip the 'NS_DEPRECATED_3_' off of the macros
+    # so we should have something like: "45\n,44\n43..."
+    string(REPLACE "NS_DEPRECATED_3_" "" NETSIMULYZER_DEPRECATED_GREP "${NETSIMULYZER_DEPRECATED_GREP}")
+    # Convert to CMake list & sort
+    # so the highest number is first
+    # Use `NATURAL` sorting to handle double digit numbers and decimals
+    string(REPLACE "\n" ";" NETSIMULYZER_DEPRECATED_GREP "${NETSIMULYZER_DEPRECATED_GREP}")
+    list(SORT NETSIMULYZER_DEPRECATED_GREP COMPARE NATURAL ORDER DESCENDING)
+    list(GET NETSIMULYZER_DEPRECATED_GREP 0 NETSIMULYZER_DETECTED_NS3_VERSION)
+
+    set(NETSIMULYZER_NS3_VERSION "${NETSIMULYZER_DETECTED_NS3_VERSION}" CACHE STRING "Detected ns-3 version")
 endif ()
 
-if (${NETSIMULYZER_PRE_NS3_41_ENUM_VALUE} OR ${NETSIMULYZER_USE_ENUM_COMPAT} EQUAL 1)
+
+if (NOT NETSIMULYZER_NS3_VERSION AND NOT NETSIMULYZER_NS3_VERSION MATCHES "^[0-9]+$")
+    message(FATAL_ERROR "NetSimulyzer: Failed to detect ns-3 version, please specify the `NETSIMULYZER_NS3_VERSION` environment variable in the form: 'ns-3.xx' e.g 'ns-3.45'")
+endif ()
+
+add_compile_definitions(NETSIMULYZER_NS3_VERSION=${NETSIMULYZER_NS3_VERSION})
+
+if (${NETSIMULYZER_PRE_NS3_41_ENUM_VALUE} OR ${NETSIMULYZER_NS3_VERSION} LESS 41)
     add_compile_definitions(NETSIMULYZER_PRE_NS3_41_ENUM_VALUE)
 endif ()
 
+# ----- Set up model source files -----
 
 build_lib(
   LIBNAME netsimulyzer
@@ -102,6 +150,7 @@ build_lib(
     model/log-stream.h
     model/logical-link.h
     model/netsimulyzer-3D-models.h
+    model/netsimulyzer-ns3-compatibility.h
     model/netsimulyzer-version.h
     model/node-configuration.h
     model/optional.h
@@ -134,12 +183,14 @@ build_lib(
         test/test-orchestrator-outputs.cc
 )
 
+# ----- Compiler Defines -----
+
 target_compile_definitions(${libnetsimulyzer} PUBLIC HAS_NETSIMULYZER)
 
-option(NETSIMULYZER_CRASH_HANDLER "Adds a crash handler that writes NetSimulyzer output on an irregular exit of the program" ON)
 if (NETSIMULYZER_CRASH_HANDLER)
     add_compile_definitions(NETSIMULYZER_CRASH_HANDLER) # TODO: target_compile_definitions _should_ work here, but it doesn't
 endif ()
 
+# ----- CMake Define for model detection -----
 # This seems to only work with core modules if it's a cached value
 set(HAS_NETSIMULYZER TRUE CACHE BOOL "NetSimulyzer ns-3 module")
