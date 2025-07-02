@@ -1,19 +1,7 @@
-/* -*-  Mode: C++; c-file-style: "gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2018 Fraunhofer ESK
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License version 2 as
- * published by the Free Software Foundation;
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * SPDX-License-Identifier: GPL-2.0-only
  *
  * Author: Vignesh Babu <ns3-dev@esk.fraunhofer.de>
  * Modified by: NIST // Contributions may not be subject to US copyright.
@@ -39,20 +27,19 @@
 
 using namespace ns3;
 
-NS_LOG_COMPONENT_DEFINE("LenaRadioLinkFailureNetSimulyzer");
+NS_LOG_COMPONENT_DEFINE("LenaRadioLinkFailure");
 
 // Global values to check the simulation
 // behavior during and after the simulation.
-uint16_t counterN310FirsteNB = 0;
-Time t310StartTimeFirstEnb = Seconds(0);
-uint32_t ByteCounter = 0;
-uint32_t oldByteCounter = 0;
+uint16_t counterN310FirsteNB = 0; //!< Counter of N310 indications.
+Time t310StartTimeFirstEnb;       //!< Time of first N310 indication.
+uint32_t ByteCounter = 0;         //!< Byte counter.
+uint32_t oldByteCounter = 0;      //!< Old Byte counter,
 
 #ifdef HAS_NETSIMULYZER
 // Configuration parameters
 bool enableVisualization = true;
 double guiResolution = 20; // refresh time in ms
-
 // Visualizer components
 Ptr<netsimulyzer::Orchestrator> orchestrator = nullptr;
 Ptr<netsimulyzer::LogStream> applicationLog = nullptr;
@@ -144,10 +131,15 @@ NotifyReportUeMeasurements(std::string path,
 }
 #endif
 
+/**
+ * Print the position of a UE with given IMSI.
+ *
+ * @param imsi The IMSI.
+ */
 void
 PrintUePosition(uint64_t imsi)
 {
-    for (NodeList::Iterator it = NodeList::Begin(); it != NodeList::End(); ++it)
+    for (auto it = NodeList::Begin(); it != NodeList::End(); ++it)
     {
         Ptr<Node> node = *it;
         int nDevs = node->GetNDevices();
@@ -167,25 +159,33 @@ PrintUePosition(uint64_t imsi)
     }
 }
 
+/**
+ * UE Notify connection established.
+ *
+ * @param context The context.
+ * @param imsi The IMSI.
+ * @param cellid The Cell ID.
+ * @param rnti The RNTI.
+ */
 void
 NotifyConnectionEstablishedUe(std::string context, uint64_t imsi, uint16_t cellid, uint16_t rnti)
 {
-    std::cout << Simulator::Now().GetSeconds() << " " << context << " UE IMSI " << imsi
+    std::cout << Simulator::Now().As(Time::S) << " " << context << " UE IMSI " << imsi
               << ": connected to cell id " << cellid << " with RNTI " << rnti << std::endl;
-
-#ifdef HAS_NETSIMULYZER
-    if (enableVisualization)
-    {
-        *ueLog << Simulator::Now().GetSeconds() << " " << context << " UE IMSI " << imsi
-               << ": connected to cell id " << cellid << " with RNTI " << rnti;
-    }
-#endif
 }
 
+/**
+ * eNB Notify connection established.
+ *
+ * @param context The context.
+ * @param imsi The IMSI.
+ * @param cellId The Cell ID.
+ * @param rnti The RNTI.
+ */
 void
 NotifyConnectionEstablishedEnb(std::string context, uint64_t imsi, uint16_t cellId, uint16_t rnti)
 {
-    std::cout << Simulator::Now().GetSeconds() << " " << context << " eNB cell id " << cellId
+    std::cout << Simulator::Now().As(Time::S) << " " << context << " eNB cell id " << cellId
               << ": successful connection of UE with IMSI " << imsi << " RNTI " << rnti
               << std::endl;
     // In this example, a UE should experience RLF at least one time in
@@ -225,15 +225,14 @@ static const std::string g_ueRrcStateName[LteUeRrc::NUM_STATES] = {"IDLE_START",
                                                                    "CONNECTED_REESTABLISHING"};
 
 /**
- * \param s The UE RRC state.
- * \return The string representation of the given state.
+ * UE state transition tracer.
+ *
+ * @param imsi The IMSI.
+ * @param cellId The Cell ID.
+ * @param rnti The RNTI.
+ * @param oldState The old state.
+ * @param newState The new state.
  */
-static const std::string&
-ToString(LteUeRrc::State s)
-{
-    return g_ueRrcStateName[s];
-}
-
 void
 UeStateTransition(uint64_t imsi,
                   uint16_t cellId,
@@ -241,9 +240,10 @@ UeStateTransition(uint64_t imsi,
                   LteUeRrc::State oldState,
                   LteUeRrc::State newState)
 {
-    std::cout << Simulator::Now().GetSeconds() << " UE with IMSI " << imsi << " RNTI " << rnti
-              << " connected to cell " << cellId << " transitions from " << ToString(oldState)
-              << " to " << ToString(newState) << std::endl;
+    std::cout << Simulator::Now().As(Time::S) << " UE with IMSI " << imsi << " RNTI " << rnti
+              << " connected to cell " << cellId << " transitions from " << oldState << " to "
+              << newState << std::endl;
+
 #ifdef HAS_NETSIMULYZER
     if (enableVisualization)
     {
@@ -254,10 +254,18 @@ UeStateTransition(uint64_t imsi,
 #endif
 }
 
+/**
+ * eNB RRC timeout tracer.
+ *
+ * @param imsi The IMSI.
+ * @param rnti The RNTI.
+ * @param cellId The Cell ID.
+ * @param cause The reason for timeout.
+ */
 void
 EnbRrcTimeout(uint64_t imsi, uint16_t rnti, uint16_t cellId, std::string cause)
 {
-    std::cout << Simulator::Now().GetSeconds() << " IMSI " << imsi << ", RNTI " << rnti
+    std::cout << Simulator::Now().As(Time::S) << " IMSI " << imsi << ", RNTI " << rnti
               << ", Cell id " << cellId << ", ENB RRC " << cause << std::endl;
 #ifdef HAS_NETSIMULYZER
     if (enableVisualization)
@@ -268,20 +276,30 @@ EnbRrcTimeout(uint64_t imsi, uint16_t rnti, uint16_t cellId, std::string cause)
 #endif
 }
 
+/**
+ * Notification of connection release at eNB.
+ *
+ * @param imsi The IMSI.
+ * @param cellId The Cell ID.
+ * @param rnti The RNTI.
+ */
 void
 NotifyConnectionReleaseAtEnodeB(uint64_t imsi, uint16_t cellId, uint16_t rnti)
 {
     std::cout << Simulator::Now() << " IMSI " << imsi << ", RNTI " << rnti << ", Cell id " << cellId
               << ", UE context destroyed at eNodeB" << std::endl;
-#ifdef HAS_NETSIMULYZER
-    if (enableVisualization)
-    {
-        *enbLog << Simulator::Now().GetSeconds() << " IMSI " << imsi << ", RNTI " << rnti
-                << ", Cell id " << cellId << ", UE context destroyed at eNodeB";
-    }
-#endif
 }
 
+/**
+ * PHY sync detection tracer.
+ *
+ * @param n310 310 data.
+ * @param imsi The IMSI.
+ * @param rnti The RNTI.
+ * @param cellId The Cell ID.
+ * @param type The type.
+ * @param count The count.
+ */
 void
 PhySyncDetection(uint16_t n310,
                  uint64_t imsi,
@@ -290,7 +308,7 @@ PhySyncDetection(uint16_t n310,
                  std::string type,
                  uint8_t count)
 {
-    std::cout << Simulator::Now().GetSeconds() << " IMSI " << imsi << ", RNTI " << rnti
+    std::cout << Simulator::Now().As(Time::S) << " IMSI " << imsi << ", RNTI " << rnti
               << ", Cell id " << cellId << ", " << type << ", no of sync indications: " << +count
               << std::endl;
 
@@ -305,6 +323,14 @@ PhySyncDetection(uint16_t n310,
     }
 }
 
+/**
+ * Radio link failure tracer.
+ *
+ * @param t310 310 data.
+ * @param imsi The IMSI.
+ * @param cellId The Cell ID.
+ * @param rnti The RNTI.
+ */
 void
 RadioLinkFailure(Time t310, uint64_t imsi, uint16_t cellId, uint16_t rnti)
 {
@@ -319,19 +345,19 @@ RadioLinkFailure(Time t310, uint64_t imsi, uint16_t cellId, uint16_t rnti)
         NS_ABORT_MSG_IF((Simulator::Now() - t310StartTimeFirstEnb) != t310,
                         "T310 timer expired at wrong time");
     }
-#ifdef HAS_NETSIMULYZER
-    if (enableVisualization)
-    {
-        *ueLog << Simulator::Now().GetSeconds() << " IMSI " << imsi << ", RNTI " << rnti
-               << ", Cell id " << cellId << ", radio link failure detected";
-    }
-#endif
 }
 
+/**
+ * UE Random access error notification.
+ *
+ * @param imsi The IMSI.
+ * @param cellId The Cell ID.
+ * @param rnti The RNTI.
+ */
 void
 NotifyRandomAccessErrorUe(uint64_t imsi, uint16_t cellId, uint16_t rnti)
 {
-    std::cout << Simulator::Now().GetSeconds() << " IMSI " << imsi << ", RNTI " << rnti
+    std::cout << Simulator::Now().As(Time::S) << " IMSI " << imsi << ", RNTI " << rnti
               << ", Cell id " << cellId << ", UE RRC Random access Failed" << std::endl;
 #ifdef HAS_NETSIMULYZER
     if (enableVisualization)
@@ -342,10 +368,18 @@ NotifyRandomAccessErrorUe(uint64_t imsi, uint16_t cellId, uint16_t rnti)
 #endif
 }
 
+/**
+ * UE Connection timeout notification.
+ *
+ * @param imsi The IMSI.
+ * @param cellId The Cell ID.
+ * @param rnti The RNTI.
+ * @param connEstFailCount Connection failure count.
+ */
 void
 NotifyConnectionTimeoutUe(uint64_t imsi, uint16_t cellId, uint16_t rnti, uint8_t connEstFailCount)
 {
-    std::cout << Simulator::Now().GetSeconds() << " IMSI " << imsi << ", RNTI " << rnti
+    std::cout << Simulator::Now().As(Time::S) << " IMSI " << imsi << ", RNTI " << rnti
               << ", Cell id " << cellId << ", T300 expiration counter "
               << (uint16_t)connEstFailCount << ", UE RRC Connection timeout" << std::endl;
 #ifdef HAS_NETSIMULYZER
@@ -358,13 +392,21 @@ NotifyConnectionTimeoutUe(uint64_t imsi, uint16_t cellId, uint16_t rnti, uint8_t
 #endif
 }
 
+/**
+ * UE RA response timeout notification.
+ *
+ * @param imsi The IMSI.
+ * @param contention Contention flag.
+ * @param preambleTxCounter Preamble Tx counter.
+ * @param maxPreambleTxLimit Max preamble Ts limit.
+ */
 void
 NotifyRaResponseTimeoutUe(uint64_t imsi,
                           bool contention,
                           uint8_t preambleTxCounter,
                           uint8_t maxPreambleTxLimit)
 {
-    std::cout << Simulator::Now().GetSeconds() << " IMSI " << imsi << ", Contention flag "
+    std::cout << Simulator::Now().As(Time::S) << " IMSI " << imsi << ", Contention flag "
               << contention << ", preamble Tx Counter " << (uint16_t)preambleTxCounter
               << ", Max Preamble Tx Limit " << (uint16_t)maxPreambleTxLimit
               << ", UE RA response timeout" << std::endl;
@@ -380,10 +422,13 @@ NotifyRaResponseTimeoutUe(uint64_t imsi,
         orchestrator->Flush();
     }
 #endif
-
-    NS_FATAL_ERROR("NotifyRaResponseTimeoutUe");
 }
 
+/**
+ * Receive a packet.
+ *
+ * @param packet The packet.
+ */
 void
 ReceivePacket(Ptr<const Packet> packet, const Address&)
 {
@@ -396,24 +441,32 @@ ReceivePacket(Ptr<const Packet> packet, const Address&)
 #endif
 }
 
+/**
+ * Write the throughput to file.
+ *
+ * @param firstWrite True if first time writing.
+ * @param binSize Bin size.
+ * @param fileName Output filename.
+ */
 void
 Throughput(bool firstWrite, Time binSize, std::string fileName)
 {
     std::ofstream output;
 
-    if (firstWrite == true)
+    if (firstWrite)
     {
-        output.open(fileName.c_str(), std::ofstream::out);
+        output.open(fileName, std::ofstream::out);
         firstWrite = false;
     }
     else
     {
-        output.open(fileName.c_str(), std::ofstream::app);
+        output.open(fileName, std::ofstream::app);
     }
 
     // Instantaneous throughput every 200 ms
+
     double throughput = (ByteCounter - oldByteCounter) * 8 / binSize.GetSeconds() / 1024 / 1024;
-    output << Simulator::Now().GetSeconds() << " " << throughput << std::endl;
+    output << Simulator::Now().As(Time::S) << " " << throughput << std::endl;
     oldByteCounter = ByteCounter;
     Simulator::Schedule(binSize, &Throughput, firstWrite, binSize, fileName);
 }
@@ -431,7 +484,7 @@ Throughput(bool firstWrite, Time binSize, std::string fileName)
  *
  * The example can be run as follows:
  *
- * ./waf --run "lena-radio-link-failure --numberOfEnbs=1 --simTime=25"
+ * ./ns3 run "lena-radio-link-failure --numberOfEnbs=1 --simTime=25"
  */
 int
 main(int argc, char* argv[])
@@ -466,7 +519,7 @@ main(int argc, char* argv[])
 
     if (enableNsLogs)
     {
-        LogLevel logLevel =
+        auto logLevel =
             (LogLevel)(LOG_PREFIX_FUNC | LOG_PREFIX_NODE | LOG_PREFIX_TIME | LOG_LEVEL_ALL);
         LogComponentEnable("LteUeRrc", logLevel);
         LogComponentEnable("LteUeMac", logLevel);
@@ -621,7 +674,7 @@ main(int argc, char* argv[])
 
     Time udpInterval = Seconds(interPacketInterval);
 
-    NS_LOG_DEBUG("UDP will use application interval " << udpInterval.GetSeconds() << " sec");
+    NS_LOG_DEBUG("UDP will use application interval " << udpInterval.As(Time::S) << " sec");
 
     for (uint32_t u = 0; u < numberOfUes; ++u)
     {
@@ -687,7 +740,7 @@ main(int argc, char* argv[])
                 Simulator::Schedule(Seconds(0.27), &WriteApplicationLog, oss.str());
             }
 #endif
-        } // end for b
+        }
     }
     NS_LOG_INFO("Enable Lte traces and connect custom trace sinks");
 
@@ -731,7 +784,7 @@ main(int argc, char* argv[])
     Config::ConnectWithoutContext(oss.str(), MakeCallback(&ReceivePacket));
 
     bool firstWrite = true;
-    std::string rrcType = useIdealRrc == 1 ? "ideal_rrc" : "real_rrc";
+    std::string rrcType = useIdealRrc ? "ideal_rrc" : "real_rrc";
     std::string fileName = "rlf_dl_thrput_" + std::to_string(enbNodes.GetN()) + "_eNB_" + rrcType;
     Time binSize = Seconds(0.2);
     Simulator::Schedule(Seconds(0.47), &Throughput, firstWrite, binSize, fileName);
