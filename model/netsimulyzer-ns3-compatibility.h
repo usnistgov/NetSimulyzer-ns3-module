@@ -31,86 +31,80 @@
  * Author: Evan Black <evan.black@nist.gov>
  */
 
-#ifndef EVENT_MESSAGE_H
-#define EVENT_MESSAGE_H
+#ifndef NETSIMULYZER_NS3_COMPATIBILITY_H
+#define NETSIMULYZER_NS3_COMPATIBILITY_H
 
-#include "color-palette.h"
-#include "color.h"
+#include "ns3/core-module.h"
+#include "ns3/test.h"
 
-#include "ns3/nstime.h"
-#include "ns3/vector.h"
-
-#include <cstdint>
-#include <optional>
+#ifndef NETSIMULYZER_NS3_VERSION
+static_assert(
+    false,
+    "NetSimulyzer: Failed to detect ns-3 version, please specify the `NETSIMULYZER_NS3_VERSION` "
+    "environment variable in the form: 'ns-3.xx' e.g 'ns-3.45'");
+#endif
 
 namespace ns3::netsimulyzer
 {
+constexpr auto DEPRECATED_SUPPORT =
+#if NETSIMULYZER_NS3_VERSION > 44
+    TypeId::SupportLevel::DEPRECATED;
+#else
+    TypeId::DEPRECATED;
+#endif
 
-struct CourseChangeEvent
+constexpr auto TEST_DURATION_QUICK =
+#if NETSIMULYZER_NS3_VERSION > 42
+    TestCase::Duration::QUICK;
+#else
+    ns3::TestCase::QUICK;
+#endif
+
+
+constexpr auto TEST_TYPE_SYSTEM =
+#if NETSIMULYZER_NS3_VERSION > 42
+    TestSuite::Type::SYSTEM;
+#else
+    TestSuite::SYSTEM;
+#endif
+
+template <typename T, typename SetT, typename GetT>
+Ptr<const AttributeAccessor>
+MakeEnumAccessorCompat(SetT set, GetT get)
 {
-    Time time;
-    uint32_t nodeId;
-    Vector position;
-};
+#if NETSIMULYZER_NS3_VERSION >= 41
+    return MakeEnumAccessor<T>(set, get);
+#else
+    return MakeEnumAccessor(set, get);
+#endif
+}
 
-struct TransmitEvent
+template <typename T, typename ValueT>
+Ptr<const AttributeAccessor>
+MakeEnumAccessorCompat(ValueT value)
 {
-    Time time;
-    uint32_t nodeId;
-    Time duration;
-    double targetSize;
-    Color3 color;
-};
+#if NETSIMULYZER_NS3_VERSION >= 41
+    return MakeEnumAccessor<T>(value);
+#else
+    return MakeEnumAccessor(value);
+#endif
+}
 
-struct NodeOrientationChangeEvent
+template <typename T>
+#if NETSIMULYZER_NS3_VERSION >= 41
+EnumValue<T>
+#else
+EnumValue
+#endif
+MakeEnumValueCompat()
 {
-    Time time;
-    uint32_t nodeId;
-    Vector3D orientation;
-};
-
-struct NodeColorChangeEvent
-{
-    enum class ColorType
-    {
-        Base,
-        Highlight
-    };
-
-    Time time;
-    uint32_t id;
-    ColorType type;
-    std::optional<Color3> color;
-};
-
-struct NodeModelChangeEvent
-{
-    Time time;
-    uint32_t id;
-    std::string model;
-};
-
-struct DecorationMoveEvent
-{
-    Time time;
-    uint32_t id;
-    Vector3D position;
-};
-
-struct DecorationOrientationChangeEvent
-{
-    Time time;
-    uint32_t id;
-    Vector3D orientation;
-};
-
-struct LogMessageEvent
-{
-    Time time;
-    uint32_t id;
-    std::string message;
-};
+#if NETSIMULYZER_NS3_VERSION >= 41
+    return EnumValue<T>{};
+#else
+    return EnumValue{};
+#endif
+}
 
 } // namespace ns3::netsimulyzer
 
-#endif /* EVENT_MESSAGE_H */
+#endif // NETSIMULYZER_NS3_COMPATIBILITY_H

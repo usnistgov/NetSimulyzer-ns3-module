@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * NIST-developed software is provided by NIST as a public service. You may use,
  * copy and distribute copies of the software in any medium, provided that you
@@ -47,13 +46,13 @@
 #include "value-axis.h"
 #include "xy-series.h"
 
-#include <ns3/building-list.h>
-#include <ns3/building.h>
+#include "ns3/building-list.h"
+#include "ns3/building.h"
+#include "ns3/node-list.h"
+#include "ns3/nstime.h"
+#include "ns3/object.h"
+#include "ns3/simulator.h"
 #include <ns3/json.hpp>
-#include <ns3/node-list.h>
-#include <ns3/nstime.h>
-#include <ns3/object.h>
-#include <ns3/simulator.h>
 
 #include <fstream>
 #include <functional>
@@ -95,7 +94,7 @@ class Orchestrator : public ns3::Object
      *
      * Use `GetJson()` to retrieve the output
      *
-     * \see GetJson()
+     * @see GetJson()
      */
     enum class MemoryOutputMode
     {
@@ -103,9 +102,9 @@ class Orchestrator : public ns3::Object
     };
 
     /**
-     * \brief Constructs an Orchestrator and opens an output handle at output_path
+     * @brief Constructs an Orchestrator and opens an output handle at output_path
      *
-     * \param output_path
+     * @param output_path
      * The file to write all output to. If the file exists it will be overwritten
      */
     explicit Orchestrator(const std::string& output_path);
@@ -116,17 +115,17 @@ class Orchestrator : public ns3::Object
      *
      * Use `getJson()` to get output
      *
-     * \param mode
+     * @param mode
      * The `MemoryOutputMode` flag, likely just `MemoryOutputMode::On`
      *
-     * \see getJson()
+     * @see getJson()
      */
     explicit Orchestrator(MemoryOutputMode mode);
 
     /**
-     * \brief Get the class TypeId
+     * @brief Get the class TypeId
      *
-     * \return the TypeId
+     * @return the TypeId
      */
     static TypeId GetTypeId(void);
 
@@ -134,10 +133,10 @@ class Orchestrator : public ns3::Object
      * Sets the suggested time step for playback in
      * the application.
      *
-     * \param step
+     * @param step
      * The amount of time to pass per frame.
      *
-     * \param granularity
+     * @param granularity
      * The level of granularity to show in the application.
      * Must be one of the following:
      * `Unit::MS` (Milliseconds)
@@ -165,7 +164,7 @@ class Orchestrator : public ns3::Object
      * Gets the suggested time step and granularity.
      * If no time set was set, returns an empty `optional`
      *
-     * \return
+     * @return
      * An `optional`, set if `SetTimeStep` was called, contains
      * the current suggested time step and unit.
      */
@@ -181,7 +180,7 @@ class Orchestrator : public ns3::Object
     const nlohmann::json& GetJson() const;
 
     /**
-     * \brief Collect Global & Node/Building configs, Schedule Polls
+     * @brief Collect Global & Node/Building configs, Schedule Polls
      *
      * Write the global configuration.
      *
@@ -196,7 +195,7 @@ class Orchestrator : public ns3::Object
      * Set if the mobility poll is enabled/disabled
      * and schedule it if it was enabled
      *
-     * \param enable
+     * @param enable
      * True: enable & schedule the mobility poll,
      * False: disable the mobility poll & cancel the poll event
      */
@@ -205,14 +204,14 @@ class Orchestrator : public ns3::Object
     /**
      * Gets in the mobility poll is enabled or not
      *
-     * \return
+     * @return
      * True: the mobility poll is enabled,
      * False: the mobility poll is not enabled
      */
     bool GetPollMobility(void) const;
 
     /**
-     * \brief Writes positions of configured Nodes
+     * @brief Writes positions of configured Nodes
      *
      * Traverses the NodeList and writes the position of
      * all Nodes with aggregated Configuration
@@ -220,12 +219,12 @@ class Orchestrator : public ns3::Object
     void PollMobility(void);
 
     /**
-     * \brief Trace sink for the 'CourseChange' trace. Writes the event info to the output.
+     * @brief Trace sink for the 'CourseChange' trace. Writes the event info to the output.
      *
      * Receives the 'CourseChange' trace from an associated NodeConfiguration
      * and writes the event information to the output
      *
-     * \param event The event information from the triggered 'CourseChange' event
+     * @param event The event information from the triggered 'CourseChange' event
      */
     void HandleCourseChange(const CourseChangeEvent& event);
 
@@ -237,21 +236,21 @@ class Orchestrator : public ns3::Object
     /**
      * Trace sink for when a Node's model has changed.
      *
-     * \param event The event information from the triggered 'NodeModelChangeEvent' event
+     * @param event The event information from the triggered 'NodeModelChangeEvent' event
      */
     void HandleModelChange(const NodeModelChangeEvent& event);
 
     /**
      * Trace sink for when a Node's orientation has changed.
      *
-     * \param event The event information from the triggered 'NodeOrientationChangeEvent' event
+     * @param event The event information from the triggered 'NodeOrientationChangeEvent' event
      */
     void HandleOrientationChange(const NodeOrientationChangeEvent& event);
 
     /**
      * Trace sink for when a Decoration's orientation has changed.
      *
-     * \param event The event information from the triggered 'DecorationOrientationChangeEvent'
+     * @param event The event information from the triggered 'DecorationOrientationChangeEvent'
      * event
      */
     void HandleOrientationChange(const DecorationOrientationChangeEvent& event);
@@ -259,7 +258,7 @@ class Orchestrator : public ns3::Object
     /**
      * Trace sink for when a Node's Base/Highlight color has changed.
      *
-     * \param event The event info for the color change event
+     * @param event The event info for the color change event
      */
     void HandleColorChange(const NodeColorChangeEvent& event);
 
@@ -269,131 +268,131 @@ class Orchestrator : public ns3::Object
      * Prefer to use `NodeConfiguration::Transmit`, instead
      * of calling this directly.
      *
-     * \param event The event info for the transmit event
-     * \see NodeConfiguration::Transmit
+     * @param event The event info for the transmit event
+     * @see NodeConfiguration::Transmit
      */
     void HandleTransmit(const TransmitEvent& event);
 
     /**
-     * \brief Flag a Decoration to be tracked.
+     * @brief Flag a Decoration to be tracked.
      *
      * Called by the Decoration constructor, so users should not call
      * this function directly.
      *
-     * \param decoration
+     * @param decoration
      * The Decoration to track with this Orchestrator
      *
-     * \return
+     * @return
      * The ID to use for the new Decoration
      */
     uint32_t Register(Ptr<Decoration> decoration);
 
     /**
-     * \brief Register a Node to be tracked.
+     * @brief Register a Node to be tracked.
      *
      * Called by the NodeConfiguration constructor, Orchestrator setter,
      * or helper, so users should not call this function directly
      *
      * No return since ns-3 supplies Node IDs
      *
-     * \param nodeConfiguration
+     * @param nodeConfiguration
      * The new NodeConfiguration to register
      */
     void Register(Ptr<NodeConfiguration> nodeConfiguration);
 
     /**
-     * \brief Register a Building to be tracked.
+     * @brief Register a Building to be tracked.
      *
      * Called by the buildingConfiguration constructor, Orchestrator setter,
      * or helper, so users should not call this function directly
      *
      * No return since ns-3 supplies Building IDs
      *
-     * \param buildingConfiguration
+     * @param buildingConfiguration
      * The new buildingConfiguration to register
      */
     void Register(Ptr<BuildingConfiguration> buildingConfiguration);
 
     /**
-     * \brief Register a Logical Link to be tracked.
+     * @brief Register a Logical Link to be tracked.
      *
      * Called by the LogicalLink constructor, Orchestrator setter,
      * or helper, so users should not call this function directly
      *
-     * \param logicaLink
+     * @param logicaLink
      * The new LogicalLink to register
      *
-     * \return
+     * @return
      * The ID to use for the new Logical Link
      */
     uint64_t Register(Ptr<LogicalLink> logicaLink);
 
     /**
-     * \brief Flag a series to be tracked by this Orchestrator.
+     * @brief Flag a series to be tracked by this Orchestrator.
      *
      * This is called by the series constructors by default, so users
      * should not need to call this function directly.
      *
-     * \param series
+     * @param series
      * The series to begin tracking
      *
-     * \return
+     * @return
      * The ID to use for the new series
      */
     uint32_t Register(Ptr<XYSeries> series);
 
     /**
-     * \brief Flag a series to be tracked by this Orchestrator.
+     * @brief Flag a series to be tracked by this Orchestrator.
      *
      * This is called by the series constructors by default, so users
      * should not need to call this function directly.
      *
-     * \param series
+     * @param series
      * The series to begin tracking
      *
-     * \return
+     * @return
      * The ID to use for the new series
      */
     uint32_t Register(Ptr<CategoryValueSeries> series);
 
     /**
-     * \brief Flag a series to be tracked by this Orchestrator.
+     * @brief Flag a series to be tracked by this Orchestrator.
      *
      * This is called by the series constructors by default, so users
      * should not need to call this function directly.
      *
-     * \param series
+     * @param series
      * The series to begin tracking
      *
-     * \return
+     * @return
      * The ID to use for the new series
      */
     uint32_t Register(Ptr<SeriesCollection> series);
 
     /**
-     * \brief Flag a stream to be tracked by this Orchestrator.
+     * @brief Flag a stream to be tracked by this Orchestrator.
      *
      * This is called by the series constructors by default, so users
      * should not need to call this function directly.
      *
-     * \param stream
+     * @param stream
      * The LogStream to begin tracking
      *
-     * \return
+     * @return
      * The ID to use for the new LosStream
      */
     uint32_t Register(Ptr<LogStream> stream);
 
     /**
-     * \brief Flag an area to be tracked by this Orchestrator.
+     * @brief Flag an area to be tracked by this Orchestrator.
      *
      * This is called by the area constructors by default, so users
      * should not need to call this function directly.
      *
-     * \param area
+     * @param area
      * The area to begin tracking
      *
-     * \return
+     * @return
      * The ID to use for the new area
      */
     uint32_t Register(Ptr<RectangularArea> area);
@@ -410,7 +409,7 @@ class Orchestrator : public ns3::Object
      * Users should call the `Commit ()` method on the object
      * they are committing.
      *
-     * \param series
+     * @param series
      * The configured series to write. Should be a registered to this
      * Orchestrator
      */
@@ -428,7 +427,7 @@ class Orchestrator : public ns3::Object
      * Users should call the `Commit ()` method on the object
      * they are committing.
      *
-     * \param series
+     * @param series
      * The configured series to write. Should be a registered to this
      * Orchestrator
      */
@@ -443,7 +442,7 @@ class Orchestrator : public ns3::Object
      * Users should call the `Commit ()` method on the object
      * they are committing.
      *
-     * \param series
+     * @param series
      * The configured series to write. Should be a registered to this
      * Orchestrator
      */
@@ -461,7 +460,7 @@ class Orchestrator : public ns3::Object
      * Users should call the `Commit ()` method on the object
      * they are committing.
      *
-     * \param logStream
+     * @param logStream
      * The configured LogStream to write. Should be a registered to this
      * Orchestrator
      */
@@ -471,13 +470,13 @@ class Orchestrator : public ns3::Object
      * Add a single point that will be plotted at `Simulation::Now()` time.
      * Written immediately.
      *
-     * \param id
+     * @param id
      * The ID of the series to append to
      *
-     * \param x
+     * @param x
      * The value to plot on the first axis
      *
-     * \param y
+     * @param y
      * The value to plot on the second axis
      */
     void AppendXyValue(uint32_t id, double x, double y);
@@ -486,10 +485,10 @@ class Orchestrator : public ns3::Object
      * Add several points that will be plotted at `Simulation::Now()` time.
      * Written immediately as a single event.
      *
-     * \param id
+     * @param id
      * The ID of the series to append to
      *
-     * \param points
+     * @param points
      * The points to append to the series
      */
     void AppendXyValues(uint32_t id, const std::vector<XYPoint>& points);
@@ -501,10 +500,10 @@ class Orchestrator : public ns3::Object
      * Users should call `Clear()` on the individual series,
      * rather than this method
      *
-     * \param id
+     * @param id
      * The ID of the XYSeries to write the clear event for.
      *
-     * \see XYSeries::Clear()
+     * @see XYSeries::Clear()
      */
     void ClearXySeries(uint32_t id);
 
@@ -512,13 +511,13 @@ class Orchestrator : public ns3::Object
      * Add a single point that will be plotted at `Simulation::Now()` time.
      * Written immediately.
      *
-     * \param id
+     * @param id
      * The ID of the series to append to
      *
-     * \param category
+     * @param category
      * The category to place `value` in
      *
-     * \param value
+     * @param value
      * The value to plot on the value axis
      */
     void AppendCategoryValue(uint32_t id, int category, double value);
@@ -529,7 +528,7 @@ class Orchestrator : public ns3::Object
      * Users should use the output operator `<<` on `LogStream`
      * to write their messages, rather than this method.
      *
-     * \param event
+     * @param event
      * The event emitted by `LogStream`
      */
     void WriteLogMessage(const LogMessageEvent& event);
@@ -577,7 +576,7 @@ class Orchestrator : public ns3::Object
      * Gets the time step in a way that's compatible with the
      * deprecated `TimeStep` attribute
      *
-     * \return
+     * @return
      * A `std::optional`, set if a time step was set,
      * potentially containing the current time step in
      * milliseconds
@@ -591,7 +590,7 @@ class Orchestrator : public ns3::Object
      * Set the time step to `milliseconds` and the
      * granularity to `Time::Unit::MS` (Milliseconds)
      *
-     * \param milliseconds
+     * @param milliseconds
      * An optional value for the time step for use in the application
      * in milliseconds. If this optional is empty, then
      * the existing time step is cleared
@@ -722,16 +721,16 @@ class Orchestrator : public ns3::Object
      * Write a `position` event to the output file given it is different than the
      * previous written position
      *
-     * \param nodeId
+     * @param nodeId
      * The `Node` that should receive the event
      *
-     * \param time
+     * @param time
      * The time the event occurred
      *
-     * \param position
+     * @param position
      * The `Node` specified by nodeId's new position
      *
-     * \return
+     * @return
      * True if the position was written to the output, false otherwise
      */
     void WritePosition(uint32_t nodeId, Time time, Vector3D position);

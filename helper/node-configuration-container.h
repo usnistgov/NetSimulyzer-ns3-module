@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * NIST-developed software is provided by NIST as a public service. You may use,
  * copy and distribute copies of the software in any medium, provided that you
@@ -35,7 +34,7 @@
 #ifndef NODE_CONFIGURATION_CONTAINER_H
 #define NODE_CONFIGURATION_CONTAINER_H
 
-#include <ns3/node-configuration.h>
+#include "ns3/node-configuration.h"
 
 #include <cstdint>
 #include <vector>
@@ -44,7 +43,7 @@ namespace ns3::netsimulyzer
 {
 
 /**
- * \ingroup netsimulyzer
+ * @ingroup netsimulyzer
  *
  * Holds a vector of ns3::netsimulyzer::NodeConfiguration objects
  */
@@ -63,16 +62,16 @@ class NodeConfigurationContainer
      *
      * Allows implicit conversion from a Ptr to a NodeConfiguration
      *
-     * \param configuration A NodeConfiguration object to store in the resulting container
+     * @param configuration A NodeConfiguration object to store in the resulting container
      */
     NodeConfigurationContainer(Ptr<NodeConfiguration> configuration);
 
     /**
      * Creates a new NodeConfigurationContainer by concatenating first and second
      *
-     * \param first The container whose elements will appear first
+     * @param first The container whose elements will appear first
      *
-     * \param second The container whose elements will appear after
+     * @param second The container whose elements will appear after
      * all the elements in 'first'
      */
     NodeConfigurationContainer(const NodeConfigurationContainer& first,
@@ -83,7 +82,7 @@ class NodeConfigurationContainer
      *
      * See the vector rules for iterator invalidation
      *
-     * \return A const_iterator to the beginning of the collection
+     * @return A const_iterator to the beginning of the collection
      */
     Iterator Begin(void);
 
@@ -92,14 +91,14 @@ class NodeConfigurationContainer
      *
      * See the vector rules for iterator invalidation
      *
-     * \return  A past-the-end const_iterator for the contained collection
+     * @return  A past-the-end const_iterator for the contained collection
      */
     Iterator End(void);
 
     /**
      * Returns the size of the collection
      *
-     * \return The number of elements in the contained collection
+     * @return The number of elements in the contained collection
      */
     uint32_t GetN(void);
 
@@ -109,23 +108,23 @@ class NodeConfigurationContainer
      * If index i is not within the contained vector,
      * then the behavior is undefined
      *
-     * \param i The index of the item to return
+     * @param i The index of the item to return
      *
-     * \return The Ptr at index i
+     * @return The Ptr at index i
      */
     Ptr<NodeConfiguration> Get(uint32_t i);
 
     /**
      * Appends the contents of container c to this one by copy.
      *
-     * \param c The container to append the contents of
+     * @param c The container to append the contents of
      */
     void Add(const NodeConfigurationContainer& c);
 
     /**
      * Appends a single NodeConfiguration to the collection.
      *
-     * \param configuration The NodeConfiguration to append.
+     * @param configuration The NodeConfiguration to append.
      * May not be NULL
      */
     void Add(Ptr<NodeConfiguration> configuration);
@@ -153,21 +152,21 @@ class NodeConfigurationContainer
 /**
  * Returns the iterator to the beginning of the collection
  *
- * \param c The collection the resulting iterator will reference
+ * @param c The collection the resulting iterator will reference
  *
- * \return A const_iterator to the beginning of c
+ * @return A const_iterator to the beginning of c
  */
 NodeConfigurationContainer::Iterator begin(NodeConfigurationContainer& c);
 
 /**
  * Returns the  past-the-end iterator for the collection
  *
- * \param c The collection the resulting iterator will reference
+ * @param c The collection the resulting iterator will reference
  *
- * \return A const_iterator past-the-end of c
+ * @return A const_iterator past-the-end of c
  */
 NodeConfigurationContainer::Iterator end(NodeConfigurationContainer& c);
 
-} // namespace ns3
+} // namespace ns3::netsimulyzer
 
 #endif /* NODE_CONFIGURATION_CONTAINER_H */

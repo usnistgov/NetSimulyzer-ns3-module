@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * NIST-developed software is provided by NIST as a public service. You may use,
  * copy and distribute copies of the software in any medium, provided that you
@@ -34,13 +33,14 @@
 #ifndef SERIES_COLLECTION_H
 #define SERIES_COLLECTION_H
 
-#include <ns3/color-palette.h>
-#include <ns3/color.h>
-#include <ns3/object.h>
-#include <ns3/orchestrator.h>
-#include <ns3/ptr.h>
-#include <ns3/value-axis.h>
-#include <ns3/xy-series.h>
+#include "color-palette.h"
+#include "color.h"
+#include "orchestrator.h"
+#include "value-axis.h"
+#include "xy-series.h"
+
+#include "ns3/object.h"
+#include "ns3/ptr.h"
 
 #include <cstddef>
 #include <cstdint>
@@ -62,15 +62,15 @@ class SeriesCollection : public ns3::Object
     /**
      * Sets up the SeriesCollection and assigns the ID
      *
-     * \param m_orchestrator
+     * @param m_orchestrator
      * The orchestrator to tie this collection to
      */
     explicit SeriesCollection(Ptr<Orchestrator> orchestrator);
 
     /**
-     * \brief Get the class TypeId
+     * @brief Get the class TypeId
      *
-     * \return the TypeId
+     * @return the TypeId
      */
     static TypeId GetTypeId(void);
 
@@ -79,13 +79,13 @@ class SeriesCollection : public ns3::Object
      * all series in this collection should
      * be tracked by the same `orchestrator`
      *
-     * \param series
+     * @param series
      * The series to add.
      */
     void Add(Ptr<XYSeries> series);
 
     /**
-     * \return The collection of Series IDs
+     * @return The collection of Series IDs
      */
     std::vector<uint32_t> GetSeriesIds(void);
 
@@ -94,7 +94,7 @@ class SeriesCollection : public ns3::Object
      * auto assignment if the `AutoColor` attribute is set.
      * In the order they would be assigned
      *
-     * \return
+     * @return
      * The list of colors available for auto-assignment
      */
     const std::vector<Color3Value>& GetAutoColorPalette(void) const;
@@ -105,7 +105,7 @@ class SeriesCollection : public ns3::Object
      *
      * These colors are assigned to series in the order they appear in `values`.
      *
-     * \param values
+     * @param values
      * The list of colors to use for assigned series
      */
     void SetAutoColorPalette(std::vector<Color3Value> values);
@@ -121,7 +121,7 @@ class SeriesCollection : public ns3::Object
     void Commit(void);
 
     /**
-     * \return
+     * @return
      * A pointer to the X Axis for this series
      */
     Ptr<ValueAxis> GetXAxis(void) const;
@@ -130,13 +130,13 @@ class SeriesCollection : public ns3::Object
      * Replace the X Axis with `value`.
      * Several series may reference the same axis
      *
-     * \param value
+     * @param value
      * The new X Axis for this series
      */
     void SetXAxis(Ptr<ValueAxis> value);
 
     /**
-     * \return
+     * @return
      * A pointer to the Y Axis for this series
      */
     Ptr<ValueAxis> GetYAxis(void) const;
@@ -145,7 +145,7 @@ class SeriesCollection : public ns3::Object
      * Replace the Y Axis with `value`.
      * Several series may reference the same axis
      *
-     * \param value
+     * @param value
      * The new Y Axis for this series
      */
     void SetYAxis(Ptr<ValueAxis> value);
@@ -195,15 +195,15 @@ class SeriesCollection : public ns3::Object
      * Flag indicating added series should have their color overwritten with one of
      * the colors from `m_autoColorPalette`
      *
-     * \see m_autoColorPalette
+     * @see m_autoColorPalette
      */
     bool m_autoColor;
 
     /**
      * The palette used to set added series colors if `m_autoColor` is set.
      *
-     * \see m_autoColor
-     * \see m_autoColorIndex
+     * @see m_autoColor
+     * @see m_autoColorIndex
      */
     std::vector<Color3Value> m_autoColorPalette{BLUE_VALUE,
                                                 RED_VALUE,
@@ -223,8 +223,8 @@ class SeriesCollection : public ns3::Object
     /**
      * The index for the next color in `m_autoColorPalette` to use for an assigned series
      *
-     * \see m_autoColor
-     * \see m_autoColorPalette
+     * @see m_autoColor
+     * @see m_autoColorPalette
      */
     std::size_t m_autoColorIndex{0u};
 
@@ -239,7 +239,7 @@ class SeriesCollection : public ns3::Object
      * All series in this collection should
      * be tracked by the same `orchestrator`
      *
-     * \param id
+     * @param id
      * The ID of the series to add.
      */
     void Add(uint32_t id);

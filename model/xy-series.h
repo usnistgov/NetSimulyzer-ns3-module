@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * NIST-developed software is provided by NIST as a public service. You may use,
  * copy and distribute copies of the software in any medium, provided that you
@@ -33,11 +32,12 @@
 #ifndef XY_SERIES_H
 #define XY_SERIES_H
 
-#include <ns3/color.h>
-#include <ns3/object.h>
-#include <ns3/orchestrator.h>
-#include <ns3/ptr.h>
-#include <ns3/value-axis.h>
+#include "color.h"
+#include "orchestrator.h"
+#include "value-axis.h"
+
+#include "ns3/object.h"
+#include "ns3/ptr.h"
 
 #include <cstdint>
 #include <string>
@@ -111,25 +111,25 @@ class XYSeries : public ns3::Object
     /**
      * Sets up the XYSeries and assigns the ID
      *
-     * \param orchestrator
+     * @param orchestrator
      * The orchestrator to tie this series to
      */
     explicit XYSeries(Ptr<Orchestrator> orchestrator);
 
     /**
-     * \brief Get the class TypeId
+     * @brief Get the class TypeId
      *
-     * \return the TypeId
+     * @return the TypeId
      */
     static TypeId GetTypeId(void);
 
     /**
      * Add a single point that will be plotted at `Simulation::Now()` time
      *
-     * \param x
+     * @param x
      * The value to plot on the first axis
      *
-     * \param y
+     * @param y
      * The value to plot on the second axis
      */
     void Append(double x, double y);
@@ -139,10 +139,10 @@ class XYSeries : public ns3::Object
      *
      * The same as void `Append(double x, double y)`
      *
-     * \param point
+     * @param point
      * The value to append to the series
      *
-     * \see Append(double x, double y)
+     * @see Append(double x, double y)
      */
     void Append(const XYPoint& point);
 
@@ -153,7 +153,7 @@ class XYSeries : public ns3::Object
      * This is much more efficient than calling the single `Append()` functions
      * if many points are known at once.
      *
-     * \param points
+     * @param points
      * A vector of points to append to the series.
      */
     void Append(const std::vector<XYPoint>& points);
@@ -175,7 +175,7 @@ class XYSeries : public ns3::Object
     void Commit(void);
 
     /**
-     * \return
+     * @return
      * A pointer to the X Axis for this series
      */
     Ptr<ValueAxis> GetXAxis(void) const;
@@ -184,13 +184,13 @@ class XYSeries : public ns3::Object
      * Replace the X Axis with `value`.
      * Several series may reference the same axis
      *
-     * \param value
+     * @param value
      * The new X Axis for this series
      */
     void SetXAxis(Ptr<ValueAxis> value);
 
     /**
-     * \return
+     * @return
      * A pointer to the Y Axis for this series
      */
     Ptr<ValueAxis> GetYAxis(void) const;
@@ -199,7 +199,7 @@ class XYSeries : public ns3::Object
      * Replace the Y Axis with `value`.
      * Several series may reference the same axis
      *
-     * \param value
+     * @param value
      * The new Y Axis for this series
      */
     void SetYAxis(Ptr<ValueAxis> value);
@@ -248,8 +248,8 @@ class XYSeries : public ns3::Object
      * The color to use for the point icons.
      * If unspecified, uses `m_color`
      *
-     * \see m_pointMode
-     * \see m_color
+     * @see m_pointMode
+     * @see m_color
      */
     std::optional<Color3> m_pointColor;
 

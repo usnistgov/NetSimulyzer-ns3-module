@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * NIST-developed software is provided by NIST as a public service. You may use,
  * copy and distribute copies of the software in any medium, provided that you
@@ -33,13 +32,13 @@
 #ifndef CATEGORY_VALUE_SERIES_H
 #define CATEGORY_VALUE_SERIES_H
 
-#include <ns3/category-axis.h>
-#include <ns3/color.h>
-#include <ns3/deprecated.h>
-#include <ns3/object.h>
-#include <ns3/orchestrator.h>
-#include <ns3/ptr.h>
-#include <ns3/value-axis.h>
+#include "category-axis.h"
+#include "color.h"
+#include "orchestrator.h"
+#include "value-axis.h"
+
+#include "ns3/object.h"
+#include "ns3/ptr.h"
 
 #include <cstdint>
 #include <string>
@@ -57,7 +56,7 @@ class CategoryValueSeries : public ns3::Object
     /**
      * Get the class TypeId
      *
-     * \return the TypeId
+     * @return the TypeId
      */
     static TypeId GetTypeId(void);
 
@@ -65,7 +64,7 @@ class CategoryValueSeries : public ns3::Object
      * Create a series without any categories.
      * Categories must be added to the Y axis before appending values
      *
-     * \param orchestrator
+     * @param orchestrator
      * The `Orchestrator` that manages this series
      */
     explicit CategoryValueSeries(Ptr<Orchestrator> orchestrator);
@@ -74,14 +73,14 @@ class CategoryValueSeries : public ns3::Object
      * Creates a series with categories.
      * Generates an ID for each category.
      *
-     * \warning Do not duplicate category names,
+     * @warning Do not duplicate category names,
      * if two categories share the same name IDs
      * must be used to interact with the conflicting names.
      *
-     * \param orchestrator
+     * @param orchestrator
      * The `Orchestrator` that manages this series
      *
-     * \param categories
+     * @param categories
      * The categories to add to this series
      */
     CategoryValueSeries(Ptr<Orchestrator> orchestrator, const std::vector<std::string>& categories);
@@ -89,16 +88,16 @@ class CategoryValueSeries : public ns3::Object
     /**
      * Creates a series with categories.
      *
-     * \warning Category IDs must be unique
+     * @warning Category IDs must be unique
      *
-     * \warning Do not duplicate category names,
+     * @warning Do not duplicate category names,
      * if two categories share the same name IDs
      * must be used to interact with the conflicting names.
      *
-     * \param orchestrator
+     * @param orchestrator
      * The `Orchestrator` that manages this series
      *
-     * \param categories
+     * @param categories
      * The categories to add to this series
      */
     CategoryValueSeries(Ptr<Orchestrator> orchestrator,
@@ -109,10 +108,10 @@ class CategoryValueSeries : public ns3::Object
      * using the category's ID.
      * The Y axis is not checked for the presence of `category`
      *
-     * \param category
+     * @param category
      * The ID of the category to use
      *
-     * \param value
+     * @param value
      * The value to plot within `category`
      */
     void Append(int category, double value);
@@ -120,12 +119,12 @@ class CategoryValueSeries : public ns3::Object
     /**
      * Changes the current value to `value` within `category`
      *
-     * \param category
+     * @param category
      * The name of the category.
      * If `category` is not on the Y axis
      * this method will abort
      *
-     * \param value
+     * @param value
      * The value to plot within `category`
      */
     void Append(const std::string& category, double value);
@@ -141,7 +140,7 @@ class CategoryValueSeries : public ns3::Object
     void Commit(void);
 
     /**
-     * \return
+     * @return
      * A pointer to the X Axis for this series
      */
     Ptr<ValueAxis> GetXAxis(void) const;
@@ -150,13 +149,13 @@ class CategoryValueSeries : public ns3::Object
      * Replace the X Axis with `value`.
      * Several series may reference the same axis
      *
-     * \param value
+     * @param value
      * The new X Axis for this series
      */
     void SetXAxis(Ptr<ValueAxis> value);
 
     /**
-     * \return
+     * @return
      * A pointer to the Y Axis for this series
      */
     Ptr<CategoryAxis> GetYAxis(void) const;
@@ -165,7 +164,7 @@ class CategoryValueSeries : public ns3::Object
      * Replace the Y Axis with `value`.
      * Several series may reference the same axis
      *
-     * \param value
+     * @param value
      * The new Y Axis for this series
      */
     void SetYAxis(Ptr<CategoryAxis> value);

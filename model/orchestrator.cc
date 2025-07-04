@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * NIST-developed software is provided by NIST as a public service. You may use,
  * copy and distribute copies of the software in any medium, provided that you
@@ -38,27 +37,28 @@
 #include "color.h"
 #include "log-stream.h"
 #include "logical-link.h"
+#include "netsimulyzer-ns3-compatibility.h"
 #include "netsimulyzer-version.h"
 #include "node-configuration.h"
 #include "optional.h"
 #include "xy-series.h"
 
-#include <ns3/abort.h>
-#include <ns3/boolean.h>
-#include <ns3/double.h>
-#include <ns3/enum.h>
-#include <ns3/log.h>
-#include <ns3/mobility-model.h>
-#include <ns3/node.h>
-#include <ns3/object-base.h>
-#include <ns3/point-to-point-channel.h>
-#include <ns3/point-to-point-net-device.h>
-#include <ns3/pointer.h>
-#include <ns3/ptr.h>
-#include <ns3/rectangle.h>
-#include <ns3/string.h>
-#include <ns3/uinteger.h>
-#include <ns3/vector.h>
+#include "ns3/abort.h"
+#include "ns3/boolean.h"
+#include "ns3/double.h"
+#include "ns3/enum.h"
+#include "ns3/log.h"
+#include "ns3/mobility-model.h"
+#include "ns3/node.h"
+#include "ns3/object-base.h"
+#include "ns3/point-to-point-channel.h"
+#include "ns3/point-to-point-net-device.h"
+#include "ns3/pointer.h"
+#include "ns3/ptr.h"
+#include "ns3/rectangle.h"
+#include "ns3/string.h"
+#include "ns3/uinteger.h"
+#include "ns3/vector.h"
 
 #include <atomic>
 #include <csignal>
@@ -188,33 +188,28 @@ pointToObject(double x, double y)
 nlohmann::json
 makeAxisAttributes(ns3::Ptr<ns3::netsimulyzer::ValueAxis> axis)
 {
+    using namespace ns3;
+    using namespace netsimulyzer;
+
     nlohmann::json element;
 
-    ns3::StringValue name;
+    StringValue name;
     axis->GetAttribute("Name", name);
     element["name"] = name.Get();
 
-    ns3::DoubleValue min;
+    DoubleValue min;
     axis->GetAttribute("Minimum", min);
     element["min"] = min.Get();
 
-    ns3::DoubleValue max;
+    DoubleValue max;
     axis->GetAttribute("Maximum", max);
     element["max"] = max.Get();
 
-#ifndef NETSIMULYZER_PRE_NS3_41_ENUM_VALUE
-    ns3::EnumValue<ns3::netsimulyzer::ValueAxis::Scale> scaleMode;
-#else
-    ns3::EnumValue scaleMode;
-#endif
+    auto scaleMode = MakeEnumValueCompat<ValueAxis::Scale>();
     axis->GetAttribute("Scale", scaleMode);
     element["scale"] = ScaleToString(scaleMode.Get());
 
-#ifndef NETSIMULYZER_PRE_NS3_41_ENUM_VALUE
-    ns3::EnumValue<ns3::netsimulyzer::ValueAxis::BoundMode> boundMode;
-#else
-    ns3::EnumValue boundMode;
-#endif
+    auto boundMode = MakeEnumValueCompat<ValueAxis::BoundMode>();
     axis->GetAttribute("BoundMode", boundMode);
     element["bound-mode"] = BoundModeToString(boundMode.Get());
 
@@ -254,7 +249,9 @@ NextTrailColor(void)
     colorIter++;
 
     if (colorIter == COLOR_PALETTE.end())
+    {
         colorIter = COLOR_PALETTE.begin();
+    }
 
     return color;
 }
@@ -304,7 +301,7 @@ Orchestrator::GetTypeId(void)
                          MakeOptionalAccessor<int> (&Orchestrator::GetTimeStepCompat,
                                                     &Orchestrator::SetTimeStepCompat),
                          MakeOptionalChecker<int> (),
-                         TypeId::DEPRECATED,
+                         DEPRECATED_SUPPORT,
                           "Please use `SetTimeStep()` instead")
           .AddAttribute ("MobilityPollInterval", "How often to poll Nodes for their position",
                          TimeValue (MilliSeconds (100)),
@@ -350,7 +347,9 @@ Orchestrator::GetTimeStep() const
 {
     NS_LOG_FUNCTION(this);
     if (m_timeStep && m_timeStepGranularity)
+    {
         return TimeStepPair{m_timeStep.value(), m_timeStepGranularity.value()};
+    }
 
     return {};
 }
@@ -445,28 +444,38 @@ Orchestrator::SetupSimulation(void)
         OptionalValue<double> height;
         config->GetAttribute("Height", height);
         if (height)
+        {
             targetScale["height"] = height.GetValue();
+        }
 
         OptionalValue<double> width;
         config->GetAttribute("Width", width);
         if (width)
+        {
             targetScale["width"] = width.GetValue();
+        }
 
         OptionalValue<double> depth;
         config->GetAttribute("Depth", depth);
         if (depth)
+        {
             targetScale["depth"] = depth.GetValue();
+        }
         element["target-scale"] = targetScale;
 
         OptionalValue<Color3> baseColor;
         config->GetAttribute("BaseColor", baseColor);
         if (baseColor)
+        {
             element["base-color"] = colorToObject(baseColor.GetValue());
+        }
 
         OptionalValue<Color3> highlightColor;
         config->GetAttribute("HighlightColor", highlightColor);
         if (highlightColor)
+        {
             element["highlight-color"] = colorToObject(highlightColor.GetValue());
+        }
 
         BooleanValue trailEnabled;
         config->GetAttribute("EnableMotionTrail", trailEnabled);
@@ -476,13 +485,21 @@ Orchestrator::SetupSimulation(void)
         OptionalValue<Color3> trailColorAttr;
         config->GetAttribute("MotionTrailColor", trailColorAttr);
         if (trailColorAttr)
+        {
             trailColor = trailColorAttr.GetValue();
+        }
         else if (baseColor)
+        {
             trailColor = baseColor.GetValue();
+        }
         else if (highlightColor)
+        {
             trailColor = highlightColor.GetValue();
+        }
         else
+        {
             trailColor = NextTrailColor();
+        }
         element["trail-color"] = colorToObject(trailColor);
 
         Vector3DValue orientation;
@@ -524,26 +541,36 @@ Orchestrator::SetupSimulation(void)
 
             // We only support Point-to-Point links for now
             if (!device->IsPointToPoint())
+            {
                 continue;
+            }
 
             auto baseChannel = device->GetChannel();
             if (!baseChannel)
+            {
                 continue;
+            }
 
             auto p2pChannel = DynamicCast<PointToPointChannel>(baseChannel);
             if (!p2pChannel)
+            {
                 continue;
+            }
 
             for (auto j = 0u; j < p2pChannel->GetNDevices(); j++)
             {
                 auto channelNode = p2pChannel->GetDevice(j)->GetNode();
                 if (channelNode->GetId() == nodeId)
+                {
                     continue;
+                }
 
                 // Check to make sure the remote Node is configured for display
                 // If not, then ignore the link as we can't display it
                 if (channelNode->GetObject<NodeConfiguration>() == nullptr)
+                {
                     continue;
+                }
 
                 // Check to see if we've already written this link
                 // from the other devices perspective
@@ -552,7 +579,9 @@ Orchestrator::SetupSimulation(void)
                 // If we've already recorded the other pointing to
                 // this node, then there's no need to duplicate
                 if (otherNode != deviceLinkMap.end() && otherNode->second == nodeId)
+                {
                     continue;
+                }
 
                 deviceLinkMap.insert({nodeId, otherNodeId});
             }
@@ -684,17 +713,23 @@ Orchestrator::SetupSimulation(void)
         OptionalValue<double> height;
         decoration->GetAttribute("Height", height);
         if (height)
+        {
             targetScale["height"] = height.GetValue();
+        }
 
         OptionalValue<double> width;
         decoration->GetAttribute("Width", width);
         if (width)
+        {
             targetScale["width"] = width.GetValue();
+        }
 
         OptionalValue<double> depth;
         decoration->GetAttribute("Depth", depth);
         if (depth)
+        {
             targetScale["depth"] = depth.GetValue();
+        }
         element["target-scale"] = targetScale;
 
         decorations.emplace_back(element);
@@ -735,9 +770,13 @@ Orchestrator::SetupSimulation(void)
         StringValue name;
         area->GetAttribute("Name", name);
         if (name.Get().empty())
+        {
             element["name"] = "Area: " + std::to_string(id.Get());
+        }
         else
+        {
             element["name"] = name.Get();
+        }
 
         RectangleValue boundsValue;
         area->GetAttribute("Bounds", boundsValue);
@@ -771,11 +810,7 @@ Orchestrator::SetupSimulation(void)
         area->GetAttribute("Height", height);
         element["height"] = height.Get();
 
-#ifndef NETSIMULYZER_PRE_NS3_41_ENUM_VALUE
-        EnumValue<RectangularArea::DrawMode> fillMode;
-#else
-        EnumValue fillMode;
-#endif
+        auto fillMode = MakeEnumValueCompat<RectangularArea::DrawMode>();
         area->GetAttribute("Fill", fillMode);
 
         switch (fillMode.Get())
@@ -791,11 +826,7 @@ Orchestrator::SetupSimulation(void)
             break;
         }
 
-#ifndef NETSIMULYZER_PRE_NS3_41_ENUM_VALUE
-        EnumValue<RectangularArea::DrawMode> borderMode;
-#else
-        EnumValue borderMode;
-#endif
+        auto borderMode = MakeEnumValueCompat<RectangularArea::DrawMode>();
         area->GetAttribute("Border", borderMode);
 
         switch (borderMode.Get())
@@ -833,7 +864,9 @@ Orchestrator::SetupSimulation(void)
     // This method should be called immediately after the simulation starts,
     // so using the Start Time as the delay should be fine
     if (m_pollMobility && !m_mobilityPollEvent.has_value())
+    {
         m_mobilityPollEvent = Simulator::Schedule(m_startTime, &Orchestrator::PollMobility, this);
+    }
 
     Simulator::ScheduleDestroy(&Orchestrator::Flush, this);
 
@@ -852,13 +885,19 @@ Orchestrator::SetPollMobility(bool enable)
     if (m_pollMobility && !m_mobilityPollEvent.has_value())
     {
         if (Simulator::Now() > m_stopTime)
+        {
             return;
+        }
         else if (Simulator::Now() >= m_startTime)
+        {
             m_mobilityPollEvent = Simulator::ScheduleNow(&Orchestrator::PollMobility, this);
+        }
         else
+        {
             m_mobilityPollEvent = Simulator::Schedule(Simulator::Now() - m_startTime,
                                                       &Orchestrator::PollMobility,
                                                       this);
+        }
     }
 
     else if (!m_pollMobility && m_mobilityPollEvent.has_value())
@@ -894,7 +933,9 @@ Orchestrator::PollMobility(void)
 
         auto position = config->MobilityPoll();
         if (position)
+        {
             WritePosition(node->GetId(), Simulator::Now(), position.value());
+        }
     }
 
     m_mobilityPollEvent =
@@ -1103,7 +1144,9 @@ Orchestrator::HandleColorChange(const NodeColorChangeEvent& event)
     }
 
     if (event.color.has_value())
+    {
         element["color"] = colorToObject(event.color.value());
+    }
 
     m_document["events"].emplace_back(element);
 }
@@ -1222,27 +1265,31 @@ Orchestrator::Commit(XYSeries& series)
     series.GetAttribute("Name", name);
     // Handle blank names somewhat gracefully
     if (name.Get().empty())
+    {
         element["name"] = "XY Series: " + std::to_string(id.Get());
+    }
     else
+    {
         element["name"] = name.Get();
+    }
 
     StringValue legend;
     series.GetAttribute("Legend", legend);
     // Use the name if we don't have a specific legend name
     if (legend.Get().empty())
+    {
         element["legend"] = element["name"].get<std::string>();
+    }
     else
+    {
         element["legend"] = legend.Get();
+    }
 
     BooleanValue visible;
     series.GetAttribute("Visible", visible);
     element["visible"] = visible.Get();
 
-#ifndef NETSIMULYZER_PRE_NS3_41_ENUM_VALUE
-    EnumValue<XYSeries::ConnectionType> connection;
-#else
-    EnumValue connection;
-#endif
+    auto connection = MakeEnumValueCompat<XYSeries::ConnectionType>();
     series.GetAttribute("Connection", connection);
     switch (connection.Get())
     {
@@ -1282,11 +1329,7 @@ Orchestrator::Commit(XYSeries& series)
         break;
     }
 
-#ifndef NETSIMULYZER_PRE_NS3_41_ENUM_VALUE
-    EnumValue<XYSeries::LabelMode> labelMode;
-#else
-    EnumValue labelMode;
-#endif
+    auto labelMode = MakeEnumValueCompat<XYSeries::LabelMode>();
     series.GetAttribute("LabelMode", labelMode);
     switch (labelMode.Get())
     {
@@ -1298,11 +1341,7 @@ Orchestrator::Commit(XYSeries& series)
         break;
     }
 
-#ifndef NETSIMULYZER_PRE_NS3_41_ENUM_VALUE
-    EnumValue<XYSeries::PointMode> pointMode;
-#else
-    EnumValue pointMode;
-#endif
+    auto pointMode = MakeEnumValueCompat<XYSeries::PointMode>();
     series.GetAttribute("PointMode", pointMode);
 
     switch (pointMode.Get())
@@ -1311,9 +1350,13 @@ Orchestrator::Commit(XYSeries& series)
         // Special case, Scatter plots may not
         // hide points, since there will be nothing to see...
         if (connection.Get() == XYSeries::ConnectionType::None)
+        {
             element["point-mode"] = "disk";
+        }
         else
+        {
             element["point-mode"] = "none";
+        }
         break;
     case XYSeries::Dot:
         element["point-mode"] = "dot";
@@ -1370,9 +1413,13 @@ Orchestrator::Commit(XYSeries& series)
     OptionalValue<Color3> pointColor;
     series.GetAttribute("PointColor", pointColor);
     if (pointColor.HasValue())
+    {
         element["point-color"] = colorToObject(pointColor.GetValue());
+    }
     else
+    {
         element["point-color"] = element["color"];
+    }
 
     // X Axis
     PointerValue xAxisAttr;
@@ -1404,9 +1451,13 @@ Orchestrator::Commit(SeriesCollection& series)
     series.GetAttribute("Name", name);
     // Handle blank names somewhat gracefully
     if (name.Get().empty())
+    {
         element["name"] = "Series Collection: " + std::to_string(id.Get());
+    }
     else
+    {
         element["name"] = name.Get();
+    }
 
     // X Axis
     PointerValue xAxisAttr;
@@ -1440,17 +1491,25 @@ Orchestrator::Commit(CategoryValueSeries& series)
     series.GetAttribute("Name", name);
     // Handle blank names somewhat gracefully
     if (name.Get().empty())
+    {
         element["name"] = "Category Value Series: " + std::to_string(id.Get());
+    }
     else
+    {
         element["name"] = name.Get();
+    }
 
     StringValue legend;
     series.GetAttribute("Legend", legend);
     // Use the name if we don't have a specific legend name
     if (legend.Get().empty())
+    {
         element["legend"] = element["name"].get<std::string>();
+    }
     else
+    {
         element["legend"] = legend.Get();
+    }
 
     BooleanValue visible;
     series.GetAttribute("Visible", visible);
@@ -1503,14 +1562,20 @@ Orchestrator::Commit(LogStream& logStream)
     StringValue name;
     logStream.GetAttribute("Name", name);
     if (name.Get().empty())
+    {
         element["name"] = std::string("Log: ") + std::to_string(id.Get());
+    }
     else
+    {
         element["name"] = name.Get();
+    }
 
     OptionalValue<Color3> color;
     logStream.GetAttribute("Color", color);
     if (color)
+    {
         element["color"] = colorToObject(color.GetValue());
+    }
 
     BooleanValue visible;
     logStream.GetAttribute("Visible", visible);
@@ -1744,7 +1809,9 @@ std::optional<int>
 Orchestrator::GetTimeStepCompat(void) const
 {
     if (m_timeStep)
+    {
         return m_timeStep.value().GetMilliSeconds();
+    }
 
     return {};
 }
@@ -1753,7 +1820,9 @@ void
 Orchestrator::SetTimeStepCompat(const std::optional<int>& milliseconds)
 {
     if (milliseconds)
+    {
         SetTimeStep(MilliSeconds(milliseconds.value()), Time::Unit::MS);
+    }
     else
     {
         m_timeStep.reset();

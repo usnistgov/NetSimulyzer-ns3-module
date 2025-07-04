@@ -22,7 +22,7 @@ project = 'NetSimulyzer'
 author = 'Evan Black'
 
 # The full version, including alpha/beta/rc tags
-release = '1.0.14-pre'
+release = '1.0.15-release'
 
 
 # -- General configuration ---------------------------------------------------

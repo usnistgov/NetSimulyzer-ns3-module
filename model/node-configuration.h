@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * NIST-developed software is provided by NIST as a public service. You may use,
  * copy and distribute copies of the software in any medium, provided that you
@@ -41,12 +40,12 @@
 #include "optional.h"
 #include "orchestrator.h"
 
-#include <ns3/mobility-model.h>
-#include <ns3/node.h>
-#include <ns3/object.h>
-#include <ns3/ptr.h>
-#include <ns3/type-id.h>
-#include <ns3/vector.h>
+#include "ns3/mobility-model.h"
+#include "ns3/node.h"
+#include "ns3/object.h"
+#include "ns3/ptr.h"
+#include "ns3/type-id.h"
+#include "ns3/vector.h"
 
 #include <optional>
 #include <string>
@@ -78,15 +77,15 @@ class NodeConfiguration : public Object
      *
      * This constructor should be used by users
      *
-     * \param orchestrator
+     * @param orchestrator
      * The Orchestrator to register this Node with
      */
     explicit NodeConfiguration(Ptr<Orchestrator> orchestrator);
 
     /**
-     * \brief Get the class TypeId
+     * @brief Get the class TypeId
      *
-     * \return the TypeId
+     * @return the TypeId
      */
     static TypeId GetTypeId(void);
 
@@ -94,7 +93,7 @@ class NodeConfiguration : public Object
      * Callback called when the mobility model attached to a Node
      * triggers the 'CourseChange' trace
      *
-     * \param model
+     * @param model
      * The mobility model that triggered the trace
      */
     void CourseChange(Ptr<const MobilityModel> model);
@@ -107,21 +106,21 @@ class NodeConfiguration : public Object
      * To visually indicate a transmission of
      * some sort has occurred.
      *
-     * \warning Only one transmission per node
+     * @warning Only one transmission per node
      * may be occurring at once. If another transmission
      * is triggered while one is still ongoing,
      * the ongoing transmission will be cut off, and
      * the new one will begin.
      *
-     * \param duration
+     * @param duration
      * How long the transmission bubble
      * grows.
      *
-     * \param targetSize
+     * @param targetSize
      * What size the bubble should be
      * when `duration` has passed
      *
-     * \param color
+     * @param color
      * What color to draw the transmission bubble
      */
     void Transmit(Time duration, double targetSize, Color3 color = GRAY_30);
@@ -147,7 +146,7 @@ class NodeConfiguration : public Object
      * then an empty optional is returned.
      *
      *
-     * \return
+     * @return
      * An optional with the location of the associated Node
      * if the position should be used, an unset optional
      * otherwise
@@ -161,13 +160,13 @@ class NodeConfiguration : public Object
      * Prefer using the Orchestrator constructor as opposed to setting the
      * Orchestrator later
      *
-     * \param orchestrator
+     * @param orchestrator
      * The Orchestrator to register this NodeConfiguration with
      */
     void SetOrchestrator(Ptr<Orchestrator> orchestrator);
 
     /**
-     * \return
+     * @return
      * The Orchestrator managing this Node.
      * nullptr if it is not managed
      */
@@ -177,23 +176,23 @@ class NodeConfiguration : public Object
      * Sets the 3D model to use for the
      * Node & notifies the Orchestrator
      *
-     * \param value
+     * @param value
      * The model to use
      *
-     * \see netsimulyzer-3D-models.h
+     * @see netsimulyzer-3D-models.h
      */
     void SetModel(const std::string& value);
 
     /**
      *
-     * \return
+     * @return
      * The current model, or an empty string
      * if one isn't set
      */
     [[nodiscard]] const std::string& GetModel(void) const;
 
     /**
-     * \return
+     * @return
      * The current orientation of the model in degrees
      */
     const Vector3D& GetOrientation() const;
@@ -202,7 +201,7 @@ class NodeConfiguration : public Object
      * Sets the orientation of the model & notifies the orchestrator.
      * In degrees
      *
-     * \param orientation
+     * @param orientation
      * The new orientation of the model
      */
     void SetOrientation(const Vector3D& orientation);
@@ -211,7 +210,7 @@ class NodeConfiguration : public Object
      * Gets the "Base" color for the 3D model used
      * to represent this `Node`
      *
-     * \return
+     * @return
      * A `std::optional`, potentially containing the base color.
      * If no "Base" color has been set, then the `optional` is empty
      */
@@ -224,7 +223,7 @@ class NodeConfiguration : public Object
      * The "Base" color is typically the color
      * of the largest section of the 3D model.
      *
-     * \param value
+     * @param value
      * The new value to set for the "Base" color.
      *
      * If the `std::optional` passed in is unset, then
@@ -236,7 +235,7 @@ class NodeConfiguration : public Object
      * Gets the "Highlight" color for the 3D model used
      * to represent this `Node`
      *
-     * \return
+     * @return
      * A `std::optional`, potentially containing the base color.
      * If no "Highlight" color has been set, then the `optional` is empty
      */
@@ -249,7 +248,7 @@ class NodeConfiguration : public Object
      * The "Highlight" color is typically the color
      * of the smaller details of the 3D model
      *
-     * \param value
+     * @param value
      * The new value to set for the "Highlight" color.
      *
      * If the `std::optional` passed in is unset, then
@@ -260,7 +259,7 @@ class NodeConfiguration : public Object
     /**
      * Convenience method for changing the `Scale` attribute
      *
-     * \param scale
+     * @param scale
      * A new value to use for the scale. Must be greater than 0
      */
     void SetScale(double scale);
@@ -268,7 +267,7 @@ class NodeConfiguration : public Object
     /**
      * Convenience method for changing the `ScaleAxes` attribute.
      *
-     * \param scale
+     * @param scale
      * A vector of 3 values to use for scales on each axis
      * in the order [x, y, z]. Must all be greater than 0
      */
@@ -277,7 +276,7 @@ class NodeConfiguration : public Object
     /**
      * Convenience method for changing the `ScaleAxes` attribute.
      *
-     * \param scale
+     * @param scale
      * A vector of 3 values to use for scales on each axis
      * in the order [x, y, z]. Must all be greater than 0
      */
@@ -287,7 +286,7 @@ class NodeConfiguration : public Object
      * Convenience method for retrieving the `Scale` attribute. Note that
      * the model may also have other scales applied to it.
      *
-     * \return
+     * @return
      * The current uniform scale value.
      *
      * /see GetScaleAxes()
@@ -298,7 +297,7 @@ class NodeConfiguration : public Object
      * Convenience method for retrieving the `ScaleAxes` attribute. Note that
      * the model may also have other scales applied to it.
      *
-     * \return
+     * @return
      * The current non-uniform scale values for each axis,
      * in the order [x, y, z].
      *
@@ -308,7 +307,7 @@ class NodeConfiguration : public Object
 
   protected:
     /**
-     * \brief Disconnects the referenced Orchestrator
+     * @brief Disconnects the referenced Orchestrator
      */
     void DoDispose(void) override;
 
@@ -433,7 +432,7 @@ class NodeConfiguration : public Object
      *
      * Allows for non-uniform scales
      *
-     * \see m_scale
+     * @see m_scale
      */
     Vector3D m_scaleAxes;
 

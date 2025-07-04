@@ -36,16 +36,16 @@
 
 #pragma once
 
-#include <ns3/application-container.h>
-#include <ns3/nstime.h>
-#include <ns3/onoff-application.h>
-#include <ns3/orchestrator.h>
-#include <ns3/packet-sink.h>
-#include <ns3/packet.h>
-#include <ns3/ptr.h>
-#include <ns3/throughput-sink.h>
-#include <ns3/type-id.h>
-#include <ns3/udp-client.h>
+#include "ns3/application-container.h"
+#include "ns3/nstime.h"
+#include "ns3/onoff-application.h"
+#include "ns3/orchestrator.h"
+#include "ns3/packet-sink.h"
+#include "ns3/packet.h"
+#include "ns3/ptr.h"
+#include "ns3/throughput-sink.h"
+#include "ns3/type-id.h"
+#include "ns3/udp-client.h"
 
 #include <cstdint>
 #include <unordered_map>
@@ -86,20 +86,20 @@ class ThroughputSinkHelper
      * If an Application with an unknown TX/RX trace is passed in `apps`,
      * then this method aborts
      *
-     * \param apps
+     * @param apps
      * Applications to attach a `ThroughputSink` to.
      *
-     * \param type
+     * @param type
      * If the created `ThroughputSink` for that `Application` should attach to the
      * known TX or RX trace
      *
-     * \return
+     * @return
      * A `ThroughputSink` for each app in order of Applications in `apps`
      *
-     * \see m_txTraceSources
+     * @see m_txTraceSources
      * The mapping from App -> TX trace source
      *
-     * \see m_rxTraceSources
+     * @see m_rxTraceSources
      * The mapping from App -> RX trace source
      */
     std::vector<Ptr<ThroughputSink>> MakeSinks(const ApplicationContainer& apps, TraceType type);
@@ -139,7 +139,7 @@ class ThroughputSinkHelper
      *
      * If you add a new TX trace type, connect it here
      *
-     * \see m_txTraceSources
+     * @see m_txTraceSources
      */
     Ptr<ThroughputSink> LinkTxTraces(Ptr<Application> app, std::string name);
 
@@ -149,7 +149,7 @@ class ThroughputSinkHelper
      *
      * If you add a new RX trace type, connect it here
      *
-     * \see m_rxTraceSources
+     * @see m_rxTraceSources
      */
     Ptr<ThroughputSink> LinkRxTraces(Ptr<Application> app, std::string name);
 
@@ -185,7 +185,7 @@ class ThroughputSinkHelper
      * add an entry to this map following this pattern:
      * `{Application's Type ID UID, {"Type of the trace", "Name of the trace"}}`
      *
-     * \see LinkTxTraces
+     * @see LinkTxTraces
      */
     std::unordered_map<TypeUid, TraceSourceInfo> m_txTraceSources{
         {UdpClient::GetTypeId().GetUid(), {"ns3::Packet::TracedCallback", "Tx"}},
@@ -198,14 +198,14 @@ class ThroughputSinkHelper
      * add an entry to this map following this pattern:
      * `{Application's Type ID UID, {"Type of the trace", "Name of the trace"}}`
      *
-     * \see LinkRxTraces
+     * @see LinkRxTraces
      */
     std::unordered_map<TypeUid, TraceSourceInfo> m_rxTraceSources{
         {PacketSink::GetTypeId().GetUid(), {"ns3::Packet::AddressTracedCallback", "Rx"}}};
 
     /// Callbacks for each tx/rx trace type above
-    /// \see m_txTraceSources
-    /// \see m_rxTraceSources
+    /// @see m_txTraceSources
+    /// @see m_rxTraceSources
 
     // Packet::TracedCallback
     void PacketTracedCallback(Ptr<ThroughputSink> throughputGraph, Ptr<const Packet> packet);

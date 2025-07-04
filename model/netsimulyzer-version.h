@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * NIST-developed software is provided by NIST as a public service. You may use,
  * copy and distribute copies of the software in any medium, provided that you
@@ -37,7 +36,8 @@
 
 #include <string>
 
-namespace ns3::netsimulyzer {
+namespace ns3::netsimulyzer
+{
 
 /**
  * The Major version number for the module
@@ -52,7 +52,7 @@ const long VERSION_MINOR = 0L;
 /**
  * The Patch version number for the module
  */
-const long VERSION_PATCH = 14L;
+const long VERSION_PATCH = 15L;
 
 /**
  * Any additional version qualifiers ("pre" or "release")

@@ -1,4 +1,3 @@
-/* -*-  Mode: C++; c-file-style: "gnu"; indent-tabs-mode:nil; -*- */
 /*
  * NIST-developed software is provided by NIST as a public
  * service. You may use, copy and distribute copies of the software in
@@ -35,9 +34,9 @@
  * Author: Evan Black <evan.black@nist.gov>
  */
 
-#include <ns3/applications-module.h>
-#include <ns3/core-module.h>
-#include <ns3/netsimulyzer-module.h>
+#include "ns3/applications-module.h"
+#include "ns3/core-module.h"
+#include "ns3/netsimulyzer-module.h"
 
 #include <string>
 #include <utility>
@@ -113,9 +112,13 @@ class DummyApplication : public Application
         // Create a pattern between waiting and sending
         // Toggling between the two
         if (m_stateChangeCount % 2u)
+        {
             Wait();
+        }
         else
+        {
             Transmit();
+        }
 
         m_eventId = Simulator::Schedule(stateChangeDelay, &DummyApplication::ChangeState, this);
     }

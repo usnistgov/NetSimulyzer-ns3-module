@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * NIST-developed software is provided by NIST as a public service. You may use,
  * copy and distribute copies of the software in any medium, provided that you
@@ -35,8 +34,8 @@
 #ifndef BUILDING_CONFIGURATION_CONTAINER_H
 #define BUILDING_CONFIGURATION_CONTAINER_H
 
-#include <ns3/building-configuration.h>
-#include <ns3/ptr.h>
+#include "ns3/building-configuration.h"
+#include "ns3/ptr.h"
 
 #include <cstdint>
 #include <vector>
@@ -59,16 +58,16 @@ class BuildingConfigurationContainer
      *
      * Allows implicit conversion from a Ptr to a BuildingConfiguration
      *
-     * \param configuration A BuildingConfiguration object to store in the resulting container
+     * @param configuration A BuildingConfiguration object to store in the resulting container
      */
     BuildingConfigurationContainer(Ptr<BuildingConfiguration> configuration);
 
     /**
      * Creates a new BuildingConfigurationContainer by concatenating first and second
      *
-     * \param first The container whose elements will appear first
+     * @param first The container whose elements will appear first
      *
-     * \param second The container whose elements will appear after
+     * @param second The container whose elements will appear after
      * all the elements in 'first'
      */
     BuildingConfigurationContainer(const BuildingConfigurationContainer& first,
@@ -79,7 +78,7 @@ class BuildingConfigurationContainer
      *
      * See the vector rules for iterator invalidation
      *
-     * \return A const_iterator to the beginning of the collection
+     * @return A const_iterator to the beginning of the collection
      */
     Iterator Begin(void);
 
@@ -88,14 +87,14 @@ class BuildingConfigurationContainer
      *
      * See the vector rules for iterator invalidation
      *
-     * \return  A past-the-end const_iterator for the contained collection
+     * @return  A past-the-end const_iterator for the contained collection
      */
     Iterator End(void);
 
     /**
      * Returns the size of the collection
      *
-     * \return The number of elements in the contained collection
+     * @return The number of elements in the contained collection
      */
     uint32_t GetN(void);
 
@@ -105,23 +104,23 @@ class BuildingConfigurationContainer
      * If index i is not within the contained vector,
      * then the behavior is undefined
      *
-     * \param i The index of the item to return
+     * @param i The index of the item to return
      *
-     * \return The Ptr at index i
+     * @return The Ptr at index i
      */
     Ptr<BuildingConfiguration> Get(uint32_t i);
 
     /**
      * Appends the contents of container c to this one by copy.
      *
-     * \param c The container to append the contents of
+     * @param c The container to append the contents of
      */
     void Add(const BuildingConfigurationContainer& c);
 
     /**
      * Appends a single BuildingConfiguration to the collection.
      *
-     * \param configuration The BuildingConfiguration to append.
+     * @param configuration The BuildingConfiguration to append.
      * May not be NULL
      */
     void Add(Ptr<BuildingConfiguration> configuration);
@@ -149,21 +148,21 @@ class BuildingConfigurationContainer
 /**
  * Returns the iterator to the beginning of the collection
  *
- * \param c The collection the resulting iterator will reference
+ * @param c The collection the resulting iterator will reference
  *
- * \return A const_iterator to the beginning of c
+ * @return A const_iterator to the beginning of c
  */
 BuildingConfigurationContainer::Iterator begin(BuildingConfigurationContainer& c);
 
 /**
  * Returns the  past-the-end iterator for the collection
  *
- * \param c The collection the resulting iterator will reference
+ * @param c The collection the resulting iterator will reference
  *
- * \return A const_iterator past-the-end of c
+ * @return A const_iterator past-the-end of c
  */
 BuildingConfigurationContainer::Iterator end(BuildingConfigurationContainer& c);
 
-} // namespace ns3
+} // namespace ns3::netsimulyzer
 
 #endif /* BUILDING_CONFIGURATION_CONTAINER_H */

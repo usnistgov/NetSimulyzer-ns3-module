@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * NIST-developed software is provided by NIST as a public service. You may use,
  * copy and distribute copies of the software in any medium, provided that you
@@ -35,12 +34,13 @@
 #ifndef DECORATION_H
 #define DECORATION_H
 
-#include <ns3/event-message.h>
-#include <ns3/object.h>
-#include <ns3/orchestrator.h>
-#include <ns3/ptr.h>
-#include <ns3/type-id.h>
-#include <ns3/vector.h>
+#include "event-message.h"
+#include "orchestrator.h"
+
+#include "ns3/object.h"
+#include "ns3/ptr.h"
+#include "ns3/type-id.h"
+#include "ns3/vector.h"
 
 #include <optional>
 #include <string>
@@ -59,20 +59,20 @@ class Decoration : public Object
     /**
      * Sets up the Decoration and assigns the ID
      *
-     * \param orchestrator
+     * @param orchestrator
      * The orchestrator to tie this Decoration to
      */
     explicit Decoration(Ptr<Orchestrator> orchestrator);
 
     /**
-     * \brief Get the class TypeId
+     * @brief Get the class TypeId
      *
-     * \return the TypeId
+     * @return the TypeId
      */
     static TypeId GetTypeId(void);
 
     /**
-     * \return
+     * @return
      * The current position of the model
      */
     const Vector3D& GetPosition() const;
@@ -80,13 +80,13 @@ class Decoration : public Object
     /**
      * Sets the position of the model & notifies the orchestrator.
      *
-     * \param orientation
+     * @param orientation
      * The new position of the model
      */
     void SetPosition(const Vector3D& position);
 
     /**
-     * \return
+     * @return
      * The current orientation of the model in degrees
      */
     const Vector3D& GetOrientation() const;
@@ -95,7 +95,7 @@ class Decoration : public Object
      * Sets the orientation of the model & notifies the orchestrator.
      * In degrees
      *
-     * \param orientation
+     * @param orientation
      * The new orientation of the model
      */
     void SetOrientation(const Vector3D& orientation);
@@ -103,7 +103,7 @@ class Decoration : public Object
     /**
      * Convenience method for changing the `Scale` attribute
      *
-     * \param scale
+     * @param scale
      * A new value to use for the scale. Must be greater than 0
      */
     void SetScale(double scale);
@@ -111,7 +111,7 @@ class Decoration : public Object
     /**
      * Convenience method for changing the `ScaleAxes` attribute.
      *
-     * \param scale
+     * @param scale
      * A vector of 3 values to use for scales on each axis
      * in the order [x, y, z]. Must all be greater than 0
      */
@@ -120,7 +120,7 @@ class Decoration : public Object
     /**
      * Convenience method for changing the `ScaleAxes` attribute.
      *
-     * \param scale
+     * @param scale
      * A vector of 3 values to use for scales on each axis
      * in the order [x, y, z]. Must all be greater than 0
      */
@@ -130,7 +130,7 @@ class Decoration : public Object
      * Convenience method for retrieving the `Scale` attribute. Note that
      * the model may also have other scales applied to it.
      *
-     * \return
+     * @return
      * The current uniform scale value.
      *
      * /see GetScaleAxes()
@@ -141,7 +141,7 @@ class Decoration : public Object
      * Convenience method for retrieving the `ScaleAxes` attribute. Note that
      * the model may also have other scales applied to it.
      *
-     * \return
+     * @return
      * The current non-uniform scale values for each axis,
      * in the order [x, y, z].
      *
@@ -151,7 +151,7 @@ class Decoration : public Object
 
   protected:
     /**
-     * \brief Disconnects the referenced Orchestrator
+     * @brief Disconnects the referenced Orchestrator
      */
     void DoDispose(void) override;
 
@@ -227,7 +227,7 @@ class Decoration : public Object
      *
      * Allows for non-uniform scales
      *
-     * \see m_scale
+     * @see m_scale
      */
     Vector3D m_scaleAxes;
 };

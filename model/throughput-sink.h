@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * NIST-developed software is provided by NIST as a public service. You may use,
  * copy and distribute copies of the software in any medium, provided that you
@@ -35,12 +34,13 @@
 #ifndef THROUGHPUT_SINK_H
 #define THROUGHPUT_SINK_H
 
-#include <ns3/nstime.h>
-#include <ns3/object.h>
-#include <ns3/orchestrator.h>
-#include <ns3/packet.h>
-#include <ns3/ptr.h>
-#include <ns3/timer.h>
+#include "orchestrator.h"
+
+#include "ns3/nstime.h"
+#include "ns3/object.h"
+#include "ns3/packet.h"
+#include "ns3/ptr.h"
+#include "ns3/timer.h"
 
 #include <cstdint>
 #include <string>
@@ -74,27 +74,27 @@ class ThroughputSink : public ns3::Object
     /**
      * Sets up the XYSeries and assigns the ID
      *
-     * \param m_orchestrator
+     * @param m_orchestrator
      * The orchestrator to tie this series to
      */
     explicit ThroughputSink(Ptr<Orchestrator> m_orchestrator, const std::string& name);
 
     /**
-     * \brief Get the class TypeId
+     * @brief Get the class TypeId
      *
-     * \return the TypeId
+     * @return the TypeId
      */
     static TypeId GetTypeId(void);
 
     /**
      * Set the unit for the Y axis
-     * \param unit The unit for the Y axis
+     * @param unit The unit for the Y axis
      */
     void SetUnit(ThroughputSink::Unit unit);
 
     /**
      * Set the interval between data points in the XY series
-     * \param interval The interval between data points in the XY series
+     * @param interval The interval between data points in the XY series
      */
     void SetInterval(Time interval);
 
@@ -105,16 +105,16 @@ class ThroughputSink : public ns3::Object
      * For manual control of the added size
      * see `AddPacketSize`.
      *
-     * \param packet A packet with a size
+     * @param packet A packet with a size
      * to add to the current throughput size.
      *
-     * \see AddPacketSize()
+     * @see AddPacketSize()
      */
     void AddPacket(Ptr<const Packet> packet);
 
     /**
      * Increment the size of data received
-     * \param size The packet size in bytes
+     * @param size The packet size in bytes
      */
     void AddPacketSize(uint32_t size);
 
@@ -127,7 +127,7 @@ class ThroughputSink : public ns3::Object
      * Sets the unit of time for the X axis.
      * Also sets the label for the axis
      *
-     * \param unit
+     * @param unit
      * The unit of time to use.
      */
     void SetTimeUnit(Time::Unit unit);
@@ -135,7 +135,7 @@ class ThroughputSink : public ns3::Object
     /**
      * Get the current time unit for the X Axis
      *
-     * \return
+     * @return
      * The current time unit
      */
     Time::Unit GetTimeUnit(void) const;
@@ -143,7 +143,7 @@ class ThroughputSink : public ns3::Object
     /**
      * Gets the underlying series.
      *
-     * \return
+     * @return
      * The XYSeries tracking throughput
      */
     Ptr<XYSeries> GetSeries(void) const;
@@ -152,7 +152,7 @@ class ThroughputSink : public ns3::Object
      * Convenience method to access the X axis of the
      * contained series
      *
-     * \return
+     * @return
      * A pointer to the `ValueAxis` used for the X axis
      * of the contained series
      */
@@ -162,7 +162,7 @@ class ThroughputSink : public ns3::Object
      * Convenience method to access the Y axis of the
      * contained series
      *
-     * \return
+     * @return
      * A pointer to the `ValueAxis` used for the Y axis
      * of the contained series
      */
@@ -175,11 +175,11 @@ class ThroughputSink : public ns3::Object
      * This is the equivalent of calling:
      * `sink->GetYAxis ()->FixedRange (min, max)`
      *
-     * \param min
+     * @param min
      * The minimum expected value passed to `Append()`.
      * Should be less than, but not equal to `max`.
      *
-     * \param max
+     * @param max
      * The maximum expected value passed to `Append()`.
      * Should be greater than, but not equal to `min`
      */
@@ -192,11 +192,11 @@ class ThroughputSink : public ns3::Object
      * This is the equivalent of calling:
      * `sink->GetYAxis ()->ScalingRange (min, max)`
      *
-     * \param min
+     * @param min
      * The starting minimum value of the Y axis,
      * Should be less than, but not equal to `max`.
      *
-     * \param max
+     * @param max
      * The starting maximum value of the Y axis,
      * Should be greater than, but not equal to `min`
      */

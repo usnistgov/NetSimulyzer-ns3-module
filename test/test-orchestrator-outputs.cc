@@ -31,13 +31,15 @@
  * Author: Evan Black <evan.black@nist.gov>
  */
 
-#include <ns3/core-module.h>
-#include <ns3/netsimulyzer-module.h>
-#include <ns3/network-module.h>
-#include <ns3/mobility-module.h>
-#include <ns3/nstime.h>
-#include <ns3/test.h>
 #include "netsimulyzer-test-utils.h"
+
+#include "ns3/core-module.h"
+#include "ns3/mobility-module.h"
+#include "ns3/netsimulyzer-module.h"
+#include "ns3/netsimulyzer-ns3-compatibility.h"
+#include "ns3/network-module.h"
+#include "ns3/nstime.h"
+#include "ns3/test.h"
 
 #include <string>
 #include <string_view>
@@ -149,12 +151,20 @@ TestCaseNodeInOutput::DoRun()
 
     const auto& node = *nodes.begin();
 
-    RequiredFields({"id", "name","label-enabled", "model", "scale",
-                    "trail-enabled", "orientation", "offset", "visible", "position"},
-                   node, "node");
+    RequiredFields({"id",
+                    "name",
+                    "label-enabled",
+                    "model",
+                    "scale",
+                    "trail-enabled",
+                    "orientation",
+                    "offset",
+                    "visible",
+                    "position"},
+                   node,
+                   "node");
 
     NS_TEST_ASSERT_MSG_EQ(node["type"], "node", "Node type field must be 'node'");
-
 
     Simulator::Destroy();
 }
@@ -196,16 +206,14 @@ TestCaseNodeMobility::DoRun()
     NS_TEST_ASSERT_MSG_EQ(nodes.empty(), false, "'nodes' section should not be empty");
 
     const auto& node = *nodes.begin();
-    const auto &position = node["position"];
+    const auto& position = node["position"];
     RequiredFields({"x", "y", "z"}, position, "position");
     NS_TEST_ASSERT_MSG_EQ(position["x"].get<double>(), 1.0, "'x' Position should be 1.0");
     NS_TEST_ASSERT_MSG_EQ(position["y"].get<double>(), 2.0, "'y' Position should be 2.0");
     NS_TEST_ASSERT_MSG_EQ(position["z"].get<double>(), 3.0, "'z' Position should be 3.0");
 
-
     Simulator::Destroy();
 }
-
 
 class OrchestratorBasicOutputTestSuite : public TestSuite
 {
@@ -214,12 +222,11 @@ class OrchestratorBasicOutputTestSuite : public TestSuite
 };
 
 OrchestratorBasicOutputTestSuite::OrchestratorBasicOutputTestSuite()
-    : TestSuite("netsimulyzer-orchestrator-outputs", TestSuite::SYSTEM)
+    : TestSuite("netsimulyzer-orchestrator-outputs", TEST_TYPE_SYSTEM)
 {
-    using TestDuration = TestCase::TestDuration;
-    AddTestCase(new TestCaseOutputStructure(), TestDuration::QUICK);
-    AddTestCase(new TestCaseNodeInOutput(), TestDuration::QUICK);
-    AddTestCase(new TestCaseNodeMobility(), TestDuration::QUICK);
+    AddTestCase(new TestCaseOutputStructure(), TEST_DURATION_QUICK);
+    AddTestCase(new TestCaseNodeInOutput(), TEST_DURATION_QUICK);
+    AddTestCase(new TestCaseNodeMobility(), TEST_DURATION_QUICK);
 }
 
 static OrchestratorBasicOutputTestSuite g_orchestratorBasicOutputTestSuite{};

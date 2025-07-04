@@ -31,37 +31,45 @@
  * Author: Evan Black <evan.black@nist.gov>
  */
 
+#include "ns3/netsimulyzer-ns3-compatibility.h"
 #include "netsimulyzer-test-utils.h"
-#include <ns3/core-module.h>
-#include <ns3/mobility-module.h>
-#include <ns3/netsimulyzer-module.h>
-#include <ns3/network-module.h>
-#include <ns3/nstime.h>
-#include <ns3/test.h>
+
+#include "ns3/core-module.h"
+#include "ns3/mobility-module.h"
+#include "ns3/netsimulyzer-module.h"
+#include "ns3/network-module.h"
+#include "ns3/nstime.h"
+#include "ns3/test.h"
 
 #include <string>
 #include <string_view>
 #include <vector>
 
-namespace ns3::test {
+namespace ns3::test
+{
 
 using namespace netsimulyzer;
 
-class TestCaseDefaultBuilding : public NetSimulyzerTestCase {
-public:
-  TestCaseDefaultBuilding();
+class TestCaseDefaultBuilding : public NetSimulyzerTestCase
+{
+  public:
+    TestCaseDefaultBuilding();
 
-private:
-  void DoRun() override;
+  private:
+    void DoRun() override;
 };
 
 TestCaseDefaultBuilding::TestCaseDefaultBuilding()
-    : NetSimulyzerTestCase("NetSimulyzer - Default Building Output") {}
+    : NetSimulyzerTestCase("NetSimulyzer - Default Building Output")
+{
+}
 
-void TestCaseDefaultBuilding::DoRun() {
-  auto o = CreateObject<Orchestrator>(Orchestrator::MemoryOutputMode::On);
+void
+TestCaseDefaultBuilding::DoRun()
+{
+    auto o = CreateObject<Orchestrator>(Orchestrator::MemoryOutputMode::On);
 
-  auto ns3Building = CreateObject<Building>();
+    auto ns3Building = CreateObject<Building>();
     auto ns3Bounds = ns3Building->GetBoundaries();
 
     auto buildingConfig = CreateObject<BuildingConfiguration>(o);
@@ -69,76 +77,103 @@ void TestCaseDefaultBuilding::DoRun() {
 
     Color3Value colorAttribute{};
     buildingConfig->GetAttribute("Color", colorAttribute);
-    const auto &ns3Color = colorAttribute.Get();
+    const auto& ns3Color = colorAttribute.Get();
 
     BooleanValue visableAttribute{};
     buildingConfig->GetAttribute("Visible", visableAttribute);
 
-
     Simulator::Stop(Seconds(100.0));
     Simulator::Run();
 
-    const auto &output = o->GetJson();
+    const auto& output = o->GetJson();
 
-    NS_TEST_ASSERT_MSG_EQ(output.contains("buildings"), true, "Output must contain 'buildings' key");
+    NS_TEST_ASSERT_MSG_EQ(output.contains("buildings"),
+                          true,
+                          "Output must contain 'buildings' key");
 
-    const auto &buildings = output["buildings"];
+    const auto& buildings = output["buildings"];
     NS_TEST_ASSERT_MSG_EQ(buildings.size(), 1UL, "'buldings' array should contain one building");
 
-    const auto &building = buildings[0];
+    const auto& building = buildings[0];
 
-    RequiredFields({"color", "visible", "id", "floors", "rooms", "bounds"},building, "building");
+    RequiredFields({"color", "visible", "id", "floors", "rooms", "bounds"}, building, "building");
 
     CheckColor(building["color"], ns3Color);
 
-    NS_TEST_ASSERT_MSG_EQ(building["visible"].get<bool>(), visableAttribute.Get(), "Output 'visable' must match config");
+    NS_TEST_ASSERT_MSG_EQ(building["visible"].get<bool>(),
+                          visableAttribute.Get(),
+                          "Output 'visable' must match config");
 
-    NS_TEST_ASSERT_MSG_EQ(building["id"].get<uint32_t>(), ns3Building->GetId(), "Building ID must match output");
+    NS_TEST_ASSERT_MSG_EQ(building["id"].get<uint32_t>(),
+                          ns3Building->GetId(),
+                          "Building ID must match output");
 
-    NS_TEST_ASSERT_MSG_EQ(building["floors"].get<uint16_t>(), ns3Building->GetNFloors(), "Output floors much match ns-3");
-
+    NS_TEST_ASSERT_MSG_EQ(building["floors"].get<uint16_t>(),
+                          ns3Building->GetNFloors(),
+                          "Output floors much match ns-3");
 
     const auto rooms = building["rooms"];
     RequiredFields({"x", "y"}, rooms, "rooms");
 
-    NS_TEST_ASSERT_MSG_EQ(rooms["x"].get<uint16_t>(), ns3Building->GetNRoomsX(), "Output X Rooms must match ns3");
-    NS_TEST_ASSERT_MSG_EQ(rooms["y"].get<uint16_t>(), ns3Building->GetNRoomsY(), "Output Y Rooms must match ns3");
+    NS_TEST_ASSERT_MSG_EQ(rooms["x"].get<uint16_t>(),
+                          ns3Building->GetNRoomsX(),
+                          "Output X Rooms must match ns3");
+    NS_TEST_ASSERT_MSG_EQ(rooms["y"].get<uint16_t>(),
+                          ns3Building->GetNRoomsY(),
+                          "Output Y Rooms must match ns3");
 
-    const auto &bounds = building["bounds"];
+    const auto& bounds = building["bounds"];
     RequiredFields({"x", "y", "z"}, bounds, "bounds");
 
     const auto boundsX = bounds["x"];
     RequiredFields({"min", "max"}, boundsX, "bounds['x']");
-    NS_TEST_ASSERT_MSG_EQ(boundsX["min"].get<double>(), ns3Bounds.xMin, "Output X bound min must match ns-3");
-    NS_TEST_ASSERT_MSG_EQ(boundsX["max"].get<double>(), ns3Bounds.xMax, "Output X bound max must match ns-3");
+    NS_TEST_ASSERT_MSG_EQ(boundsX["min"].get<double>(),
+                          ns3Bounds.xMin,
+                          "Output X bound min must match ns-3");
+    NS_TEST_ASSERT_MSG_EQ(boundsX["max"].get<double>(),
+                          ns3Bounds.xMax,
+                          "Output X bound max must match ns-3");
 
     const auto boundsY = bounds["y"];
     RequiredFields({"min", "max"}, boundsY, "bounds['y']");
-    NS_TEST_ASSERT_MSG_EQ(boundsY["min"].get<double>(), ns3Bounds.yMin, "Output Y bound min must match ns-3");
-    NS_TEST_ASSERT_MSG_EQ(boundsY["max"].get<double>(), ns3Bounds.yMax, "Output Y bound max must match ns-3");
+    NS_TEST_ASSERT_MSG_EQ(boundsY["min"].get<double>(),
+                          ns3Bounds.yMin,
+                          "Output Y bound min must match ns-3");
+    NS_TEST_ASSERT_MSG_EQ(boundsY["max"].get<double>(),
+                          ns3Bounds.yMax,
+                          "Output Y bound max must match ns-3");
 
     const auto boundsZ = bounds["z"];
     RequiredFields({"min", "max"}, boundsZ, "bounds['z']");
-    NS_TEST_ASSERT_MSG_EQ(boundsZ["min"].get<double>(), ns3Bounds.zMin, "Output Z bound min must match ns-3");
-    NS_TEST_ASSERT_MSG_EQ(boundsZ["max"].get<double>(), ns3Bounds.zMax, "Output Z bound max must match ns-3");
+    NS_TEST_ASSERT_MSG_EQ(boundsZ["min"].get<double>(),
+                          ns3Bounds.zMin,
+                          "Output Z bound min must match ns-3");
+    NS_TEST_ASSERT_MSG_EQ(boundsZ["max"].get<double>(),
+                          ns3Bounds.zMax,
+                          "Output Z bound max must match ns-3");
 
     Simulator::Destroy();
 }
 
 // --------------------------------------------------------------------
 
-class TestCaseBuildingBoundsRooms : public NetSimulyzerTestCase {
-public:
+class TestCaseBuildingBoundsRooms : public NetSimulyzerTestCase
+{
+  public:
     TestCaseBuildingBoundsRooms();
 
-private:
+  private:
     void DoRun() override;
 };
 
 TestCaseBuildingBoundsRooms::TestCaseBuildingBoundsRooms()
-    : NetSimulyzerTestCase("NetSimulyzer - Building Bounds and Rooms") {}
+    : NetSimulyzerTestCase("NetSimulyzer - Building Bounds and Rooms")
+{
+}
 
-void TestCaseBuildingBoundsRooms::DoRun() {
+void
+TestCaseBuildingBoundsRooms::DoRun()
+{
     auto o = CreateObject<Orchestrator>(Orchestrator::MemoryOutputMode::On);
 
     Box ns3Bounds{-5.0, 5.0, 0.0, 10.0, 15.0, 20.0};
@@ -159,13 +194,14 @@ void TestCaseBuildingBoundsRooms::DoRun() {
     Simulator::Stop(Seconds(10.0));
     Simulator::Run();
 
-    const auto &output = o->GetJson();
-    const auto &building = output["buildings"][0];
+    const auto& output = o->GetJson();
+    const auto& building = output["buildings"][0];
 
-    RequiredFields({"color", "visible", "id", "floors", "rooms", "bounds"},building, "building");
+    RequiredFields({"color", "visible", "id", "floors", "rooms", "bounds"}, building, "building");
 
-    NS_TEST_ASSERT_MSG_EQ(building["floors"].get<uint16_t>(), ns3Building->GetNFloors(), "Output floors much match ns-3");
-
+    NS_TEST_ASSERT_MSG_EQ(building["floors"].get<uint16_t>(),
+                          ns3Building->GetNFloors(),
+                          "Output floors much match ns-3");
 
     const auto rooms = building["rooms"];
     RequiredFields({"x", "y"}, rooms, "rooms");
@@ -173,38 +209,50 @@ void TestCaseBuildingBoundsRooms::DoRun() {
     NS_TEST_ASSERT_MSG_EQ(rooms["x"].get<uint16_t>(), ns3RoomsX, "Output X Rooms must match ns3");
     NS_TEST_ASSERT_MSG_EQ(rooms["y"].get<uint16_t>(), ns3RoomsY, "Output Y Rooms must match ns3");
 
-    const auto &bounds = building["bounds"];
+    const auto& bounds = building["bounds"];
     RequiredFields({"x", "y", "z"}, bounds, "bounds");
 
     const auto boundsX = bounds["x"];
     RequiredFields({"min", "max"}, boundsX, "bounds['x']");
-    NS_TEST_ASSERT_MSG_EQ(boundsX["min"].get<double>(), ns3Bounds.xMin, "Output X bound min must match ns-3");
-    NS_TEST_ASSERT_MSG_EQ(boundsX["max"].get<double>(), ns3Bounds.xMax, "Output X bound max must match ns-3");
+    NS_TEST_ASSERT_MSG_EQ(boundsX["min"].get<double>(),
+                          ns3Bounds.xMin,
+                          "Output X bound min must match ns-3");
+    NS_TEST_ASSERT_MSG_EQ(boundsX["max"].get<double>(),
+                          ns3Bounds.xMax,
+                          "Output X bound max must match ns-3");
 
     const auto boundsY = bounds["y"];
     RequiredFields({"min", "max"}, boundsY, "bounds['y']");
-    NS_TEST_ASSERT_MSG_EQ(boundsY["min"].get<double>(), ns3Bounds.yMin, "Output Y bound min must match ns-3");
-    NS_TEST_ASSERT_MSG_EQ(boundsY["max"].get<double>(), ns3Bounds.yMax, "Output Y bound max must match ns-3");
+    NS_TEST_ASSERT_MSG_EQ(boundsY["min"].get<double>(),
+                          ns3Bounds.yMin,
+                          "Output Y bound min must match ns-3");
+    NS_TEST_ASSERT_MSG_EQ(boundsY["max"].get<double>(),
+                          ns3Bounds.yMax,
+                          "Output Y bound max must match ns-3");
 
     const auto boundsZ = bounds["z"];
     RequiredFields({"min", "max"}, boundsZ, "bounds['z']");
-    NS_TEST_ASSERT_MSG_EQ(boundsZ["min"].get<double>(), ns3Bounds.zMin, "Output Z bound min must match ns-3");
-    NS_TEST_ASSERT_MSG_EQ(boundsZ["max"].get<double>(), ns3Bounds.zMax, "Output Z bound max must match ns-3");
+    NS_TEST_ASSERT_MSG_EQ(boundsZ["min"].get<double>(),
+                          ns3Bounds.zMin,
+                          "Output Z bound min must match ns-3");
+    NS_TEST_ASSERT_MSG_EQ(boundsZ["max"].get<double>(),
+                          ns3Bounds.zMax,
+                          "Output Z bound max must match ns-3");
 
     Simulator::Destroy();
 }
 
-class NetsimulyzerBuildingSuite : public TestSuite {
-public:
-  NetsimulyzerBuildingSuite();
+class NetsimulyzerBuildingSuite : public TestSuite
+{
+  public:
+    NetsimulyzerBuildingSuite();
 };
 
-NetsimulyzerBuildingSuite::NetsimulyzerBuildingSuite(): TestSuite{"netsimulyzer-buildings"}
+NetsimulyzerBuildingSuite::NetsimulyzerBuildingSuite()
+    : TestSuite{"netsimulyzer-buildings"}
 {
-    using TestDuration = TestCase::TestDuration;
-
-    AddTestCase(new TestCaseDefaultBuilding{}, TestDuration::QUICK);
-    AddTestCase(new TestCaseBuildingBoundsRooms{}, TestDuration::QUICK);
+    AddTestCase(new TestCaseDefaultBuilding{}, TEST_DURATION_QUICK);
+    AddTestCase(new TestCaseBuildingBoundsRooms{}, TEST_DURATION_QUICK);
 };
 
 static NetsimulyzerBuildingSuite g_getsimulyzerBuildingSuite{};

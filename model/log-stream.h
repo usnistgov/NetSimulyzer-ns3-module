@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * NIST-developed software is provided by NIST as a public service. You may use,
  * copy and distribute copies of the software in any medium, provided that you
@@ -35,10 +34,11 @@
 #ifndef LOG_STREAM_H
 #define LOG_STREAM_H
 
-#include <ns3/color.h>
-#include <ns3/object.h>
-#include <ns3/optional.h>
-#include <ns3/ptr.h>
+#include "color.h"
+#include "optional.h"
+
+#include "ns3/object.h"
+#include "ns3/ptr.h"
 
 #include <cstdint>
 #include <iostream>
@@ -62,22 +62,22 @@ class LogStream : public Object
     /**
      * Sets up the LogStream and assigns the ID
      *
-     * \param orchestrator
+     * @param orchestrator
      * The orchestrator to tie this LogStream to
      */
     explicit LogStream(Ptr<Orchestrator> orchestrator);
 
     /**
-     * \brief Get the class TypeId
+     * @brief Get the class TypeId
      *
-     * \return the TypeId
+     * @return the TypeId
      */
     static TypeId GetTypeId(void);
 
     /**
      * Writes`message` out on this log stream at the current time.
      *
-     * \param message
+     * @param message
      * The message to write on the stream.
      */
     void Write(const std::string& message) const;
@@ -131,17 +131,17 @@ class LogStream : public Object
 /**
  * Converts `value` to a string and writes it to stream `stream`.
  *
- * \tparam T
+ * @tparam T
  * The type of the value to output. Should have a std::to_string
  * overload. If not, use the `std::string` specialized version
  *
- * \param stream
+ * @param stream
  * The stream to write to
  *
- * \param value
+ * @param value
  * The value to output on `stream` will be converted to a string
  *
- * \return
+ * @return
  * The stream `stream` to chain additional calls
  */
 template <class T>
@@ -155,13 +155,13 @@ operator<<(LogStream& stream, const T& value)
 /**
  * Writes a string out on `stream` with no conversion to `value`.
  *
- * \param stream
+ * @param stream
  * The stream to write to
  *
- * \param value
+ * @param value
  * The value to write to `stream`
  *
- * \return
+ * @return
  * The stream `stream` to chain additional calls
  */
 template <>
@@ -175,13 +175,13 @@ operator<<(LogStream& stream, const std::string& value)
 /**
  * Writes a string out on `stream` with no conversion to `value`.
  *
- * \param stream
+ * @param stream
  * The stream to write to
  *
- * \param value
+ * @param value
  * The value to write to `stream`
  *
- * \return
+ * @return
  * The stream `stream` to chain additional calls
  */
 template <>
@@ -196,13 +196,13 @@ operator<<(LogStream& stream, const char& value)
  * Writes a string literal on `stream` with no conversion to `value`
  * (other than to std::string).
  *
- * \param stream
+ * @param stream
  * The stream to write to
  *
- * \param value
+ * @param value
  * The value to write to `stream`
  *
- * \return
+ * @return
  * The stream `stream` to chain additional calls
  */
 LogStream& operator<<(LogStream& stream, const char* value);

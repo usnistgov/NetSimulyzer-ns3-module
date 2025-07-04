@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * NIST-developed software is provided by NIST as a public service. You may use,
  * copy and distribute copies of the software in any medium, provided that you
@@ -35,8 +34,8 @@
 #ifndef CATEGORY_AXIS_H
 #define CATEGORY_AXIS_H
 
-#include <ns3/object.h>
-#include <ns3/ptr.h>
+#include "ns3/object.h"
+#include "ns3/ptr.h"
 
 #include <cstddef>
 #include <cstdint>
@@ -69,7 +68,11 @@ class CategoryAxis : public ns3::Object
          * The string repesenetation of the scoped enum value in `key`
          */
         template <class T>
-        ValuePair(const T key, const std::string &value): key{static_cast<int>(key)}, value{value} {}
+        ValuePair(const T key, const std::string& value)
+            : key{static_cast<int>(key)},
+              value{value}
+        {
+        }
 
         /**
          * Constructor for unscoped enums (e.g. `enum` without `class`/`struct`)
@@ -80,15 +83,19 @@ class CategoryAxis : public ns3::Object
          * @param value
          * The string representation of the enum value in `key`
          */
-        ValuePair(const int key, const std::string &value): key{key}, value{value} {}
+        ValuePair(const int key, const std::string& value)
+            : key{key},
+              value{value}
+        {
+        }
 
         ValuePair() = default;
     };
 
     /**
-     * \brief Get the class TypeId
+     * @brief Get the class TypeId
      *
-     * \return the TypeId
+     * @return the TypeId
      */
     static TypeId GetTypeId(void);
 
@@ -103,7 +110,7 @@ class CategoryAxis : public ns3::Object
      *
      * More values may be safely added with `AddValue`
      *
-     * \param values
+     * @param values
      * The initial categories to have on the axis
      */
     explicit CategoryAxis(const std::vector<std::string>& values);
@@ -114,11 +121,11 @@ class CategoryAxis : public ns3::Object
      *
      * More values may be safely added with `AddValue`
      *
-     * \warning No two categories may have the same ID.
+     * @warning No two categories may have the same ID.
      * This rule is for categories added through both
      * the `ValuePair` constructor and `AddValue (ValuePair)`
      *
-     * \param values
+     * @param values
      * The initial categories to have on the axis
      */
     explicit CategoryAxis(const std::vector<ValuePair>& values);
@@ -126,11 +133,11 @@ class CategoryAxis : public ns3::Object
     /**
      * Adds a category with an unspecified ID
      *
-     * \warning Do not duplicate category names,
+     * @warning Do not duplicate category names,
      * if two categories share the same name IDs
      * must be used to interact with the conflicting names.
      *
-     * \param value
+     * @param value
      * A new category to add to the axis
      */
     void AddValue(const std::string& value);
@@ -138,11 +145,11 @@ class CategoryAxis : public ns3::Object
     /**
      * Adds a category with a pre-assigned ID
      *
-     * \warning No two categories may have the same ID.
+     * @warning No two categories may have the same ID.
      * This rule is for categories added through both
      * the `ValuePair` constructor and `AddValue (ValuePair)`
      *
-     * \param value
+     * @param value
      * The category and it's ID to add to the axis.
      */
     void AddValue(const ValuePair& value);
@@ -150,7 +157,7 @@ class CategoryAxis : public ns3::Object
     /**
      * Gives the ID, category mapping used by the axis
      *
-     * \return
+     * @return
      * The internal map containing all user added categories
      */
     const std::unordered_map<int, std::string>& GetValues(void) const;
@@ -159,13 +166,13 @@ class CategoryAxis : public ns3::Object
      * Looks up the ID of a given category.
      * If the category is not found, abort()'s
      *
-     * \warning If two categories share the same name
+     * @warning If two categories share the same name
      * the result of this function is undefined
      *
-     * \param name
+     * @param name
      * The category value, case sensitive
      *
-     * \return
+     * @return
      * The ID of the requested category
      */
     int GetId(const std::string& name) const;
@@ -174,13 +181,13 @@ class CategoryAxis : public ns3::Object
      * Retrieves the name & ID of a category.
      * Will throw std::out_of_range if the category is not found
      *
-     * \throw std::out_of_range
+     * @throw std::out_of_range
      * If `id` is not on the axis
      *
-     * \param id
+     * @param id
      * The ID of the category to find
      *
-     * \return
+     * @return
      * The name & ID of the category
      */
     ValuePair Get(int id);
@@ -189,10 +196,10 @@ class CategoryAxis : public ns3::Object
      * Retrieves the name & ID of a category.
      * Will abort if the category is not found
      *
-     * \param name
+     * @param name
      * The name of the category
      *
-     * \return
+     * @return
      * The name & ID of the category
      */
     ValuePair Get(const std::string& name);

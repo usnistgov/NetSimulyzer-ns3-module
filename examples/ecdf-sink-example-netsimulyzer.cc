@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * NIST-developed software is provided by NIST as a public service. You may use,
  * copy and distribute copies of the software in any medium, provided that you
@@ -32,13 +31,13 @@
  * Author: Evan Black <evan.black@nist.gov>
  */
 
-#include <ns3/applications-module.h>
-#include <ns3/core-module.h>
-#include <ns3/internet-module.h>
-#include <ns3/mobility-module.h>
-#include <ns3/netsimulyzer-module.h>
-#include <ns3/network-module.h>
-#include <ns3/point-to-point-module.h>
+#include "ns3/applications-module.h"
+#include "ns3/core-module.h"
+#include "ns3/internet-module.h"
+#include "ns3/mobility-module.h"
+#include "ns3/netsimulyzer-module.h"
+#include "ns3/network-module.h"
+#include "ns3/point-to-point-module.h"
 
 #include <string>
 
@@ -77,9 +76,13 @@ main(int argc, char* argv[])
 
     auto connectionType = netsimulyzer::XYSeries::ConnectionType::Line;
     if (connectionTypeUser == "Line")
+    {
         connectionType = netsimulyzer::XYSeries::ConnectionType::Line;
+    }
     else if (connectionTypeUser == "None")
+    {
         connectionType = netsimulyzer::XYSeries::ConnectionType::None;
+    }
     else
     {
         NS_ABORT_MSG("Unrecognised 'ConnectionType': " + connectionTypeUser);

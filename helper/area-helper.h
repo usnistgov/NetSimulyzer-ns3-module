@@ -34,12 +34,12 @@
 #ifndef AREA_HELPER_H
 #define AREA_HELPER_H
 
-#include <ns3/node-container.h>
-#include <ns3/orchestrator.h>
-#include <ns3/ptr.h>
-#include <ns3/rectangle.h>
-#include <ns3/rectangular-area.h>
-#include <ns3/vector.h>
+#include "ns3/node-container.h"
+#include "ns3/orchestrator.h"
+#include "ns3/ptr.h"
+#include "ns3/rectangle.h"
+#include "ns3/rectangular-area.h"
+#include "ns3/vector.h"
 
 #include <unordered_map>
 #include <vector>
@@ -48,7 +48,7 @@ namespace ns3::netsimulyzer
 {
 
 /**
- * \ingroup netsimulyzer
+ * @ingroup netsimulyzer
  *  Creates `RectangularArea`s
  */
 class AreaHelper
@@ -59,8 +59,8 @@ class AreaHelper
     /**
      * Sets one of the attributes of underlying model
      *
-     * \param name Name of attribute to set.
-     * \param v Value of the attribute.
+     * @param name Name of attribute to set.
+     * @param v Value of the attribute.
      */
     void Set(const std::string& name, const AttributeValue& v);
 
@@ -108,11 +108,11 @@ class AreaHelper
      * Function to make a rectangular area surrounding the
      * current location of the Nodes in `nodes`.
      *
-     * \param nodes The Nodes to surround with a `RectangularArea`
-     * \param width Minimum distance between the nodes and the area boundaries
-     * \param vDiff Distance of the area from the lowest node on the zAxis
+     * @param nodes The Nodes to surround with a `RectangularArea`
+     * @param width Minimum distance between the nodes and the area boundaries
+     * @param vDiff Distance of the area from the lowest node on the zAxis
      *
-     * \return A `RectangularArea` surrounding `nodes`
+     * @return A `RectangularArea` surrounding `nodes`
      */
     Ptr<RectangularArea> MakeAreaSurroundingNodes(const NodeContainer& nodes,
                                                   double width = 2.0,

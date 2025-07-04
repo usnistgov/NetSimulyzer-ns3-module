@@ -1,20 +1,10 @@
-/* -*-  Mode: C++; c-file-style: "gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2012 Centre Tecnologic de Telecomunicacions de Catalunya (CTTC)
  * Copyright (c) 2019, University of Padova, Dep. of Information Engineering, SIGNET lab
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License version 2 as
- * published by the Free Software Foundation;
+ * SPDX-License-Identifier: GPL-2.0-only
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Author: Nicola Baldo <nbaldo@cttc.es> for the code adapted from the lena-dual-stripe.cc example
  * Author: Michele Polese <michele.polese@gmail.com> for this version
@@ -157,7 +147,9 @@ main(int argc, char* argv[])
     // Use helper to configure buildings and export them
     netsimulyzer::BuildingConfigurationHelper buildingHelper{orchestrator};
     for (auto& building : buildingVector)
+    {
         buildingHelper.Install(building);
+    }
     // Create a LogStream to output mobility events
     Ptr<netsimulyzer::LogStream> eventLog = CreateObject<netsimulyzer::LogStream>(orchestrator);
     eventLog->SetAttribute("Name", StringValue("Event Log"));

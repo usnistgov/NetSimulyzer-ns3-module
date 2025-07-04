@@ -1,4 +1,3 @@
-/* -*-  Mode: C++; c-file-style: "gnu"; indent-tabs-mode:nil; -*- */
 /*
  * NIST-developed software is provided by NIST as a public
  * service. You may use, copy and distribute copies of the software in
@@ -35,10 +34,10 @@
  * Author: Evan Black <evan.black@nist.gov>
  */
 
-#include <ns3/core-module.h>
-#include <ns3/mobility-module.h>
-#include <ns3/netsimulyzer-module.h>
-#include <ns3/network-module.h>
+#include "ns3/core-module.h"
+#include "ns3/mobility-module.h"
+#include "ns3/netsimulyzer-module.h"
+#include "ns3/network-module.h"
 
 #include <string>
 
@@ -151,7 +150,9 @@ main(int argc, char* argv[])
     {
         auto m = (*iter)->GetObject<MobilityModel>();
         if (!m)
+        {
             continue;
+        }
         m->TraceConnectWithoutContext("CourseChange", MakeCallback(&CourseChanged));
     }
 

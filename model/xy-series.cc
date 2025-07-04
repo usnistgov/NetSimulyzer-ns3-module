@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * NIST-developed software is provided by NIST as a public service. You may use,
  * copy and distribute copies of the software in any medium, provided that you
@@ -35,13 +34,14 @@
 #include "xy-series.h"
 
 #include "color-palette.h"
+#include "netsimulyzer-ns3-compatibility.h"
 
-#include <ns3/boolean.h>
-#include <ns3/enum.h>
-#include <ns3/log.h>
-#include <ns3/pointer.h>
-#include <ns3/string.h>
-#include <ns3/uinteger.h>
+#include "ns3/boolean.h"
+#include "ns3/enum.h"
+#include "ns3/log.h"
+#include "ns3/pointer.h"
+#include "ns3/string.h"
+#include "ns3/uinteger.h"
 
 namespace ns3
 {
@@ -100,11 +100,7 @@ XYSeries::GetTypeId(void)
             .AddAttribute("Connection",
                           "Type of connection to form between points in the series",
                           EnumValue(XYSeries::ConnectionType::Line),
-#ifndef NETSIMULYZER_PRE_NS3_41_ENUM_VALUE
-                          MakeEnumAccessor<XYSeries::ConnectionType>(&XYSeries::m_connection),
-#else
-                          MakeEnumAccessor(&XYSeries::m_connection),
-#endif
+                          MakeEnumAccessorCompat<XYSeries::ConnectionType>(&XYSeries::m_connection),
                           MakeEnumChecker(XYSeries::ConnectionType::None,
                                           "None",
                                           XYSeries::ConnectionType::Line,
@@ -118,11 +114,7 @@ XYSeries::GetTypeId(void)
             .AddAttribute("LabelMode",
                           "How the point labels are shown",
                           EnumValue(XYSeries::LabelMode::Hidden),
-#ifndef NETSIMULYZER_PRE_NS3_41_ENUM_VALUE
-                          MakeEnumAccessor<LabelMode>(&XYSeries::m_labelMode),
-#else
-                          MakeEnumAccessor(&XYSeries::m_labelMode),
-#endif
+                          MakeEnumAccessorCompat<LabelMode>(&XYSeries::m_labelMode),
                           MakeEnumChecker(XYSeries::LabelMode::Hidden,
                                           "Hidden",
                                           XYSeries::LabelMode::Shown,
@@ -130,11 +122,7 @@ XYSeries::GetTypeId(void)
             .AddAttribute("PointMode",
                           "Icon used to display points in the application",
                           EnumValue(XYSeries::PointMode::PointNone),
-#ifndef NETSIMULYZER_PRE_NS3_41_ENUM_VALUE
-                          MakeEnumAccessor<XYSeries::PointMode>(&XYSeries::m_pointMode),
-#else
-                          MakeEnumAccessor(&XYSeries::m_pointMode),
-#endif
+                          MakeEnumAccessorCompat<XYSeries::PointMode>(&XYSeries::m_pointMode),
                           MakeEnumChecker(XYSeries::PointMode::PointNone,
                                           "PointNone",
                                           XYSeries::PointMode::Dot,

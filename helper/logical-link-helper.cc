@@ -33,9 +33,9 @@
 
 #include "logical-link-helper.h"
 
-#include <ns3/color.h>
-#include <ns3/logical-link.h>
-#include <ns3/pointer.h>
+#include "ns3/color.h"
+#include "ns3/logical-link.h"
+#include "ns3/pointer.h"
 
 namespace ns3
 {
@@ -145,7 +145,9 @@ LogicalLinkHelper::LinkGroup(const NodeContainer& group) const
 {
     // Just in case
     if (group.GetN() == 0)
+    {
         return {};
+    }
 
     std::vector<Ptr<LogicalLink>> links;
     // link the i'th node with all the other nodes that come after it

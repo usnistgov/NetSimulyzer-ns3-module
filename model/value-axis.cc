@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * NIST-developed software is provided by NIST as a public service. You may use,
  * copy and distribute copies of the software in any medium, provided that you
@@ -34,11 +33,13 @@
 
 #include "value-axis.h"
 
-#include <ns3/double.h>
-#include <ns3/enum.h>
-#include <ns3/log.h>
-#include <ns3/pointer.h>
-#include <ns3/string.h>
+#include "netsimulyzer-ns3-compatibility.h"
+
+#include "ns3/double.h"
+#include "ns3/enum.h"
+#include "ns3/log.h"
+#include "ns3/pointer.h"
+#include "ns3/string.h"
 
 #include <algorithm>
 
@@ -69,26 +70,19 @@ ValueAxis::GetTypeId(void)
                           DoubleValue(),
                           MakeDoubleAccessor(&ValueAxis::m_max),
                           MakeDoubleChecker<double>())
-            .AddAttribute("BoundMode",
-                          "How the boundaries of the axis may move given a new value",
-                          EnumValue(ValueAxis::BoundMode::HighestValue),
-#ifndef NETSIMULYZER_PRE_NS3_41_ENUM_VALUE
-                          MakeEnumAccessor<BoundMode>(&ValueAxis::m_boundMode),
-#else
-                          MakeEnumAccessor(&ValueAxis::m_boundMode),
-#endif
-                          // clang-format off
+            .AddAttribute(
+                "BoundMode",
+                "How the boundaries of the axis may move given a new value",
+                EnumValue(ValueAxis::BoundMode::HighestValue),
+                MakeEnumAccessorCompat<BoundMode>(&ValueAxis::m_boundMode),
+                // clang-format off
                           MakeEnumChecker(
                               BoundMode::Fixed, "Fixed",
                               BoundMode::HighestValue, "HighestValue"))
             .AddAttribute("Scale",
                           "The method to scale between tick marks on the axis",
                           EnumValue(ValueAxis::Scale::Linear),
-#ifndef NETSIMULYZER_PRE_NS3_41_ENUM_VALUE
-                          MakeEnumAccessor<Scale>(&ValueAxis::m_scale),
-#else
-                          MakeEnumAccessor(&ValueAxis::m_scale),
-#endif
+                          MakeEnumAccessorCompat<Scale>(&ValueAxis::m_scale),
                           MakeEnumChecker(
                               ValueAxis::Linear, "Linear",
                               ValueAxis::Logarithmic, "Logarithmic"));

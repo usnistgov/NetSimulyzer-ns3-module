@@ -33,10 +33,10 @@
 #ifndef LOGICAL_LINK_HELPER_H
 #define LOGICAL_LINK_HELPER_H
 
-#include <ns3/node-container.h>
-#include <ns3/object-factory.h>
-#include <ns3/orchestrator.h>
-#include <ns3/ptr.h>
+#include "ns3/node-container.h"
+#include "ns3/object-factory.h"
+#include "ns3/orchestrator.h"
+#include "ns3/ptr.h"
 
 #include <unordered_map>
 #include <vector>
@@ -45,8 +45,8 @@ namespace ns3::netsimulyzer
 {
 
 /**
- * \ingroup netsimulyzer
- * \brief Creates logical links between Nodes
+ * @ingroup netsimulyzer
+ * @brief Creates logical links between Nodes
  */
 class LogicalLinkHelper
 {
@@ -56,8 +56,8 @@ class LogicalLinkHelper
     /**
      * Sets one of the attributes of underlying model
      *
-     * \param name Name of attribute to set.
-     * \param v Value of the attribute.
+     * @param name Name of attribute to set.
+     * @param v Value of the attribute.
      */
     void Set(const std::string& name, const AttributeValue& v);
 
@@ -71,13 +71,13 @@ class LogicalLinkHelper
     /**
      * Creates logical links connecting all nodes in group to baseNode.
      *
-     * \param baseNode
+     * @param baseNode
      * The Node to link each Node in `group` to.
      *
-     * \param group
+     * @param group
      * The collection of Nodes to link to `baseNode`
      *
-     * \return The collection of `LogicalLink`s from each `group` Node to `baseNode`
+     * @return The collection of `LogicalLink`s from each `group` Node to `baseNode`
      * in order that they appear in `group`
      */
     std::vector<Ptr<LogicalLink>> LinkAllToNode(Ptr<Node> baseNode,
@@ -87,11 +87,11 @@ class LogicalLinkHelper
      * Creates `LogicalLink`s linking each member of `group`
      * with every other member of `group`
      *
-     * \param group
+     * @param group
      * The collection of `Node`s to link.
      * If empty, returns an empty `vector`
      *
-     * \return The collection of `LogicalLinks` in order with the first `Node` in
+     * @return The collection of `LogicalLinks` in order with the first `Node` in
      * the link in order that they appear in `group`.
      */
     std::vector<Ptr<LogicalLink>> LinkGroup(const NodeContainer& group) const;

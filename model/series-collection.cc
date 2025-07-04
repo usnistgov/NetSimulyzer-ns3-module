@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * NIST-developed software is provided by NIST as a public service. You may use,
  * copy and distribute copies of the software in any medium, provided that you
@@ -32,11 +31,11 @@
 
 #include "series-collection.h"
 
-#include <ns3/boolean.h>
-#include <ns3/log.h>
-#include <ns3/pointer.h>
-#include <ns3/string.h>
-#include <ns3/uinteger.h>
+#include "ns3/boolean.h"
+#include "ns3/log.h"
+#include "ns3/pointer.h"
+#include "ns3/string.h"
+#include "ns3/uinteger.h"
 
 #include <utility>
 
@@ -106,7 +105,9 @@ SeriesCollection::Add(Ptr<XYSeries> series)
     Add(id.Get());
 
     if (m_hideAddedSeries)
+    {
         series->SetAttribute("Visible", BooleanValue(false));
+    }
 
     if (m_autoColor && !m_autoColorPalette.empty())
     {
@@ -114,7 +115,9 @@ SeriesCollection::Add(Ptr<XYSeries> series)
         m_autoColorIndex++;
 
         if (m_autoColorIndex >= m_autoColorPalette.size())
+        {
             m_autoColorIndex = 0u;
+        }
     }
 }
 

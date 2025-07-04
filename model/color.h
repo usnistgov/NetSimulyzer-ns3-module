@@ -1,4 +1,3 @@
-/* -*-  Mode: C++; c-file-style: "gnu"; indent-tabs-mode:nil; -*- */
 /*
  * NIST-developed software is provided by NIST as a public
  * service. You may use, copy and distribute copies of the software in
@@ -37,8 +36,8 @@
 #ifndef COLOR_H
 #define COLOR_H
 
-#include <ns3/attribute-helper.h>
-#include <ns3/attribute.h>
+#include "ns3/attribute-helper.h"
+#include "ns3/attribute.h"
 
 #include <cstdint>
 #include <ostream>
@@ -60,7 +59,7 @@ class Color3
     /**
      * Initialize all color with uniform components
      *
-     * \param component
+     * @param component
      * The value to set the color components to
      */
     explicit Color3(uint8_t component);
@@ -68,13 +67,13 @@ class Color3
     /**
      * Initialize a color, setting each channel
      *
-     * \param red
+     * @param red
      * The amount of red in the resulting color
      *
-     * \param green
+     * @param green
      * The amount of green in the resulting color
      *
-     * \param blue
+     * @param blue
      * The amount of blue in the resulting color
      */
     Color3(uint8_t red, uint8_t green, uint8_t blue);
@@ -84,13 +83,13 @@ class Color3
      * '"Color3{red: `red` green: `green` blue: `blue`}'
      * With `red`, `green`, & `blue` being the Color3 members
      *
-     * \param os
+     * @param os
      * The stream to output on
      *
-     * \param color3
+     * @param color3
      * The color to print
      *
-     * \return
+     * @return
      * The stream to chain more outputs
      */
     friend std::ostream& operator<<(std::ostream& os, const Color3& color);
@@ -117,13 +116,13 @@ class Color3
 /**
  * Compare two colors for equality.
  *
- * \param left
+ * @param left
  * The color to compare with `right`
  *
- * \param right
+ * @param right
  * The color to compare with `left`
  *
- * \return
+ * @return
  * True: if `red`, `green`, & `blue` are the same for both colors.
  * False otherwise.
  */
@@ -151,7 +150,7 @@ class Color3Value : public AttributeValue
      * Initialize the attribute with a
      * copy of `value`
      *
-     * \param value
+     * @param value
      * The color value to copy into the new attribute
      */
     Color3Value(const Color3& value);
@@ -166,12 +165,12 @@ class Color3Value : public AttributeValue
      *
      * // Calls Color3::Color3(uint8_t)
      * Color3Value color{128u};
-     * \endcode
+     * @endcode
      *
-     * \tparam Args (Deduced)
+     * @tparam Args (Deduced)
      * The type of each argument passed
      *
-     * \param args
+     * @param args
      * The arguments normally passed to a `Color3` constructor.
      */
     template <typename... Args>
@@ -181,13 +180,13 @@ class Color3Value : public AttributeValue
      * Replaces the contained value with a
      * copy of `value`
      *
-     * \param value
+     * @param value
      * The value to replace the current value with
      */
     void Set(const Color3& value);
 
     /**
-     * \return
+     * @return
      * A copy of the enclosed value
      */
     Color3 Get(void) const;
@@ -202,7 +201,7 @@ class Color3Value : public AttributeValue
     /**
      * Copies the attribute with the enclosed value.
      *
-     * \return
+     * @return
      * A copy of this attribute
      */
     Ptr<AttributeValue> Copy(void) const override;
@@ -212,10 +211,10 @@ class Color3Value : public AttributeValue
      * in the form:
      * "{red}|{green}|{blue}"
      *
-     * \param checker
+     * @param checker
      * Unused
      *
-     * \return
+     * @return
      * A string in the form: "{red}|{green}|{blue}"
      */
     std::string SerializeToString(Ptr<const AttributeChecker> checker) const override;
@@ -224,13 +223,13 @@ class Color3Value : public AttributeValue
      * Converts the string `value` into a Color3 and stores it
      * in the enclosed value
      *
-     * \param value
+     * @param value
      * A string in the form: "{red}|{green}|{blue}"
      *
-     * \param checker
+     * @param checker
      * Unused
      *
-     * \return
+     * @return
      * True if the conversion succeeded,
      * false otherwise.
      */

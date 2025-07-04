@@ -1,4 +1,3 @@
-/* -*-  Mode: C++; c-file-style: "gnu"; indent-tabs-mode:nil; -*- */
 /*
  * NIST-developed software is provided by NIST as a public
  * service. You may use, copy and distribute copies of the software in
@@ -45,7 +44,9 @@ NextColor3Value()
     static auto colorIter = COLOR_PALETTE.begin();
 
     if (colorIter == COLOR_PALETTE.end())
+    {
         colorIter = COLOR_PALETTE.begin();
+    }
 
     const auto& returnColor = *colorIter;
     colorIter++;

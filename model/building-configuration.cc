@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * NIST-developed software is provided by NIST as a public service. You may use,
  * copy and distribute copies of the software in any medium, provided that you
@@ -35,13 +34,13 @@
 #include "building-configuration.h"
 
 #include "color-palette.h"
+#include "color.h"
 
-#include <ns3/boolean.h>
-#include <ns3/color.h>
-#include <ns3/double.h>
-#include <ns3/object-base.h>
-#include <ns3/pointer.h>
-#include <ns3/string.h>
+#include "ns3/boolean.h"
+#include "ns3/double.h"
+#include "ns3/object-base.h"
+#include "ns3/pointer.h"
+#include "ns3/string.h"
 
 namespace ns3
 {
