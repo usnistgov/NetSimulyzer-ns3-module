@@ -265,7 +265,7 @@ template <typename... Args>
 void
 OptionalValue<T>::Emplace(Args&&... args)
 {
-    m_value.template emplace(std::forward<Args>(args)...);
+    m_value.emplace(std::forward<Args>(args)...);
 }
 
 template <typename T>
