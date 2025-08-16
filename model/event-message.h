@@ -83,6 +83,13 @@ struct NodeColorChangeEvent
     std::optional<Color3> color;
 };
 
+struct NodeVisibilityChangeEvent
+{
+    Time time;
+    uint32_t id;
+    bool visible;
+};
+
 struct NodeModelChangeEvent
 {
     Time time;

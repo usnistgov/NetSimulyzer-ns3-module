@@ -241,11 +241,12 @@ NodeConfiguration::GetTypeId(void)
                           BooleanValue(true),
                           MakeBooleanAccessor(&NodeConfiguration::m_usePositionTolerance),
                           MakeBooleanChecker())
-            .AddAttribute("Visible",
-                          "Defines if the Node is rendered in the visualizer",
-                          BooleanValue(true),
-                          MakeBooleanAccessor(&NodeConfiguration::m_visible),
-                          MakeBooleanChecker())
+            .AddAttribute(
+                "Visible",
+                "Defines if the Node is rendered in the visualizer",
+                BooleanValue(true),
+                MakeBooleanAccessor(&NodeConfiguration::Visible, &NodeConfiguration::SetVisible),
+                MakeBooleanChecker())
             .AddAttribute("Orchestrator",
                           "Orchestrator that manages this Node",
                           PointerValue(),
@@ -534,6 +535,37 @@ const Vector3D&
 NodeConfiguration::GetScaleAxes(void) const
 {
     return m_scaleAxes;
+}
+
+void
+NodeConfiguration::SetVisible(const bool value)
+{
+    if (value == m_visible)
+    {
+        return;
+    }
+
+    const auto node = GetObject<Node>();
+    if (!node)
+    {
+        NS_LOG_DEBUG("Not triggering NodeVisibilityChangeEvent event. No Node aggregated");
+        return;
+    }
+
+    m_visible = value;
+
+    NodeVisibilityChangeEvent event;
+    event.time = Simulator::Now();
+    event.id = node->GetId();
+    event.visible = m_visible;
+
+    m_orchestrator->HandleVisibilityChange(event);
+}
+
+bool
+NodeConfiguration::Visible() const
+{
+    return m_visible;
 }
 
 void

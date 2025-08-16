@@ -263,6 +263,13 @@ class Orchestrator : public ns3::Object
     void HandleColorChange(const NodeColorChangeEvent& event);
 
     /**
+     * Trace sink for when a Node's visibility has changed.
+     *
+     * @param e The event info for the visibility change event
+     */
+    void HandleVisibilityChange(const NodeVisibilityChangeEvent& e);
+
+    /**
      * Trace sink for when a Node has indicated it's transmitting.
      *
      * Prefer to use `NodeConfiguration::Transmit`, instead
