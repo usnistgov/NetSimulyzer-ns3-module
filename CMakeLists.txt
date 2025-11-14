@@ -97,11 +97,27 @@ elseif (NETSIMULYZER_GREP)
 endif ()
 
 
+# Check for minor releases, e.g. 46.1
+# We bin them in with the major release, but set an additional
+# variable, just in case
+if (NETSIMULYZER_NS3_VERSION MATCHES "[0-9]+\.[0-9]+") # Matches [number].[number]
+    string(REPLACE "." ";" NETSIMULYZER_NS3_VERSION_SPLIT ${NETSIMULYZER_NS3_VERSION})
+
+    list(GET NETSIMULYZER_NS3_VERSION_SPLIT 0 NETSIMULYZER_NS3_VERSION)
+    list(GET NETSIMULYZER_NS3_VERSION_SPLIT 1 NETSIMULYZER_NS3_VERSION_MINOR)
+endif ()
+
+
+
 if (NOT NETSIMULYZER_NS3_VERSION AND NOT NETSIMULYZER_NS3_VERSION MATCHES "^[0-9]+$")
     message(FATAL_ERROR "NetSimulyzer: Failed to detect ns-3 version, please specify the `NETSIMULYZER_NS3_VERSION` environment variable in the form: 'ns-3.xx' e.g 'ns-3.45'")
 endif ()
 
 add_compile_definitions(NETSIMULYZER_NS3_VERSION=${NETSIMULYZER_NS3_VERSION})
+
+if (DEFINED NETSIMULYZER_NS3_VERSION_MINOR)
+    add_compile_definitions(NETSIMULYZER_NS3_VERSION_MINOR=${NETSIMULYZER_NS3_VERSION_MINOR})
+endif ()
 
 if (${NETSIMULYZER_PRE_NS3_41_ENUM_VALUE} OR ${NETSIMULYZER_NS3_VERSION} LESS 41)
     add_compile_definitions(NETSIMULYZER_PRE_NS3_41_ENUM_VALUE)
