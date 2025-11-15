@@ -545,14 +545,14 @@ NodeConfiguration::SetVisible(const bool value)
         return;
     }
 
+    m_visible = value;
+
     const auto node = GetObject<Node>();
     if (!node)
     {
         NS_LOG_DEBUG("Not triggering NodeVisibilityChangeEvent event. No Node aggregated");
         return;
     }
-
-    m_visible = value;
 
     NodeVisibilityChangeEvent event;
     event.time = Simulator::Now();
