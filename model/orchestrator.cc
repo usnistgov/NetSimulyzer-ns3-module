@@ -1152,6 +1152,26 @@ Orchestrator::HandleColorChange(const NodeColorChangeEvent& event)
 }
 
 void
+Orchestrator::HandleVisibilityChange(const NodeVisibilityChangeEvent& e)
+{
+    NS_LOG_FUNCTION(this);
+
+    if (Simulator::Now() < m_startTime || Simulator::Now() > m_stopTime)
+    {
+        NS_LOG_DEBUG("HandleVisibilityChange() Activated outside [StartTime, StopTime], Ignoring");
+        return;
+    }
+
+    nlohmann::json element;
+    element["type"] = "node-change";
+    element["nanoseconds"] = e.time.GetNanoSeconds();
+    element["id"] = e.id;
+    element["visibility"] = e.visible;
+
+    m_document["events"].emplace_back(element);
+}
+
+void
 Orchestrator::HandleTransmit(const TransmitEvent& event)
 {
     NS_LOG_FUNCTION(this);

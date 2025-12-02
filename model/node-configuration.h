@@ -305,6 +305,18 @@ class NodeConfiguration : public Object
      */
     const Vector3D& GetScaleAxes(void) const;
 
+    /**
+     * Shows/hides the `Node` in the application
+     *
+     * @param value If the `Node` should be visible or not
+     */
+    void SetVisible(bool value);
+
+    /**
+     * @return If the `Node` is visible
+     */
+    [[nodiscard]] bool Visible() const;
+
   protected:
     /**
      * @brief Disconnects the referenced Orchestrator
