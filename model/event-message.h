@@ -90,6 +90,13 @@ struct NodeVisibilityChangeEvent
     bool visible;
 };
 
+struct NodeNameChangeEvent
+{
+    Time time;
+    uint32_t id;
+    std::string name;
+};
+
 struct NodeModelChangeEvent
 {
     Time time;

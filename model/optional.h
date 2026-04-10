@@ -290,7 +290,8 @@ OptionalValue<T>::HasValue(void) const
 }
 
 template <typename T>
-OptionalValue<T>::operator bool(void) const
+OptionalValue<T>::
+operator bool(void) const
 {
     return HasValue();
 }

@@ -126,11 +126,12 @@ NodeConfiguration::GetTypeId(void)
             .SetParent<Object>()
             .SetGroupName("netsimulyzer")
             .AddConstructor<NodeConfiguration>()
-            .AddAttribute("Name",
-                          "Name for this Node",
-                          StringValue(""),
-                          MakeStringAccessor(&NodeConfiguration::m_name),
-                          MakeStringChecker())
+            .AddAttribute(
+                "Name",
+                "Name for this Node",
+                StringValue(""),
+                MakeStringAccessor(&NodeConfiguration::GetName, &NodeConfiguration::SetName),
+                MakeStringChecker())
             .AddAttribute("EnableLabel",
                           "Flag to show/hide the label above the Node "
                           "if the application is set to "
@@ -431,6 +432,34 @@ NodeConfiguration::SetModel(const std::string& value)
     event.model = m_model;
 
     m_orchestrator->HandleModelChange(event);
+}
+
+const std::string&
+NodeConfiguration::GetName() const
+{
+    return m_name;
+}
+
+void
+NodeConfiguration::SetName(const std::string& name)
+{
+    if (m_name == name)
+    {
+        return;
+    }
+
+    m_name = name;
+
+    const auto node = GetObject<Node>();
+    if (!node)
+    {
+        NS_LOG_DEBUG("Not triggering NodeColorChangeEvent event. No Node aggregated");
+        return;
+    }
+
+    NodeNameChangeEvent event{.time = Simulator::Now(), .id = node->GetId(), .name = name};
+
+    m_orchestrator->HandleNameChange(event);
 }
 
 const std::string&
