@@ -184,6 +184,14 @@ class NodeConfiguration : public Object
     void SetModel(const std::string& value);
 
     /**
+     * @return The current name for this `Node`.
+     * If unset, returns an empty string
+     */
+    [[nodiscard]] const std::string& GetName() const;
+
+    void SetName(const std::string& name);
+
+    /**
      *
      * @return
      * The current model, or an empty string

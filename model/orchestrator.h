@@ -256,6 +256,13 @@ class Orchestrator : public ns3::Object
     void HandleOrientationChange(const DecorationOrientationChangeEvent& event);
 
     /**
+     * Trace sink for when a Node's name has changed.
+     *
+     * @param event The event info for the name change event
+     */
+    void HandleNameChange(const NodeNameChangeEvent& event);
+
+    /**
      * Trace sink for when a Node's Base/Highlight color has changed.
      *
      * @param event The event info for the color change event

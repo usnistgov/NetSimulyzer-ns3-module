@@ -1110,6 +1110,32 @@ Orchestrator::HandleOrientationChange(const DecorationOrientationChangeEvent& ev
 }
 
 void
+Orchestrator::HandleNameChange(const NodeNameChangeEvent& e)
+{
+    NS_LOG_FUNCTION(this);
+    if (Simulator::Now() < m_startTime || Simulator::Now() > m_stopTime)
+    {
+        NS_LOG_DEBUG("HandleNameChange() Activated outside (StartTime, StopTime), Ignoring");
+        return;
+    }
+
+    if (m_currentSection != Section::Events)
+    {
+        // We'll get the final color when we write the head info
+        NS_LOG_DEBUG("HandleNameChange ignored. Not in Events section");
+        return;
+    }
+
+    nlohmann::json element;
+    element["type"] = "node-change";
+    element["nanoseconds"] = e.time.GetNanoSeconds();
+    element["id"] = e.id;
+    element["name"] = e.name;
+
+    m_document["events"].emplace_back(element);
+}
+
+void
 Orchestrator::HandleColorChange(const NodeColorChangeEvent& event)
 {
     NS_LOG_FUNCTION(this);

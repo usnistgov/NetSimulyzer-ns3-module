@@ -504,6 +504,80 @@ TestCaseNodeChangeEventVisibility::DoRun()
     Simulator::Destroy();
 }
 
+class TestCaseNodeNodeNameChangeEvent : public NetSimulyzerTestCase
+{
+  public:
+    TestCaseNodeNodeNameChangeEvent();
+
+  private:
+    void DoRun() override;
+};
+
+TestCaseNodeNodeNameChangeEvent::TestCaseNodeNodeNameChangeEvent()
+    : NetSimulyzerTestCase("NetSimulyzer - Node Name Change Event")
+{
+}
+
+void
+TestCaseNodeNodeNameChangeEvent::DoRun()
+{
+    auto o = CreateObject<Orchestrator>(Orchestrator::MemoryOutputMode::On);
+
+    auto ns3Node = CreateObject<Node>();
+    auto nodeConfig = CreateObject<NodeConfiguration>(o);
+    ns3Node->AggregateObject(nodeConfig);
+
+    nodeConfig->SetAttribute("Model", models::CUBE_VALUE);
+    const auto initialName = "Initial Name";
+    nodeConfig->SetAttribute("Name", StringValue{initialName});
+
+    Simulator::Stop(MilliSeconds(100UL));
+
+    const auto eventTime = MilliSeconds(25UL);
+    const auto eventName = "Changed Name";
+    Simulator::Schedule(eventTime, [nodeConfig, eventName]() {
+        nodeConfig->SetAttribute("Name", StringValue{eventName});
+    });
+
+    Simulator::Run();
+
+    const auto& output = o->GetJson();
+
+    const auto& nodes = output["nodes"];
+    NS_TEST_ASSERT_MSG_EQ(nodes.empty(), false, "'nodes' section should not be empty");
+
+    const auto& node = *nodes.begin();
+    NS_TEST_ASSERT_MSG_EQ(node["name"].get<std::string>(),
+                          initialName,
+                          "Node initial name should not be different");
+
+    const auto& events = output["events"];
+    NS_TEST_ASSERT_MSG_EQ(events.empty(), false, "'events' section should not be empty");
+
+    auto eventIter = std::find_if(events.begin(), events.end(), [eventTime](const auto& e) {
+        return e["type"] == "node-change" && e["nanoseconds"] == eventTime.GetNanoSeconds();
+    });
+
+    NS_TEST_ASSERT_MSG_EQ(eventIter != events.end(),
+                          true,
+                          "`node-change` event at time " +
+                              std::to_string(eventTime.GetNanoSeconds()) + "not found in output");
+
+    const auto& event = *eventIter;
+
+    RequiredFields({"id", "nanoseconds", "name"}, event, "node-change");
+
+    NS_TEST_ASSERT_MSG_EQ(event["id"].get<uint32_t>(),
+                          ns3Node->GetId(),
+                          "Event should be tagged with the ID of the Node that made it");
+
+    NS_TEST_ASSERT_MSG_EQ(event["name"].get<std::string>(),
+                          eventName,
+                          "event must indicate the new name for the Node");
+
+    Simulator::Destroy();
+}
+
 class NodeEventsTestSuite : public TestSuite
 {
   public:
@@ -519,6 +593,7 @@ NodeEventsTestSuite::NodeEventsTestSuite()
     AddTestCase(new TestCaseNodeModelChangeEvent{}, TEST_DURATION_QUICK);
     AddTestCase(new TestCaseNodeTransmitEvent{}, TEST_DURATION_QUICK);
     AddTestCase(new TestCaseNodeChangeEventVisibility{}, TEST_DURATION_QUICK);
+    AddTestCase(new TestCaseNodeNodeNameChangeEvent{}, TEST_DURATION_QUICK);
 }
 
 static NodeEventsTestSuite g_nodeEventsTestSuite{};
