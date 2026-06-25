@@ -44,7 +44,8 @@ def build(bld):
         'model/state-transition-sink.cc',
         'model/value-axis.cc',
         'model/xy-series.cc',
-        'model/throughput-sink.cc'
+        'model/throughput-sink.cc',
+        'model/net-visualizer.cc'
         ]
 
     module_test = bld.create_ns3_module_test_library('netsimulyzer')
@@ -83,7 +84,8 @@ def build(bld):
         'model/state-transition-sink.h',
         'model/value-axis.h',
         'model/xy-series.h',
-        'model/throughput-sink.h'
+        'model/throughput-sink.h',
+        'model/net-visualizer.h'
         ]
 
     # Examples are not enabled for waf versions of

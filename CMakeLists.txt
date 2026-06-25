@@ -153,6 +153,7 @@ build_lib(
     model/value-axis.cc
     model/xy-series.cc
     model/throughput-sink.cc
+    model/net-visualizer.cc
   HEADER_FILES
     helper/area-helper.h
     helper/building-configuration-container.h
@@ -185,6 +186,7 @@ build_lib(
     model/value-axis.h
     model/xy-series.h
     model/throughput-sink.h
+    model/net-visualizer.h
   LIBRARIES_TO_LINK
     ${libbuildings}
     ${libcore}
