@@ -290,10 +290,6 @@ class Visualizer : public Object
      * The index of the preset Visualizer color of the XYSeries
      */
     Ptr<XYSeries> MakeSeries(std::string name, std::size_t col_index);
-    /**
-     * Prints some helpful(?) output to cout
-     */
-    void Dump();
 
   private:
     Ptr<Orchestrator> m_orchestrator;

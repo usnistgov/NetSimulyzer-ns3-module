@@ -163,15 +163,9 @@ SeriesContainer::SeriesContainer(Ptr<Visualizer> visualizer,
     : SeriesContainer(visualizer)
 {
     NS_LOG_FUNCTION(this << visualizer << name << x_axis << y_axis);
-    PointerValue axisValue;
-    Ptr<ValueAxis> axis;
-    m_collection->GetAttribute("YAxis", axisValue);
-    axis = axisValue.Get<ValueAxis>();
-    axis->SetAttribute("Name", StringValue(y_axis));
-    m_collection->GetAttribute("XAxis", axisValue);
-    axis = axisValue.Get<ValueAxis>();
-    axis->SetAttribute("Name", StringValue(x_axis));
-    m_collection->SetAttribute("Name", StringValue(name));
+
+    m_collection->GetYAxis()->SetAttribute("Name", StringValue(y_axis));
+    m_collection->GetXAxis()->SetAttribute("Name", StringValue(name));
 };
 
 std::vector<Ptr<SeriesWrapper>>::iterator
@@ -352,20 +346,6 @@ Visualizer::MakeSeries(std::string name, std::size_t col_index)
 {
     NS_LOG_FUNCTION(this << name << col_index);
     return MakeSeries(name, GetColor(col_index));
-};
-
-void
-Visualizer::Dump()
-{
-    NS_LOG_FUNCTION(this);
-    std::cout << "VISUALIZER:\n" << "CONTAINERS:\n";
-    for (std::unordered_map<std::string, Ptr<SeriesContainer>>::iterator helper =
-             m_containers.begin();
-         helper != m_containers.end();
-         helper++)
-    {
-        std::cout << "\t" << helper->first << ": " << helper->second->GetNSeries() << "\n";
-    }
 };
 
 /*          Accumulator           */
@@ -592,12 +572,6 @@ SeriesMap::GetWrapper(const std::string& index)
     NS_LOG_FUNCTION(this << index);
     return SeriesContainer::GetWrapper(m_nameMap.at(index));
 };
-
-int
-main()
-{
-    return 0;
-}
 
 } // namespace visualizer
 
