@@ -31,69 +31,71 @@
  * Author: Andrew Wagger <andrew.wagger@nist.gov>
  */
 
-#include "xy-series.h"
-#include "series-collection.h"
-#include "node-configuration.h"
-#include "orchestrator.h"
+#include "net-visualizer.h"
+
 #include "color.h"
 #include "netsimulyzer-3D-models.h"
+#include "node-configuration.h"
+#include "orchestrator.h"
+#include "series-collection.h"
+#include "xy-series.h"
 
-#include "ns3/node-container.h"
-#include "ns3/ptr.h"
-#include "ns3/node.h"
+#include "ns3/double.h"
 #include "ns3/log.h"
-#include "ns3/object.h"
+#include "ns3/node-container.h"
+#include "ns3/node.h"
 #include "ns3/nstime.h"
-#include "ns3/string.h"
+#include "ns3/object.h"
 #include "ns3/pointer.h"
-
-
+#include "ns3/ptr.h"
+#include "ns3/string.h"
+#include "ns3/uinteger.h"
 
 #include <string>
 #include <unordered_map>
 #include <vector>
 
-#include "net-visualizer.h"
-
-namespace ns3{
+namespace ns3
+{
 
 NS_LOG_COMPONENT_DEFINE("Visualizer");
 
+namespace netsimulyzer
+{
 
-
-namespace netsimulyzer{
-
-namespace visualizer {
-    NS_OBJECT_ENSURE_REGISTERED(SeriesWrapper);
-        NS_OBJECT_ENSURE_REGISTERED(Accumulator);
-    NS_OBJECT_ENSURE_REGISTERED(SeriesContainer);
-        NS_OBJECT_ENSURE_REGISTERED(SeriesMap);
-    NS_OBJECT_ENSURE_REGISTERED(Visualizer);
-
+namespace visualizer
+{
+NS_OBJECT_ENSURE_REGISTERED(SeriesWrapper);
+NS_OBJECT_ENSURE_REGISTERED(Accumulator);
+NS_OBJECT_ENSURE_REGISTERED(SeriesContainer);
+NS_OBJECT_ENSURE_REGISTERED(SeriesMap);
+NS_OBJECT_ENSURE_REGISTERED(Visualizer);
 
 /*          SeriesWrapper           */
 
-
 TypeId
-SeriesWrapper::GetTypeId(void)
+SeriesWrapper::GetTypeId()
 {
     // clang-format off
-  static TypeId tid =
-      TypeId ("ns3::netsimulyzer::visualizer::SeriesCollection")
-          .SetParent<ns3::Object> ()
-          .SetGroupName ("visualizer");
-  return tid;
+    static TypeId tid =
+        TypeId ("ns3::netsimulyzer::visualizer::SeriesWrapper")
+            .SetParent<ns3::Object> ()
+            .SetGroupName ("visualizer")
+            .AddAttribute ("Series", "Series that is wrapped",
+                        PointerValue (),
+                        MakePointerAccessor (&SeriesWrapper::m_series),
+                        MakePointerChecker<XYSeries> ());
+    return tid;
     // clang-format on
 }
 
-Ptr<netsimulyzer::XYSeries>
-SeriesWrapper::GetSeries() 
+Ptr<XYSeries>
+SeriesWrapper::GetSeries()
 {
-    NS_LOG_FUNCTION(this);
     return m_series;
 };
-SeriesWrapper::SeriesWrapper
-(Ptr<netsimulyzer::XYSeries> series)
+
+SeriesWrapper::SeriesWrapper(Ptr<XYSeries> series)
     : m_series(series)
 {
     NS_LOG_FUNCTION(this << series);
@@ -101,16 +103,15 @@ SeriesWrapper::SeriesWrapper
 
 /*          SeriesContainer           */
 
-
 TypeId
-SeriesContainer::GetTypeId(void)
+SeriesContainer::GetTypeId()
 {
     // clang-format off
-  static TypeId tid =
-      TypeId ("ns3::netsimulyzer::visualizer::SeriesContainer")
-          .SetParent<ns3::Object> ()
-          .SetGroupName ("visualizer");
-  return tid;
+    static TypeId tid =
+        TypeId ("ns3::netsimulyzer::visualizer::SeriesContainer")
+            .SetParent<ns3::Object> ()
+            .SetGroupName ("visualizer");
+    return tid;
     // clang-format on
 }
 
@@ -118,101 +119,145 @@ SeriesContainer*
 SeriesContainer::AddWrapper(Ptr<SeriesWrapper> w)
 {
     NS_LOG_FUNCTION(this << w);
-    m_wrapper.emplace_back(w);
+    m_wrappers.emplace_back(w);
     m_collection->Add(w->GetSeries());
     return this;
 };
 
-Ptr<netsimulyzer::XYSeries>
-SeriesContainer::GetSeries(uint32_t i)
+Ptr<XYSeries>
+SeriesContainer::GetSeries(std::size_t i)
 {
     NS_LOG_FUNCTION(this << i);
-    return m_wrapper.at(i)->GetSeries();
+    return m_wrappers.at(i)->GetSeries();
 };
 
 Ptr<SeriesWrapper>
-SeriesContainer::GetWrapper(uint32_t i)
+SeriesContainer::GetWrapper(std::size_t i)
 {
     NS_LOG_FUNCTION(this << i);
-    return m_wrapper.at(i);
+    return m_wrappers.at(i);
 };
 
-uint32_t
+std::size_t
 SeriesContainer::GetNSeries()
 {
-    NS_LOG_FUNCTION(this);
-    return m_wrapper.size();
+    return m_wrappers.size();
 };
 
-Ptr<netsimulyzer::SeriesCollection>
+Ptr<SeriesCollection>
 SeriesContainer::GetCollection()
 {
-    NS_LOG_FUNCTION(this);
     return m_collection;
 };
 
 SeriesContainer::SeriesContainer(Ptr<Visualizer> visualizer)
 {
     NS_LOG_FUNCTION(this << visualizer);
-    m_collection = CreateObject<netsimulyzer::SeriesCollection>(visualizer->GetOrchestrator());
+    m_collection = CreateObject<SeriesCollection>(visualizer->GetOrchestrator());
 };
-SeriesContainer::SeriesContainer(Ptr<Visualizer> visualizer, std::string name, std::string x_axis, std::string y_axis)
-    : SeriesContainer(visualizer) 
+
+SeriesContainer::SeriesContainer(Ptr<Visualizer> visualizer,
+                                 std::string name,
+                                 std::string x_axis,
+                                 std::string y_axis)
+    : SeriesContainer(visualizer)
 {
     NS_LOG_FUNCTION(this << visualizer << name << x_axis << y_axis);
     PointerValue axisValue;
-    Ptr<netsimulyzer::ValueAxis> axis;
+    Ptr<ValueAxis> axis;
     m_collection->GetAttribute("YAxis", axisValue);
-    axis = axisValue.Get<netsimulyzer::ValueAxis>();
-    axis->SetAttribute("Name",StringValue(y_axis));
+    axis = axisValue.Get<ValueAxis>();
+    axis->SetAttribute("Name", StringValue(y_axis));
     m_collection->GetAttribute("XAxis", axisValue);
-    axis = axisValue.Get<netsimulyzer::ValueAxis>();
-    axis->SetAttribute("Name",StringValue(x_axis));
-    m_collection->SetAttribute("Name",StringValue(name));
+    axis = axisValue.Get<ValueAxis>();
+    axis->SetAttribute("Name", StringValue(x_axis));
+    m_collection->SetAttribute("Name", StringValue(name));
+};
+
+std::vector<Ptr<SeriesWrapper>>::iterator
+SeriesContainer::begin()
+{
+    return m_wrappers.begin();
+};
+
+std::vector<Ptr<SeriesWrapper>>::iterator
+SeriesContainer::end()
+{
+    return m_wrappers.end();
 };
 
 /*          Visualizer           */
 
 TypeId
-Visualizer::GetTypeId(void)
+Visualizer::GetTypeId()
 {
     // clang-format off
-  static TypeId tid =
-      TypeId ("ns3::netsimulyzer::visualizer::Visualizer")
-          .SetParent<ns3::Object> ()
-          .SetGroupName ("visualizer");
-  return tid;
+    static TypeId tid =
+        TypeId ("ns3::netsimulyzer::visualizer::Visualizer")
+            .SetParent<ns3::Object> ()
+            .SetGroupName ("visualizer");
+    return tid;
     // clang-format on
 }
 
 Visualizer::Visualizer(std::string outputFileName)
-    : m_orchestrator(CreateObject<netsimulyzer::Orchestrator>(outputFileName))
-    , m_configHelper(m_orchestrator)
+    : m_orchestrator(CreateObject<Orchestrator>(outputFileName)),
+      m_configHelper(m_orchestrator)
 {
     NS_LOG_FUNCTION(this << outputFileName);
 };
 
 Visualizer::Visualizer(std::string outputFileName, NodeContainer nodes)
-: Visualizer(outputFileName)
+    : Visualizer(outputFileName)
 {
     NS_LOG_FUNCTION(this << outputFileName << &nodes);
-    SetNodes(nodes);   
+    SetNodes(nodes);
 };
+
 void
 Visualizer::SetNodes(NodeContainer nodes)
 {
     NS_LOG_FUNCTION(this << &nodes);
     m_nodes = nodes;
     auto col_index = 0;
-    for(auto node = m_nodes.Begin(); node != m_nodes.End(); node++){                
-        auto nodeConfig = CreateObject<netsimulyzer::NodeConfiguration>(m_orchestrator);
-        nodeConfig->SetModel(netsimulyzer::models::SINGLE_BOARD_COMPUTER);
+    for (auto node = m_nodes.Begin(); node != m_nodes.End(); node++)
+    {
+        auto nodeConfig = CreateObject<NodeConfiguration>(m_orchestrator);
+        nodeConfig->SetModel(m_model);
         nodeConfig->SetBaseColor(m_colors.at(col_index % m_colors.size()));
-        nodeConfig->SetScale(3.0);
+        nodeConfig->SetScale(m_scale);
         m_configContainer.Add(nodeConfig);
         col_index++;
     }
-    m_configHelper.Install(m_nodes,m_configContainer);
+    m_configHelper.Install(m_nodes, m_configContainer);
+};
+
+std::string
+Visualizer::GetDefaultModel()
+{
+    return m_model;
+};
+
+Visualizer*
+Visualizer::SetDefaultModel(std::string model)
+{
+    NS_LOG_FUNCTION(this << model);
+    m_model = model;
+    return this;
+};
+
+double
+Visualizer::GetDefaultScale()
+{
+    return m_scale;
+};
+
+Visualizer*
+Visualizer::SetDefaultScale(double scale)
+{
+    NS_LOG_FUNCTION(this << scale);
+    m_scale = scale;
+    return this;
 };
 
 Ptr<SeriesContainer>
@@ -223,29 +268,29 @@ Visualizer::GetContainer(std::string index)
 };
 
 Visualizer*
-Visualizer::SetContainer(std::string index,Ptr<SeriesContainer> container)
+Visualizer::SetContainer(std::string index, Ptr<SeriesContainer> container)
 {
     NS_LOG_FUNCTION(this << index << container);
-    m_containers.insert({index,container});
+    m_containers.insert({index, container});
     return this;
 };
 
-Ptr<netsimulyzer::NodeConfiguration>
-Visualizer::GetConfig(uint32_t i)
+Ptr<NodeConfiguration>
+Visualizer::GetConfig(std::size_t i)
 {
     NS_LOG_FUNCTION(this << i);
     return m_configContainer.Get(i);
 };
 
-netsimulyzer::Color3
-Visualizer::GetColor(uint32_t i)
+const Color3
+Visualizer::GetColor(std::size_t i) const
 {
     NS_LOG_FUNCTION(this << i);
     return m_colors.at(i % m_colors.size());
 };
 
 Ptr<Node>
-Visualizer::GetNode(uint32_t i)
+Visualizer::GetNode(std::size_t i)
 {
     NS_LOG_FUNCTION(this << i);
     return m_nodes.Get(i);
@@ -255,7 +300,7 @@ Ptr<Node>
 Visualizer::GetNodeById(uint32_t id)
 {
     NS_LOG_FUNCTION(this << id);
-    for (uint32_t i = 0; i < m_nodes.GetN(); ++i)
+    for (std::size_t i = 0; i < m_nodes.GetN(); ++i)
     {
         if (m_nodes.Get(i)->GetId() == id)
         {
@@ -265,28 +310,26 @@ Visualizer::GetNodeById(uint32_t id)
     return nullptr;
 }
 
-uint32_t
-Visualizer::GetNNodes(void)
+std::size_t
+Visualizer::GetNNodes()
 {
-    NS_LOG_FUNCTION(this);
     return m_nodes.GetN();
 };
 
-Ptr<netsimulyzer::Orchestrator>
+Ptr<Orchestrator>
 Visualizer::GetOrchestrator()
 {
-    NS_LOG_FUNCTION(this);
     return m_orchestrator;
 };
 
-Ptr<netsimulyzer::XYSeries>
+Ptr<XYSeries>
 Visualizer::MakeSeries()
 {
     NS_LOG_FUNCTION(this);
-    return CreateObject<netsimulyzer::XYSeries>(m_orchestrator);
+    return CreateObject<XYSeries>(m_orchestrator);
 };
 
-Ptr<netsimulyzer::XYSeries>
+Ptr<XYSeries>
 Visualizer::MakeSeries(std::string name)
 {
     NS_LOG_FUNCTION(this << name);
@@ -294,70 +337,221 @@ Visualizer::MakeSeries(std::string name)
     series->SetAttribute("Name", StringValue(name));
     return series;
 };
-Ptr<netsimulyzer::XYSeries>
-Visualizer::MakeSeries(std::string name,netsimulyzer::Color3 color)
+
+Ptr<XYSeries>
+Visualizer::MakeSeries(std::string name, Color3 color)
 {
     NS_LOG_FUNCTION(this << name << color);
     auto series = MakeSeries(name);
-    series->SetAttribute("Color", netsimulyzer::Color3Value(color));
+    series->SetAttribute("Color", Color3Value(color));
     return series;
 };
-Ptr<netsimulyzer::XYSeries>
-Visualizer::MakeSeries(std::string name,uint32_t col_index)
+
+Ptr<XYSeries>
+Visualizer::MakeSeries(std::string name, std::size_t col_index)
 {
     NS_LOG_FUNCTION(this << name << col_index);
-    return MakeSeries(name,GetColor(col_index));
+    return MakeSeries(name, GetColor(col_index));
 };
 
-void 
+void
 Visualizer::Dump()
 {
     NS_LOG_FUNCTION(this);
     std::cout << "VISUALIZER:\n" << "CONTAINERS:\n";
-    for(std::unordered_map<std::string, Ptr<SeriesContainer>>::iterator helper = m_containers.begin(); helper != m_containers.end(); helper++){          
-        std::cout <<"\t" << helper->first << ": " << helper->second->GetNSeries() << "\n";
-    }  
+    for (std::unordered_map<std::string, Ptr<SeriesContainer>>::iterator helper =
+             m_containers.begin();
+         helper != m_containers.end();
+         helper++)
+    {
+        std::cout << "\t" << helper->first << ": " << helper->second->GetNSeries() << "\n";
+    }
 };
 
 /*          Accumulator           */
 
 TypeId
-Accumulator::GetTypeId(void)
+Accumulator::GetTypeId()
 {
     // clang-format off
-  static TypeId tid =
-      TypeId ("ns3::netsimulyzer::visualizer::Accumulator")
-          .SetParent<ns3::netsimulyzer::visualizer::SeriesWrapper> ()
-          .SetGroupName ("visualizer");
-  return tid;
+    static TypeId tid =
+        TypeId ("ns3::netsimulyzer::visualizer::Accumulator")
+            .SetParent<ns3::netsimulyzer::visualizer::SeriesWrapper> ()
+            .SetGroupName ("visualizer")
+            .AddAttribute ("Value", "Accumulated Value",
+                        DoubleValue (),
+                        MakeDoubleAccessor (&Accumulator::m_value),
+                        MakeDoubleChecker<double> ());
+    return tid;
     // clang-format on
 }
 
-Accumulator::Accumulator(Ptr<netsimulyzer::XYSeries> series)
+Accumulator::Accumulator(Ptr<XYSeries> series)
     : SeriesWrapper(series)
 {
     NS_LOG_FUNCTION(this << series);
 };
 
-void 
-Accumulator::Update(Time now, uint32_t add)
+void
+Accumulator::Update(Time now, double add)
 {
     NS_LOG_FUNCTION(this << now << add);
     m_value += add;
-    SeriesWrapper::GetSeries()->Append(now.GetSeconds(),m_value); 
+    SeriesWrapper::GetSeries()->Append(now.GetSeconds(), m_value);
+}
+
+/*          AverageValue           */
+
+TypeId
+AverageValue::GetTypeId()
+{
+    // clang-format off
+    static TypeId tid =
+        TypeId ("ns3::netsimulyzer::visualizer::AverageValue")
+            .SetParent<ns3::netsimulyzer::visualizer::SeriesWrapper> ()
+            .SetGroupName ("visualizer")
+            .AddAttribute ("Value", "Average value",
+                        DoubleValue (),
+                        MakeDoubleAccessor (&AverageValue::m_avg),
+                        MakeDoubleChecker<double> ());
+    return tid;
+    // clang-format on
+}
+
+AverageValue::AverageValue(Ptr<XYSeries> series)
+    : SeriesWrapper(series)
+{
+    NS_LOG_FUNCTION(this << series);
+};
+
+void
+AverageValue::Update(Time now, double value)
+{
+    NS_LOG_FUNCTION(this << now << value);
+    m_avg = ((m_n * m_avg) + value) / (m_n + 1.0);
+    m_n++;
+    SeriesWrapper::GetSeries()->Append(now.GetSeconds(), m_avg);
+}
+
+/*          SlidingValue         */
+
+TypeId
+SlidingValue::GetTypeId()
+{
+    // clang-format off
+    static TypeId tid =
+        TypeId ("ns3::netsimulyzer::visualizer::SlidingValue")
+            .SetParent<ns3::netsimulyzer::visualizer::SeriesWrapper> ()
+            .SetGroupName ("visualizer");
+    return tid;
+    // clang-format on
+}
+
+SlidingValue::SlidingValue(Ptr<XYSeries> series)
+    : SeriesWrapper(series)
+{
+    NS_LOG_FUNCTION(this << series);
+};
+
+SlidingValue::SlidingValue(Ptr<XYSeries> series,
+                           double window,
+                           double maxSampleFrequency)
+    : SlidingValue(series)
+{
+    NS_LOG_FUNCTION(this << series << maxSampleFrequency);
+    m_window = window;
+    m_maxSampleFrequency = maxSampleFrequency;
+};
+
+void
+SlidingValue::Update(Time now, double value)
+{
+    // prune back end
+    for (auto pair = m_values.begin(); pair != m_values.end(); pair++)
+    {
+        Time t = pair->first;
+        if (t < now - Seconds(m_window))
+        {
+            m_values.erase(pair--);
+        }
+    }
+    m_values.push_back({now, value});
+    double acc = 0;
+    for (auto pair = m_values.begin(); pair != m_values.end(); pair++)
+    {
+        acc += pair->second;
+    }
+    if (m_lastSample < now.GetSeconds() - m_maxSampleFrequency)
+    {
+        SeriesWrapper::GetSeries()->Append(now.GetSeconds(), acc);
+        m_lastSample = now.GetSeconds();
+    }
+};
+
+double
+SlidingValue::GetSlidingValue()
+{
+    double acc = 0;
+    for (auto pair = m_values.begin(); pair != m_values.end(); pair++)
+    {
+        acc += pair->second;
+    }
+    return acc;
+}
+
+/*          SlidingLoad         */
+
+TypeId
+SlidingLoad::GetTypeId()
+{
+    // clang-format off
+    static TypeId tid =
+        TypeId ("ns3::netsimulyzer::visualizer::SlidingLoad")
+            .SetParent<ns3::netsimulyzer::visualizer::SlidingValue> ()
+            .SetGroupName ("visualizer");
+    return tid;
+    // clang-format on
+}
+
+SlidingLoad::SlidingLoad(Ptr<XYSeries> series)
+    : SlidingValue(series)
+{
+    NS_LOG_FUNCTION(this << series);
+};
+
+SlidingLoad::SlidingLoad(Ptr<XYSeries> series,
+                         double window,
+                         double bandwidth,
+                         double maxSampleFrequency)
+    : SlidingValue(series, window, maxSampleFrequency)
+{
+    NS_LOG_FUNCTION(this << series << window << bandwidth << maxSampleFrequency);
+    m_bandwidth = bandwidth;
+};
+
+void
+SlidingLoad::Update(Time now, double value)
+{
+    SlidingValue::Update(now, 100.0 * value / m_bandwidth);
+};
+
+double
+SlidingLoad::GetSlidingValue()
+{
+    return SlidingValue::GetSlidingValue();
 }
 
 /*          SeriesMap           */
 
 TypeId
-SeriesMap::GetTypeId(void)
+SeriesMap::GetTypeId()
 {
     // clang-format off
-  static TypeId tid =
-      TypeId ("ns3::netsimulyzer::visualizer::SeriesMap")
-          .SetParent<ns3::netsimulyzer::visualizer::SeriesContainer> ()
-          .SetGroupName ("visualizer");
-  return tid;
+    static TypeId tid =
+        TypeId ("ns3::netsimulyzer::visualizer::SeriesMap")
+            .SetParent<ns3::netsimulyzer::visualizer::SeriesContainer> ()
+            .SetGroupName ("visualizer");
+    return tid;
     // clang-format on
 }
 
@@ -367,8 +561,11 @@ SeriesMap::SeriesMap(Ptr<Visualizer> visualizer)
     NS_LOG_FUNCTION(this << visualizer);
 };
 
-SeriesMap::SeriesMap(Ptr<Visualizer> visualizer, std::string name, std::string x_axis, std::string y_axis)
-    : SeriesContainer(visualizer,name,x_axis,y_axis)
+SeriesMap::SeriesMap(Ptr<Visualizer> visualizer,
+                     std::string name,
+                     std::string x_axis,
+                     std::string y_axis)
+    : SeriesContainer(visualizer, name, x_axis, y_axis)
 {
     NS_LOG_FUNCTION(this << visualizer << name << x_axis << y_axis);
 };
@@ -377,30 +574,33 @@ SeriesMap*
 SeriesMap::AddWrapper(std::string index, Ptr<SeriesWrapper> w)
 {
     NS_LOG_FUNCTION(this << index << w);
-    m_nameMap.insert({index,GetNSeries()});
+    m_nameMap.insert({index, GetNSeries()});
     SeriesContainer::AddWrapper(w);
     return this;
 };
 
-Ptr<netsimulyzer::XYSeries>
+Ptr<XYSeries>
 SeriesMap::GetSeries(std::string index)
 {
     NS_LOG_FUNCTION(this << index);
     return SeriesContainer::GetSeries(m_nameMap.at(index));
 };
+
 Ptr<SeriesWrapper>
-SeriesMap::GetWrapper(std::string index)
+SeriesMap::GetWrapper(const std::string& index)
 {
     NS_LOG_FUNCTION(this << index);
     return SeriesContainer::GetWrapper(m_nameMap.at(index));
 };
 
-int main(){
+int
+main()
+{
     return 0;
 }
 
-} //namespace visualizer
+} // namespace visualizer
 
-} //namespace netsimulyzer
+} // namespace netsimulyzer
 
-} //namespace ns3
+} // namespace ns3

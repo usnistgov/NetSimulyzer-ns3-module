@@ -31,313 +31,477 @@
  * Author: Andrew Wagger <andrew.wagger@nist.gov>
  */
 
-#include "xy-series.h"
-#include "series-collection.h"
-#include "node-configuration.h"
-#include "orchestrator.h"
-#include "color.h"
+#ifndef NET_VISUALIZER_H
+#define NET_VISUALIZER_H
+
 #include "../helper/node-configuration-container.h"
 #include "../helper/node-configuration-helper.h"
+#include "color.h"
+#include "netsimulyzer-3D-models.h"
+#include "node-configuration.h"
+#include "orchestrator.h"
+#include "series-collection.h"
+#include "xy-series.h"
 
-#include "ns3/node-container.h"
-#include "ns3/ptr.h"
-#include "ns3/node.h"
 #include "ns3/log.h"
-#include "ns3/object.h"
+#include "ns3/node-container.h"
+#include "ns3/node.h"
 #include "ns3/nstime.h"
-
-
+#include "ns3/object.h"
+#include "ns3/ptr.h"
 
 #include <string>
 #include <unordered_map>
 #include <vector>
 
-#ifndef NET_VISUALIZER_H
-#define NET_VISUALIZER_H
+namespace ns3::netsimulyzer
+{
 
-using namespace ns3;
+namespace visualizer
+{
 
-namespace ns3::netsimulyzer {
-
-
-namespace visualizer {
-
-// Declare it up here to make everyone happy :)
 class Visualizer;
 
+/**
+ * Base class to ensure different structs that wrap a series with context can work together in the
+ * SeriesContainer
+ */
+class SeriesWrapper : public Object
+{
+  public:
+    /**
+     * Get the class TypeId
+     *
+     * @return the TypeId
+     */
+    static TypeId GetTypeId();
 
-// Base class to ensure different structs that wrap a series with context can work together in the SeriesContainer
-struct SeriesWrapper : Object {
-    public:
-        /**
-         * @brief Get the class TypeId
-         *
-         * @return the TypeId
-         */
-        static TypeId GetTypeId(void);
+    /**
+     * Gets the wrapped XYSeires
+     */
+    Ptr<XYSeries> GetSeries();
 
-        /**
-         @brief Gets the wrapped XYSeires        
-        */
-        Ptr<netsimulyzer::XYSeries> GetSeries(void);
+    explicit SeriesWrapper(Ptr<XYSeries> series);
 
-
-        SeriesWrapper(Ptr<netsimulyzer::XYSeries> series);
-    private:
-        Ptr<netsimulyzer::XYSeries> m_series;
+  private:
+    Ptr<XYSeries> m_series;
 };
 
-// Keeps track of multiple SeriesWrappers in a single collection
-struct SeriesContainer : Object {
-    public:
+/**
+ * Keeps track of multiple SeriesWrappers in a single collection
+ */
+class SeriesContainer : public Object
+{
+  public:
+    /**
+     * Get the class TypeId
+     *
+     * @return the TypeId
+     */
+    static TypeId GetTypeId();
 
-        /**
-         * @brief Get the class TypeId
-         *
-         * @return the TypeId
-         */
-        static TypeId GetTypeId(void);
+    /**
+     * Append the wrapper as the next in the Wrapper list
+     *
+     * @return
+     * self
+     */
+    SeriesContainer* AddWrapper(Ptr<SeriesWrapper> w);
 
-        /**
-        @brief Append the wrapper as the next in the Wrapper list
+    /**
+     * Shortcut to get a Series from a Wrapper
+     *
+     * @param i
+     * Series index
+     */
+    Ptr<XYSeries> GetSeries(std::size_t i);
+    /**
+     * Get a Wrapper from the container
+     * @param i
+     * Wrapper index
+     */
+    Ptr<SeriesWrapper> GetWrapper(std::size_t i);
+    /**
+     * Get the number of Wrappers in the collection
+     */
+    std::size_t GetNSeries();
+    /**
+     * Get the underlying SeriesCollection
+     */
+    Ptr<SeriesCollection> GetCollection();
+    explicit SeriesContainer(Ptr<Visualizer> visualizer);
+    /**
+     * Automatically initializes name, x-axis, y-axis in the SeriesCollection
+     *
+     * @param name
+     * The name to give to the SeriesCollection
+     * @param x_axis
+     * The label for the x-axis of the SeriesCollection
+     * @param y_axis
+     * The label for the y-axis of the SeriesCollection
+     */
+    SeriesContainer(Ptr<Visualizer> visualizer,
+                    std::string name,
+                    std::string x_axis,
+                    std::string y_axis);
 
-        @return 
-        self
-        */
-        SeriesContainer* AddWrapper(Ptr<SeriesWrapper> w);
+    std::vector<Ptr<SeriesWrapper>>::iterator begin();
+    std::vector<Ptr<SeriesWrapper>>::iterator end();
 
-        /**
-        * @brief Shortcut to get a Series from a Wrapper
-        * 
-        * @param i
-        * Series index
-        */
-        Ptr<netsimulyzer::XYSeries> GetSeries(uint32_t i);
-        /**
-        @brief Get a Wrapper from the container
-        * @param i
-        * Wrapper index
-        */
-        Ptr<SeriesWrapper> GetWrapper(uint32_t i);
-        /**
-        @brief Get the number of Wrappers in the collection
-        */
-        uint32_t GetNSeries(void);
-        /**
-        @brief Get the underlying SeriesCollection
-        */
-        Ptr<netsimulyzer::SeriesCollection> GetCollection(void);
-        SeriesContainer(Ptr<Visualizer> visualizer);
-        /**
-        @brief Automatically initializes name, x-axis, y-axis in the SeriesCollection
-
-        @param name
-        The name to give to the SeriesCollection
-        @param x_axis
-        The label for the x-axis of the SeriesCollection
-        @param y_axis
-        The label for the y-axis of the SeriesCollection
-        */
-        SeriesContainer(Ptr<Visualizer> visualizer, std::string name, std::string x_axis, std::string y_axis);
-    private:
-        std::vector<Ptr<SeriesWrapper>> m_wrapper;
-        Ptr<netsimulyzer::SeriesCollection> m_collection;
+  private:
+    std::vector<Ptr<SeriesWrapper>> m_wrappers;
+    Ptr<SeriesCollection> m_collection;
 };
 
-// State-holder for the entire Netsimulyzer wrapper
-// Maintains a map of different eriesCollections to display, as well as NodeConfigs and the Nodes themselves
-class Visualizer : public Object {
-    public:
+/**
+ * State-holder for the entire Netsimulyzer wrapper
+ * Maintains a map of different eriesCollections to display, as well as NodeConfigs and the Nodes
+ * themselves
+ */
+class Visualizer : public Object
+{
+  public:
+    /**
+     * Get the class TypeId
+     *
+     * @return the TypeId
+     */
+    static TypeId GetTypeId();
 
-        /**
-         * @brief Get the class TypeId
-         *
-         * @return the TypeId
-         */
-        static TypeId GetTypeId(void);
+    explicit Visualizer(std::string outputFileName);
+    /**
+     * Automatically initializes NodeContainer
+     *
+     * @param nodes
+     * The ns3 Nodes to add to the visualization
+     */
+    Visualizer(std::string outputFileName, NodeContainer nodes);
+    /**
+     * Initializes NodeContainer
+     */
+    void SetNodes(NodeContainer nodes);
 
-        Visualizer(std::string outputFileName);
-        /**
-        @brief Automatically initializes NodeContainer
+    /**
+     * Get the default model of the Visualizer Nodes
+     *
+     * @return The file name of the default model of the Visualizer Nodes
+     */
+    std::string GetDefaultModel();
 
-        @param nodes
-        The ns3 Nodes to add to the visualization
-        */
-        Visualizer(std::string outputFileName, NodeContainer nodes);
-        /**
-        @brief Initializes NodeContainer
-        */
-        void SetNodes(NodeContainer nodes);
-        /**
-        @brief Gets a Container from the Visualizer
+    /**
+     * Set the default model of the Visualizer Nodes
+     * @param model
+     * File name of the model
+     */
+    Visualizer* SetDefaultModel(std::string model);
 
-        @param index
-        The string index of the Collection to get
-         */
-        Ptr<SeriesContainer> GetContainer(std::string index);
-        /**
-        @brief Sets a new Container in the Visualizer's map
+    /**
+     * Get the default scale of the Visualizer Nodes
+     */
+    double GetDefaultScale();
 
-        @param index
-        String index to put the new Container
-        @return 
-        self
-        */
-        Visualizer* SetContainer(std::string index,Ptr<SeriesContainer>);
+    /**
+     * Set the default scale of the Visualizer Nodes
+     * @param scale
+     * scale to be set as default
+     */
+    Visualizer* SetDefaultScale(double scale);
 
-        /**
-        @brief Gets a nodeConfiguration for a specific Node
+    /**
+     * Gets a Container from the Visualizer
+     *
+     * @param index
+     * The string index of the Collection to get
+     */
+    Ptr<SeriesContainer> GetContainer(std::string index);
+    /**
+     * Sets a new Container in the Visualizer's map
+     *
+     * @param index
+     * String index to put the new Container
+     * @return
+     * self
+     */
+    Visualizer* SetContainer(std::string index, Ptr<SeriesContainer> container);
 
-        @param i
-        The index of the NodeConfiguration to get
-         */
-        Ptr<netsimulyzer::NodeConfiguration> GetConfig(uint32_t i);
-        /**
-        @brief Gets a color from the Visualyzer's color list
-        @param i
-        The index to query the color list. Will automatically wrap around
-        */
-        netsimulyzer::Color3 GetColor(uint32_t i);
-        /**
-        @brief  Gets a specific Node
+    /**
+     * Gets a nodeConfiguration for a specific Node
+     * @param i
+     * The index of the NodeConfiguration to get
+     */
+    Ptr<NodeConfiguration> GetConfig(std::size_t i);
+    /**
+     * Gets a color from the Visualizer's color list
+     * @param i
+     * The index to query the color list. Will automatically wrap around
+     */
+    [[nodiscard]] const Color3 GetColor(std::size_t i) const;
+    /**
+     *  Gets a specific Node
+     *
+     * @param i
+     * The index of the Node to get
+     */
+    Ptr<Node> GetNode(std::size_t i);
 
-        @param i
-        The index of the Node to get
-         */
-        Ptr<Node> GetNode(uint32_t i);
+    /**
+     *  Gets a specific Node by its internal Id
+     *
+     * @param id
+     * The id of the Node to get
+     */
+    Ptr<Node> GetNodeById(uint32_t id);
 
-         /**
-        @brief  Gets a specific Node by its internal Id
+    /**
+     * Gets the number of nodes in the visualization
+     */
+    std::size_t GetNNodes();
 
-        @param id
-        The id of the Node to get
-         */
-        Ptr<Node> GetNodeById(uint32_t id);
+    /**
+     * Gets the Orchestrator for the Visualizer
+     */
+    Ptr<Orchestrator> GetOrchestrator();
+    /**
+     * Makes a blank XYSeries
+     */
+    Ptr<XYSeries> MakeSeries();
+    /**
+     * Makes a named XYSeries
+     * @param name
+     * String to name the XYSeries
+     */
+    Ptr<XYSeries> MakeSeries(std::string name);
+    /**
+     * Makes a named XYSeries with a particular color
+     *
+     * @param name
+     * String to name the XYSeries
+     *
+     * @param color
+     * The color of the XYSeries
+     */
+    Ptr<XYSeries> MakeSeries(std::string name, Color3 color);
+    /**
+     * Makes a named XYSeries with a particular preset color
+     *
+     * @param name
+     * String to name the XYSeries
+     * @param col_index
+     * The index of the preset Visualizer color of the XYSeries
+     */
+    Ptr<XYSeries> MakeSeries(std::string name, std::size_t col_index);
+    /**
+     * Prints some helpful(?) output to cout
+     */
+    void Dump();
 
-        /**
-         * @brief Gets the number of nodes in the visualization
-         */
-        uint32_t GetNNodes();
+  private:
+    Ptr<Orchestrator> m_orchestrator;
+    NodeConfigurationContainer m_configContainer;
+    NodeConfigurationHelper m_configHelper;
 
-        /**
-        @brief Gets the Orchestrator for the Visualyzer
-        */
-        Ptr<netsimulyzer::Orchestrator> GetOrchestrator(void);
-        /**
-        @brief Makes a blank XYSeries
-        */
-        Ptr<netsimulyzer::XYSeries>MakeSeries(void);
-        /** 
-            @brief Makes a named XYSeries
-            @param name
-            String to name the XYSeries
+    NodeContainer m_nodes;
+    std::vector<Color3> m_colors = {RED,
+                                                  ORANGE,
+                                                  YELLOW,
+                                                  GREEN,
+                                                  BLUE,
+                                                  PURPLE,
+                                                  PINK,
+                                                  GRAY_30};
+    std::string m_model = models::SINGLE_BOARD_COMPUTER;
+    double m_scale = 3.0;
 
-        */
-        Ptr<netsimulyzer::XYSeries>MakeSeries(std::string name);
-        /** 
-            @brief Makes a named XYSeries with a particular color
-            @param name
-            String to name the XYSeries
-            @param color
-            The color of the XYSeries
-
-        */
-        Ptr<netsimulyzer::XYSeries>MakeSeries(std::string name,netsimulyzer::Color3 color);
-        /** 
-            @brief Makes a named XYSeries with a particular preset color
-            @param name
-            String to name the XYSeries
-            @param col_index
-            The index of the preset Visualyzer color of the XYSeries
-        */
-        Ptr<netsimulyzer::XYSeries>MakeSeries(std::string name,uint32_t col_index);
-        /**
-        @brief Prints some helpful(?) output to cout
-         */
-        void Dump(void);
-        
-    private:
-        Ptr<netsimulyzer::Orchestrator> m_orchestrator;
-        netsimulyzer::NodeConfigurationContainer m_configContainer;
-        netsimulyzer::NodeConfigurationHelper m_configHelper;
-        
-        NodeContainer m_nodes;
-        std::vector<netsimulyzer::Color3> m_colors = {
-            netsimulyzer::RED,
-            netsimulyzer::ORANGE,
-            netsimulyzer::YELLOW,
-            netsimulyzer::GREEN,
-            netsimulyzer::BLUE,
-            netsimulyzer::PURPLE,
-            netsimulyzer::PINK,
-            netsimulyzer::GRAY_30
-        };
-        std::unordered_map<std::string,Ptr<SeriesContainer>> m_containers;
-
+    std::unordered_map<std::string, Ptr<SeriesContainer>> m_containers;
 };
 
-// Appends an accumulating value to the series
-struct Accumulator : SeriesWrapper {
-    public:
+/**
+ * Appends an accumulating value to the series
+ */
+class Accumulator : public SeriesWrapper
+{
+  public:
+    /**
+     * Get the class TypeId
+     *
+     * @return the TypeId
+     */
+    static TypeId GetTypeId();
 
-        /**
-         * @brief Get the class TypeId
-         *
-         * @return the TypeId
-         */
-        static TypeId GetTypeId(void);
+    explicit Accumulator(Ptr<XYSeries> series);
+    /**
+     * Accumulated the value then Appends to the Series
+     *
+     * @param add
+     * The amount to accumulate by
+     */
+    void Update(Time now, double add);
 
-        Accumulator(Ptr<netsimulyzer::XYSeries> series);
-        /**
-         @brief Accumulated the value then Appends to the Series
-
-         @param add
-         The amount to accumulate by
-         */
-        void Update(Time now, uint32_t add);
-    private:
-        uint32_t m_value = 0;
+  private:
+    double m_value = 0;
 };
 
-// Adds a String map over the Container
-struct SeriesMap : SeriesContainer{
-    public:
+/**
+ * Keeps track of a rolling arithmetic average of the given values
+ */
+class AverageValue : public SeriesWrapper
+{
+  public:
+    /**
+     * Get the class TypeId
+     *
+     * @return the TypeId
+     */
+    static TypeId GetTypeId();
 
-        /**
-         * @brief Get the class TypeId
-         *
-         * @return the TypeId
-         */
-        static TypeId GetTypeId(void);
-        
-        SeriesMap(Ptr<Visualizer> visualizer);
-        SeriesMap(Ptr<Visualizer> visualizer, std::string name, std::string x_axis, std::string y_axis);
-        /**
-         @brief Adds a Wrapper to the specified index
-         @param index
-         String index to insert the Wrapper at
-         */
-        SeriesMap* AddWrapper(std::string index, Ptr<SeriesWrapper> w);
+    explicit AverageValue(Ptr<XYSeries> series);
+    /**
+     * Accumulates the average then Appends to the Series
+     *
+     * @param value
+     * The amount to add to the average
+     */
+    void Update(Time now, double value);
 
-         /**
-        @brief Shortcut for getting a Series from a Wrapper
-        * @param indec
-        * String index of the Wrapper to get the series of
-        */
-        Ptr<netsimulyzer::XYSeries> GetSeries(std::string index);
-        
-         /**
-        @brief Get a Wrapper from the container
-        * @param indec
-        * String index of the Wrapper to get
-        */
-        Ptr<SeriesWrapper> GetWrapper(std::string index);
-    private:
-        std::unordered_map<std::string,uint32_t> m_nameMap;
+  private:
+    double m_avg = 0;
+    uint32_t m_n = 0;
 };
 
-} //namespace visualizer
+/**
+ * Keeps track of a sliding window for an accumulating value with a bandwidth
+ */
+class SlidingValue : public SeriesWrapper
+{
+  public:
+    /**
+     * Get the class TypeId
+     *
+     * @return the TypeId
+     */
+    static TypeId GetTypeId();
 
-} //namespace netsimulyzer
+    explicit SlidingValue(Ptr<XYSeries> series);
+    /**
+     * @param window
+     * Length of the sliding window in Seconds
+     * @param max_sample_frequency
+     * Caps how quickly in sucession the Series will be appended to in Seconds
+     * Any more frequent calls will update the sliding value, but not append to the Series
+     */
+    SlidingValue(Ptr<XYSeries> series, double window, double max_sample_frequency);
+
+    /**
+     * Adds a new value for the sliding data and updates the Series
+     *
+     * @param now
+     * The time that the value is inserted in
+     * @param value
+     * The value to be inserted into the sliding value
+     */
+    void Update(Time now, double value);
+    /**
+     * Gets the value of the current window
+     */
+
+    double GetSlidingValue();
+
+  private:
+    std::vector<std::pair<Time, double>> m_values;
+    double m_window = 1;
+    double m_maxSampleFrequency = 0.1;
+    double m_lastSample = 0;
+};
+
+/**
+ * Keeps track of a sliding window for an accumulating value with a bandwidth
+ */
+class SlidingLoad : public SlidingValue
+{
+  public:
+    /**
+     * Get the class TypeId
+     *
+     * @return the TypeId
+     */
+    static TypeId GetTypeId();
+
+    explicit SlidingLoad(Ptr<XYSeries> series);
+    /**
+     * @param window
+     * Length of the sliding window in Seconds
+     * @param bandwidth
+     * Bandwith to compare accumulated value to
+     * @param max_sample_frequency
+     * Caps how quickly in sucession the Series will be appended to in Seconds
+     * Any more frequent calls will update the sliding value, but not append to the Series
+     */
+    SlidingLoad(Ptr<XYSeries> series,
+                double window,
+                double bandwidth,
+                double max_sample_frequency);
+
+    /**
+     * Adds a new value for the sliding data and updates the Series
+     *
+     * @param now
+     * The time that the value is inserted in
+     * @param value
+     * The value to be inserted into the sliding data
+     */
+    void Update(Time now, double value);
+    /**
+     * Gets the value of the current window
+     */
+    double GetSlidingValue();
+
+  private:
+    std::vector<std::pair<Time, double>> m_values;
+    double m_bandwidth = 100;
+};
+
+/**
+ * Adds a String map over the Container
+ */
+class SeriesMap : public SeriesContainer
+{
+  public:
+    /**
+     * Get the class TypeId
+     *
+     * @return the TypeId
+     */
+    static TypeId GetTypeId();
+
+    explicit SeriesMap(Ptr<Visualizer> visualizer);
+    SeriesMap(Ptr<Visualizer> visualizer, std::string name, std::string x_axis, std::string y_axis);
+    /**
+     * Adds a Wrapper to the specified index
+     * @param index
+     * String index to insert the Wrapper at
+     */
+    SeriesMap* AddWrapper(std::string index, Ptr<SeriesWrapper> w);
+
+    /**
+     * Shortcut for getting a Series from a Wrapper
+     * @param index
+     * String index of the Wrapper to get the series of
+     */
+    Ptr<XYSeries> GetSeries(std::string index);
+
+    /**
+     * Get a Wrapper from the container
+     * @param index
+     * String index of the Wrapper to get
+     */
+    Ptr<SeriesWrapper> GetWrapper(const std::string& index);
+
+  private:
+    std::unordered_map<std::string, std::size_t> m_nameMap;
+};
+
+} // namespace visualizer
+
+} // namespace ns3::netsimulyzer
 
 #endif /*NET_VISUALIZER_H*/
