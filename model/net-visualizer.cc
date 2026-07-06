@@ -101,6 +101,12 @@ SeriesWrapper::SeriesWrapper(Ptr<XYSeries> series)
     NS_LOG_FUNCTION(this << series);
 };
 
+Ptr<XYSeries>
+SeriesWrapper::operator()()
+{
+    return this->GetSeries();
+};
+
 /*          SeriesContainer           */
 
 TypeId
@@ -164,8 +170,9 @@ SeriesContainer::SeriesContainer(Ptr<Visualizer> visualizer,
 {
     NS_LOG_FUNCTION(this << visualizer << name << x_axis << y_axis);
 
+    m_collection->SetAttribute("Name", StringValue(name));
     m_collection->GetYAxis()->SetAttribute("Name", StringValue(y_axis));
-    m_collection->GetXAxis()->SetAttribute("Name", StringValue(name));
+    m_collection->GetXAxis()->SetAttribute("Name", StringValue(x_axis));
 };
 
 std::vector<Ptr<SeriesWrapper>>::iterator
@@ -178,6 +185,12 @@ std::vector<Ptr<SeriesWrapper>>::iterator
 SeriesContainer::end()
 {
     return m_wrappers.end();
+};
+
+SeriesWrapper&
+SeriesContainer::operator[](std::size_t i)
+{
+    return (*this->GetWrapper(i));
 };
 
 /*          Visualizer           */
@@ -261,6 +274,12 @@ Visualizer::GetContainer(std::string index)
     return m_containers.at(index);
 };
 
+SeriesContainer&
+Visualizer::operator[](std::string index)
+{
+    return (*this->GetContainer(index));
+};
+
 Visualizer*
 Visualizer::SetContainer(std::string index, Ptr<SeriesContainer> container)
 {
@@ -275,6 +294,12 @@ Visualizer::GetConfig(std::size_t i)
     NS_LOG_FUNCTION(this << i);
     return m_configContainer.Get(i);
 };
+
+NodeConfigurationHelper
+Visualizer::GetConfigHelper()
+{
+    return m_configHelper;
+}
 
 const Color3
 Visualizer::GetColor(std::size_t i) const
@@ -316,38 +341,6 @@ Visualizer::GetOrchestrator()
     return m_orchestrator;
 };
 
-Ptr<XYSeries>
-Visualizer::MakeSeries()
-{
-    NS_LOG_FUNCTION(this);
-    return CreateObject<XYSeries>(m_orchestrator);
-};
-
-Ptr<XYSeries>
-Visualizer::MakeSeries(std::string name)
-{
-    NS_LOG_FUNCTION(this << name);
-    auto series = MakeSeries();
-    series->SetAttribute("Name", StringValue(name));
-    return series;
-};
-
-Ptr<XYSeries>
-Visualizer::MakeSeries(std::string name, Color3 color)
-{
-    NS_LOG_FUNCTION(this << name << color);
-    auto series = MakeSeries(name);
-    series->SetAttribute("Color", Color3Value(color));
-    return series;
-};
-
-Ptr<XYSeries>
-Visualizer::MakeSeries(std::string name, std::size_t col_index)
-{
-    NS_LOG_FUNCTION(this << name << col_index);
-    return MakeSeries(name, GetColor(col_index));
-};
-
 /*          Accumulator           */
 
 TypeId
@@ -373,11 +366,17 @@ Accumulator::Accumulator(Ptr<XYSeries> series)
 };
 
 void
-Accumulator::Update(Time now, double add)
+Accumulator::Update(Time time, double add)
 {
-    NS_LOG_FUNCTION(this << now << add);
+    NS_LOG_FUNCTION(this << time << add);
     m_value += add;
-    SeriesWrapper::GetSeries()->Append(now.GetSeconds(), m_value);
+    SeriesWrapper::GetSeries()->Append(time.GetSeconds(), m_value);
+}
+
+void
+Accumulator::Update(double add)
+{
+    Update(Simulator::Now(), add);
 }
 
 /*          AverageValue           */
@@ -405,12 +404,18 @@ AverageValue::AverageValue(Ptr<XYSeries> series)
 };
 
 void
-AverageValue::Update(Time now, double value)
+AverageValue::Update(Time time, double value)
 {
-    NS_LOG_FUNCTION(this << now << value);
+    NS_LOG_FUNCTION(this << time << value);
     m_avg = ((m_n * m_avg) + value) / (m_n + 1.0);
     m_n++;
-    SeriesWrapper::GetSeries()->Append(now.GetSeconds(), m_avg);
+    SeriesWrapper::GetSeries()->Append(time.GetSeconds(), m_avg);
+}
+
+void
+AverageValue::Update(double value)
+{
+    Update(Simulator::Now(), value);
 }
 
 /*          SlidingValue         */
@@ -433,9 +438,21 @@ SlidingValue::SlidingValue(Ptr<XYSeries> series)
     NS_LOG_FUNCTION(this << series);
 };
 
-SlidingValue::SlidingValue(Ptr<XYSeries> series,
-                           double window,
-                           double maxSampleFrequency)
+SlidingValue::SlidingValue(Ptr<XYSeries> series, Time interval)
+    : SeriesWrapper(series)
+{
+    NS_LOG_FUNCTION(this << series << interval);
+
+    m_timer.SetDelay(interval);
+    if (m_timer.GetDelay().IsPositive())
+    {
+        m_timed = true;
+        m_timer.SetFunction(&SlidingValue::Flush, this);
+        m_timer.Schedule();
+    }
+};
+
+SlidingValue::SlidingValue(Ptr<XYSeries> series, double window, double maxSampleFrequency)
     : SlidingValue(series)
 {
     NS_LOG_FUNCTION(this << series << maxSampleFrequency);
@@ -443,30 +460,59 @@ SlidingValue::SlidingValue(Ptr<XYSeries> series,
     m_maxSampleFrequency = maxSampleFrequency;
 };
 
+SlidingValue::SlidingValue(Ptr<XYSeries> series, double window, Time interval)
+    : SlidingValue(series, interval)
+{
+    NS_LOG_FUNCTION(this << series << window);
+    m_window = window;
+};
+
 void
-SlidingValue::Update(Time now, double value)
+SlidingValue::Update(Time time, double value)
 {
     // prune back end
     for (auto pair = m_values.begin(); pair != m_values.end(); pair++)
     {
         Time t = pair->first;
-        if (t < now - Seconds(m_window))
+        if (t < time - Seconds(m_window))
         {
             m_values.erase(pair--);
         }
     }
-    m_values.push_back({now, value});
+    m_values.push_back({time, value});
+    if (!m_timed)
+    {
+        Append(time);
+    }
+};
+
+void
+SlidingValue::Update(double value)
+{
+    Update(Simulator::Now(), value);
+}
+
+void
+SlidingValue::Append(Time time)
+{
     double acc = 0;
     for (auto pair = m_values.begin(); pair != m_values.end(); pair++)
     {
         acc += pair->second;
     }
-    if (m_lastSample < now.GetSeconds() - m_maxSampleFrequency)
+    if (m_lastSample < time.GetSeconds() - m_maxSampleFrequency)
     {
-        SeriesWrapper::GetSeries()->Append(now.GetSeconds(), acc);
-        m_lastSample = now.GetSeconds();
+        SeriesWrapper::GetSeries()->Append(time.GetSeconds(), acc);
+        m_lastSample = time.GetSeconds();
     }
-};
+}
+
+void
+SlidingValue::Flush()
+{
+    Append(Simulator::Now());
+    m_timer.Schedule();
+}
 
 double
 SlidingValue::GetSlidingValue()
@@ -499,21 +545,40 @@ SlidingLoad::SlidingLoad(Ptr<XYSeries> series)
     NS_LOG_FUNCTION(this << series);
 };
 
+SlidingLoad::SlidingLoad(Ptr<XYSeries> series, Time interval)
+    : SlidingValue(series, interval)
+{
+    NS_LOG_FUNCTION(this << series << interval);
+};
+
 SlidingLoad::SlidingLoad(Ptr<XYSeries> series,
                          double window,
                          double bandwidth,
                          double maxSampleFrequency)
     : SlidingValue(series, window, maxSampleFrequency)
 {
-    NS_LOG_FUNCTION(this << series << window << bandwidth << maxSampleFrequency);
+    NS_LOG_FUNCTION(this << series << bandwidth);
+    m_bandwidth = bandwidth;
+};
+
+SlidingLoad::SlidingLoad(Ptr<XYSeries> series, double window, double bandwidth, Time interval)
+    : SlidingValue(series, window, interval)
+{
+    NS_LOG_FUNCTION(this << series << bandwidth);
     m_bandwidth = bandwidth;
 };
 
 void
-SlidingLoad::Update(Time now, double value)
+SlidingLoad::Update(Time time, double value)
 {
-    SlidingValue::Update(now, 100.0 * value / m_bandwidth);
+    SlidingValue::Update(time, 100.0 * value / m_bandwidth);
 };
+
+void
+SlidingLoad::Update(double value)
+{
+    Update(Simulator::Now(), value);
+}
 
 double
 SlidingLoad::GetSlidingValue()
@@ -571,6 +636,12 @@ SeriesMap::GetWrapper(const std::string& index)
 {
     NS_LOG_FUNCTION(this << index);
     return SeriesContainer::GetWrapper(m_nameMap.at(index));
+};
+
+SeriesWrapper&
+SeriesMap::operator[](const std::string& index)
+{
+    return (*this->GetWrapper(index));
 };
 
 } // namespace visualizer

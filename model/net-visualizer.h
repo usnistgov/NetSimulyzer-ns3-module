@@ -49,6 +49,7 @@
 #include "ns3/nstime.h"
 #include "ns3/object.h"
 #include "ns3/ptr.h"
+#include "ns3/timer.h"
 
 #include <string>
 #include <unordered_map>
@@ -83,6 +84,14 @@ class SeriesWrapper : public Object
 
     explicit SeriesWrapper(Ptr<XYSeries> series);
 
+    template <class T>
+    T* As()
+    {
+        return (dynamic_cast<T*>(this));
+    };
+
+    Ptr<XYSeries> operator()();
+
   private:
     Ptr<XYSeries> m_series;
 };
@@ -115,12 +124,25 @@ class SeriesContainer : public Object
      * Series index
      */
     Ptr<XYSeries> GetSeries(std::size_t i);
+
     /**
      * Get a Wrapper from the container
      * @param i
      * Wrapper index
      */
     Ptr<SeriesWrapper> GetWrapper(std::size_t i);
+
+    /**
+     * Get a Wrapper from the container as a specific class
+     * @param i
+     * Wrapper index
+     */
+    template <class T>
+    Ptr<T> GetWrapperAs(std::size_t i)
+    {
+        return m_wrappers.at(i)->GetObject<T>();
+    };
+
     /**
      * Get the number of Wrappers in the collection
      */
@@ -147,6 +169,14 @@ class SeriesContainer : public Object
 
     std::vector<Ptr<SeriesWrapper>>::iterator begin();
     std::vector<Ptr<SeriesWrapper>>::iterator end();
+
+    SeriesWrapper& operator[](std::size_t i);
+
+    template <class T>
+    T* As()
+    {
+        return (dynamic_cast<T*>(this));
+    };
 
   private:
     std::vector<Ptr<SeriesWrapper>> m_wrappers;
@@ -214,6 +244,21 @@ class Visualizer : public Object
      * The string index of the Collection to get
      */
     Ptr<SeriesContainer> GetContainer(std::string index);
+
+    /**
+     * Gets a Container from the Visualizer as a specific cast
+     *
+     * @param index
+     * The string index of the Collection to get
+     */
+    template <class T>
+    Ptr<T> GetContainerAs(std::string index)
+    {
+        return m_containers.at(index)->GetObject<T>();
+    };
+
+    SeriesContainer& operator[](std::string index);
+
     /**
      * Sets a new Container in the Visualizer's map
      *
@@ -230,6 +275,9 @@ class Visualizer : public Object
      * The index of the NodeConfiguration to get
      */
     Ptr<NodeConfiguration> GetConfig(std::size_t i);
+
+    NodeConfigurationHelper GetConfigHelper();
+
     /**
      * Gets a color from the Visualizer's color list
      * @param i
@@ -261,35 +309,6 @@ class Visualizer : public Object
      * Gets the Orchestrator for the Visualizer
      */
     Ptr<Orchestrator> GetOrchestrator();
-    /**
-     * Makes a blank XYSeries
-     */
-    Ptr<XYSeries> MakeSeries();
-    /**
-     * Makes a named XYSeries
-     * @param name
-     * String to name the XYSeries
-     */
-    Ptr<XYSeries> MakeSeries(std::string name);
-    /**
-     * Makes a named XYSeries with a particular color
-     *
-     * @param name
-     * String to name the XYSeries
-     *
-     * @param color
-     * The color of the XYSeries
-     */
-    Ptr<XYSeries> MakeSeries(std::string name, Color3 color);
-    /**
-     * Makes a named XYSeries with a particular preset color
-     *
-     * @param name
-     * String to name the XYSeries
-     * @param col_index
-     * The index of the preset Visualizer color of the XYSeries
-     */
-    Ptr<XYSeries> MakeSeries(std::string name, std::size_t col_index);
 
   private:
     Ptr<Orchestrator> m_orchestrator;
@@ -297,14 +316,7 @@ class Visualizer : public Object
     NodeConfigurationHelper m_configHelper;
 
     NodeContainer m_nodes;
-    std::vector<Color3> m_colors = {RED,
-                                                  ORANGE,
-                                                  YELLOW,
-                                                  GREEN,
-                                                  BLUE,
-                                                  PURPLE,
-                                                  PINK,
-                                                  GRAY_30};
+    std::vector<Color3> m_colors = {RED, ORANGE, YELLOW, GREEN, BLUE, PURPLE, PINK, GRAY_30};
     std::string m_model = models::SINGLE_BOARD_COMPUTER;
     double m_scale = 3.0;
 
@@ -328,10 +340,20 @@ class Accumulator : public SeriesWrapper
     /**
      * Accumulated the value then Appends to the Series
      *
+     * @param time
+     * The Time the value will be associated with
      * @param add
      * The amount to accumulate by
      */
-    void Update(Time now, double add);
+    void Update(Time time, double add);
+
+    /**
+     * Accumulated the value then Appends to the Series at the current time
+     *
+     * @param add
+     * The amount to accumulate by
+     */
+    void Update(double add);
 
   private:
     double m_value = 0;
@@ -351,13 +373,24 @@ class AverageValue : public SeriesWrapper
     static TypeId GetTypeId();
 
     explicit AverageValue(Ptr<XYSeries> series);
+
+    /**
+     * Accumulates the average then Appends to the Series
+     *
+     * @param time
+     * The Time to set the new average
+     * @param value
+     * The amount to add to the average
+     */
+    void Update(Time time, double value);
+
     /**
      * Accumulates the average then Appends to the Series
      *
      * @param value
      * The amount to add to the average
      */
-    void Update(Time now, double value);
+    void Update(double value);
 
   private:
     double m_avg = 0;
@@ -378,6 +411,8 @@ class SlidingValue : public SeriesWrapper
     static TypeId GetTypeId();
 
     explicit SlidingValue(Ptr<XYSeries> series);
+
+    SlidingValue(Ptr<XYSeries> series, Time interval);
     /**
      * @param window
      * Length of the sliding window in Seconds
@@ -388,18 +423,36 @@ class SlidingValue : public SeriesWrapper
     SlidingValue(Ptr<XYSeries> series, double window, double max_sample_frequency);
 
     /**
+     * @param window
+     * Length of the sliding window in Seconds
+     * @param interval
+     * Sets how often the Series should be Appended to
+     */
+    SlidingValue(Ptr<XYSeries> series, double window, Time interval);
+
+    /**
      * Adds a new value for the sliding data and updates the Series
      *
-     * @param now
+     * @param time
      * The time that the value is inserted in
      * @param value
      * The value to be inserted into the sliding value
      */
-    void Update(Time now, double value);
+    void Update(Time time, double value);
+    /**
+     * Adds a new value for the sliding data and updates the Series
+     *
+     * @param value
+     * The value to be inserted into the sliding value
+     */
+    void Update(double value);
+
+    void Flush();
+    void Append(Time time);
+
     /**
      * Gets the value of the current window
      */
-
     double GetSlidingValue();
 
   private:
@@ -407,6 +460,8 @@ class SlidingValue : public SeriesWrapper
     double m_window = 1;
     double m_maxSampleFrequency = 0.1;
     double m_lastSample = 0;
+    Timer m_timer;
+    bool m_timed = false;
 };
 
 /**
@@ -423,6 +478,8 @@ class SlidingLoad : public SlidingValue
     static TypeId GetTypeId();
 
     explicit SlidingLoad(Ptr<XYSeries> series);
+
+    SlidingLoad(Ptr<XYSeries> series, Time interval);
     /**
      * @param window
      * Length of the sliding window in Seconds
@@ -432,20 +489,36 @@ class SlidingLoad : public SlidingValue
      * Caps how quickly in sucession the Series will be appended to in Seconds
      * Any more frequent calls will update the sliding value, but not append to the Series
      */
-    SlidingLoad(Ptr<XYSeries> series,
-                double window,
-                double bandwidth,
-                double max_sample_frequency);
+    SlidingLoad(Ptr<XYSeries> series, double window, double bandwidth, double max_sample_frequency);
+
+    /**
+     * @param window
+     * Length of the sliding window in Seconds
+     * @param bandwidth
+     * Bandwith to compare accumulated value to
+     * @param interval
+     * Sets how often the Series should be Appended to
+     */
+    SlidingLoad(Ptr<XYSeries> series, double window, double bandwidth, Time interval);
 
     /**
      * Adds a new value for the sliding data and updates the Series
      *
-     * @param now
+     * @param time
      * The time that the value is inserted in
      * @param value
      * The value to be inserted into the sliding data
      */
-    void Update(Time now, double value);
+    void Update(Time time, double value);
+
+    /**
+     * Adds a new value for the sliding data and updates the Series
+     *
+     * @param value
+     * The value to be inserted into the sliding data
+     */
+    void Update(double value);
+
     /**
      * Gets the value of the current window
      */
@@ -491,6 +564,19 @@ class SeriesMap : public SeriesContainer
      * String index of the Wrapper to get
      */
     Ptr<SeriesWrapper> GetWrapper(const std::string& index);
+
+    /**
+     * Get a Wrapper from the container as a specific cast
+     * @param index
+     * String index of the Wrapper to get
+     */
+    template <class T>
+    Ptr<T> GetWrapperAs(const std::string& index)
+    {
+        return SeriesContainer::GetWrapperAs<T>(m_nameMap.at(index));
+    };
+
+    SeriesWrapper& operator[](const std::string& index);
 
   private:
     std::unordered_map<std::string, std::size_t> m_nameMap;

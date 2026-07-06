@@ -154,6 +154,7 @@ build_lib(
     model/xy-series.cc
     model/throughput-sink.cc
     model/net-visualizer.cc
+    helper/link-pools.cc
   HEADER_FILES
     helper/area-helper.h
     helper/building-configuration-container.h
@@ -187,6 +188,7 @@ build_lib(
     model/xy-series.h
     model/throughput-sink.h
     model/net-visualizer.h
+    helper/link-pools.h
   LIBRARIES_TO_LINK
     ${libbuildings}
     ${libcore}

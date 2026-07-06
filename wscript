@@ -45,7 +45,8 @@ def build(bld):
         'model/value-axis.cc',
         'model/xy-series.cc',
         'model/throughput-sink.cc',
-        'model/net-visualizer.cc'
+        'model/net-visualizer.cc',
+        'helper/link-pools.cc'
         ]
 
     module_test = bld.create_ns3_module_test_library('netsimulyzer')
@@ -85,7 +86,8 @@ def build(bld):
         'model/value-axis.h',
         'model/xy-series.h',
         'model/throughput-sink.h',
-        'model/net-visualizer.h'
+        'model/net-visualizer.h',
+        'helper/link-pools.h'
         ]
 
     # Examples are not enabled for waf versions of
