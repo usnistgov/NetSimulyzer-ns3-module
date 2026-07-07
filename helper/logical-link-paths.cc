@@ -31,7 +31,7 @@
  * Author: Andrew Wagger <andrew.wagger@nist.gov>
  */
 
-#include "link-pools.h"
+#include "logical-link-paths.h"
 
 #include "ns3/color.h"
 #include "ns3/double.h"
@@ -39,7 +39,7 @@
 
 namespace ns3
 {
-NS_LOG_COMPONENT_DEFINE("LinkPools");
+NS_LOG_COMPONENT_DEFINE("LinkPaths");
 
 namespace netsimulyzer
 {
@@ -123,74 +123,6 @@ LogicalLinkPaths::SetPath(std::size_t app, std::vector<uint32_t> path)
 {
     SetPath(app, path, RED, {});
 };
-
-LogicalLinkPairs::LogicalLinkPairs(Ptr<Orchestrator> orchestrator, uint32_t nodeCount)
-    : m_pairMap(nodeCount),
-      m_orchestrator(orchestrator)
-{
-    NS_LOG_FUNCTION(this << orchestrator << nodeCount);
-};
-
-Ptr<netsimulyzer::LogicalLink>
-LogicalLinkPairs::GetLink(uint32_t i, uint32_t j)
-{
-    return this->m_pairMap.Get(i, j);
-};
-
-void
-LogicalLinkPairs::SetLink(uint32_t i,
-                          uint32_t j,
-                          netsimulyzer::Color3 color,
-                          const std::unordered_map<std::string, Ptr<AttributeValue>>& attributes)
-{
-    if (i != j)
-    {
-        if (!m_pairMap.Get(i, j))
-        {
-            m_pairMap.Set(i, j, CreateObject<LogicalLink>(m_orchestrator, i+1, j+1, color, attributes));
-        }
-        else
-        {
-            auto link = m_pairMap.Get(i, j);
-            link->Activate();
-            link->SetColor(color);
-            for (const auto& [name, value] : attributes)
-            {
-                // In the helper, the color attribute is always converted to
-                // the constructor argument, so we don't want the attribute version
-                if (name == "Color")
-                {
-                    continue;
-                }
-                link->SetAttribute(name, *value);
-            }
-        }
-    }
-}
-
-void
-LogicalLinkPairs::SetLink(uint32_t i, uint32_t j, netsimulyzer::Color3 color)
-{
-    SetLink(i, j, color, {});
-}
-
-void
-LogicalLinkPairs::SetLink(uint32_t i, uint32_t j)
-{
-    SetLink(i, j, WHITE);
-}
-
-void
-LogicalLinkPairs::RemoveLink(uint32_t i, uint32_t j)
-{
-    if (i != j)
-    {
-        if (m_pairMap.Get(i, j))
-        {
-            m_pairMap.Get(i, j)->Deactivate();
-        }
-    }
-}
 
 } // namespace netsimulyzer
 
