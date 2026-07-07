@@ -147,7 +147,7 @@ LogicalLinkPairs::SetLink(uint32_t i,
     {
         if (!m_pairMap.Get(i, j))
         {
-            m_pairMap.Set(i, j, CreateObject<LogicalLink>(m_orchestrator, i, j, color, attributes));
+            m_pairMap.Set(i, j, CreateObject<LogicalLink>(m_orchestrator, i+1, j+1, color, attributes));
         }
         else
         {

@@ -94,7 +94,15 @@ class LogicalLinkPaths : public Object
                  const std::unordered_map<std::string, Ptr<AttributeValue>>& attributes);
 
   private:
+
+    /**
+     * A vector of vectors containing the LogicalLinks for all paths. vectors may be longer than needed
+     */
     std::vector<std::vector<Ptr<netsimulyzer::LogicalLink>>> m_paths;
+
+    /**
+     * The Orchestrator the LogicalLinks are attatched to
+     */
     Ptr<Orchestrator> m_orchestrator;
 };
 
@@ -220,7 +228,14 @@ class LogicalLinkPairs : public Object
         };
     };
 
+    /**
+     * A data structure that stores the pairwise LogicalLinks
+     */
     PairMap<Ptr<netsimulyzer::LogicalLink>> m_pairMap;
+
+    /**
+     * Orchestrator attatched to the LogicalLinks
+     */
     Ptr<Orchestrator> m_orchestrator;
 };
 

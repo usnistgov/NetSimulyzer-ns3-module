@@ -127,6 +127,46 @@ class NodeConfigurationHelper
     NodeConfigurationContainer Install(NodeContainer& nodes,
                                        NodeConfigurationContainer& configurations) const;
 
+    enum ColorMode : uint8_t
+    {
+        Default,
+        Vector,
+        Function
+    };
+
+    /**
+     * Sets the color mode to select from a vector of colors, cycling through in a loop per node index
+     * @param colorVector
+     * A vector of colors to cycle through
+     */
+    void SetColorPattern(std::vector<Color3> colorVector);
+
+    /**
+     * Sets the color mode to select from a function that returns a color given the node and its index
+     * @param colorFunction
+     * A function that takes in an index and a node and returns an associated color
+     */
+    void SetColorPattern(Color3 (*colorFunction) (uint32_t, Ptr<Node>));
+    /**
+     * Sets the color mode to be a static color
+     * @param color
+     * The color to set all nodes
+     */
+    void SetColorPattern(Color3 color);
+
+    /**
+     * Changes the color mode without changing the parameters
+     */
+    void SetColorPatternType(ColorMode mode);
+
+    /**
+     * Gets the color a node would be if at a specific index
+     * @param i
+     * The theoretical index of the node
+     * @param node
+     * The node
+     */
+    Color3 GetColor(uint32_t i, Ptr<Node> node);
   private:
     /**
      * Factory for producing NodeConfiguration objects
@@ -137,6 +177,32 @@ class NodeConfigurationHelper
      * Orchestrator that manages the Nodes produced by this helper
      */
     Ptr<Orchestrator> m_orchestrator;
+    
+    /**
+     * Sets the way colors are set for nodes
+     */
+    ColorMode m_colorMode = ColorMode::Default;
+    /**
+     * If the color mode is Vector, cycles through this vector for node colors
+     */
+    std::vector<Color3> m_colorVector;
+    /**
+     * If the color mode is Function, uses this function for node colors 
+     */
+    Color3 (*m_colorFunction) (uint32_t, Ptr<Node>)  = 0;
+
+    /**
+     * Sets the color of a NodeConfiguration
+     * @param config
+     * The node configuration to set the color of
+     * @param i
+     * The index of the node
+     * @param node
+     * The node attatched to the configuration
+     */
+    void SetColorInternal(Ptr<NodeConfiguration> config, uint32_t i, Ptr<Node> node) const;
+
+
 };
 
 } // namespace ns3::netsimulyzer

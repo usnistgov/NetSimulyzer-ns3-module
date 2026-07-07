@@ -58,14 +58,12 @@
 namespace ns3::netsimulyzer
 {
 
-namespace visualizer
-{
 
-class Visualizer;
+class SeriesManager;
 
 /**
  * Base class to ensure different structs that wrap a series with context can work together in the
- * SeriesContainer
+ * SeriesWrapperCollection
  */
 class SeriesWrapper : public Object
 {
@@ -82,24 +80,38 @@ class SeriesWrapper : public Object
      */
     Ptr<XYSeries> GetSeries();
 
+    /**
+     * Makes a SeriesWrapper from a series
+     * @param series
+     * The series to wrap
+     */
     explicit SeriesWrapper(Ptr<XYSeries> series);
 
+    /**
+     * Casts itself as a particular pointer
+     */
     template <class T>
     T* As()
     {
         return (dynamic_cast<T*>(this));
     };
 
+    /**
+     * Shorthand for GetSeries()
+     */
     Ptr<XYSeries> operator()();
 
   private:
+    /**
+     * The series being wrapped
+     */
     Ptr<XYSeries> m_series;
 };
 
 /**
  * Keeps track of multiple SeriesWrappers in a single collection
  */
-class SeriesContainer : public Object
+class SeriesWrapperCollection : public Object
 {
   public:
     /**
@@ -115,7 +127,7 @@ class SeriesContainer : public Object
      * @return
      * self
      */
-    SeriesContainer* AddWrapper(Ptr<SeriesWrapper> w);
+    SeriesWrapperCollection* AddWrapper(Ptr<SeriesWrapper> w);
 
     /**
      * Shortcut to get a Series from a Wrapper
@@ -150,11 +162,19 @@ class SeriesContainer : public Object
     /**
      * Get the underlying SeriesCollection
      */
-    Ptr<SeriesCollection> GetCollection();
-    explicit SeriesContainer(Ptr<Visualizer> visualizer);
+    Ptr<SeriesCollection> GetSeriesCollection();
+
+    /**
+     * Makes a collection from a SeriesManager
+     * @param manager
+     * The SeriesManager to get the Orchestrator from
+     */
+    explicit SeriesWrapperCollection(Ptr<SeriesManager> manager);
     /**
      * Automatically initializes name, x-axis, y-axis in the SeriesCollection
      *
+     * @param manager
+     * The SeriesManager to get the Orchestrator from
      * @param name
      * The name to give to the SeriesCollection
      * @param x_axis
@@ -162,16 +182,29 @@ class SeriesContainer : public Object
      * @param y_axis
      * The label for the y-axis of the SeriesCollection
      */
-    SeriesContainer(Ptr<Visualizer> visualizer,
+    SeriesWrapperCollection(Ptr<SeriesManager> manager,
                     std::string name,
                     std::string x_axis,
                     std::string y_axis);
 
+    /**
+     * Returns an iterator over the SeriesWrappers
+     */
     std::vector<Ptr<SeriesWrapper>>::iterator begin();
+
+    /**
+     * Returns an iterator over the SeriesWrappers
+     */
     std::vector<Ptr<SeriesWrapper>>::iterator end();
 
+    /**
+     * Gets a reference to a particular seriesWrapper
+     */
     SeriesWrapper& operator[](std::size_t i);
 
+    /**
+     * Casts itself as a particular pointer
+     */
     template <class T>
     T* As()
     {
@@ -179,7 +212,14 @@ class SeriesContainer : public Object
     };
 
   private:
+    /**
+     * Vector of the wrappers it contains
+     */
     std::vector<Ptr<SeriesWrapper>> m_wrappers;
+
+    /**
+     * The SeriesCollection being wrapped
+     */
     Ptr<SeriesCollection> m_collection;
 };
 
@@ -188,7 +228,7 @@ class SeriesContainer : public Object
  * Maintains a map of different eriesCollections to display, as well as NodeConfigs and the Nodes
  * themselves
  */
-class Visualizer : public Object
+class SeriesManager : public Object
 {
   public:
     /**
@@ -198,76 +238,62 @@ class Visualizer : public Object
      */
     static TypeId GetTypeId();
 
-    explicit Visualizer(std::string outputFileName);
+    /**
+     * Creates a SeriesManager outputting to a particular file
+     * @param outputFileName
+     * the file to output to
+     */
+    explicit SeriesManager(std::string outputFileName);
     /**
      * Automatically initializes NodeContainer
      *
+     * @param outputFileName
+     * the file to output to
      * @param nodes
      * The ns3 Nodes to add to the visualization
      */
-    Visualizer(std::string outputFileName, NodeContainer nodes);
+    SeriesManager(std::string outputFileName, NodeContainer nodes);
     /**
      * Initializes NodeContainer
+     * @param nodes
+     * The nodeContainer to set
      */
     void SetNodes(NodeContainer nodes);
 
     /**
-     * Get the default model of the Visualizer Nodes
-     *
-     * @return The file name of the default model of the Visualizer Nodes
-     */
-    std::string GetDefaultModel();
-
-    /**
-     * Set the default model of the Visualizer Nodes
-     * @param model
-     * File name of the model
-     */
-    Visualizer* SetDefaultModel(std::string model);
-
-    /**
-     * Get the default scale of the Visualizer Nodes
-     */
-    double GetDefaultScale();
-
-    /**
-     * Set the default scale of the Visualizer Nodes
-     * @param scale
-     * scale to be set as default
-     */
-    Visualizer* SetDefaultScale(double scale);
-
-    /**
-     * Gets a Container from the Visualizer
+     * Gets a Container from the SeriesManager
      *
      * @param index
      * The string index of the Collection to get
      */
-    Ptr<SeriesContainer> GetContainer(std::string index);
+    Ptr<SeriesWrapperCollection> GetCollection(std::string index);
 
     /**
-     * Gets a Container from the Visualizer as a specific cast
+     * Gets a Container from the SeriesManager as a specific cast
      *
      * @param index
      * The string index of the Collection to get
      */
     template <class T>
-    Ptr<T> GetContainerAs(std::string index)
+    Ptr<T> GetCollectionAs(std::string index)
     {
-        return m_containers.at(index)->GetObject<T>();
+        return m_collections.at(index)->GetObject<T>();
     };
 
-    SeriesContainer& operator[](std::string index);
+    /**
+     * Gets a reference to a particular SeriesWrapperCollection
+     */
+    SeriesWrapperCollection& operator[](std::string index);
 
     /**
-     * Sets a new Container in the Visualizer's map
+     * Sets a new Container in the SeriesManager's map
      *
      * @param index
      * String index to put the new Container
      * @return
      * self
      */
-    Visualizer* SetContainer(std::string index, Ptr<SeriesContainer> container);
+    SeriesManager* SetContainer(std::string index, Ptr<SeriesWrapperCollection> container);
 
     /**
      * Gets a nodeConfiguration for a specific Node
@@ -276,14 +302,11 @@ class Visualizer : public Object
      */
     Ptr<NodeConfiguration> GetConfig(std::size_t i);
 
-    NodeConfigurationHelper GetConfigHelper();
-
     /**
-     * Gets a color from the Visualizer's color list
-     * @param i
-     * The index to query the color list. Will automatically wrap around
+     * Gets the NodeonfigurationHelper
      */
-    [[nodiscard]] const Color3 GetColor(std::size_t i) const;
+    NodeConfigurationHelper* ConfigHelper();
+
     /**
      *  Gets a specific Node
      *
@@ -306,27 +329,51 @@ class Visualizer : public Object
     std::size_t GetNNodes();
 
     /**
-     * Gets the Orchestrator for the Visualizer
+     * Gets the Orchestrator for the SeriesManager
      */
-    Ptr<Orchestrator> GetOrchestrator();
+    Ptr<Orchestrator> GetOrchestrator() const;
+
+        /**
+     * Returns an iterator over the SeriesWrappers
+     */
+    std::unordered_map<std::string, Ptr<SeriesWrapperCollection>>::iterator begin();
+
+    /**
+     * Returns an iterator over the SeriesWrappers
+     */
+    std::unordered_map<std::string, Ptr<SeriesWrapperCollection>>::iterator end();
 
   private:
+    /**
+     * The orchestrator shared among all objects in the SeriesManager
+     */
     Ptr<Orchestrator> m_orchestrator;
+
+    /**
+     * The container for each node's configuration
+     */
     NodeConfigurationContainer m_configContainer;
+
+    /**
+     * The helper that manages the defaults of the node's configurations
+     */
     NodeConfigurationHelper m_configHelper;
 
+    /**
+     * The nodes to keep track of for the visualizations
+     */
     NodeContainer m_nodes;
-    std::vector<Color3> m_colors = {RED, ORANGE, YELLOW, GREEN, BLUE, PURPLE, PINK, GRAY_30};
-    std::string m_model = models::SINGLE_BOARD_COMPUTER;
-    double m_scale = 3.0;
 
-    std::unordered_map<std::string, Ptr<SeriesContainer>> m_containers;
+    /**
+     * The underlying data structure for the SeriesWrapperCollections
+     */
+    std::unordered_map<std::string, Ptr<SeriesWrapperCollection>> m_collections;
 };
 
 /**
  * Appends an accumulating value to the series
  */
-class Accumulator : public SeriesWrapper
+class AccumulatorWrapper : public SeriesWrapper
 {
   public:
     /**
@@ -336,7 +383,7 @@ class Accumulator : public SeriesWrapper
      */
     static TypeId GetTypeId();
 
-    explicit Accumulator(Ptr<XYSeries> series);
+    explicit AccumulatorWrapper(Ptr<XYSeries> series);
     /**
      * Accumulated the value then Appends to the Series
      *
@@ -362,7 +409,7 @@ class Accumulator : public SeriesWrapper
 /**
  * Keeps track of a rolling arithmetic average of the given values
  */
-class AverageValue : public SeriesWrapper
+class AverageValueWrapper : public SeriesWrapper
 {
   public:
     /**
@@ -372,7 +419,7 @@ class AverageValue : public SeriesWrapper
      */
     static TypeId GetTypeId();
 
-    explicit AverageValue(Ptr<XYSeries> series);
+    explicit AverageValueWrapper(Ptr<XYSeries> series);
 
     /**
      * Accumulates the average then Appends to the Series
@@ -400,7 +447,7 @@ class AverageValue : public SeriesWrapper
 /**
  * Keeps track of a sliding window for an accumulating value with a bandwidth
  */
-class SlidingValue : public SeriesWrapper
+class SlidingValueWrapper : public SeriesWrapper
 {
   public:
     /**
@@ -410,9 +457,9 @@ class SlidingValue : public SeriesWrapper
      */
     static TypeId GetTypeId();
 
-    explicit SlidingValue(Ptr<XYSeries> series);
+    explicit SlidingValueWrapper(Ptr<XYSeries> series);
 
-    SlidingValue(Ptr<XYSeries> series, Time interval);
+    SlidingValueWrapper(Ptr<XYSeries> series, Time interval);
     /**
      * @param window
      * Length of the sliding window in Seconds
@@ -420,15 +467,15 @@ class SlidingValue : public SeriesWrapper
      * Caps how quickly in sucession the Series will be appended to in Seconds
      * Any more frequent calls will update the sliding value, but not append to the Series
      */
-    SlidingValue(Ptr<XYSeries> series, double window, double max_sample_frequency);
+    SlidingValueWrapper(Ptr<XYSeries> series, Time window, double max_sample_frequency);
 
     /**
      * @param window
-     * Length of the sliding window in Seconds
+     * Length of the sliding window
      * @param interval
      * Sets how often the Series should be Appended to
      */
-    SlidingValue(Ptr<XYSeries> series, double window, Time interval);
+    SlidingValueWrapper(Ptr<XYSeries> series, Time window, Time interval);
 
     /**
      * Adds a new value for the sliding data and updates the Series
@@ -453,11 +500,11 @@ class SlidingValue : public SeriesWrapper
     /**
      * Gets the value of the current window
      */
-    double GetSlidingValue();
+    double GetSlidingValue() const;
 
   private:
     std::vector<std::pair<Time, double>> m_values;
-    double m_window = 1;
+    Time m_window = Seconds(1);
     double m_maxSampleFrequency = 0.1;
     double m_lastSample = 0;
     Timer m_timer;
@@ -467,7 +514,7 @@ class SlidingValue : public SeriesWrapper
 /**
  * Keeps track of a sliding window for an accumulating value with a bandwidth
  */
-class SlidingLoad : public SlidingValue
+class SlidingLoadWrapper : public SlidingValueWrapper
 {
   public:
     /**
@@ -477,29 +524,29 @@ class SlidingLoad : public SlidingValue
      */
     static TypeId GetTypeId();
 
-    explicit SlidingLoad(Ptr<XYSeries> series);
+    explicit SlidingLoadWrapper(Ptr<XYSeries> series);
 
-    SlidingLoad(Ptr<XYSeries> series, Time interval);
+    SlidingLoadWrapper(Ptr<XYSeries> series, Time interval);
     /**
      * @param window
-     * Length of the sliding window in Seconds
+     * Length of the sliding window
      * @param bandwidth
      * Bandwith to compare accumulated value to
      * @param max_sample_frequency
      * Caps how quickly in sucession the Series will be appended to in Seconds
      * Any more frequent calls will update the sliding value, but not append to the Series
      */
-    SlidingLoad(Ptr<XYSeries> series, double window, double bandwidth, double max_sample_frequency);
+    SlidingLoadWrapper(Ptr<XYSeries> series, Time window, double bandwidth, double max_sample_frequency);
 
     /**
      * @param window
-     * Length of the sliding window in Seconds
+     * Length of the sliding window
      * @param bandwidth
      * Bandwith to compare accumulated value to
      * @param interval
      * Sets how often the Series should be Appended to
      */
-    SlidingLoad(Ptr<XYSeries> series, double window, double bandwidth, Time interval);
+    SlidingLoadWrapper(Ptr<XYSeries> series, Time window, double bandwidth, Time interval);
 
     /**
      * Adds a new value for the sliding data and updates the Series
@@ -522,17 +569,17 @@ class SlidingLoad : public SlidingValue
     /**
      * Gets the value of the current window
      */
-    double GetSlidingValue();
+    double GetSlidingValue() const;
 
   private:
     std::vector<std::pair<Time, double>> m_values;
-    double m_bandwidth = 100;
+    double m_bandwidth = 100.0;
 };
 
 /**
  * Adds a String map over the Container
  */
-class SeriesMap : public SeriesContainer
+class SeriesWrapperMap : public SeriesWrapperCollection
 {
   public:
     /**
@@ -542,14 +589,14 @@ class SeriesMap : public SeriesContainer
      */
     static TypeId GetTypeId();
 
-    explicit SeriesMap(Ptr<Visualizer> visualizer);
-    SeriesMap(Ptr<Visualizer> visualizer, std::string name, std::string x_axis, std::string y_axis);
+    explicit SeriesWrapperMap(Ptr<SeriesManager> manager);
+    SeriesWrapperMap(Ptr<SeriesManager> manager, std::string name, std::string x_axis, std::string y_axis);
     /**
      * Adds a Wrapper to the specified index
      * @param index
      * String index to insert the Wrapper at
      */
-    SeriesMap* AddWrapper(std::string index, Ptr<SeriesWrapper> w);
+    SeriesWrapperMap* AddWrapper(std::string index, Ptr<SeriesWrapper> w);
 
     /**
      * Shortcut for getting a Series from a Wrapper
@@ -573,7 +620,7 @@ class SeriesMap : public SeriesContainer
     template <class T>
     Ptr<T> GetWrapperAs(const std::string& index)
     {
-        return SeriesContainer::GetWrapperAs<T>(m_nameMap.at(index));
+        return SeriesWrapperCollection::GetWrapperAs<T>(m_nameMap.at(index));
     };
 
     SeriesWrapper& operator[](const std::string& index);
@@ -581,8 +628,6 @@ class SeriesMap : public SeriesContainer
   private:
     std::unordered_map<std::string, std::size_t> m_nameMap;
 };
-
-} // namespace visualizer
 
 } // namespace ns3::netsimulyzer
 

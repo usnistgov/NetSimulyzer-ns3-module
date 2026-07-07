@@ -63,6 +63,7 @@ NodeConfigurationHelper::Install(Ptr<Node> node) const
 {
     NS_LOG_FUNCTION(this << node);
     auto config = m_nodeConfiguration.Create()->GetObject<NodeConfiguration>();
+    SetColorInternal(config, 0,node);
     node->AggregateObject(config);
     return {config};
 }
@@ -81,9 +82,14 @@ NodeConfigurationHelper::Install(const NodeContainer& nodes) const
     NS_LOG_FUNCTION(this << &nodes);
     NodeConfigurationContainer container;
 
+    uint32_t i = 0;
     for (auto node = nodes.Begin(); node != nodes.End(); node++)
     {
         auto config = m_nodeConfiguration.Create()->GetObject<NodeConfiguration>();
+
+        SetColorInternal(config, i,(*node));
+        i++;
+        
 
         (*node)->AggregateObject(config);
 
@@ -121,6 +127,80 @@ NodeConfigurationHelper::Install(NodeContainer& nodes,
 
     return results;
 }
+
+
+void
+NodeConfigurationHelper::SetColorPattern(std::vector<Color3> colorVector)
+{
+    m_colorVector = colorVector;
+    m_colorMode = ColorMode::Vector;
+};
+
+void
+NodeConfigurationHelper::SetColorPattern(Color3 (*colorFunction) (uint32_t, Ptr<Node>) )
+{
+    m_colorFunction = colorFunction;
+    m_colorMode = ColorMode::Function;
+};
+
+void
+NodeConfigurationHelper::SetColorPattern(Color3 color)
+{
+    Set("Color",Color3Value(color));
+    m_colorMode = ColorMode::Default;
+};
+
+void
+NodeConfigurationHelper::SetColorPatternType(ColorMode mode)
+{
+    m_colorMode = mode;
+}
+
+void
+NodeConfigurationHelper::SetColorInternal(Ptr<NodeConfiguration> config, uint32_t i, Ptr<Node> node) const
+{
+    switch(m_colorMode){
+        case ColorMode::Function:
+            if(m_colorFunction != nullptr)
+            {
+                config->SetBaseColor(m_colorFunction(i,node));
+            }
+        break;
+        case ColorMode::Vector:
+            if(m_colorVector.size() > 0)
+            {
+                config->SetBaseColor(m_colorVector[i % m_colorVector.size()]);
+            }
+        break;
+        default:
+        break;
+    }
+};
+
+Color3
+NodeConfigurationHelper::GetColor(uint32_t i, Ptr<Node> node)
+{
+    switch(m_colorMode){
+        case ColorMode::Function:
+            if(m_colorFunction != nullptr)
+            {
+                return m_colorFunction(i,node);
+            }
+        break;
+        case ColorMode::Vector:
+            if(m_colorVector.size() > 0)
+            {
+                return m_colorVector[i % m_colorVector.size()];
+            }
+        break;
+        default:
+        break;
+    }
+   
+    return m_nodeConfiguration.Create()->GetObject<NodeConfiguration>()->GetBaseColor().value_or(RED);
+};
+
+
 
 } // namespace netsimulyzer
 } // namespace ns3
