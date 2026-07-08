@@ -46,6 +46,7 @@ namespace netsimulyzer
 
 LogicalLinkPairs::LogicalLinkPairs(Ptr<Orchestrator> orchestrator, uint32_t nodeCount)
     : m_pairMap(nodeCount),
+      m_timers(nodeCount),
       m_orchestrator(orchestrator)
 {
     NS_LOG_FUNCTION(this << orchestrator << nodeCount);
@@ -60,7 +61,7 @@ LogicalLinkPairs::GetLink(uint32_t i, uint32_t j)
 void
 LogicalLinkPairs::SetLink(uint32_t i,
                           uint32_t j,
-                          netsimulyzer::Color3 color,
+                          Color3 color,
                           const std::unordered_map<std::string, Ptr<AttributeValue>>& attributes)
 {
     if (i != j)
@@ -92,7 +93,7 @@ LogicalLinkPairs::SetLink(uint32_t i,
 }
 
 void
-LogicalLinkPairs::SetLink(uint32_t i, uint32_t j, netsimulyzer::Color3 color)
+LogicalLinkPairs::SetLink(uint32_t i, uint32_t j, Color3 color)
 {
     SetLink(i, j, color, {});
 }
@@ -101,6 +102,39 @@ void
 LogicalLinkPairs::SetLink(uint32_t i, uint32_t j)
 {
     SetLink(i, j, WHITE);
+}
+
+void
+LogicalLinkPairs::SetLinkBurst(
+    uint32_t i,
+    uint32_t j,
+    Color3 color,
+    const std::unordered_map<std::string, Ptr<AttributeValue>>& attributes,
+    Time duration)
+{
+    Timer& timer = m_timers.Get(i, j);
+    SetLink(i, j, color, attributes);
+    if (timer.IsRunning())
+        timer.Cancel();
+    timer.SetDelay(duration);
+    if (timer.GetDelay().IsPositive())
+    {
+        timer.SetFunction(&LogicalLinkPairs::RemoveLink, this);
+        timer.SetArguments<uint32_t, uint32_t>(i, j);
+        timer.Schedule();
+    }
+}
+
+void
+LogicalLinkPairs::SetLinkBurst(uint32_t i, uint32_t j, Color3 color, Time duration)
+{
+    SetLinkBurst(i, j, color, {}, duration);
+}
+
+void
+LogicalLinkPairs::SetLinkBurst(uint32_t i, uint32_t j, Time duration)
+{
+    SetLinkBurst(i, j, WHITE, {}, duration);
 }
 
 void

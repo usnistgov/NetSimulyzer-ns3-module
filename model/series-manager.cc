@@ -116,7 +116,7 @@ SeriesManager::operator[](std::string index)
     return (*GetCollection(index));
 };
 
-SeriesManager*
+Ptr<SeriesManager>
 SeriesManager::SetContainer(std::string index, Ptr<SeriesWrapperCollection> container)
 {
     NS_LOG_FUNCTION(this << index << container);

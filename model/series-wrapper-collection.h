@@ -71,7 +71,7 @@ class SeriesWrapperCollection : public Object
      * @return
      * self
      */
-    SeriesWrapperCollection* AddWrapper(Ptr<SeriesWrapper> w);
+    Ptr<SeriesWrapperCollection> AddWrapper(Ptr<SeriesWrapper> w);
 
     /**
      * Shortcut to get a Series from a Wrapper
@@ -150,7 +150,7 @@ class SeriesWrapperCollection : public Object
      * Casts itself as a particular pointer
      */
     template <class T>
-    T* As()
+    Ptr<T> As()
     {
         return (dynamic_cast<T*>(this));
     };
@@ -190,7 +190,7 @@ class SeriesWrapperMap : public SeriesWrapperCollection
      * @param index
      * String index to insert the Wrapper at
      */
-    SeriesWrapperMap* AddWrapper(std::string index, Ptr<SeriesWrapper> w);
+    Ptr<SeriesWrapperMap> AddWrapper(std::string index, Ptr<SeriesWrapper> w);
 
     /**
      * Shortcut for getting a Series from a Wrapper

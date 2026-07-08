@@ -79,7 +79,7 @@ class SeriesWrapper : public Object
      * Casts itself as a particular pointer
      */
     template <class T>
-    T* As()
+    Ptr<T> As()
     {
         return (dynamic_cast<T*>(this));
     };

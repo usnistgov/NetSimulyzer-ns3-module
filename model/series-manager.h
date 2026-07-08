@@ -129,7 +129,7 @@ class SeriesManager : public Object
      * @return
      * self
      */
-    SeriesManager* SetContainer(std::string index, Ptr<SeriesWrapperCollection> container);
+    Ptr<SeriesManager> SetContainer(std::string index, Ptr<SeriesWrapperCollection> container);
 
     /**
      * Gets a nodeConfiguration for a specific Node

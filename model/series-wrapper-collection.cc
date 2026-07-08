@@ -70,7 +70,7 @@ SeriesWrapperCollection::GetTypeId()
     // clang-format on
 }
 
-SeriesWrapperCollection*
+Ptr<SeriesWrapperCollection>
 SeriesWrapperCollection::AddWrapper(Ptr<SeriesWrapper> w)
 {
     NS_LOG_FUNCTION(this << w);
@@ -171,7 +171,7 @@ SeriesWrapperMap::SeriesWrapperMap(Ptr<Orchestrator> orchestrator,
     NS_LOG_FUNCTION(this << orchestrator << name << x_axis << y_axis);
 };
 
-SeriesWrapperMap*
+Ptr<SeriesWrapperMap>
 SeriesWrapperMap::AddWrapper(std::string index, Ptr<SeriesWrapper> w)
 {
     NS_LOG_FUNCTION(this << index << w);
