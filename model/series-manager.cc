@@ -131,10 +131,10 @@ SeriesManager::GetConfig(std::size_t i)
     return m_configContainer.Get(i);
 };
 
-NodeConfigurationHelper*
+NodeConfigurationHelper&
 SeriesManager::ConfigHelper()
 {
-    return &m_configHelper;
+    return m_configHelper;
 }
 
 Ptr<Node>
@@ -170,16 +170,10 @@ SeriesManager::GetOrchestrator() const
     return m_orchestrator;
 };
 
-std::unordered_map<std::string, Ptr<SeriesWrapperCollection>>::iterator
-SeriesManager::begin()
+const std::unordered_map<std::string, Ptr<SeriesWrapperCollection>>&
+SeriesManager::Collections()
 {
-    return m_collections.begin();
-};
-
-std::unordered_map<std::string, Ptr<SeriesWrapperCollection>>::iterator
-SeriesManager::end()
-{
-    return m_collections.end();
+    return this->m_collections;
 };
 
 } // namespace netsimulyzer

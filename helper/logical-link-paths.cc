@@ -37,6 +37,26 @@
 #include "ns3/double.h"
 #include "ns3/logical-link.h"
 
+namespace
+{
+ns3::netsimulyzer::Color3
+NextLogicalLinkColor()
+{
+    using namespace ns3::netsimulyzer;
+    static auto colorIter = COLOR_PALETTE.begin();
+
+    if (colorIter == COLOR_PALETTE.end())
+    {
+        colorIter = COLOR_PALETTE.begin();
+    }
+
+    const auto& returnColor = *colorIter;
+    colorIter++;
+
+    return returnColor.Get();
+}
+} // namespace
+
 namespace ns3
 {
 NS_LOG_COMPONENT_DEFINE("LinkPaths");
@@ -121,7 +141,7 @@ LogicalLinkPaths::SetPath(std::size_t app, std::vector<uint32_t> path, Color3 co
 void
 LogicalLinkPaths::SetPath(std::size_t app, std::vector<uint32_t> path)
 {
-    SetPath(app, path, RED, {});
+    SetPath(app, path, NextLogicalLinkColor(), {});
 };
 
 } // namespace netsimulyzer

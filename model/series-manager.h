@@ -141,7 +141,7 @@ class SeriesManager : public Object
     /**
      * Gets the NodeonfigurationHelper
      */
-    NodeConfigurationHelper* ConfigHelper();
+    NodeConfigurationHelper& ConfigHelper();
 
     /**
      *  Gets a specific Node
@@ -170,14 +170,9 @@ class SeriesManager : public Object
     Ptr<Orchestrator> GetOrchestrator() const;
 
     /**
-     * Returns an iterator over the SeriesWrappers
+     * returns a constant reference to the internal collection
      */
-    std::unordered_map<std::string, Ptr<SeriesWrapperCollection>>::iterator begin();
-
-    /**
-     * Returns an iterator over the SeriesWrappers
-     */
-    std::unordered_map<std::string, Ptr<SeriesWrapperCollection>>::iterator end();
+    const std::unordered_map<std::string, Ptr<SeriesWrapperCollection>>& Collections();
 
   private:
     /**

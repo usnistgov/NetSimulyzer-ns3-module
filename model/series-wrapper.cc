@@ -129,12 +129,19 @@ AccumulatorWrapper::AccumulatorWrapper(Ptr<XYSeries> series)
     NS_LOG_FUNCTION(this << series);
 };
 
+AccumulatorWrapper::AccumulatorWrapper(Ptr<XYSeries> series, Time::Unit unit)
+    : SeriesWrapper(series),
+      m_unit(unit)
+{
+    NS_LOG_FUNCTION(this << series);
+};
+
 void
 AccumulatorWrapper::Update(Time time, double add)
 {
     NS_LOG_FUNCTION(this << time << add);
     m_value += add;
-    SeriesWrapper::GetSeries()->Append(time.GetSeconds(), m_value);
+    SeriesWrapper::GetSeries()->Append(time.ToDouble(m_unit), m_value);
 }
 
 void
@@ -167,13 +174,20 @@ AverageValueWrapper::AverageValueWrapper(Ptr<XYSeries> series)
     NS_LOG_FUNCTION(this << series);
 };
 
+AverageValueWrapper::AverageValueWrapper(Ptr<XYSeries> series, Time::Unit unit)
+    : SeriesWrapper(series),
+      m_unit(unit)
+{
+    NS_LOG_FUNCTION(this << series);
+};
+
 void
 AverageValueWrapper::Update(Time time, double value)
 {
     NS_LOG_FUNCTION(this << time << value);
     m_avg = ((m_n * m_avg) + value) / (m_n + 1.0);
     m_n++;
-    SeriesWrapper::GetSeries()->Append(time.GetSeconds(), m_avg);
+    SeriesWrapper::GetSeries()->Append(time.ToDouble(m_unit), m_avg);
 }
 
 void
@@ -243,6 +257,49 @@ SlidingValueWrapper::SlidingValueWrapper(Ptr<XYSeries> series, Time window, Time
     m_window = window;
 };
 
+SlidingValueWrapper::SlidingValueWrapper(Ptr<XYSeries> series, Time::Unit unit)
+    : SeriesWrapper(series),
+      m_unit(unit)
+{
+    NS_LOG_FUNCTION(this << series);
+};
+
+SlidingValueWrapper::SlidingValueWrapper(Ptr<XYSeries> series, Time::Unit unit, Time interval)
+    : SeriesWrapper(series),
+      m_unit(unit)
+{
+    NS_LOG_FUNCTION(this << series << interval);
+
+    m_timer.SetDelay(interval);
+    if (m_timer.GetDelay().IsPositive())
+    {
+        m_timed = true;
+        m_timer.SetFunction(&SlidingValueWrapper::Flush, this);
+        m_timer.Schedule();
+    }
+};
+
+SlidingValueWrapper::SlidingValueWrapper(Ptr<XYSeries> series,
+                                         Time::Unit unit,
+                                         Time window,
+                                         double maxSampleFrequency)
+    : SlidingValueWrapper(series, unit)
+{
+    NS_LOG_FUNCTION(this << series << maxSampleFrequency);
+    m_window = window;
+    m_maxSampleFrequency = maxSampleFrequency;
+};
+
+SlidingValueWrapper::SlidingValueWrapper(Ptr<XYSeries> series,
+                                         Time::Unit unit,
+                                         Time window,
+                                         Time interval)
+    : SlidingValueWrapper(series, unit, interval)
+{
+    NS_LOG_FUNCTION(this << series << window);
+    m_window = window;
+};
+
 void
 SlidingValueWrapper::Update(Time time, double value)
 {
@@ -278,10 +335,10 @@ SlidingValueWrapper::Append(Time time)
     {
         acc += pair->second;
     }
-    if (m_lastSample < time.GetSeconds() - m_maxSampleFrequency)
+    if (m_lastSample < time.ToDouble(m_unit) - m_maxSampleFrequency)
     {
-        SeriesWrapper::GetSeries()->Append(time.GetSeconds(), acc);
-        m_lastSample = time.GetSeconds();
+        SeriesWrapper::GetSeries()->Append(time.ToDouble(m_unit), acc);
+        m_lastSample = time.ToDouble(m_unit);
     }
 }
 
@@ -358,7 +415,7 @@ SlidingLoadWrapper::Update(Time time, double value)
 void
 SlidingLoadWrapper::Update(double value)
 {
-    Update(Simulator::Now(), 100.0 * value / m_bandwidth);
+    Update(Simulator::Now(), value);
 }
 
 double

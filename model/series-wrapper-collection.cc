@@ -124,16 +124,10 @@ SeriesWrapperCollection::SeriesWrapperCollection(Ptr<Orchestrator> orchestrator,
     m_collection->GetXAxis()->SetAttribute("Name", StringValue(x_axis));
 };
 
-std::vector<Ptr<SeriesWrapper>>::iterator
-SeriesWrapperCollection::begin()
+const std::vector<Ptr<SeriesWrapper>>&
+SeriesWrapperCollection::Wrappers()
 {
-    return m_wrappers.begin();
-};
-
-std::vector<Ptr<SeriesWrapper>>::iterator
-SeriesWrapperCollection::end()
-{
-    return m_wrappers.end();
+    return this->m_wrappers;
 };
 
 SeriesWrapper&

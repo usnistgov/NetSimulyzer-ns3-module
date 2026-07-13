@@ -44,75 +44,94 @@ NS_LOG_COMPONENT_DEFINE("LinkPairs");
 namespace netsimulyzer
 {
 
-LogicalLinkPairs::LogicalLinkPairs(Ptr<Orchestrator> orchestrator, uint32_t nodeCount)
-    : m_pairMap(nodeCount),
-      m_timers(nodeCount),
-      m_orchestrator(orchestrator)
+LogicalLinkPairs::LogicalLinkPairs(Ptr<Orchestrator> orchestrator)
+    : m_orchestrator(orchestrator)
 {
-    NS_LOG_FUNCTION(this << orchestrator << nodeCount);
+    NS_LOG_FUNCTION(this << orchestrator);
 };
 
 Ptr<netsimulyzer::LogicalLink>
-LogicalLinkPairs::GetLink(uint32_t i, uint32_t j)
+LogicalLinkPairs::GetLink(std::size_t i, std::size_t j)
 {
-    return this->m_pairMap.Get(i, j);
+    if (i > j)
+    {
+        auto k = i;
+        i = j;
+        j = k;
+    }
+    if (this->m_pairMap.contains({i, j}))
+    {
+        return this->m_pairMap.at({i, j});
+    }
+    return nullptr;
 };
 
 void
-LogicalLinkPairs::SetLink(uint32_t i,
-                          uint32_t j,
+LogicalLinkPairs::SetLink(std::size_t i,
+                          std::size_t j,
                           Color3 color,
                           const std::unordered_map<std::string, Ptr<AttributeValue>>& attributes)
 {
-    if (i != j)
+    if (i > j)
     {
-        if (!m_pairMap.Get(i, j))
+        auto k = i;
+        i = j;
+        j = k;
+    }
+    if (!m_pairMap.contains({i, j}))
+    {
+        m_pairMap.insert(
+            {{i, j}, CreateObject<LogicalLink>(m_orchestrator, i + 1, j + 1, color, attributes)});
+    }
+    else
+    {
+        auto link = m_pairMap.at({i, j});
+        link->Activate();
+        link->SetColor(color);
+        for (const auto& [name, value] : attributes)
         {
-            m_pairMap.Set(
-                i,
-                j,
-                CreateObject<LogicalLink>(m_orchestrator, i + 1, j + 1, color, attributes));
-        }
-        else
-        {
-            auto link = m_pairMap.Get(i, j);
-            link->Activate();
-            link->SetColor(color);
-            for (const auto& [name, value] : attributes)
+            // In the helper, the color attribute is always converted to
+            // the constructor argument, so we don't want the attribute version
+            if (name == "Color")
             {
-                // In the helper, the color attribute is always converted to
-                // the constructor argument, so we don't want the attribute version
-                if (name == "Color")
-                {
-                    continue;
-                }
-                link->SetAttribute(name, *value);
+                continue;
             }
+            link->SetAttribute(name, *value);
         }
     }
 }
 
 void
-LogicalLinkPairs::SetLink(uint32_t i, uint32_t j, Color3 color)
+LogicalLinkPairs::SetLink(std::size_t i, std::size_t j, Color3 color)
 {
     SetLink(i, j, color, {});
 }
 
 void
-LogicalLinkPairs::SetLink(uint32_t i, uint32_t j)
+LogicalLinkPairs::SetLink(std::size_t i, std::size_t j)
 {
     SetLink(i, j, WHITE);
 }
 
 void
 LogicalLinkPairs::SetLinkBurst(
-    uint32_t i,
-    uint32_t j,
+    std::size_t i,
+    std::size_t j,
     Color3 color,
     const std::unordered_map<std::string, Ptr<AttributeValue>>& attributes,
     Time duration)
 {
-    Timer& timer = m_timers.Get(i, j);
+    if (i > j)
+    {
+        auto k = i;
+        i = j;
+        j = k;
+    }
+    if (!m_timers.contains({i, j}))
+    {
+        m_timers.insert({{i, j}, {}});
+    }
+    Timer& timer = m_timers.at({i, j});
     SetLink(i, j, color, attributes);
     if (timer.IsRunning())
         timer.Cancel();
@@ -120,32 +139,35 @@ LogicalLinkPairs::SetLinkBurst(
     if (timer.GetDelay().IsPositive())
     {
         timer.SetFunction(&LogicalLinkPairs::RemoveLink, this);
-        timer.SetArguments<uint32_t, uint32_t>(i, j);
+        timer.SetArguments<std::size_t, std::size_t>(i, j);
         timer.Schedule();
     }
 }
 
 void
-LogicalLinkPairs::SetLinkBurst(uint32_t i, uint32_t j, Color3 color, Time duration)
+LogicalLinkPairs::SetLinkBurst(std::size_t i, std::size_t j, Color3 color, Time duration)
 {
     SetLinkBurst(i, j, color, {}, duration);
 }
 
 void
-LogicalLinkPairs::SetLinkBurst(uint32_t i, uint32_t j, Time duration)
+LogicalLinkPairs::SetLinkBurst(std::size_t i, std::size_t j, Time duration)
 {
     SetLinkBurst(i, j, WHITE, {}, duration);
 }
 
 void
-LogicalLinkPairs::RemoveLink(uint32_t i, uint32_t j)
+LogicalLinkPairs::RemoveLink(std::size_t i, std::size_t j)
 {
-    if (i != j)
+    if (i > j)
     {
-        if (m_pairMap.Get(i, j))
-        {
-            m_pairMap.Get(i, j)->Deactivate();
-        }
+        auto k = i;
+        i = j;
+        j = k;
+    }
+    if (m_pairMap.contains({i, j}))
+    {
+        m_pairMap.at({i, j})->Deactivate();
     }
 }
 

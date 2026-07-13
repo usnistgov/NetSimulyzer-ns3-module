@@ -132,14 +132,9 @@ class SeriesWrapperCollection : public Object
                             std::string y_axis);
 
     /**
-     * Returns an iterator over the SeriesWrappers
+     * returns a constant reference to the internal vector of Wrappers
      */
-    std::vector<Ptr<SeriesWrapper>>::iterator begin();
-
-    /**
-     * Returns an iterator over the SeriesWrappers
-     */
-    std::vector<Ptr<SeriesWrapper>>::iterator end();
+    const std::vector<Ptr<SeriesWrapper>>& Wrappers();
 
     /**
      * Gets a reference to a particular seriesWrapper

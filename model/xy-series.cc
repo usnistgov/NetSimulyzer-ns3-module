@@ -53,8 +53,7 @@ namespace netsimulyzer
 NS_OBJECT_ENSURE_REGISTERED(XYSeries);
 
 XYSeries::XYSeries(Ptr<Orchestrator> orchestrator)
-    : m_orchestrator(orchestrator),
-      m_constructorColor(BLUE)
+    : m_orchestrator(orchestrator)
 {
     NS_LOG_FUNCTION(this << m_orchestrator);
     // There doesn't seem to be a Ptr from `this`, so this is as close as we can get
@@ -63,8 +62,7 @@ XYSeries::XYSeries(Ptr<Orchestrator> orchestrator)
 
 XYSeries::XYSeries(Ptr<Orchestrator> orchestrator, std::string name)
     : m_orchestrator(orchestrator),
-      m_constructorName(name),
-      m_constructorColor(BLUE)
+      m_constructorName(name)
 {
     NS_LOG_FUNCTION(this << m_orchestrator);
     // There doesn't seem to be a Ptr from `this`, so this is as close as we can get

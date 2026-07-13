@@ -110,6 +110,14 @@ class AccumulatorWrapper : public SeriesWrapper
     static TypeId GetTypeId();
 
     explicit AccumulatorWrapper(Ptr<XYSeries> series);
+
+    /**
+     * Creates a wrapper and sets the time unit to append with
+     * @param unit
+     * Time unit to use for the x-value
+     */
+    AccumulatorWrapper(Ptr<XYSeries> series, Time::Unit unit);
+
     /**
      * Accumulated the value then Appends to the Series
      *
@@ -130,6 +138,7 @@ class AccumulatorWrapper : public SeriesWrapper
 
   private:
     double m_value = 0;
+    Time::Unit m_unit = Time::Unit::S;
 };
 
 /**
@@ -146,6 +155,14 @@ class AverageValueWrapper : public SeriesWrapper
     static TypeId GetTypeId();
 
     explicit AverageValueWrapper(Ptr<XYSeries> series);
+
+    /**
+     * Creates a wrapper and sets the time unit to append with
+     *
+     * @param unit
+     * Time unit to use for the x-value
+     */
+    AverageValueWrapper(Ptr<XYSeries> series, Time::Unit unit);
 
     /**
      * Accumulates the average then Appends to the Series
@@ -168,6 +185,7 @@ class AverageValueWrapper : public SeriesWrapper
   private:
     double m_avg = 0;
     uint32_t m_n = 0;
+    Time::Unit m_unit = Time::Unit::S;
 };
 
 /**
@@ -185,6 +203,11 @@ class SlidingValueWrapper : public SeriesWrapper
 
     explicit SlidingValueWrapper(Ptr<XYSeries> series);
 
+    /**
+     * Sets a timer to routinely append to the series
+     * @param interval
+     * How often to append to the series
+     */
     SlidingValueWrapper(Ptr<XYSeries> series, Time interval);
     /**
      * @param window
@@ -202,6 +225,40 @@ class SlidingValueWrapper : public SeriesWrapper
      * Sets how often the Series should be Appended to
      */
     SlidingValueWrapper(Ptr<XYSeries> series, Time window, Time interval);
+
+    SlidingValueWrapper(Ptr<XYSeries> series, Time::Unit unit);
+
+    /**
+     * Sets a timer to routinely append to the series
+     * @param unit
+     * Time unit to use for the x-value
+     * @param interval
+     * How often to append to the series
+     */
+    SlidingValueWrapper(Ptr<XYSeries> series, Time::Unit unit, Time interval);
+    /**
+     * @param unit
+     * Time unit to use for the x-value
+     * @param window
+     * Length of the sliding window in Seconds
+     * @param max_sample_frequency
+     * Caps how quickly in sucession the Series will be appended to in Seconds
+     * Any more frequent calls will update the sliding value, but not append to the Series
+     */
+    SlidingValueWrapper(Ptr<XYSeries> series,
+                        Time::Unit unit,
+                        Time window,
+                        double max_sample_frequency);
+
+    /**
+     * @param unit
+     * Time unit to use for the x-value
+     * @param window
+     * Length of the sliding window
+     * @param interval
+     * Sets how often the Series should be Appended to
+     */
+    SlidingValueWrapper(Ptr<XYSeries> series, Time::Unit unit, Time window, Time interval);
 
     /**
      * Adds a new value for the sliding data and updates the Series
@@ -235,6 +292,7 @@ class SlidingValueWrapper : public SeriesWrapper
     double m_lastSample = 0;
     Timer m_timer;
     bool m_timed = false;
+    Time::Unit m_unit = Time::Unit::S;
 };
 
 /**
@@ -252,6 +310,11 @@ class SlidingLoadWrapper : public SlidingValueWrapper
 
     explicit SlidingLoadWrapper(Ptr<XYSeries> series);
 
+    /**
+     * Sets a timer to routinely append to the series
+     * @param interval
+     * How often to append to the series
+     */
     SlidingLoadWrapper(Ptr<XYSeries> series, Time interval);
     /**
      * @param window
@@ -276,6 +339,49 @@ class SlidingLoadWrapper : public SlidingValueWrapper
      * Sets how often the Series should be Appended to
      */
     SlidingLoadWrapper(Ptr<XYSeries> series, Time window, double bandwidth, Time interval);
+
+    SlidingLoadWrapper(Ptr<XYSeries> series, Time::Unit unit);
+
+    /**
+     * Sets a timer to routinely append to the series
+     * @param unit
+     * Time unit to use for the x-value
+     * @param interval
+     * How often to append to the series
+     */
+    SlidingLoadWrapper(Ptr<XYSeries> series, Time::Unit unit, Time interval);
+    /**
+     * @param unit
+     * Time unit to use for the x-value
+     * @param window
+     * Length of the sliding window
+     * @param bandwidth
+     * Bandwith to compare accumulated value to
+     * @param max_sample_frequency
+     * Caps how quickly in sucession the Series will be appended to in Seconds
+     * Any more frequent calls will update the sliding value, but not append to the Series
+     */
+    SlidingLoadWrapper(Ptr<XYSeries> series,
+                       Time::Unit unit,
+                       Time window,
+                       double bandwidth,
+                       double max_sample_frequency);
+
+    /**
+     * @param unit
+     * Time unit to use for the x-value
+     * @param window
+     * Length of the sliding window
+     * @param bandwidth
+     * Bandwith to compare accumulated value to
+     * @param interval
+     * Sets how often the Series should be Appended to
+     */
+    SlidingLoadWrapper(Ptr<XYSeries> series,
+                       Time::Unit unit,
+                       Time window,
+                       double bandwidth,
+                       Time interval);
 
     /**
      * Adds a new value for the sliding data and updates the Series
