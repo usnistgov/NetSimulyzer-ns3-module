@@ -167,6 +167,45 @@ LogicalLinkHelper::LinkGroup(const NodeContainer& group) const
 }
 
 Ptr<LogicalLink>
+LogicalLinkHelper::UpdateLink(
+    Ptr<LogicalLink> link,
+    Color3 color,
+    const std::unordered_map<std::string, Ptr<AttributeValue>>& attributes)
+{
+    for (const auto& [name, value] : attributes)
+    {
+        // In the helper, the color attribute is always converted to
+        // the constructor argument, so we don't want the attribute version
+        if (name == "Color")
+        {
+            continue;
+        }
+        link->SetAttribute(name, *value);
+    }
+    link->SetColor(color);
+    return link;
+};
+
+std::vector<Ptr<LogicalLink>>
+LogicalLinkHelper::UpdateLinks(
+    std::vector<Ptr<LogicalLink>> links,
+    Color3 color,
+    const std::unordered_map<std::string, Ptr<AttributeValue>>& attributes)
+{
+    for (const Ptr<LogicalLink>& link : links)
+    {
+        UpdateLink(link, color, attributes);
+    }
+    return links;
+};
+
+std::vector<Ptr<LogicalLink>>
+LogicalLinkHelper::UpdateLinks(std::vector<Ptr<LogicalLink>> links, Color3 color)
+{
+    return UpdateLinks(links, color, {});
+};
+
+Ptr<LogicalLink>
 LogicalLinkHelper::Create(Ptr<Orchestrator> orchestrator,
                           const uint32_t nodeIdA,
                           const uint32_t nodeIdB) const

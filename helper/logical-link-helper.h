@@ -96,6 +96,40 @@ class LogicalLinkHelper
      */
     std::vector<Ptr<LogicalLink>> LinkGroup(const NodeContainer& group) const;
 
+    /**
+     * Updates the color and attributes of a LogicalLink
+     *
+     * @param color
+     * The new color to set the LogicalLink
+     * @param attributes
+     * The attributes to set for the LogicalLink
+     */
+    Ptr<LogicalLink> UpdateLink(
+        Ptr<LogicalLink> link,
+        Color3 color,
+        const std::unordered_map<std::string, Ptr<AttributeValue>>& attributes);
+
+    /**
+     * Updates the color of multiple LogicalLink
+     *
+     * @param color
+     * The new color to set the LogicalLinks
+     */
+    std::vector<Ptr<LogicalLink>> UpdateLinks(std::vector<Ptr<LogicalLink>> links, Color3 color);
+
+    /**
+     * Updates the color and attributes of multiple LogicalLinks
+     *
+     * @param color
+     * The new color to set the LogicalLinks
+     * @param attributes
+     * The attributes to set for the LogicalLinks
+     */
+    std::vector<Ptr<LogicalLink>> UpdateLinks(
+        std::vector<Ptr<LogicalLink>> links,
+        Color3 color,
+        const std::unordered_map<std::string, Ptr<AttributeValue>>& attributes);
+
   private:
     const TypeId m_linkTid{LogicalLink::GetTypeId()};
     std::unordered_map<std::string, Ptr<AttributeValue>> m_attributes;

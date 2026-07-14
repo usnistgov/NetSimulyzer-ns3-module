@@ -64,7 +64,8 @@ NS_LOG_COMPONENT_DEFINE("LinkPaths");
 namespace netsimulyzer
 {
 LogicalLinkPaths::LogicalLinkPaths(Ptr<Orchestrator> orchestrator)
-    : m_orchestrator(orchestrator)
+    : m_orchestrator(orchestrator),
+      m_helper(orchestrator)
 {
     NS_LOG_FUNCTION(this << orchestrator);
 };
@@ -100,17 +101,7 @@ LogicalLinkPaths::SetPath(std::size_t app,
         {
             auto link = links.at(i);
             link->SetNodes(current, target);
-            link->SetColor(color);
-            for (const auto& [name, value] : attributes)
-            {
-                // In the helper, the color attribute is always converted to
-                // the constructor argument, so we don't want the attribute version
-                if (name == "Color")
-                {
-                    continue;
-                }
-                link->SetAttribute(name, *value);
-            }
+            m_helper.UpdateLink(link, color, attributes);
             link->Activate();
         }
         else

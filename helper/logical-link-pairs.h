@@ -45,20 +45,6 @@
 #include <unordered_map>
 #include <vector>
 
-template <>
-struct std::hash<std::pair<std::size_t, std::size_t>>
-{
-    std::size_t operator()(const std::pair<std::size_t, std::size_t>& pair) const
-    {
-        std::size_t i = pair.first;
-        std::size_t j = pair.second;
-        std::size_t n = i + j;
-        std::size_t length = n * (n - 1) / 2;
-
-        return (j - (i + 1)) + (length - ((n - i) * (n - i - 1) / 2));
-    };
-};
-
 namespace ns3::netsimulyzer
 {
 
@@ -148,6 +134,19 @@ class LogicalLinkPairs : public Object
     void RemoveLink(std::size_t i, std::size_t j);
 
   private:
+    struct pairHash
+    {
+        std::size_t operator()(const std::pair<std::size_t, std::size_t>& pair) const
+        {
+            std::size_t i = pair.first;
+            std::size_t j = pair.second;
+            std::size_t n = i + j;
+            std::size_t length = n * (n - 1) / 2;
+
+            return (j - (i + 1)) + (length - ((n - i) * (n - i - 1) / 2));
+        };
+    };
+
     /**
      * number of nodes in map
      */
@@ -157,13 +156,16 @@ class LogicalLinkPairs : public Object
      * A data structure that stores the pairwise LogicalLinks
      */
     // PairMap<Ptr<netsimulyzer::LogicalLink>> m_pairMap;
-    std::unordered_map<std::pair<std::size_t, std::size_t>, Ptr<netsimulyzer::LogicalLink>>
+    std::unordered_map<std::pair<std::size_t, std::size_t>,
+                       Ptr<netsimulyzer::LogicalLink>,
+                       LogicalLinkPairs::pairHash>
         m_pairMap;
 
     /**
      * for scheduling timed deactivations
      */
-    std::unordered_map<std::pair<std::size_t, std::size_t>, Timer> m_timers;
+    std::unordered_map<std::pair<std::size_t, std::size_t>, Timer, LogicalLinkPairs::pairHash>
+        m_timers;
 
     /**
      * Orchestrator attatched to the LogicalLinks

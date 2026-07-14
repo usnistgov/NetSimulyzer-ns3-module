@@ -35,6 +35,7 @@
 #define LOGICAL_LINK_PATHS_H
 
 #include "../model/orchestrator.h"
+#include "logical-link-helper.h"
 
 #include "ns3/log.h"
 #include "ns3/object.h"
@@ -104,6 +105,11 @@ class LogicalLinkPaths : public Object
      * The Orchestrator the LogicalLinks are attatched to
      */
     Ptr<Orchestrator> m_orchestrator;
+
+    /**
+     * Helper to edit logical links
+     */
+    LogicalLinkHelper m_helper;
 };
 
 } // namespace ns3::netsimulyzer
