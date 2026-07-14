@@ -53,6 +53,7 @@ namespace ns3::netsimulyzer
 {
 
 /**
+ * @ingroup netsimulyzer
  * Keeps track of multiple SeriesWrappers in a single collection
  */
 class SeriesWrapperCollection : public Object

@@ -60,6 +60,7 @@ namespace ns3::netsimulyzer
 {
 
 /**
+ * @ingroup netsimulyzer
  * State-holder for the entire Netsimulyzer wrapper
  * Maintains a map of different eriesCollections to display, as well as NodeConfigs and the Nodes
  * themselves

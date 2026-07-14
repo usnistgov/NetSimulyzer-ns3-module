@@ -47,6 +47,10 @@
 namespace ns3::netsimulyzer
 {
 
+/**
+ * @ingroup netsimulyzer
+ * Manages LogicalLinks for multiple paths of links
+ */
 class LogicalLinkPaths : public Object
 {
   public:

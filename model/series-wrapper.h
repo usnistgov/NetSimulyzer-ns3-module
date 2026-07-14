@@ -50,6 +50,7 @@ namespace ns3::netsimulyzer
 {
 
 /**
+ * @ingroup netsimulyzer
  * Base class to ensure different structs that wrap a series with context can work together in the
  * SeriesWrapperCollection
  */
@@ -97,6 +98,7 @@ class SeriesWrapper : public Object
 };
 
 /**
+ * @ingroup netsimulyzer
  * Appends an accumulating value to the series
  */
 class AccumulatorWrapper : public SeriesWrapper
@@ -142,6 +144,7 @@ class AccumulatorWrapper : public SeriesWrapper
 };
 
 /**
+ * @ingroup netsimulyzer
  * Keeps track of a rolling arithmetic average of the given values
  */
 class AverageValueWrapper : public SeriesWrapper
@@ -189,6 +192,7 @@ class AverageValueWrapper : public SeriesWrapper
 };
 
 /**
+ * @ingroup netsimulyzer
  * Keeps track of a sliding window for an accumulating value with a bandwidth
  */
 class SlidingValueWrapper : public SeriesWrapper
@@ -296,6 +300,7 @@ class SlidingValueWrapper : public SeriesWrapper
 };
 
 /**
+ * @ingroup netsimulyzer
  * Keeps track of a sliding window for an accumulating value with a bandwidth
  */
 class SlidingLoadWrapper : public SlidingValueWrapper

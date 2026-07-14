@@ -48,6 +48,10 @@
 namespace ns3::netsimulyzer
 {
 
+/**
+ * @ingroup netsimulyzer
+ * Manages LogicalLinks between a within of nodes
+ */
 class LogicalLinkPairs : public Object
 {
   public:
@@ -140,7 +144,7 @@ class LogicalLinkPairs : public Object
         {
             std::size_t i = pair.first;
             std::size_t j = pair.second;
-            std::size_t n = i + j;
+            std::size_t n = 59 * i + 137 * j;
             std::size_t length = n * (n - 1) / 2;
 
             return (j - (i + 1)) + (length - ((n - i) * (n - i - 1) / 2));
@@ -148,7 +152,7 @@ class LogicalLinkPairs : public Object
     };
 
     /**
-     * number of nodes in map
+     * number of nodes in the map
      */
     std::size_t m_nodeCount;
 

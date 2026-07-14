@@ -406,6 +406,40 @@ SlidingLoadWrapper::SlidingLoadWrapper(Ptr<XYSeries> series,
     NS_LOG_FUNCTION(this << series << bandwidth);
 };
 
+SlidingLoadWrapper::SlidingLoadWrapper(Ptr<XYSeries> series, Time::Unit unit)
+    : SlidingValueWrapper(series, unit)
+{
+    NS_LOG_FUNCTION(this << series);
+};
+
+SlidingLoadWrapper::SlidingLoadWrapper(Ptr<XYSeries> series, Time::Unit unit, Time interval)
+    : SlidingValueWrapper(series, unit, interval)
+{
+    NS_LOG_FUNCTION(this << series << interval);
+};
+
+SlidingLoadWrapper::SlidingLoadWrapper(Ptr<XYSeries> series,
+                                       Time::Unit unit,
+                                       Time window,
+                                       double bandwidth,
+                                       double maxSampleFrequency)
+    : SlidingValueWrapper(series, unit, window, maxSampleFrequency),
+      m_bandwidth(bandwidth)
+{
+    NS_LOG_FUNCTION(this << series << bandwidth);
+};
+
+SlidingLoadWrapper::SlidingLoadWrapper(Ptr<XYSeries> series,
+                                       Time::Unit unit,
+                                       Time window,
+                                       double bandwidth,
+                                       Time interval)
+    : SlidingValueWrapper(series, unit, window, interval),
+      m_bandwidth(bandwidth)
+{
+    NS_LOG_FUNCTION(this << series << bandwidth);
+};
+
 void
 SlidingLoadWrapper::Update(Time time, double value)
 {
