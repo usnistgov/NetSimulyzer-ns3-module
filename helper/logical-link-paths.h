@@ -57,13 +57,42 @@ class LogicalLinkPaths : public Object
     LogicalLinkPaths(Ptr<Orchestrator> orchestrator);
 
     /**
-     * @brief Gets the number of currently created app paths
+     * Gets the number of currently created paths
      */
     std::size_t GetNPaths();
     /**
-     * @brief Appends a blank path to the list of App paths
+     * Appends a blank path to the list of paths
      */
     std::size_t AddPath();
+    /**
+     * Appends a path to the list of paths
+     * @param path
+     * vector of node Ids that represent the path
+     */
+    std::size_t AddPath(std::vector<uint32_t> path);
+
+    /**
+     * Appends a path to the list of paths
+     * @param path
+     * vector of node Ids that represent the path
+     * @param color
+     * Color to make all the links in the path
+     */
+    std::size_t AddPath(std::vector<uint32_t> path, Color3 color);
+
+    /**
+     * Appends a path to the list of paths
+     * @param path
+     * vector of node Ids that represent the path
+     * @param color
+     * Color to make all the links in the path
+     * @param attributes
+     * Attributes to be given to all links in the path
+     */
+    std::size_t AddPath(std::vector<uint32_t> path,
+                        Color3 color,
+                        const std::unordered_map<std::string, Ptr<AttributeValue>>& attributes);
+
     /**
      * @brief Automatically manages the links given a path. Will reuse links of set again
      * @param i
@@ -99,6 +128,10 @@ class LogicalLinkPaths : public Object
                  const std::unordered_map<std::string, Ptr<AttributeValue>>& attributes);
 
   private:
+    /**
+     * Gets the next color for a path without a color set
+     */
+    Color3 NextPathColor();
     /**
      * A vector of vectors containing the LogicalLinks for all paths. vectors may be longer than
      * needed

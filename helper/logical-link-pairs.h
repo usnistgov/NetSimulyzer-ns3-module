@@ -58,64 +58,64 @@ class LogicalLinkPairs : public Object
     LogicalLinkPairs(Ptr<Orchestrator> orchestrator);
     /**
      * @brief Gets the L2 link between the two nodes if it exists
-     * @param i,j
+     * @param nodeA,nodeB
      * The nodes to check for a connection between. Identical if swapped
      */
-    Ptr<netsimulyzer::LogicalLink> GetLink(std::size_t i, std::size_t j);
+    Ptr<netsimulyzer::LogicalLink> GetLink(uint32_t nodeA, uint32_t nodeB);
 
     /**
      * @brief Creates a node pair Link
-     * @param i,j
+     * @param nodeA,nodeB
      * The Nodes to connect. Identical if swapped
      */
-    void SetLink(std::size_t i, std::size_t j);
+    void SetLink(uint32_t nodeA, uint32_t nodeB);
 
     /**
      * @brief Creates/Sets the color of a node pair Link
-     * @param i,j
+     * @param nodeA,nodeB
      * The Nodes to connect. Identical if swapped
      * @param color
      * The color to make the link
      */
-    void SetLink(std::size_t i, std::size_t j, Color3 color);
+    void SetLink(uint32_t nodeA, uint32_t nodeB, Color3 color);
 
     /**
      * @brief Creates/Sets the color/attributes of a node pair Link
-     * @param i,j
+     * @param nodeA,nodeB
      * The Nodes to connect. Identical if swapped
      * @param color
      * The color to make the link
      * @param attributes
      * Attributes to be given to this link
      */
-    void SetLink(std::size_t i,
-                 std::size_t j,
+    void SetLink(uint32_t nodeA,
+                 uint32_t nodeB,
                  Color3 color,
                  const std::unordered_map<std::string, Ptr<AttributeValue>>& attributes);
 
     /**
      * @brief Creates of a timed node pair Link
-     * @param i,j
+     * @param nodeA,nodeB
      * The Nodes to connect. Identical if swapped
      * @param duration
      * The length the link should stay activated
      */
-    void SetLinkBurst(std::size_t i, std::size_t j, Time duration);
+    void SetLinkBurst(uint32_t nodeA, uint32_t nodeB, Time duration);
 
     /**
      * @brief Creates/Sets the color of a timed node pair Link
-     * @param i,j
+     * @param nodeA,nodeB
      * The Nodes to connect. Identical if swapped
      * @param color
      * The color to make the link
      * @param duration
      * The length the link should stay activated
      */
-    void SetLinkBurst(std::size_t i, std::size_t j, Color3 color, Time duration);
+    void SetLinkBurst(uint32_t nodeA, uint32_t nodeB, Color3 color, Time duration);
 
     /**
      * @brief Creates/Sets the color/attributes of a timed node pair Link
-     * @param i,j
+     * @param nodeA,nodeB
      * The Nodes to connect. Identical if swapped
      * @param color
      * The color to make the link
@@ -124,43 +124,38 @@ class LogicalLinkPairs : public Object
      * @param duration
      * The length the link should stay activated
      */
-    void SetLinkBurst(std::size_t i,
-                      std::size_t j,
+    void SetLinkBurst(uint32_t nodeA,
+                      uint32_t nodeB,
                       Color3 color,
                       const std::unordered_map<std::string, Ptr<AttributeValue>>& attributes,
                       Time duration);
 
     /**
      * @brief If a L2 link exists between the two nodes, deactivate it
-     * @param i,j
+     * @param nodeA,nodeB
      * The nodes to check for a connection between. Identical if swapped
      */
-    void RemoveLink(std::size_t i, std::size_t j);
+    void RemoveLink(uint32_t nodeA, uint32_t nodeB);
 
   private:
     struct pairHash
     {
-        std::size_t operator()(const std::pair<std::size_t, std::size_t>& pair) const
+        std::size_t operator()(const std::pair<uint32_t, uint32_t>& pair) const
         {
-            std::size_t i = pair.first;
-            std::size_t j = pair.second;
-            std::size_t n = 59 * i + 137 * j;
+            uint32_t nodeA = pair.first;
+            uint32_t nodeB = pair.second;
+            std::size_t n = 59 * nodeA + 137 * nodeB;
             std::size_t length = n * (n - 1) / 2;
 
-            return (j - (i + 1)) + (length - ((n - i) * (n - i - 1) / 2));
+            return (nodeB - (nodeA + 1)) + (length - ((n - nodeA) * (n - nodeA - 1) / 2));
         };
     };
-
-    /**
-     * number of nodes in the map
-     */
-    std::size_t m_nodeCount;
 
     /**
      * A data structure that stores the pairwise LogicalLinks
      */
     // PairMap<Ptr<netsimulyzer::LogicalLink>> m_pairMap;
-    std::unordered_map<std::pair<std::size_t, std::size_t>,
+    std::unordered_map<std::pair<uint32_t, uint32_t>,
                        Ptr<netsimulyzer::LogicalLink>,
                        LogicalLinkPairs::pairHash>
         m_pairMap;
@@ -168,8 +163,7 @@ class LogicalLinkPairs : public Object
     /**
      * for scheduling timed deactivations
      */
-    std::unordered_map<std::pair<std::size_t, std::size_t>, Timer, LogicalLinkPairs::pairHash>
-        m_timers;
+    std::unordered_map<std::pair<uint32_t, uint32_t>, Timer, LogicalLinkPairs::pairHash> m_timers;
 
     /**
      * Orchestrator attatched to the LogicalLinks

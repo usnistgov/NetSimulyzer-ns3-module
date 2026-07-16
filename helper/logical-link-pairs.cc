@@ -51,41 +51,42 @@ LogicalLinkPairs::LogicalLinkPairs(Ptr<Orchestrator> orchestrator)
 };
 
 Ptr<netsimulyzer::LogicalLink>
-LogicalLinkPairs::GetLink(std::size_t i, std::size_t j)
+LogicalLinkPairs::GetLink(uint32_t nodeA, uint32_t nodeB)
 {
-    if (i > j)
+    if (nodeA > nodeB)
     {
-        auto k = i;
-        i = j;
-        j = k;
+        auto k = nodeA;
+        nodeA = nodeB;
+        nodeB = k;
     }
-    if (this->m_pairMap.contains({i, j}))
+    if (this->m_pairMap.contains({nodeA, nodeB}))
     {
-        return this->m_pairMap.at({i, j});
+        return this->m_pairMap.at({nodeA, nodeB});
     }
     return nullptr;
 };
 
 void
-LogicalLinkPairs::SetLink(std::size_t i,
-                          std::size_t j,
+LogicalLinkPairs::SetLink(uint32_t nodeA,
+                          uint32_t nodeB,
                           Color3 color,
                           const std::unordered_map<std::string, Ptr<AttributeValue>>& attributes)
 {
-    if (i > j)
+    if (nodeA > nodeB)
     {
-        auto k = i;
-        i = j;
-        j = k;
+        auto k = nodeA;
+        nodeA = nodeB;
+        nodeB = k;
     }
-    if (!m_pairMap.contains({i, j}))
+    if (!m_pairMap.contains({nodeA, nodeB}))
     {
         m_pairMap.insert(
-            {{i, j}, CreateObject<LogicalLink>(m_orchestrator, i + 1, j + 1, color, attributes)});
+            {{nodeA, nodeB},
+             CreateObject<LogicalLink>(m_orchestrator, nodeA + 1, nodeB + 1, color, attributes)});
     }
     else
     {
-        auto link = m_pairMap.at({i, j});
+        auto link = m_pairMap.at({nodeA, nodeB});
         link->Activate();
         link->SetColor(color);
         for (const auto& [name, value] : attributes)
@@ -102,72 +103,72 @@ LogicalLinkPairs::SetLink(std::size_t i,
 }
 
 void
-LogicalLinkPairs::SetLink(std::size_t i, std::size_t j, Color3 color)
+LogicalLinkPairs::SetLink(uint32_t nodeA, uint32_t nodeB, Color3 color)
 {
-    SetLink(i, j, color, {});
+    SetLink(nodeA, nodeB, color, {});
 }
 
 void
-LogicalLinkPairs::SetLink(std::size_t i, std::size_t j)
+LogicalLinkPairs::SetLink(uint32_t nodeA, uint32_t nodeB)
 {
-    SetLink(i, j, WHITE);
+    SetLink(nodeA, nodeB, WHITE);
 }
 
 void
 LogicalLinkPairs::SetLinkBurst(
-    std::size_t i,
-    std::size_t j,
+    uint32_t nodeA,
+    uint32_t nodeB,
     Color3 color,
     const std::unordered_map<std::string, Ptr<AttributeValue>>& attributes,
     Time duration)
 {
-    if (i > j)
+    if (nodeA > nodeB)
     {
-        auto k = i;
-        i = j;
-        j = k;
+        auto k = nodeA;
+        nodeA = nodeB;
+        nodeB = k;
     }
-    if (!m_timers.contains({i, j}))
+    if (!m_timers.contains({nodeA, nodeB}))
     {
-        m_timers.insert({{i, j}, {}});
+        m_timers.insert({{nodeA, nodeB}, {}});
     }
-    Timer& timer = m_timers.at({i, j});
-    SetLink(i, j, color, attributes);
+    Timer& timer = m_timers.at({nodeA, nodeB});
+    SetLink(nodeA, nodeB, color, attributes);
     if (timer.IsRunning())
         timer.Cancel();
     timer.SetDelay(duration);
     if (timer.GetDelay().IsPositive())
     {
         timer.SetFunction(&LogicalLinkPairs::RemoveLink, this);
-        timer.SetArguments<std::size_t, std::size_t>(i, j);
+        timer.SetArguments<uint32_t, uint32_t>(nodeA, nodeB);
         timer.Schedule();
     }
 }
 
 void
-LogicalLinkPairs::SetLinkBurst(std::size_t i, std::size_t j, Color3 color, Time duration)
+LogicalLinkPairs::SetLinkBurst(uint32_t nodeA, uint32_t nodeB, Color3 color, Time duration)
 {
-    SetLinkBurst(i, j, color, {}, duration);
+    SetLinkBurst(nodeA, nodeB, color, {}, duration);
 }
 
 void
-LogicalLinkPairs::SetLinkBurst(std::size_t i, std::size_t j, Time duration)
+LogicalLinkPairs::SetLinkBurst(uint32_t nodeA, uint32_t nodeB, Time duration)
 {
-    SetLinkBurst(i, j, WHITE, {}, duration);
+    SetLinkBurst(nodeA, nodeB, WHITE, {}, duration);
 }
 
 void
-LogicalLinkPairs::RemoveLink(std::size_t i, std::size_t j)
+LogicalLinkPairs::RemoveLink(uint32_t nodeA, uint32_t nodeB)
 {
-    if (i > j)
+    if (nodeA > nodeB)
     {
-        auto k = i;
-        i = j;
-        j = k;
+        auto k = nodeA;
+        nodeA = nodeB;
+        nodeB = k;
     }
-    if (m_pairMap.contains({i, j}))
+    if (m_pairMap.contains({nodeA, nodeB}))
     {
-        m_pairMap.at({i, j})->Deactivate();
+        m_pairMap.at({nodeA, nodeB})->Deactivate();
     }
 }
 

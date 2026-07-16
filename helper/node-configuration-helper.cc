@@ -135,7 +135,8 @@ NodeConfigurationHelper::SetBaseColorPattern(std::vector<Color3> colorVector)
 };
 
 void
-NodeConfigurationHelper::SetBaseColorPattern(Color3 (*colorFunction)(uint32_t, Ptr<Node>))
+NodeConfigurationHelper::SetBaseColorPattern(
+    std::function<Color3(uint32_t, Ptr<Node>)> colorFunction)
 {
     m_baseColorFunction = colorFunction;
     m_baseColorMode = ColorMode::Function;
@@ -213,7 +214,8 @@ NodeConfigurationHelper::SetHighlightColorPattern(std::vector<Color3> colorVecto
 };
 
 void
-NodeConfigurationHelper::SetHighlightColorPattern(Color3 (*colorFunction)(uint32_t, Ptr<Node>))
+NodeConfigurationHelper::SetHighlightColorPattern(
+    std::function<Color3(uint32_t, Ptr<Node>)> colorFunction)
 {
     m_highlightColorFunction = colorFunction;
     m_highlightColorMode = ColorMode::Function;

@@ -149,7 +149,7 @@ class NodeConfigurationHelper
      * @param colorFunction
      * A function that takes in an index and a node and returns an associated color
      */
-    void SetBaseColorPattern(Color3 (*colorFunction)(uint32_t, Ptr<Node>));
+    void SetBaseColorPattern(std::function<Color3(uint32_t, Ptr<Node>)> colorFunction);
     /**
      * Sets the base color mode to be a static color
      * @param color
@@ -185,7 +185,7 @@ class NodeConfigurationHelper
      * @param colorFunction
      * A function that takes in an index and a node and returns an associated color
      */
-    void SetHighlightColorPattern(Color3 (*colorFunction)(uint32_t, Ptr<Node>));
+    void SetHighlightColorPattern(std::function<Color3(uint32_t, Ptr<Node>)> colorFunction);
     /**
      * Sets the highlight color mode to be a static color
      * @param color
