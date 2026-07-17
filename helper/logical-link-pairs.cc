@@ -53,6 +53,7 @@ LogicalLinkPairs::LogicalLinkPairs(Ptr<Orchestrator> orchestrator)
 Ptr<netsimulyzer::LogicalLink>
 LogicalLinkPairs::GetLink(uint32_t nodeA, uint32_t nodeB)
 {
+    NS_LOG_FUNCTION(this << nodeA << nodeB);
     if (nodeA > nodeB)
     {
         auto k = nodeA;
@@ -72,6 +73,7 @@ LogicalLinkPairs::SetLink(uint32_t nodeA,
                           Color3 color,
                           const std::unordered_map<std::string, Ptr<AttributeValue>>& attributes)
 {
+    NS_LOG_FUNCTION(this << nodeA << nodeB << color);
     if (nodeA > nodeB)
     {
         auto k = nodeA;
@@ -122,6 +124,7 @@ LogicalLinkPairs::SetLinkBurst(
     const std::unordered_map<std::string, Ptr<AttributeValue>>& attributes,
     Time duration)
 {
+    NS_LOG_FUNCTION(this << nodeA << nodeB << color << duration);
     if (nodeA > nodeB)
     {
         auto k = nodeA;
@@ -160,6 +163,7 @@ LogicalLinkPairs::SetLinkBurst(uint32_t nodeA, uint32_t nodeB, Time duration)
 void
 LogicalLinkPairs::RemoveLink(uint32_t nodeA, uint32_t nodeB)
 {
+    NS_LOG_FUNCTION(this << nodeA << nodeB);
     if (nodeA > nodeB)
     {
         auto k = nodeA;

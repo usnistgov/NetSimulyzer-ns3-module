@@ -290,6 +290,13 @@ class SlidingValueWrapper : public SeriesWrapper
     double GetSlidingValue() const;
 
   private:
+    /**
+     * Prune's the sliding window values
+     * @param time
+     * The time to prune from
+     */
+    void Prune(Time time);
+
     std::vector<std::pair<Time, double>> m_values;
     Time m_window = Seconds(1);
     double m_maxSampleFrequency = 0.1;

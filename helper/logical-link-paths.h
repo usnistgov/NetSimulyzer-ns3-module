@@ -94,7 +94,7 @@ class LogicalLinkPaths : public Object
                         const std::unordered_map<std::string, Ptr<AttributeValue>>& attributes);
 
     /**
-     * @brief Automatically manages the links given a path. Will reuse links of set again
+     *  Automatically manages the links given a path. Will reuse links of set again
      * @param i
      * index of the app path to set
      * @param path
@@ -102,7 +102,7 @@ class LogicalLinkPaths : public Object
      */
     void SetPath(std::size_t i, std::vector<uint32_t> path);
     /**
-     * @brief Automatically manages the links given a path. Will reuse links of set again
+     * Automatically manages the links given a path. Will reuse links of set again
      * @param i
      * Index of the app path to set
      * @param path
@@ -112,7 +112,7 @@ class LogicalLinkPaths : public Object
      */
     void SetPath(std::size_t i, std::vector<uint32_t> path, Color3 color);
     /**
-     * @brief Automatically manages the links given a path. Will reuse links of set again
+     * Automatically manages the links given a path. Will reuse links of set again
      * @param i
      * Index of the app path to set
      * @param path

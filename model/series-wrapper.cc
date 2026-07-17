@@ -301,7 +301,7 @@ SlidingValueWrapper::SlidingValueWrapper(Ptr<XYSeries> series,
 };
 
 void
-SlidingValueWrapper::Update(Time time, double value)
+SlidingValueWrapper::Prune(Time time)
 {
     // prune back end
     for (auto pair = m_values.begin(); pair != m_values.end(); pair++)
@@ -313,6 +313,12 @@ SlidingValueWrapper::Update(Time time, double value)
             m_values.erase(pair--);
         }
     }
+}
+
+void
+SlidingValueWrapper::Update(Time time, double value)
+{
+    Prune(time);
 
     m_values.push_back({time, value});
     if (!m_timed)
@@ -330,6 +336,8 @@ SlidingValueWrapper::Update(double value)
 void
 SlidingValueWrapper::Append(Time time)
 {
+    Prune(time);
+
     double acc = 0;
     for (auto pair = m_values.begin(); pair != m_values.end(); pair++)
     {

@@ -116,7 +116,7 @@ LogicalLinkPaths::SetPath(std::size_t app,
     }
     links = m_paths.at(app);
     // deactivate unused links. Netsimulyzer doesn't support link deletion, so we reuse them
-    if (path.empty() && links.size() >= path.size())
+    if (!path.empty() && links.size() >= path.size())
     {
         for (auto i = path.size() - 1; i < links.size(); i++)
         {
