@@ -84,7 +84,7 @@ LogicalLinkPairs::SetLink(uint32_t nodeA,
     {
         m_pairMap.insert(
             {{nodeA, nodeB},
-             CreateObject<LogicalLink>(m_orchestrator, nodeA + 1, nodeB + 1, color, attributes)});
+             CreateObject<LogicalLink>(m_orchestrator, nodeA, nodeB, color, attributes)});
     }
     else
     {
