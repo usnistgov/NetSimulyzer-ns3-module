@@ -39,7 +39,6 @@
 #include "ns3/log.h"
 #include "ns3/nstime.h"
 #include "ns3/object.h"
-#include "ns3/timer.h"
 
 #include <string>
 #include <unordered_map>
@@ -94,43 +93,6 @@ class LogicalLinkPairs : public Object
                  const std::unordered_map<std::string, Ptr<AttributeValue>>& attributes);
 
     /**
-     * Creates of a timed node pair Link
-     * @param nodeA,nodeB
-     * The Nodes to connect. Identical if swapped
-     * @param duration
-     * The length the link should stay activated
-     */
-    void SetLinkBurst(uint32_t nodeA, uint32_t nodeB, Time duration);
-
-    /**
-     * Creates/Sets the color of a timed node pair Link
-     * @param nodeA,nodeB
-     * The Nodes to connect. Identical if swapped
-     * @param color
-     * The color to make the link
-     * @param duration
-     * The length the link should stay activated
-     */
-    void SetLinkBurst(uint32_t nodeA, uint32_t nodeB, Color3 color, Time duration);
-
-    /**
-     * Creates/Sets the color/attributes of a timed node pair Link
-     * @param nodeA,nodeB
-     * The Nodes to connect. Identical if swapped
-     * @param color
-     * The color to make the link
-     * @param attributes
-     * Attributes to be given to this link
-     * @param duration
-     * The length the link should stay activated
-     */
-    void SetLinkBurst(uint32_t nodeA,
-                      uint32_t nodeB,
-                      Color3 color,
-                      const std::unordered_map<std::string, Ptr<AttributeValue>>& attributes,
-                      Time duration);
-
-    /**
      * If a link exists between the two nodes, deactivate it
      * @param nodeA,nodeB
      * The nodes to check for a connection between. Identical if swapped
@@ -138,9 +100,11 @@ class LogicalLinkPairs : public Object
     void RemoveLink(uint32_t nodeA, uint32_t nodeB);
 
   private:
+    using NodePair = std::pair<uint32_t, uint32_t>;
+
     struct pairHash
     {
-        std::size_t operator()(const std::pair<uint32_t, uint32_t>& pair) const
+        std::size_t operator()(const NodePair& pair) const
         {
             uint32_t nodeA = pair.first;
             uint32_t nodeB = pair.second;
@@ -154,15 +118,8 @@ class LogicalLinkPairs : public Object
     /**
      * A data structure that stores the pairwise LogicalLinks
      */
-    std::unordered_map<std::pair<uint32_t, uint32_t>,
-                       Ptr<netsimulyzer::LogicalLink>,
-                       LogicalLinkPairs::pairHash>
+    std::unordered_map<NodePair, Ptr<netsimulyzer::LogicalLink>, LogicalLinkPairs::pairHash>
         m_pairMap;
-
-    /**
-     * for scheduling timed deactivations
-     */
-    std::unordered_map<std::pair<uint32_t, uint32_t>, Timer, LogicalLinkPairs::pairHash> m_timers;
 
     /**
      * Orchestrator attatched to the LogicalLinks

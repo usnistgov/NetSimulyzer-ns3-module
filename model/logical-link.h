@@ -41,6 +41,7 @@
 #include "ns3/node.h"
 #include "ns3/object.h"
 #include "ns3/ptr.h"
+#include "ns3/timer.h"
 #include "ns3/type-id.h"
 
 #include <cstdint>
@@ -230,6 +231,11 @@ class LogicalLink : public Object
     [[nodiscard]] double GetDiameter() const;
     void SetDiameter(double value);
 
+    [[nodiscard]] Timer GetTimer() const;
+    void SetTimer(Timer timer);
+
+    void SetDuration(Time duration);
+
   protected:
     void NotifyConstructionCompleted() override;
 
@@ -242,6 +248,7 @@ class LogicalLink : public Object
     bool m_active{true};
     Color3 m_color{};
     double m_diameter{}; // Initialized by attribute "Diameter"
+    Timer m_timer{};
     std::pair<uint32_t, uint32_t> m_nodes{};
     /**
      * @see LogicalLink::NotifyConstructionCompleted

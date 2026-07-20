@@ -117,50 +117,6 @@ LogicalLinkPairs::SetLink(uint32_t nodeA, uint32_t nodeB)
 }
 
 void
-LogicalLinkPairs::SetLinkBurst(
-    uint32_t nodeA,
-    uint32_t nodeB,
-    Color3 color,
-    const std::unordered_map<std::string, Ptr<AttributeValue>>& attributes,
-    Time duration)
-{
-    NS_LOG_FUNCTION(this << nodeA << nodeB << color << duration);
-    if (nodeA > nodeB)
-    {
-        auto k = nodeA;
-        nodeA = nodeB;
-        nodeB = k;
-    }
-    if (!m_timers.contains({nodeA, nodeB}))
-    {
-        m_timers.insert({{nodeA, nodeB}, {}});
-    }
-    Timer& timer = m_timers.at({nodeA, nodeB});
-    SetLink(nodeA, nodeB, color, attributes);
-    if (timer.IsRunning())
-        timer.Cancel();
-    timer.SetDelay(duration);
-    if (timer.GetDelay().IsPositive())
-    {
-        timer.SetFunction(&LogicalLinkPairs::RemoveLink, this);
-        timer.SetArguments<uint32_t, uint32_t>(nodeA, nodeB);
-        timer.Schedule();
-    }
-}
-
-void
-LogicalLinkPairs::SetLinkBurst(uint32_t nodeA, uint32_t nodeB, Color3 color, Time duration)
-{
-    SetLinkBurst(nodeA, nodeB, color, {}, duration);
-}
-
-void
-LogicalLinkPairs::SetLinkBurst(uint32_t nodeA, uint32_t nodeB, Time duration)
-{
-    SetLinkBurst(nodeA, nodeB, WHITE, {}, duration);
-}
-
-void
 LogicalLinkPairs::RemoveLink(uint32_t nodeA, uint32_t nodeB)
 {
     NS_LOG_FUNCTION(this << nodeA << nodeB);
