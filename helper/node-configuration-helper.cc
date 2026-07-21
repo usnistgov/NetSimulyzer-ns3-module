@@ -82,7 +82,7 @@ NodeConfigurationHelper::Install(const NodeContainer& nodes) const
     NS_LOG_FUNCTION(this << &nodes);
     NodeConfigurationContainer container;
 
-    uint32_t i = 0;
+    std::size_t i = 0;
     for (auto node = nodes.Begin(); node != nodes.End(); node++)
     {
         auto config = m_nodeConfiguration.Create()->GetObject<NodeConfiguration>();
@@ -136,7 +136,7 @@ NodeConfigurationHelper::SetBaseColorPattern(std::vector<Color3> colorVector)
 
 void
 NodeConfigurationHelper::SetBaseColorPattern(
-    std::function<Color3(uint32_t, Ptr<Node>)> colorFunction)
+    std::function<Color3(std::size_t, Ptr<Node>)> colorFunction)
 {
     m_baseColorFunction = colorFunction;
     m_baseColorMode = ColorMode::Function;
@@ -157,7 +157,7 @@ NodeConfigurationHelper::SetBaseColorPatternType(ColorMode mode)
 
 void
 NodeConfigurationHelper::SetBaseColorInternal(Ptr<NodeConfiguration> config,
-                                              uint32_t i,
+                                              std::size_t i,
                                               Ptr<Node> node) const
 {
     switch (m_baseColorMode)
@@ -181,7 +181,7 @@ NodeConfigurationHelper::SetBaseColorInternal(Ptr<NodeConfiguration> config,
 };
 
 Color3
-NodeConfigurationHelper::GetBaseColor(uint32_t i, Ptr<Node> node)
+NodeConfigurationHelper::GetBaseColor(std::size_t i, Ptr<Node> node)
 {
     switch (m_baseColorMode)
     {
@@ -206,6 +206,12 @@ NodeConfigurationHelper::GetBaseColor(uint32_t i, Ptr<Node> node)
         RED);
 };
 
+Color3
+NodeConfigurationHelper::GetBaseColor(std::size_t i)
+{
+    return GetBaseColor(i, nullptr);
+};
+
 void
 NodeConfigurationHelper::SetHighlightColorPattern(std::vector<Color3> colorVector)
 {
@@ -215,7 +221,7 @@ NodeConfigurationHelper::SetHighlightColorPattern(std::vector<Color3> colorVecto
 
 void
 NodeConfigurationHelper::SetHighlightColorPattern(
-    std::function<Color3(uint32_t, Ptr<Node>)> colorFunction)
+    std::function<Color3(std::size_t, Ptr<Node>)> colorFunction)
 {
     m_highlightColorFunction = colorFunction;
     m_highlightColorMode = ColorMode::Function;
@@ -236,7 +242,7 @@ NodeConfigurationHelper::SetHighlightColorPatternType(ColorMode mode)
 
 void
 NodeConfigurationHelper::SetHighlightColorInternal(Ptr<NodeConfiguration> config,
-                                                   uint32_t i,
+                                                   std::size_t i,
                                                    Ptr<Node> node) const
 {
     switch (m_highlightColorMode)
@@ -260,7 +266,7 @@ NodeConfigurationHelper::SetHighlightColorInternal(Ptr<NodeConfiguration> config
 };
 
 Color3
-NodeConfigurationHelper::GetHighlightColor(uint32_t i, Ptr<Node> node)
+NodeConfigurationHelper::GetHighlightColor(std::size_t i, Ptr<Node> node)
 {
     switch (m_highlightColorMode)
     {
@@ -285,6 +291,12 @@ NodeConfigurationHelper::GetHighlightColor(uint32_t i, Ptr<Node> node)
         ->GetObject<NodeConfiguration>()
         ->GetHighlightColor()
         .value_or(RED);
+};
+
+Color3
+NodeConfigurationHelper::GetHighlightColor(std::size_t i)
+{
+    return GetHighlightColor(i, nullptr);
 };
 
 } // namespace netsimulyzer

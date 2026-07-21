@@ -149,7 +149,7 @@ class NodeConfigurationHelper
      * @param colorFunction
      * A function that takes in an index and a node and returns an associated color
      */
-    void SetBaseColorPattern(std::function<Color3(uint32_t, Ptr<Node>)> colorFunction);
+    void SetBaseColorPattern(std::function<Color3(std::size_t, Ptr<Node>)> colorFunction);
     /**
      * Sets the base color mode to be a static color
      * @param color
@@ -169,7 +169,14 @@ class NodeConfigurationHelper
      * @param node
      * The node
      */
-    Color3 GetBaseColor(uint32_t i, Ptr<Node> node);
+    Color3 GetBaseColor(std::size_t i, Ptr<Node> node);
+
+    /**
+     * Gets the base color at a specific index
+     * @param i
+     * The theoretical index of the node
+     */
+    Color3 GetBaseColor(std::size_t i);
 
     /**
      * Sets the highlight color mode to select from a vector of colors, cycling through in a loop
@@ -185,7 +192,7 @@ class NodeConfigurationHelper
      * @param colorFunction
      * A function that takes in an index and a node and returns an associated color
      */
-    void SetHighlightColorPattern(std::function<Color3(uint32_t, Ptr<Node>)> colorFunction);
+    void SetHighlightColorPattern(std::function<Color3(std::size_t, Ptr<Node>)> colorFunction);
     /**
      * Sets the highlight color mode to be a static color
      * @param color
@@ -205,7 +212,14 @@ class NodeConfigurationHelper
      * @param node
      * The node
      */
-    Color3 GetHighlightColor(uint32_t i, Ptr<Node> node);
+    Color3 GetHighlightColor(std::size_t i, Ptr<Node> node);
+
+    /**
+     * Gets the highlight color at a specific index
+     * @param i
+     * The theoretical index of the node
+     */
+    Color3 GetHighlightColor(std::size_t i);
 
   private:
     /**
@@ -241,12 +255,12 @@ class NodeConfigurationHelper
     /**
      * If the base color mode is Function, uses this function for base node colors
      */
-    std::function<Color3(uint32_t, Ptr<Node>)> m_baseColorFunction = 0;
+    std::function<Color3(std::size_t, Ptr<Node>)> m_baseColorFunction = 0;
 
     /**
      * If the highlight color mode is Function, uses this function for node highlight colors
      */
-    std::function<Color3(uint32_t, Ptr<Node>)> m_highlightColorFunction = 0;
+    std::function<Color3(std::size_t, Ptr<Node>)> m_highlightColorFunction = 0;
 
     /**
      * Sets the base color of a NodeConfiguration
@@ -257,7 +271,7 @@ class NodeConfigurationHelper
      * @param node
      * The node attatched to the configuration
      */
-    void SetBaseColorInternal(Ptr<NodeConfiguration> config, uint32_t i, Ptr<Node> node) const;
+    void SetBaseColorInternal(Ptr<NodeConfiguration> config, std::size_t i, Ptr<Node> node) const;
 
     /**
      * Sets the highlight color of a NodeConfiguration
@@ -268,7 +282,9 @@ class NodeConfigurationHelper
      * @param node
      * The node attatched to the configuration
      */
-    void SetHighlightColorInternal(Ptr<NodeConfiguration> config, uint32_t i, Ptr<Node> node) const;
+    void SetHighlightColorInternal(Ptr<NodeConfiguration> config,
+                                   std::size_t i,
+                                   Ptr<Node> node) const;
 };
 
 } // namespace ns3::netsimulyzer
