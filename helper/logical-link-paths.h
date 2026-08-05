@@ -38,6 +38,8 @@
 #include "logical-link-helper.h"
 
 #include "ns3/log.h"
+#include "ns3/node-container.h"
+#include "ns3/node.h"
 #include "ns3/object.h"
 
 #include <string>
@@ -101,6 +103,8 @@ class LogicalLinkPaths : public Object
      * vector of node Ids that represent the path the app is taking
      */
     void SetPath(std::size_t i, std::vector<uint32_t> path);
+    void SetPath(std::size_t i, const std::vector<Ptr<Node>> path);
+    void SetPath(std::size_t i, const NodeContainer& path);
     /**
      * Automatically manages the links given a path. Will reuse links of set again
      * @param i
@@ -111,6 +115,8 @@ class LogicalLinkPaths : public Object
      * Color to make all the links in the path
      */
     void SetPath(std::size_t i, std::vector<uint32_t> path, Color3 color);
+    void SetPath(std::size_t i, const std::vector<Ptr<Node>> path, Color3 color);
+    void SetPath(std::size_t i, const NodeContainer& path, Color3 color);
     /**
      * Automatically manages the links given a path. Will reuse links of set again
      * @param i
@@ -124,6 +130,14 @@ class LogicalLinkPaths : public Object
      */
     void SetPath(std::size_t i,
                  std::vector<uint32_t> path,
+                 Color3 color,
+                 const std::unordered_map<std::string, Ptr<AttributeValue>>& attributes);
+    void SetPath(std::size_t i,
+                 const std::vector<Ptr<Node>> path,
+                 Color3 color,
+                 const std::unordered_map<std::string, Ptr<AttributeValue>>& attributes);
+    void SetPath(std::size_t i,
+                 const NodeContainer& path,
                  Color3 color,
                  const std::unordered_map<std::string, Ptr<AttributeValue>>& attributes);
 

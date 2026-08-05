@@ -61,7 +61,7 @@ LogicalLinkPairs::GetLink(uint32_t nodeA, uint32_t nodeB)
     }
     if (this->m_pairMap.contains({nodeA, nodeB}))
     {
-        return this->m_pairMap.at({nodeA, nodeB});
+        return this->m_pairMap[{nodeA, nodeB}];
     }
     return nullptr;
 };
@@ -105,7 +105,7 @@ LogicalLinkPairs::SetLink(uint32_t nodeA,
     }
     else
     {
-        auto link = m_pairMap.at({nodeA, nodeB});
+        auto link = m_pairMap[{nodeA, nodeB}];
         link->Activate();
         link->SetColor(color);
         for (const auto& [name, value] : attributes)
@@ -210,7 +210,7 @@ LogicalLinkPairs::RemoveLink(uint32_t nodeA, uint32_t nodeB)
     }
     if (m_pairMap.contains({nodeA, nodeB}))
     {
-        m_pairMap.at({nodeA, nodeB})->Deactivate();
+        m_pairMap[{nodeA, nodeB}]->Deactivate();
     }
 }
 

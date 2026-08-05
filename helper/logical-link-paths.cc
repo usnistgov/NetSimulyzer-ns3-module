@@ -97,11 +97,11 @@ LogicalLinkPaths::SetPath(std::size_t app,
     auto links = m_paths.at(app);
     for (std::size_t i = 0; i < path.size() - 1; i++)
     {
-        auto current = path.at(i);
-        auto target = path.at(i + 1);
+        auto current = path[i];
+        auto target = path[i + 1];
         if (links.size() > i)
         {
-            auto link = links.at(i);
+            auto link = links[i];
             link->SetNodes(current, target);
             m_helper.UpdateLink(link, color, attributes);
             link->Activate();
@@ -120,10 +120,38 @@ LogicalLinkPaths::SetPath(std::size_t app,
     {
         for (auto i = path.size() - 1; i < links.size(); i++)
         {
-            links.at(i)->Deactivate();
+            links[i]->Deactivate();
         }
     }
 };
+
+void
+LogicalLinkPaths::SetPath(std::size_t app,
+                          const std::vector<Ptr<Node>> path,
+                          Color3 color,
+                          const std::unordered_map<std::string, Ptr<AttributeValue>>& attributes)
+{
+    std::vector<uint32_t> pathIds;
+    for (std::size_t i = 0; i < path.size() - 1; i++)
+    {
+        pathIds.emplace_back(path[i]->GetId());
+    }
+    SetPath(app, pathIds, color, attributes);
+}
+
+void
+LogicalLinkPaths::SetPath(std::size_t app,
+                          const NodeContainer& path,
+                          Color3 color,
+                          const std::unordered_map<std::string, Ptr<AttributeValue>>& attributes)
+{
+    std::vector<uint32_t> pathIds;
+    for (auto nodeIt = path.Begin(); nodeIt != path.End(); nodeIt++)
+    {
+        pathIds.emplace_back((*nodeIt)->GetId());
+    }
+    SetPath(app, pathIds, color, attributes);
+}
 
 void
 LogicalLinkPaths::SetPath(std::size_t app, std::vector<uint32_t> path, Color3 color)
@@ -132,7 +160,31 @@ LogicalLinkPaths::SetPath(std::size_t app, std::vector<uint32_t> path, Color3 co
 };
 
 void
+LogicalLinkPaths::SetPath(std::size_t app, const std::vector<Ptr<Node>> path, Color3 color)
+{
+    SetPath(app, path, color, {});
+};
+
+void
+LogicalLinkPaths::SetPath(std::size_t app, const NodeContainer& path, Color3 color)
+{
+    SetPath(app, path, color, {});
+};
+
+void
 LogicalLinkPaths::SetPath(std::size_t app, std::vector<uint32_t> path)
+{
+    SetPath(app, path, NextPathColor(), {});
+};
+
+void
+LogicalLinkPaths::SetPath(std::size_t app, const std::vector<Ptr<Node>> path)
+{
+    SetPath(app, path, NextPathColor(), {});
+};
+
+void
+LogicalLinkPaths::SetPath(std::size_t app, const NodeContainer& path)
 {
     SetPath(app, path, NextPathColor(), {});
 };
