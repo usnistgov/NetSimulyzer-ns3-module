@@ -81,17 +81,31 @@ SeriesManager::GetTypeId()
     // clang-format on
 }
 
-SeriesManager::SeriesManager(std::string outputFileName)
+SeriesManager::SeriesManager(const std::string& outputFileName)
     : m_orchestrator(CreateObject<Orchestrator>(outputFileName)),
       m_configHelper(m_orchestrator)
 {
     NS_LOG_FUNCTION(this << outputFileName);
 };
 
-SeriesManager::SeriesManager(std::string outputFileName, NodeContainer nodes)
+SeriesManager::SeriesManager(const std::string& outputFileName, NodeContainer nodes)
     : SeriesManager(outputFileName)
 {
     NS_LOG_FUNCTION(this << outputFileName << &nodes);
+    SetNodes(nodes);
+};
+
+SeriesManager::SeriesManager(Ptr<Orchestrator> orchestrator)
+    : m_orchestrator(orchestrator),
+      m_configHelper(m_orchestrator)
+{
+    NS_LOG_FUNCTION(this << orchestrator);
+};
+
+SeriesManager::SeriesManager(Ptr<Orchestrator> orchestrator, NodeContainer nodes)
+    : SeriesManager(orchestrator)
+{
+    NS_LOG_FUNCTION(this << orchestrator << &nodes);
     SetNodes(nodes);
 };
 
@@ -104,20 +118,20 @@ SeriesManager::SetNodes(NodeContainer nodes)
 };
 
 Ptr<SeriesWrapperCollection>
-SeriesManager::GetCollection(std::string index)
+SeriesManager::GetCollection(const std::string& index)
 {
     NS_LOG_FUNCTION(this << index);
     return m_collections.at(index);
 };
 
 SeriesWrapperCollection&
-SeriesManager::operator[](std::string index)
+SeriesManager::operator[](const std::string& index)
 {
     return (*GetCollection(index));
 };
 
 Ptr<SeriesManager>
-SeriesManager::SetContainer(std::string index, Ptr<SeriesWrapperCollection> container)
+SeriesManager::SetContainer(const std::string& index, Ptr<SeriesWrapperCollection> container)
 {
     NS_LOG_FUNCTION(this << index << container);
     m_collections.insert({index, container});

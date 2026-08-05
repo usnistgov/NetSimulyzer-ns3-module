@@ -163,7 +163,7 @@ NodeConfigurationHelper::SetBaseColorInternal(Ptr<NodeConfiguration> config,
     switch (m_baseColorMode)
     {
     case ColorMode::Function:
-        if (m_baseColorFunction != nullptr)
+        if (m_baseColorFunction)
         {
             config->SetBaseColor(m_baseColorFunction(i, node));
         }
@@ -175,6 +175,7 @@ NodeConfigurationHelper::SetBaseColorInternal(Ptr<NodeConfiguration> config,
         }
         break;
     case ColorMode::Fixed:
+        [[fallthrough]];
     default:
         break;
     }
@@ -186,7 +187,7 @@ NodeConfigurationHelper::GetBaseColor(std::size_t i, Ptr<Node> node)
     switch (m_baseColorMode)
     {
     case ColorMode::Function:
-        if (m_baseColorFunction != nullptr)
+        if (m_baseColorFunction)
         {
             return m_baseColorFunction(i, node);
         }
@@ -198,6 +199,7 @@ NodeConfigurationHelper::GetBaseColor(std::size_t i, Ptr<Node> node)
         }
         break;
     case ColorMode::Fixed:
+        [[fallthrough]];
     default:
         break;
     }
@@ -248,7 +250,7 @@ NodeConfigurationHelper::SetHighlightColorInternal(Ptr<NodeConfiguration> config
     switch (m_highlightColorMode)
     {
     case ColorMode::Function:
-        if (m_baseColorFunction != nullptr)
+        if (m_baseColorFunction)
         {
             config->SetHighlightColor(m_highlightColorFunction(i, node));
         }
@@ -260,6 +262,7 @@ NodeConfigurationHelper::SetHighlightColorInternal(Ptr<NodeConfiguration> config
         }
         break;
     case ColorMode::Fixed:
+        [[fallthrough]];
     default:
         break;
     }
@@ -271,7 +274,7 @@ NodeConfigurationHelper::GetHighlightColor(std::size_t i, Ptr<Node> node)
     switch (m_highlightColorMode)
     {
     case ColorMode::Function:
-        if (m_highlightColorFunction != nullptr)
+        if (m_highlightColorFunction)
         {
             return m_baseColorFunction(i, node);
         }
@@ -283,6 +286,7 @@ NodeConfigurationHelper::GetHighlightColor(std::size_t i, Ptr<Node> node)
         }
         break;
     case ColorMode::Fixed:
+        [[fallthrough]];
     default:
         break;
     }

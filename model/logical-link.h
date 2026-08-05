@@ -231,7 +231,7 @@ class LogicalLink : public Object
     [[nodiscard]] double GetDiameter() const;
     void SetDiameter(double value);
 
-    [[nodiscard]] Timer GetTimer() const;
+    [[nodiscard]] const Timer& GetTimer() const;
     void SetTimer(Timer timer);
 
     void SetDuration(Time duration);

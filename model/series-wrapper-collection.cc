@@ -112,9 +112,9 @@ SeriesWrapperCollection::SeriesWrapperCollection(Ptr<Orchestrator> orchestrator)
 };
 
 SeriesWrapperCollection::SeriesWrapperCollection(Ptr<Orchestrator> orchestrator,
-                                                 std::string name,
-                                                 std::string x_axis,
-                                                 std::string y_axis)
+                                                 const std::string& name,
+                                                 const std::string& x_axis,
+                                                 const std::string& y_axis)
     : SeriesWrapperCollection(orchestrator)
 {
     NS_LOG_FUNCTION(this << orchestrator << name << x_axis << y_axis);
@@ -157,16 +157,16 @@ SeriesWrapperMap::SeriesWrapperMap(Ptr<Orchestrator> orchestrator)
 };
 
 SeriesWrapperMap::SeriesWrapperMap(Ptr<Orchestrator> orchestrator,
-                                   std::string name,
-                                   std::string x_axis,
-                                   std::string y_axis)
+                                   const std::string& name,
+                                   const std::string& x_axis,
+                                   const std::string& y_axis)
     : SeriesWrapperCollection(orchestrator, name, x_axis, y_axis)
 {
     NS_LOG_FUNCTION(this << orchestrator << name << x_axis << y_axis);
 };
 
 Ptr<SeriesWrapperMap>
-SeriesWrapperMap::AddWrapper(std::string index, Ptr<SeriesWrapper> w)
+SeriesWrapperMap::AddWrapper(const std::string& index, Ptr<SeriesWrapper> w)
 {
     NS_LOG_FUNCTION(this << index << w);
     m_nameMap.insert({index, GetNSeries()});
@@ -175,7 +175,7 @@ SeriesWrapperMap::AddWrapper(std::string index, Ptr<SeriesWrapper> w)
 };
 
 Ptr<XYSeries>
-SeriesWrapperMap::GetSeries(std::string index)
+SeriesWrapperMap::GetSeries(const std::string& index)
 {
     NS_LOG_FUNCTION(this << index);
     return SeriesWrapperCollection::GetSeries(m_nameMap.at(index));

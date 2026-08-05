@@ -213,14 +213,6 @@ class SlidingValueWrapper : public SeriesWrapper
      * How often to append to the series
      */
     SlidingValueWrapper(Ptr<XYSeries> series, Time interval);
-    /**
-     * @param window
-     * Length of the sliding window in Seconds
-     * @param max_sample_frequency
-     * Caps how quickly in sucession the Series will be appended to in Seconds
-     * Any more frequent calls will update the sliding value, but not append to the Series
-     */
-    SlidingValueWrapper(Ptr<XYSeries> series, Time window, double max_sample_frequency);
 
     /**
      * @param window
@@ -240,19 +232,6 @@ class SlidingValueWrapper : public SeriesWrapper
      * How often to append to the series
      */
     SlidingValueWrapper(Ptr<XYSeries> series, Time::Unit unit, Time interval);
-    /**
-     * @param unit
-     * Time unit to use for the x-value
-     * @param window
-     * Length of the sliding window in Seconds
-     * @param max_sample_frequency
-     * Caps how quickly in sucession the Series will be appended to in Seconds
-     * Any more frequent calls will update the sliding value, but not append to the Series
-     */
-    SlidingValueWrapper(Ptr<XYSeries> series,
-                        Time::Unit unit,
-                        Time window,
-                        double max_sample_frequency);
 
     /**
      * @param unit
@@ -299,8 +278,7 @@ class SlidingValueWrapper : public SeriesWrapper
 
     std::vector<std::pair<Time, double>> m_values;
     Time m_window = Seconds(1);
-    double m_maxSampleFrequency = 0.1;
-    double m_lastSample = 0;
+    Time m_lastSample = Seconds(0);
     Timer m_timer;
     bool m_timed = false;
     Time::Unit m_unit = Time::Unit::S;
@@ -328,19 +306,6 @@ class SlidingLoadWrapper : public SlidingValueWrapper
      * How often to append to the series
      */
     SlidingLoadWrapper(Ptr<XYSeries> series, Time interval);
-    /**
-     * @param window
-     * Length of the sliding window
-     * @param bandwidth
-     * Bandwith to compare accumulated value to
-     * @param max_sample_frequency
-     * Caps how quickly in sucession the Series will be appended to in Seconds
-     * Any more frequent calls will update the sliding value, but not append to the Series
-     */
-    SlidingLoadWrapper(Ptr<XYSeries> series,
-                       Time window,
-                       double bandwidth,
-                       double max_sample_frequency);
 
     /**
      * @param window
@@ -362,22 +327,6 @@ class SlidingLoadWrapper : public SlidingValueWrapper
      * How often to append to the series
      */
     SlidingLoadWrapper(Ptr<XYSeries> series, Time::Unit unit, Time interval);
-    /**
-     * @param unit
-     * Time unit to use for the x-value
-     * @param window
-     * Length of the sliding window
-     * @param bandwidth
-     * Bandwith to compare accumulated value to
-     * @param max_sample_frequency
-     * Caps how quickly in sucession the Series will be appended to in Seconds
-     * Any more frequent calls will update the sliding value, but not append to the Series
-     */
-    SlidingLoadWrapper(Ptr<XYSeries> series,
-                       Time::Unit unit,
-                       Time window,
-                       double bandwidth,
-                       double max_sample_frequency);
 
     /**
      * @param unit

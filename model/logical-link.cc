@@ -360,7 +360,7 @@ LogicalLink::SetDiameter(const double value)
     m_orchestrator->UpdateLink(*this);
 }
 
-Timer
+const Timer&
 LogicalLink::GetTimer() const
 {
     return m_timer;

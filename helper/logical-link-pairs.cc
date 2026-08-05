@@ -36,6 +36,7 @@
 #include "ns3/color.h"
 #include "ns3/double.h"
 #include "ns3/logical-link.h"
+#include "ns3/node.h"
 
 namespace ns3
 {
@@ -56,9 +57,7 @@ LogicalLinkPairs::GetLink(uint32_t nodeA, uint32_t nodeB)
     NS_LOG_FUNCTION(this << nodeA << nodeB);
     if (nodeA > nodeB)
     {
-        auto k = nodeA;
-        nodeA = nodeB;
-        nodeB = k;
+        std::swap(nodeA, nodeB);
     }
     if (this->m_pairMap.contains({nodeA, nodeB}))
     {
@@ -66,6 +65,26 @@ LogicalLinkPairs::GetLink(uint32_t nodeA, uint32_t nodeB)
     }
     return nullptr;
 };
+
+Ptr<netsimulyzer::LogicalLink>
+LogicalLinkPairs::GetLink(const Ptr<Node>& nodeA, const Ptr<Node>& nodeB)
+{
+    return GetLink(nodeA->GetId(), nodeB->GetId());
+}
+
+Ptr<netsimulyzer::LogicalLink>
+LogicalLinkPairs::GetLink(const NodeContainer& twoNodes)
+{
+    NS_LOG_FUNCTION(this << &twoNodes);
+    NS_ABORT_MSG_IF(twoNodes.GetN() < 2, "At least two Nodes required to get a LogicalLink");
+
+    if (twoNodes.GetN() > 2)
+    {
+        NS_LOG_WARN("Number of Nodes passed to `GetLink` > 2, only getting the first 2");
+    }
+
+    return GetLink(twoNodes.Get(0)->GetId(), twoNodes.Get(1)->GetId());
+}
 
 void
 LogicalLinkPairs::SetLink(uint32_t nodeA,
@@ -76,9 +95,7 @@ LogicalLinkPairs::SetLink(uint32_t nodeA,
     NS_LOG_FUNCTION(this << nodeA << nodeB << color);
     if (nodeA > nodeB)
     {
-        auto k = nodeA;
-        nodeA = nodeB;
-        nodeB = k;
+        std::swap(nodeA, nodeB);
     }
     if (!m_pairMap.contains({nodeA, nodeB}))
     {
@@ -105,15 +122,80 @@ LogicalLinkPairs::SetLink(uint32_t nodeA,
 }
 
 void
+LogicalLinkPairs::SetLink(const Ptr<Node>& nodeA,
+                          const Ptr<Node>& nodeB,
+                          Color3 color,
+                          const std::unordered_map<std::string, Ptr<AttributeValue>>& attributes)
+{
+    SetLink(nodeA->GetId(), nodeB->GetId(), color, attributes);
+}
+
+void
+LogicalLinkPairs::SetLink(const NodeContainer& twoNodes,
+                          Color3 color,
+                          const std::unordered_map<std::string, Ptr<AttributeValue>>& attributes)
+{
+    NS_LOG_FUNCTION(this << &twoNodes);
+    NS_ABORT_MSG_IF(twoNodes.GetN() < 2, "At least two Nodes required to make a LogicalLink");
+
+    if (twoNodes.GetN() > 2)
+    {
+        NS_LOG_WARN("Number of Nodes passed to `SetLink` > 2, only linking the first 2");
+    }
+
+    return SetLink(twoNodes.Get(0)->GetId(), twoNodes.Get(1)->GetId(), color, attributes);
+}
+
+void
 LogicalLinkPairs::SetLink(uint32_t nodeA, uint32_t nodeB, Color3 color)
 {
     SetLink(nodeA, nodeB, color, {});
 }
 
 void
+LogicalLinkPairs::SetLink(const Ptr<Node>& nodeA, const Ptr<Node>& nodeB, Color3 color)
+{
+    SetLink(nodeA->GetId(), nodeB->GetId(), color, {});
+}
+
+void
+LogicalLinkPairs::SetLink(const NodeContainer& twoNodes, Color3 color)
+{
+    NS_LOG_FUNCTION(this << &twoNodes);
+    NS_ABORT_MSG_IF(twoNodes.GetN() < 2, "At least two Nodes required to make a LogicalLink");
+
+    if (twoNodes.GetN() > 2)
+    {
+        NS_LOG_WARN("Number of Nodes passed to `SetLink` > 2, only linking the first 2");
+    }
+
+    return SetLink(twoNodes.Get(0)->GetId(), twoNodes.Get(1)->GetId(), color, {});
+}
+
+void
 LogicalLinkPairs::SetLink(uint32_t nodeA, uint32_t nodeB)
 {
     SetLink(nodeA, nodeB, WHITE);
+}
+
+void
+LogicalLinkPairs::SetLink(const Ptr<Node>& nodeA, const Ptr<Node>& nodeB)
+{
+    SetLink(nodeA->GetId(), nodeB->GetId(), WHITE);
+}
+
+void
+LogicalLinkPairs::SetLink(const NodeContainer& twoNodes)
+{
+    NS_LOG_FUNCTION(this << &twoNodes);
+    NS_ABORT_MSG_IF(twoNodes.GetN() < 2, "At least two Nodes required to make a LogicalLink");
+
+    if (twoNodes.GetN() > 2)
+    {
+        NS_LOG_WARN("Number of Nodes passed to `SetLink` > 2, only linking the first 2");
+    }
+
+    return SetLink(twoNodes.Get(0)->GetId(), twoNodes.Get(1)->GetId(), WHITE);
 }
 
 void
@@ -130,6 +212,27 @@ LogicalLinkPairs::RemoveLink(uint32_t nodeA, uint32_t nodeB)
     {
         m_pairMap.at({nodeA, nodeB})->Deactivate();
     }
+}
+
+void
+LogicalLinkPairs::RemoveLink(const Ptr<Node>& nodeA, const Ptr<Node>& nodeB)
+{
+    RemoveLink(nodeA->GetId(), nodeB->GetId());
+}
+
+void
+LogicalLinkPairs::RemoveLink(const NodeContainer& twoNodes)
+{
+    NS_LOG_FUNCTION(this << &twoNodes);
+    NS_ABORT_MSG_IF(twoNodes.GetN() < 2, "At least two Nodes required to remove a link");
+
+    if (twoNodes.GetN() > 2)
+    {
+        NS_LOG_WARN(
+            "Number of Nodes passed to `RemoveLink` > 2, only removing link for the first 2");
+    }
+
+    return RemoveLink(twoNodes.Get(0)->GetId(), twoNodes.Get(1)->GetId());
 }
 
 } // namespace netsimulyzer

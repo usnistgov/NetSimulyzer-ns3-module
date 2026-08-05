@@ -37,9 +37,12 @@
 #include "../model/orchestrator.h"
 
 #include "ns3/log.h"
+#include "ns3/node-container.h"
+#include "ns3/node.h"
 #include "ns3/nstime.h"
 #include "ns3/object.h"
 
+#include <algorithm>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -61,6 +64,8 @@ class LogicalLinkPairs : public Object
      * The nodes to check for a connection between. Identical if swapped
      */
     Ptr<netsimulyzer::LogicalLink> GetLink(uint32_t nodeA, uint32_t nodeB);
+    Ptr<netsimulyzer::LogicalLink> GetLink(const Ptr<Node>& nodeA, const Ptr<Node>& nodeB);
+    Ptr<netsimulyzer::LogicalLink> GetLink(const NodeContainer& twoNodes);
 
     /**
      * Creates a node pair Link
@@ -68,6 +73,8 @@ class LogicalLinkPairs : public Object
      * The Nodes to connect. Identical if swapped
      */
     void SetLink(uint32_t nodeA, uint32_t nodeB);
+    void SetLink(const Ptr<Node>& nodeA, const Ptr<Node>& nodeB);
+    void SetLink(const NodeContainer& twoNodes);
 
     /**
      * Creates/Sets the color of a node pair Link
@@ -77,6 +84,8 @@ class LogicalLinkPairs : public Object
      * The color to make the link
      */
     void SetLink(uint32_t nodeA, uint32_t nodeB, Color3 color);
+    void SetLink(const Ptr<Node>& nodeA, const Ptr<Node>& nodeB, Color3 color);
+    void SetLink(const NodeContainer& twoNodes, Color3 color);
 
     /**
      * Creates/Sets the color/attributes of a node pair Link
@@ -91,6 +100,13 @@ class LogicalLinkPairs : public Object
                  uint32_t nodeB,
                  Color3 color,
                  const std::unordered_map<std::string, Ptr<AttributeValue>>& attributes);
+    void SetLink(const Ptr<Node>& nodeA,
+                 const Ptr<Node>& nodeB,
+                 Color3 color,
+                 const std::unordered_map<std::string, Ptr<AttributeValue>>& attributes);
+    void SetLink(const NodeContainer& twoNodes,
+                 Color3 color,
+                 const std::unordered_map<std::string, Ptr<AttributeValue>>& attributes);
 
     /**
      * If a link exists between the two nodes, deactivate it
@@ -98,6 +114,8 @@ class LogicalLinkPairs : public Object
      * The nodes to check for a connection between. Identical if swapped
      */
     void RemoveLink(uint32_t nodeA, uint32_t nodeB);
+    void RemoveLink(const Ptr<Node>& nodeA, const Ptr<Node>& nodeB);
+    void RemoveLink(const NodeContainer& twoNodes);
 
   private:
     using NodePair = std::pair<uint32_t, uint32_t>;

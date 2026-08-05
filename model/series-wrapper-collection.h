@@ -128,9 +128,9 @@ class SeriesWrapperCollection : public Object
      * The label for the y-axis of the SeriesCollection
      */
     SeriesWrapperCollection(Ptr<Orchestrator> orchestrator,
-                            std::string name,
-                            std::string x_axis,
-                            std::string y_axis);
+                            const std::string& name,
+                            const std::string& x_axis,
+                            const std::string& y_axis);
 
     /**
      * returns a constant reference to the internal vector of Wrappers
@@ -178,22 +178,22 @@ class SeriesWrapperMap : public SeriesWrapperCollection
 
     explicit SeriesWrapperMap(Ptr<Orchestrator> orchestrator);
     SeriesWrapperMap(Ptr<Orchestrator> orchestrator,
-                     std::string name,
-                     std::string x_axis,
-                     std::string y_axis);
+                     const std::string& name,
+                     const std::string& x_axis,
+                     const std::string& y_axis);
     /**
      * Adds a Wrapper to the specified index
      * @param index
      * String index to insert the Wrapper at
      */
-    Ptr<SeriesWrapperMap> AddWrapper(std::string index, Ptr<SeriesWrapper> w);
+    Ptr<SeriesWrapperMap> AddWrapper(const std::string& index, Ptr<SeriesWrapper> w);
 
     /**
      * Shortcut for getting a Series from a Wrapper
      * @param index
      * String index of the Wrapper to get the series of
      */
-    Ptr<XYSeries> GetSeries(std::string index);
+    Ptr<XYSeries> GetSeries(const std::string& index);
 
     /**
      * Get a Wrapper from the container

@@ -206,11 +206,6 @@ SlidingValueWrapper::GetTypeId()
         TypeId ("ns3::netsimulyzer::SlidingValueWrapper")
             .SetParent<ns3::netsimulyzer::SeriesWrapper> ()
             .SetGroupName ("netsimulyzer")
-            // .AddAttribute("Window",
-            //               "The window for the sliding value",
-            //               TimeValue(),
-            //               MakeTimeAccessor(&SlidingValueWrapper::m_window),
-            //               MakeTimeChecker(Seconds(0)))
             .AddAttribute("Value",
                           "Current sliding value",
                           DoubleValue(),
@@ -240,16 +235,6 @@ SlidingValueWrapper::SlidingValueWrapper(Ptr<XYSeries> series, Time interval)
     }
 };
 
-SlidingValueWrapper::SlidingValueWrapper(Ptr<XYSeries> series,
-                                         Time window,
-                                         double maxSampleFrequency)
-    : SlidingValueWrapper(series)
-{
-    NS_LOG_FUNCTION(this << series << maxSampleFrequency);
-    m_window = window;
-    m_maxSampleFrequency = maxSampleFrequency;
-};
-
 SlidingValueWrapper::SlidingValueWrapper(Ptr<XYSeries> series, Time window, Time interval)
     : SlidingValueWrapper(series, interval)
 {
@@ -277,17 +262,6 @@ SlidingValueWrapper::SlidingValueWrapper(Ptr<XYSeries> series, Time::Unit unit, 
         m_timer.SetFunction(&SlidingValueWrapper::Flush, this);
         m_timer.Schedule();
     }
-};
-
-SlidingValueWrapper::SlidingValueWrapper(Ptr<XYSeries> series,
-                                         Time::Unit unit,
-                                         Time window,
-                                         double maxSampleFrequency)
-    : SlidingValueWrapper(series, unit)
-{
-    NS_LOG_FUNCTION(this << series << maxSampleFrequency);
-    m_window = window;
-    m_maxSampleFrequency = maxSampleFrequency;
 };
 
 SlidingValueWrapper::SlidingValueWrapper(Ptr<XYSeries> series,
@@ -339,15 +313,13 @@ SlidingValueWrapper::Append(Time time)
     Prune(time);
 
     double acc = 0;
-    for (auto pair = m_values.begin(); pair != m_values.end(); pair++)
+    for (auto pair : m_values)
     {
-        acc += pair->second;
+        acc += pair.second;
     }
-    if (m_lastSample < time.ToDouble(m_unit) - m_maxSampleFrequency)
-    {
-        SeriesWrapper::GetSeries()->Append(time.ToDouble(m_unit), acc);
-        m_lastSample = time.ToDouble(m_unit);
-    }
+
+    SeriesWrapper::GetSeries()->Append(time.ToDouble(m_unit), acc);
+    m_lastSample = time;
 }
 
 void
@@ -361,9 +333,9 @@ double
 SlidingValueWrapper::GetSlidingValue() const
 {
     double acc = 0;
-    for (auto pair = m_values.begin(); pair != m_values.end(); pair++)
+    for (auto pair : m_values)
     {
-        acc += pair->second;
+        acc += pair.second;
     }
     return acc;
 }
@@ -397,16 +369,6 @@ SlidingLoadWrapper::SlidingLoadWrapper(Ptr<XYSeries> series, Time interval)
 SlidingLoadWrapper::SlidingLoadWrapper(Ptr<XYSeries> series,
                                        Time window,
                                        double bandwidth,
-                                       double maxSampleFrequency)
-    : SlidingValueWrapper(series, window, maxSampleFrequency),
-      m_bandwidth(bandwidth)
-{
-    NS_LOG_FUNCTION(this << series << bandwidth);
-};
-
-SlidingLoadWrapper::SlidingLoadWrapper(Ptr<XYSeries> series,
-                                       Time window,
-                                       double bandwidth,
                                        Time interval)
     : SlidingValueWrapper(series, window, interval),
       m_bandwidth(bandwidth)
@@ -424,17 +386,6 @@ SlidingLoadWrapper::SlidingLoadWrapper(Ptr<XYSeries> series, Time::Unit unit, Ti
     : SlidingValueWrapper(series, unit, interval)
 {
     NS_LOG_FUNCTION(this << series << interval);
-};
-
-SlidingLoadWrapper::SlidingLoadWrapper(Ptr<XYSeries> series,
-                                       Time::Unit unit,
-                                       Time window,
-                                       double bandwidth,
-                                       double maxSampleFrequency)
-    : SlidingValueWrapper(series, unit, window, maxSampleFrequency),
-      m_bandwidth(bandwidth)
-{
-    NS_LOG_FUNCTION(this << series << bandwidth);
 };
 
 SlidingLoadWrapper::SlidingLoadWrapper(Ptr<XYSeries> series,

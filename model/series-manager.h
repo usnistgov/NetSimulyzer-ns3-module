@@ -78,18 +78,35 @@ class SeriesManager : public Object
     /**
      * Creates a SeriesManager outputting to a particular file
      * @param outputFileName
-     * the file to output to
+     * The file to output to
      */
-    explicit SeriesManager(std::string outputFileName);
+    explicit SeriesManager(const std::string& outputFileName);
     /**
      * Automatically initializes NodeContainer
      *
      * @param outputFileName
-     * the file to output to
+     * The file to output to
      * @param nodes
      * The ns3 Nodes to add to the visualization
      */
-    SeriesManager(std::string outputFileName, NodeContainer nodes);
+    SeriesManager(const std::string& outputFileName, NodeContainer nodes);
+
+    /**
+     * Creates a SeriesManager outputting to a particular Orchestrator
+     * @param orchestrator
+     * The orchestrator to use
+     */
+    SeriesManager(Ptr<Orchestrator> orchestrator);
+
+    /**
+     * Automatically initializes NodeContainer
+     *
+     * @param orchestrator
+     * The orchestrator to use
+     * @param nodes
+     * The ns3 Nodes to add to the visualization
+     */
+    SeriesManager(Ptr<Orchestrator> orchestrator, NodeContainer nodes);
     /**
      * Initializes NodeContainer
      * @param nodes
@@ -103,7 +120,7 @@ class SeriesManager : public Object
      * @param index
      * The string index of the Collection to get
      */
-    Ptr<SeriesWrapperCollection> GetCollection(std::string index);
+    Ptr<SeriesWrapperCollection> GetCollection(const std::string& index);
 
     /**
      * Gets a Container from the SeriesManager as a specific cast
@@ -112,7 +129,7 @@ class SeriesManager : public Object
      * The string index of the Collection to get
      */
     template <class T>
-    Ptr<T> GetCollectionAs(std::string index)
+    Ptr<T> GetCollectionAs(const std::string& index)
     {
         return m_collections.at(index)->GetObject<T>();
     };
@@ -120,7 +137,7 @@ class SeriesManager : public Object
     /**
      * Gets a reference to a particular SeriesWrapperCollection
      */
-    SeriesWrapperCollection& operator[](std::string index);
+    SeriesWrapperCollection& operator[](const std::string& index);
 
     /**
      * Sets a new Container in the SeriesManager's map
@@ -130,7 +147,8 @@ class SeriesManager : public Object
      * @return
      * self
      */
-    Ptr<SeriesManager> SetContainer(std::string index, Ptr<SeriesWrapperCollection> container);
+    Ptr<SeriesManager> SetContainer(const std::string& index,
+                                    Ptr<SeriesWrapperCollection> container);
 
     /**
      * Gets a nodeConfiguration for a specific Node
