@@ -650,7 +650,7 @@ class Orchestrator : public ns3::Object
     /**
      * Flag indicating weather or not we'll schedule and run the PollMobility() method
      */
-    bool m_pollMobility;
+    bool m_pollMobility{};
 
     /**
      * Flag indicated we've hit the `SetupSimulation` method

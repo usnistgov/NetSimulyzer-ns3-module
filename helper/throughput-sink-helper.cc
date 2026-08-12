@@ -60,7 +60,7 @@ ThroughputSinkHelper::ThroughputSinkHelper(Ptr<Orchestrator> orchestrator,
                                            Time interval,
                                            const Time::Unit granularity,
                                            const ThroughputSink::Unit dataUnit)
-    : m_orchestrator{orchestrator},
+    : m_orchestrator{std::move(orchestrator)},
       m_interval{std::move(interval)},
       m_dataUnit{dataUnit},
       m_timeUnit{granularity}
@@ -160,7 +160,7 @@ ThroughputSinkHelper::SetDataUnit(const ThroughputSink::Unit unit)
 }
 
 Ptr<ThroughputSink>
-ThroughputSinkHelper::LinkTxTraces(Ptr<Application> app, std::string name)
+ThroughputSinkHelper::LinkTxTraces(Ptr<Application> app, const std::string& name)
 {
     const auto appTypeId = app->GetInstanceTypeId();
     const auto it = m_txTraceSources.find(appTypeId.GetUid());
@@ -206,7 +206,7 @@ ThroughputSinkHelper::LinkTxTraces(Ptr<Application> app, std::string name)
 }
 
 Ptr<ThroughputSink>
-ThroughputSinkHelper::LinkRxTraces(Ptr<Application> app, std::string name)
+ThroughputSinkHelper::LinkRxTraces(Ptr<Application> app, const std::string& name)
 {
     const auto appTypeId = app->GetInstanceTypeId();
     const auto it = m_rxTraceSources.find(appTypeId.GetUid());

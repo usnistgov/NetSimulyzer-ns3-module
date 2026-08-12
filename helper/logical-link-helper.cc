@@ -33,6 +33,8 @@
 
 #include "logical-link-helper.h"
 
+#include <utility>
+
 #include "ns3/color.h"
 #include "ns3/logical-link.h"
 #include "ns3/pointer.h"
@@ -44,7 +46,7 @@ NS_LOG_COMPONENT_DEFINE("LogicalLinkHelper");
 namespace netsimulyzer
 {
 LogicalLinkHelper::LogicalLinkHelper(Ptr<Orchestrator> orchestrator)
-    : m_orchestrator{orchestrator}
+    : m_orchestrator{std::move(orchestrator)}
 {
 }
 

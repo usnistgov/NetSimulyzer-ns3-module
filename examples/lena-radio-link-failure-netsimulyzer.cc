@@ -48,7 +48,7 @@ Ptr<netsimulyzer::LogStream> enbLog = nullptr;
 
 // Helper function to simplify writing to logs
 void
-WriteApplicationLog(std::string message)
+WriteApplicationLog(const std::string& message)
 {
     *applicationLog << "At " << Simulator::Now().GetSeconds() << " " << message;
 }
@@ -66,7 +66,7 @@ const std::array<netsimulyzer::Color3Value, 3> g_colors{netsimulyzer::RED_VALUE,
 
 // Callback for UE PHY measurements
 void
-NotifyReportUeMeasurements(std::string path,
+NotifyReportUeMeasurements(const std::string& path,
                            uint16_t rnti,
                            uint16_t cellId,
                            double rsrp,
@@ -84,7 +84,7 @@ NotifyReportUeMeasurements(std::string path,
                      << path << ", " << ueNetDevice->GetObject<LteUeNetDevice>()->GetImsi());
         imsi = ueNetDevice->GetObject<LteUeNetDevice>()->GetImsi();
 
-        std::map<uint32_t, std::map<uint32_t, Ptr<netsimulyzer::XYSeries>>>::iterator imsiToCellIt =
+        auto imsiToCellIt =
             rsrpSeries.find(imsi);
         std::map<uint32_t, Ptr<netsimulyzer::XYSeries>>::iterator cellIdToPlotIt;
         if (imsiToCellIt != rsrpSeries.end())
@@ -141,7 +141,7 @@ PrintUePosition(uint64_t imsi)
 {
     for (auto it = NodeList::Begin(); it != NodeList::End(); ++it)
     {
-        Ptr<Node> node = *it;
+        const Ptr<Node>& node = *it;
         int nDevs = node->GetNDevices();
         for (int j = 0; j < nDevs; j++)
         {
@@ -168,7 +168,7 @@ PrintUePosition(uint64_t imsi)
  * @param rnti The RNTI.
  */
 void
-NotifyConnectionEstablishedUe(std::string context, uint64_t imsi, uint16_t cellid, uint16_t rnti)
+NotifyConnectionEstablishedUe(const std::string& context, uint64_t imsi, uint16_t cellid, uint16_t rnti)
 {
     std::cout << Simulator::Now().As(Time::S) << " " << context << " UE IMSI " << imsi
               << ": connected to cell id " << cellid << " with RNTI " << rnti << std::endl;
@@ -183,7 +183,7 @@ NotifyConnectionEstablishedUe(std::string context, uint64_t imsi, uint16_t celli
  * @param rnti The RNTI.
  */
 void
-NotifyConnectionEstablishedEnb(std::string context, uint64_t imsi, uint16_t cellId, uint16_t rnti)
+NotifyConnectionEstablishedEnb(const std::string& context, uint64_t imsi, uint16_t cellId, uint16_t rnti)
 {
     std::cout << Simulator::Now().As(Time::S) << " " << context << " eNB cell id " << cellId
               << ": successful connection of UE with IMSI " << imsi << " RNTI " << rnti
@@ -247,7 +247,7 @@ UeStateTransition(uint64_t imsi,
 #ifdef HAS_NETSIMULYZER
     if (enableVisualization)
     {
-        std::map<uint32_t, Ptr<netsimulyzer::StateTransitionSink>>::iterator it =
+        auto it =
             rrcStateMachines.find(imsi);
         it->second->StateChangedId(newState);
     }
@@ -263,7 +263,7 @@ UeStateTransition(uint64_t imsi,
  * @param cause The reason for timeout.
  */
 void
-EnbRrcTimeout(uint64_t imsi, uint16_t rnti, uint16_t cellId, std::string cause)
+EnbRrcTimeout(uint64_t imsi, uint16_t rnti, uint16_t cellId, const std::string& cause)
 {
     std::cout << Simulator::Now().As(Time::S) << " IMSI " << imsi << ", RNTI " << rnti
               << ", Cell id " << cellId << ", ENB RRC " << cause << std::endl;
@@ -305,7 +305,7 @@ PhySyncDetection(uint16_t n310,
                  uint64_t imsi,
                  uint16_t rnti,
                  uint16_t cellId,
-                 std::string type,
+                 const std::string& type,
                  uint8_t count)
 {
     std::cout << Simulator::Now().As(Time::S) << " IMSI " << imsi << ", RNTI " << rnti
@@ -449,7 +449,7 @@ ReceivePacket(Ptr<const Packet> packet, const Address&)
  * @param fileName Output filename.
  */
 void
-Throughput(bool firstWrite, Time binSize, std::string fileName)
+Throughput(bool firstWrite, Time binSize, const std::string& fileName)
 {
     std::ofstream output;
 

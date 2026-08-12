@@ -189,7 +189,7 @@ class Decoration : public Object
      * largest scale takes effect. Keeping the
      * scale uniform
      */
-    bool m_keepRatio;
+    bool m_keepRatio{};
 
     /**
      * Desired height of the rendered 3D model
@@ -217,7 +217,7 @@ class Decoration : public Object
      * The amount to resize the model with 1.0 being the default size,
      * 0.5 being 1/2 size, etc.
      */
-    double m_scale;
+    double m_scale{};
 
     /**
      * Similar to `m_scale`, but for each axis. In the order [x, y, z].

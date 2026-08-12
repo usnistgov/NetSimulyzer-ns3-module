@@ -25,7 +25,7 @@ using namespace ns3;
 NS_LOG_COMPONENT_DEFINE("OutdoorRandomWalkExampleNetSimulyzer");
 
 void
-PrintGnuplottableBuildingListToFile(std::string filename)
+PrintGnuplottableBuildingListToFile(const std::string& filename)
 {
     std::ofstream outFile;
     outFile.open(filename.c_str(), std::ios_base::out | std::ios_base::trunc);
@@ -35,7 +35,7 @@ PrintGnuplottableBuildingListToFile(std::string filename)
         return;
     }
     uint32_t index = 0;
-    for (BuildingList::Iterator it = BuildingList::Begin(); it != BuildingList::End(); ++it)
+    for (auto it = BuildingList::Begin(); it != BuildingList::End(); ++it)
     {
         ++index;
         Box box = (*it)->GetBoundaries();
@@ -49,7 +49,7 @@ void
 // Define callback function to track node mobility
 CourseChanged(Ptr<netsimulyzer::XYSeries> posSeries,
               Ptr<netsimulyzer::LogStream> eventLog,
-              std::string context,
+              const std::string& context,
               Ptr<const MobilityModel> model)
 {
     const auto position = model->GetPosition();

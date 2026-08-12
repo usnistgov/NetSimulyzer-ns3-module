@@ -266,7 +266,7 @@ class XYSeries : public ns3::Object
     /**
      * Flag indicating if this series should appear individually in visualiser elements
      */
-    bool m_visible;
+    bool m_visible{};
 
     /**
      * The color of the points & connections

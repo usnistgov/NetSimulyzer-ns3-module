@@ -114,7 +114,7 @@ class LogStream : public Object
     /**
      * Flag indicating this item should appear in visualizer elements
      */
-    bool m_visible;
+    bool m_visible{};
 
     /**
      * The font color

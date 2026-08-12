@@ -197,7 +197,7 @@ class SeriesCollection : public ns3::Object
      *
      * @see m_autoColorPalette
      */
-    bool m_autoColor;
+    bool m_autoColor{};
 
     /**
      * The palette used to set added series colors if `m_autoColor` is set.
@@ -232,7 +232,7 @@ class SeriesCollection : public ns3::Object
      * Should we set the `Visible`attribute on added series to `false`
      * upon adding them
      */
-    bool m_hideAddedSeries;
+    bool m_hideAddedSeries{};
 
     /**
      * Add a series by ID.

@@ -45,6 +45,7 @@
 
 #include <fstream>
 #include <iomanip>
+#include <utility>
 #include <vector>
 
 #ifdef HAS_NETSIMULYZER
@@ -127,7 +128,7 @@ Ptr<netsimulyzer::LogStream> applicationLog;
 
 // Utility function to automatically add time to log messages
 void
-WriteApplicationLog(std::string message)
+WriteApplicationLog(const std::string& message)
 {
     *applicationLog << "At " << Simulator::Now().GetSeconds() << " " << message;
 }
@@ -1940,7 +1941,7 @@ std::map<std::string /* mode */,
  * @return the NodeId
  */
 uint32_t
-ContextToNodeId(std::string context)
+ContextToNodeId(const std::string& context)
 {
     std::string sub = context.substr(10);
     uint32_t pos = sub.find("/Device");
@@ -1954,7 +1955,7 @@ ContextToNodeId(std::string context)
  * @return the device MAC address
  */
 Mac48Address
-ContextToMac(std::string context)
+ContextToMac(const std::string& context)
 {
     std::string sub = context.substr(10);
     uint32_t pos = sub.find("/Device");
@@ -2012,7 +2013,7 @@ void
 TracePacketReception(std::string context,
                      Ptr<const Packet> p,
                      uint16_t channelFreqMhz,
-                     WifiTxVector txVector,
+                     const WifiTxVector& txVector,
                      MpduInfo aMpdu,
                      SignalNoiseDbm signalNoise,
                      uint16_t staId)
@@ -2029,7 +2030,7 @@ TracePacketReception(std::string context,
     WifiMacHeader hdr;
     packet->PeekHeader(hdr);
     // hdr.GetAddr1() is the receiving MAC address
-    if (hdr.GetAddr1() != ContextToMac(context))
+    if (hdr.GetAddr1() != ContextToMac(std::move(context)))
     {
         return;
     }
@@ -2062,7 +2063,7 @@ TracePacketReception(std::string context,
  * @param cw The contention window.
  */
 void
-CwTrace(std::string context, uint32_t cw, uint8_t /* linkId */)
+CwTrace(const std::string& context, uint32_t cw, uint8_t /* linkId */)
 {
     NS_LOG_INFO("CW time=" << Simulator::Now() << " node=" << ContextToNodeId(context)
                            << " val=" << cw);
@@ -2088,7 +2089,7 @@ CwTrace(std::string context, uint32_t cw, uint8_t /* linkId */)
  * @param newVal The backoff value.
  */
 void
-BackoffTrace(std::string context, uint32_t newVal, uint8_t /* linkId */)
+BackoffTrace(const std::string& context, uint32_t newVal, uint8_t /* linkId */)
 {
     NS_LOG_INFO("Backoff time=" << Simulator::Now() << " node=" << ContextToNodeId(context)
                                 << " val=" << newVal);
@@ -2115,7 +2116,7 @@ BackoffTrace(std::string context, uint32_t newVal, uint8_t /* linkId */)
  * @param power The Rx power.
  */
 void
-PhyRxTrace(std::string context, Ptr<const Packet> p, RxPowerWattPerChannelBand power)
+PhyRxTrace(const std::string& context, Ptr<const Packet> p, const RxPowerWattPerChannelBand& power)
 {
     NS_LOG_INFO("PHY-RX-START time=" << Simulator::Now() << " node=" << ContextToNodeId(context)
                                      << " size=" << p->GetSize());
@@ -2129,7 +2130,7 @@ PhyRxTrace(std::string context, Ptr<const Packet> p, RxPowerWattPerChannelBand p
  * @param psduDuration The PDSU diration.
  */
 void
-PhyRxPayloadTrace(std::string context, WifiTxVector txVector, Time psduDuration)
+PhyRxPayloadTrace(const std::string& context, const WifiTxVector& txVector, Time psduDuration)
 {
     NS_LOG_INFO("PHY-RX-PAYLOAD-START time=" << Simulator::Now()
                                              << " node=" << ContextToNodeId(context)
@@ -2144,7 +2145,7 @@ PhyRxPayloadTrace(std::string context, WifiTxVector txVector, Time psduDuration)
  * @param reason The drop reason.
  */
 void
-PhyRxDropTrace(std::string context, Ptr<const Packet> p, WifiPhyRxfailureReason reason)
+PhyRxDropTrace(const std::string& context, Ptr<const Packet> p, WifiPhyRxfailureReason reason)
 {
     NS_LOG_INFO("PHY-RX-DROP time=" << Simulator::Now() << " node=" << ContextToNodeId(context)
                                     << " size=" << p->GetSize() << " reason=" << reason);
@@ -2228,7 +2229,7 @@ PhyRxDropTrace(std::string context, Ptr<const Packet> p, WifiPhyRxfailureReason 
  * @param p The packet.
  */
 void
-PhyRxDoneTrace(std::string context, Ptr<const Packet> p)
+PhyRxDoneTrace(const std::string& context, Ptr<const Packet> p)
 {
     NS_LOG_INFO("PHY-RX-END time=" << Simulator::Now() << " node=" << ContextToNodeId(context)
                                    << " size=" << p->GetSize());
@@ -2244,7 +2245,7 @@ PhyRxDoneTrace(std::string context, Ptr<const Packet> p)
  * @param preamble The preamble.
  */
 void
-PhyRxOkTrace(std::string context,
+PhyRxOkTrace(const std::string& context,
              Ptr<const Packet> p,
              double snr,
              WifiMode mode,
@@ -2281,7 +2282,7 @@ PhyRxOkTrace(std::string context,
  * @param snr The SNR.
  */
 void
-PhyRxErrorTrace(std::string context, Ptr<const Packet> p, double snr)
+PhyRxErrorTrace(const std::string& context, Ptr<const Packet> p, double snr)
 {
     NS_LOG_INFO("PHY-RX-ERROR time=" << Simulator::Now() << " node=" << ContextToNodeId(context)
                                      << " size=" << p->GetSize() << " snr=" << snr);
@@ -2300,7 +2301,7 @@ PhyRxErrorTrace(std::string context, Ptr<const Packet> p, double snr)
  * @param txPowerW The TX power.
  */
 void
-PhyTxTrace(std::string context, Ptr<const Packet> p, double txPowerW)
+PhyTxTrace(const std::string& context, Ptr<const Packet> p, double txPowerW)
 {
     NS_LOG_INFO("PHY-TX-START time=" << Simulator::Now() << " node=" << ContextToNodeId(context)
                                      << " size=" << p->GetSize() << " " << txPowerW);
@@ -2323,7 +2324,7 @@ PhyTxTrace(std::string context, Ptr<const Packet> p, double txPowerW)
  * @param p The packet.
  */
 void
-PhyTxDoneTrace(std::string context, Ptr<const Packet> p)
+PhyTxDoneTrace(const std::string& context, Ptr<const Packet> p)
 {
     NS_LOG_INFO("PHY-TX-END time=" << Simulator::Now() << " node=" << ContextToNodeId(context)
                                    << " " << p->GetSize());
@@ -2336,7 +2337,7 @@ PhyTxDoneTrace(std::string context, Ptr<const Packet> p)
  * @param p The packet.
  */
 void
-MacTxTrace(std::string context, Ptr<const Packet> p)
+MacTxTrace(const std::string& context, Ptr<const Packet> p)
 {
     if (tracing)
     {
@@ -2360,7 +2361,7 @@ MacTxTrace(std::string context, Ptr<const Packet> p)
  * @param p The packet.
  */
 void
-MacRxTrace(std::string context, Ptr<const Packet> p)
+MacRxTrace(const std::string& context, Ptr<const Packet> p)
 {
     if (tracing)
     {
@@ -2389,7 +2390,7 @@ SocketSendTrace(std::string context, Ptr<const Packet> p, const Address& addr)
 {
     if (tracing)
     {
-        socketSendTraceFile << Simulator::Now().GetSeconds() << " " << ContextToNodeId(context)
+        socketSendTraceFile << Simulator::Now().GetSeconds() << " " << ContextToNodeId(std::move(context))
                             << " " << p->GetSize() << " " << addr << std::endl;
     }
 }
@@ -2403,7 +2404,7 @@ SocketSendTrace(std::string context, Ptr<const Packet> p, const Address& addr)
 void
 AssociationLog(std::string context, Mac48Address address)
 {
-    uint32_t nodeId = ContextToNodeId(context);
+    uint32_t nodeId = ContextToNodeId(std::move(context));
     auto it = associated.find(nodeId);
     if (it == associated.end())
     {
@@ -2431,7 +2432,7 @@ AssociationLog(std::string context, Mac48Address address)
 void
 DisassociationLog(std::string context, Mac48Address address)
 {
-    uint32_t nodeId = ContextToNodeId(context);
+    uint32_t nodeId = ContextToNodeId(std::move(context));
     NS_LOG_DEBUG("Disassociation: time=" << Simulator::Now() << " node=" << nodeId);
     NS_FATAL_ERROR("Device should not disassociate!");
 }
@@ -2483,7 +2484,7 @@ class Experiment
      * @param pktInterval the packet interval
      * @return 0 if all went well
      */
-    int Run(const WifiHelper& wifi,
+    static int Run(const WifiHelper& helper,
             const YansWifiPhyHelper& wifiPhy,
             const WifiMacHelper& wifiMac,
             const YansWifiChannelHelper& wifiChannel,
@@ -2500,8 +2501,7 @@ class Experiment
 };
 
 Experiment::Experiment()
-{
-}
+= default;
 
 int
 Experiment::Run(const WifiHelper& helper,

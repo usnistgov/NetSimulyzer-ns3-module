@@ -141,7 +141,7 @@ class ThroughputSinkHelper
      *
      * @see m_txTraceSources
      */
-    Ptr<ThroughputSink> LinkTxTraces(Ptr<Application> app, std::string name);
+    Ptr<ThroughputSink> LinkTxTraces(Ptr<Application> app, const std::string& name);
 
     /**
      * Method which attaches the RX trace in `m_rxTraceSources`
@@ -151,7 +151,7 @@ class ThroughputSinkHelper
      *
      * @see m_rxTraceSources
      */
-    Ptr<ThroughputSink> LinkRxTraces(Ptr<Application> app, std::string name);
+    Ptr<ThroughputSink> LinkRxTraces(Ptr<Application> app, const std::string& name);
 
     /**
      * The Orchestrator that manages the created sinks
@@ -208,9 +208,9 @@ class ThroughputSinkHelper
     /// @see m_rxTraceSources
 
     // Packet::TracedCallback
-    void PacketTracedCallback(Ptr<ThroughputSink> throughputGraph, Ptr<const Packet> packet);
+    static void PacketTracedCallback(Ptr<ThroughputSink> throughputGraph, Ptr<const Packet> packet);
     // Packet::AddressTracedCallback
-    void PacketAddressTracedCallback(Ptr<ThroughputSink> throughputGraph,
+    static void PacketAddressTracedCallback(Ptr<ThroughputSink> throughputGraph,
                                      Ptr<const Packet> packet,
                                      const Address& address);
 

@@ -126,7 +126,7 @@ class RectangularArea : public Object
     /**
      * The Z coordinate for the area. In ns-3 units
      */
-    double m_height;
+    double m_height{};
 
     /**
      * Name for the area. For use in visualizer elements
