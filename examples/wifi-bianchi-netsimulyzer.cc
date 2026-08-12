@@ -3414,7 +3414,7 @@ main(int argc, char* argv[])
                            apTxPower,
                            staTxPower,
                            MicroSeconds(pktInterval));
-            uint32_t k = 0;
+            [[maybe_unused]] uint32_t k = 0;
             if (bytesReceived.size() != n)
             {
                 NS_FATAL_ERROR("Not all stations got traffic!");
