@@ -188,7 +188,7 @@ ThroughputSinkHelper::LinkTxTraces(Ptr<Application> app, const std::string& name
 #ifdef HAS_PSC
         app->TraceConnectWithoutContext(
             traceSourceName,
-            MakeCallback(&NetSimulyzerThroughputCharting::McpttPttAppTxRxTracedCallback,
+            MakeCallback(&ThroughputSinkHelper::McpttPttAppTxRxTracedCallback,
                          this,
                          sink));
 #else
