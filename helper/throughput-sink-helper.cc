@@ -180,7 +180,7 @@ ThroughputSinkHelper::LinkTxTraces(Ptr<Application> app, const std::string& name
     {
         app->TraceConnectWithoutContext(
             traceSourceName,
-            MakeCallback(&ThroughputSinkHelper::PacketTracedCallback, this, sink));
+            MakeBoundCallback(&ThroughputSinkHelper::PacketTracedCallback, sink));
     }
 
     else if (traceSourceType == "ns3::psc::McpttPttApp:TxRxTracedCallback")
@@ -227,7 +227,7 @@ ThroughputSinkHelper::LinkRxTraces(Ptr<Application> app, const std::string& name
     {
         app->TraceConnectWithoutContext(
             traceSourceName,
-            MakeCallback(&ThroughputSinkHelper::PacketAddressTracedCallback, this, sink));
+            MakeBoundCallback(&ThroughputSinkHelper::PacketAddressTracedCallback, sink));
     }
     else
     {
