@@ -127,6 +127,100 @@ class NodeConfigurationHelper
     NodeConfigurationContainer Install(NodeContainer& nodes,
                                        NodeConfigurationContainer& configurations) const;
 
+    enum ColorMode : uint8_t
+    {
+        Fixed,
+        Vector,
+        Function,
+        Default = Fixed,
+    };
+
+    /**
+     * Sets the base color mode to select from a vector of colors, cycling through in a loop per
+     * node index
+     * @param colorVector
+     * A vector of colors to cycle through
+     */
+    void SetBaseColorPattern(std::vector<Color3> colorVector);
+
+    /**
+     * Sets the base color mode to select from a function that returns a color given the node and
+     * its index
+     * @param colorFunction
+     * A function that takes in an index and a node and returns an associated color
+     */
+    void SetBaseColorPattern(std::function<Color3(std::size_t, Ptr<Node>)> colorFunction);
+    /**
+     * Sets the base color mode to be a static color
+     * @param color
+     * The color to set all nodes
+     */
+    void SetBaseColorPattern(Color3 color);
+
+    /**
+     * Changes the base color mode without changing the parameters
+     */
+    void SetBaseColorPatternType(ColorMode mode);
+
+    /**
+     * Gets the base color a node would be if at a specific index
+     * @param i
+     * The theoretical index of the node
+     * @param node
+     * The node
+     */
+    Color3 GetBaseColor(std::size_t i, Ptr<Node> node);
+
+    /**
+     * Gets the base color at a specific index
+     * @param i
+     * The theoretical index of the node
+     */
+    Color3 GetBaseColor(std::size_t i);
+
+    /**
+     * Sets the highlight color mode to select from a vector of colors, cycling through in a loop
+     * per node index
+     * @param colorVector
+     * A vector of colors to cycle through
+     */
+    void SetHighlightColorPattern(std::vector<Color3> colorVector);
+
+    /**
+     * Sets the highlight color mode to select from a function that returns a color given the node
+     * and its index
+     * @param colorFunction
+     * A function that takes in an index and a node and returns an associated color
+     */
+    void SetHighlightColorPattern(std::function<Color3(std::size_t, Ptr<Node>)> colorFunction);
+    /**
+     * Sets the highlight color mode to be a static color
+     * @param color
+     * The color to set all nodes
+     */
+    void SetHighlightColorPattern(Color3 color);
+
+    /**
+     * Changes the highlight color mode without changing the parameters
+     */
+    void SetHighlightColorPatternType(ColorMode mode);
+
+    /**
+     * Gets the highlight color a node would be if at a specific index
+     * @param i
+     * The theoretical index of the node
+     * @param node
+     * The node
+     */
+    Color3 GetHighlightColor(std::size_t i, Ptr<Node> node);
+
+    /**
+     * Gets the highlight color at a specific index
+     * @param i
+     * The theoretical index of the node
+     */
+    Color3 GetHighlightColor(std::size_t i);
+
   private:
     /**
      * Factory for producing NodeConfiguration objects
@@ -137,6 +231,60 @@ class NodeConfigurationHelper
      * Orchestrator that manages the Nodes produced by this helper
      */
     Ptr<Orchestrator> m_orchestrator;
+
+    /**
+     * Sets the way base colors are set for nodes
+     */
+    ColorMode m_baseColorMode = ColorMode::Default;
+
+    /**
+     * Sets the way highlight colors are set for nodes
+     */
+    ColorMode m_highlightColorMode = ColorMode::Default;
+
+    /**
+     * If the base color mode is Vector, cycles through this vector for node base colors
+     */
+    std::vector<Color3> m_baseColorVector;
+
+    /**
+     * If the highlight color mode is Vector, cycles through this vector for node highlight colors
+     */
+    std::vector<Color3> m_highlightColorVector;
+
+    /**
+     * If the base color mode is Function, uses this function for base node colors
+     */
+    std::function<Color3(std::size_t, Ptr<Node>)> m_baseColorFunction = 0;
+
+    /**
+     * If the highlight color mode is Function, uses this function for node highlight colors
+     */
+    std::function<Color3(std::size_t, Ptr<Node>)> m_highlightColorFunction = 0;
+
+    /**
+     * Sets the base color of a NodeConfiguration
+     * @param config
+     * The node configuration to set the color of
+     * @param i
+     * The index of the node
+     * @param node
+     * The node attatched to the configuration
+     */
+    void SetBaseColorInternal(Ptr<NodeConfiguration> config, std::size_t i, Ptr<Node> node) const;
+
+    /**
+     * Sets the highlight color of a NodeConfiguration
+     * @param config
+     * The node configuration to set the color of
+     * @param i
+     * The index of the node
+     * @param node
+     * The node attatched to the configuration
+     */
+    void SetHighlightColorInternal(Ptr<NodeConfiguration> config,
+                                   std::size_t i,
+                                   Ptr<Node> node) const;
 };
 
 } // namespace ns3::netsimulyzer

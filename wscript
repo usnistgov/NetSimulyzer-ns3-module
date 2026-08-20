@@ -44,7 +44,13 @@ def build(bld):
         'model/state-transition-sink.cc',
         'model/value-axis.cc',
         'model/xy-series.cc',
-        'model/throughput-sink.cc'
+        'model/throughput-sink.cc',
+        'model/series-wrapper.cc',
+        'model/series-wrapper-collection.cc',
+        'model/series-manager.cc',
+        'helper/logical-link-pairs.cc'
+        'helper/logical-link-paths.cc'
+
         ]
 
     module_test = bld.create_ns3_module_test_library('netsimulyzer')
@@ -83,7 +89,12 @@ def build(bld):
         'model/state-transition-sink.h',
         'model/value-axis.h',
         'model/xy-series.h',
-        'model/throughput-sink.h'
+        'model/throughput-sink.h',
+        'model/series-wrapper.h',
+        'model/series-wrapper-collection.h',
+        'model/series-manager.h',
+        'helper/logical-link-pairs.h'
+        'helper/logical-link-paths.h'
         ]
 
     # Examples are not enabled for waf versions of

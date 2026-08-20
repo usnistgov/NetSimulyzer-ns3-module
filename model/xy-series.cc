@@ -60,6 +60,25 @@ XYSeries::XYSeries(Ptr<Orchestrator> orchestrator)
     m_id = orchestrator->Register({this, true});
 }
 
+XYSeries::XYSeries(Ptr<Orchestrator> orchestrator, std::string name)
+    : m_orchestrator(orchestrator),
+      m_constructorName(name)
+{
+    NS_LOG_FUNCTION(this << m_orchestrator);
+    // There doesn't seem to be a Ptr from `this`, so this is as close as we can get
+    m_id = orchestrator->Register({this, true});
+}
+
+XYSeries::XYSeries(Ptr<Orchestrator> orchestrator, std::string name, Color3 color)
+    : m_orchestrator(orchestrator),
+      m_constructorName(name),
+      m_constructorColor(color)
+{
+    NS_LOG_FUNCTION(this << m_orchestrator);
+    // There doesn't seem to be a Ptr from `this`, so this is as close as we can get
+    m_id = orchestrator->Register({this, true});
+}
+
 TypeId
 XYSeries::GetTypeId(void)
 {
@@ -256,6 +275,29 @@ XYSeries::SetYAxis(Ptr<ValueAxis> value)
 {
     NS_LOG_FUNCTION(this << value);
     m_yAxis = value;
+}
+
+void
+XYSeries::NotifyConstructionCompleted()
+{
+    // Annoying hack to allow the color to be set by the constructor.
+    // Since ns-3 will supply a default value and overwrite members
+    // which are tied to attributes after the constructor has
+    // returned
+    m_color = m_constructorColor;
+    m_name = m_constructorName;
+
+    // for (const auto& [name, value] : m_constructorAttributes)
+    // {
+    //     // In the helper, the color attribute is always converted to
+    //     // the constructor argument, so we don't want the attribute version
+    //     if (name == "Color")
+    //     {
+    //         continue;
+    //     }
+    //     SetAttribute(name, *value);
+    // }
+    Object::NotifyConstructionCompleted();
 }
 
 void

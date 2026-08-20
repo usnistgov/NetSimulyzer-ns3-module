@@ -174,7 +174,13 @@ LogicalLink::GetTypeId()
                           TypeId::ATTR_GET,
                           PointerValue(),
                           MakePointerAccessor(&LogicalLink::m_orchestrator),
-                          MakePointerChecker<Orchestrator>());
+                          MakePointerChecker<Orchestrator>())
+            .AddAttribute("Duration",
+                          "Sets the timeout for the internal timer",
+                          TypeId::ATTR_SET,
+                          TimeValue(),
+                          MakeTimeAccessor(&LogicalLink::SetDuration),
+                          MakeTimeChecker(Time(0)));
 
     return tid;
 }
@@ -354,6 +360,31 @@ LogicalLink::SetDiameter(const double value)
     m_orchestrator->UpdateLink(*this);
 }
 
+const Timer&
+LogicalLink::GetTimer() const
+{
+    return m_timer;
+}
+
+void
+LogicalLink::SetTimer(Timer timer)
+{
+    m_timer = timer;
+}
+
+void
+LogicalLink::SetDuration(Time duration)
+{
+    SetActive(true);
+    if (m_timer.IsRunning())
+        m_timer.Cancel();
+    m_timer.SetDelay(duration);
+    if (m_timer.GetDelay().IsPositive())
+    {
+        m_timer.Schedule();
+    }
+}
+
 void
 LogicalLink::NotifyConstructionCompleted()
 {
@@ -363,6 +394,9 @@ LogicalLink::NotifyConstructionCompleted()
     // which are tied to attributes after the constructor has
     // returned
     m_color = m_constructorColor;
+
+    m_timer.SetFunction(&LogicalLink::SetActive, this);
+    m_timer.SetArguments<bool>(false);
 
     for (const auto& [name, value] : m_constructorAttributes)
     {

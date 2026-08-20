@@ -117,6 +117,28 @@ class XYSeries : public ns3::Object
     explicit XYSeries(Ptr<Orchestrator> orchestrator);
 
     /**
+     * Sets up the XYSeries and assigns the ID
+     *
+     * @param orchestrator
+     * The orchestrator to tie this series to
+     * @param name
+     * The name to give to this
+     */
+    XYSeries(Ptr<Orchestrator> orchestrator, std::string name);
+
+    /**
+     * Sets up the XYSeries and assigns the ID
+     *
+     * @param orchestrator
+     * The orchestrator to tie this series to
+     * @param name
+     * The name to give to this
+     * @param color
+     * The color to give to this
+     */
+    XYSeries(Ptr<Orchestrator> orchestrator, std::string name, Color3 color);
+
+    /**
      * @brief Get the class TypeId
      *
      * @return the TypeId
@@ -206,6 +228,7 @@ class XYSeries : public ns3::Object
 
   protected:
     void DoDispose(void) override;
+    void NotifyConstructionCompleted() override;
 
   private:
     /**
@@ -257,6 +280,15 @@ class XYSeries : public ns3::Object
      * The name to show in visualizer elements & title of the graph
      */
     std::string m_name;
+
+    /**
+     * @see LogicalLink::NotifyConstructionCompleted
+     */
+    std::string m_constructorName;
+    /**
+     * @see LogicalLink::NotifyConstructionCompleted
+     */
+    Color3 m_constructorColor;
 
     /**
      * Name for the series that appears in the chart legend
